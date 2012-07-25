@@ -1,0 +1,36 @@
+apply plugin: 'groovy'
+apply plugin: 'idea'
+apply plugin: 'artifactory'
+
+
+
+buildscript {
+    repositories {
+        maven { url 'http://repo.jfrog.org/artifactory/gradle-plugins' }
+    }
+    dependencies {
+        classpath(group: 'org.jfrog.buildinfo', name: 'build-info-extractor-gradle', version: '2.0.12')
+    }
+}
+
+artifactory {
+    contextUrl = 'http://clienttests.artifactoryonline.com/clienttests'   //The base Artifactory URL if not overridden by the publisher/resolver
+    resolve {
+        repository {
+            repoKey = 'libs-releases'  //The Artifactory (preferably virtual) repository key to resolve from
+            username = 'deployer'       //Optional resolver user name (leave out to use anonymous resolution)
+            password = 'password'   //The resolver password
+            maven = true                //Resolve Maven-style artifacts and descriptors (true by default)
+        }
+    }
+}
+
+dependencies {
+    groovy group: 'org.codehaus.groovy', name: 'groovy', version: '2.0.0'
+    compile group: 'org.codehaus.groovy.modules.http-builder', name: 'http-builder', version: '0.5.2'
+    testCompile group: 'org.testng', name:'testng', version: '6.5.2'
+}
+
+test {
+    useTestNG()
+}
