@@ -7,7 +7,17 @@ package org.artifactory.client
  */
 class Storage {
 
-    static FolderInfo folderInfo(Artifactory artifactory){
+    static FolderInfo folderInfo(Artifactory artifactory) {
         new FolderInfo(artifactory)
     }
+
+    static FileInfo fileInfo(Artifactory artifactory) {
+        new FileInfo(artifactory)
+    }
+
+    static ItemLastModified itemLastModified(Artifactory artifactory) {
+        new ItemLastModified(artifactory)
+    }
+
+
 }

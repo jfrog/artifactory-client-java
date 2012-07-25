@@ -2,7 +2,9 @@ package org.artifactory.client
 
 import groovyx.net.http.HTTPBuilder
 
-import static groovyx.net.http.ContentType.JSON
+import static groovyx.net.http.ContentType.TEXT
+import static groovyx.net.http.Method.GET
+
 /**
  *
  * @author jbaruch
@@ -10,28 +12,33 @@ import static groovyx.net.http.ContentType.JSON
  */
 class Artifactory {
 
-    private HTTPBuilder client
+    private final HTTPBuilder client
+    private final String applicationName
 
-    private Artifactory(HTTPBuilder client) {
+    private Artifactory(HTTPBuilder client, String applicationName) {
         this.client = client
+        this.applicationName = applicationName
     }
 
-    static Artifactory create(String url, String username, String password) {
-        def client = new HTTPBuilder(url)
+
+    static Artifactory create(String host, String applicationName, String username, String password) {
+        def client = new HTTPBuilder(host)
         client.auth.basic username, password
-        client.headers.'User-Agent' = "Artifactory-Client/1.0 ${client.headers.'User-Agent'}"
-        new Artifactory(client)
+        client.headers.'User-Agent' = "Artifactory-Client/1.0"
+        new Artifactory(client, applicationName)
     }
 
     private def get(String path, Map query = new HashMap()) {
-        client.get(path: path, query: query, contentType: JSON) { resp, json ->
-            println resp.status
 
-            json.each {  // iterate over JSON 'status' object in the response:
-                println it.created_at
-                println '  ' + it.text
+        client.request(GET, TEXT) { req ->
+            uri.path = "/$applicationName$path"
+            uri.query = query
+            headers.Accept = 'application/json'
+
+            response.success = { resp, reader ->
+                println 'will parse jackson'
             }
         }
-
     }
+
 }

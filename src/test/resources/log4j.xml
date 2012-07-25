@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/" debug="false">
+    <appender name="console" class="org.apache.log4j.ConsoleAppender">
+        <param name="Target" value="System.out"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{ISO8601} %-5p  %c{1} - %m%n"/>
+        </layout>
+    </appender>
+
+    <category name="groovyx.net.http">
+        <priority value="DEBUG"/>
+    </category>
+
+    <!-- Use DEBUG to see basic request/response info;
+Use TRACE to see headers for HttpURLClient. -->
+    <category name="groovyx.net.http.HttpURLClient">
+        <priority value="INFO"/>
+    </category>
+
+    <category name="org.apache.http">
+        <priority value="INFO"/>
+    </category>
+    <category name="org.apache.http.headers">
+        <priority value="INFO"/>
+    </category>
+    <category name="org.apache.http.wire">
+        <priority value="INFO"/>
+    </category>
+
+    <root>
+        <priority value="INFO"/>
+        <appender-ref ref="console"/>
+    </root>
+</log4j:configuration>
