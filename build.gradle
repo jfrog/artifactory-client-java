@@ -2,8 +2,6 @@ apply plugin: 'groovy'
 apply plugin: 'idea'
 apply plugin: 'artifactory'
 
-
-
 buildscript {
     repositories {
         maven { url 'http://repo.jfrog.org/artifactory/gradle-plugins' }
@@ -14,13 +12,11 @@ buildscript {
 }
 
 artifactory {
-    contextUrl = 'http://clienttests.artifactoryonline.com/clienttests'   //The base Artifactory URL if not overridden by the publisher/resolver
+    contextUrl = 'http://clienttests.artifactoryonline.com/clienttests' //The base Artifactory URL if not overridden by the publisher/resolver
     resolve {
         repository {
-            repoKey = 'libs-releases'  //The Artifactory (preferably virtual) repository key to resolve from
-            username = 'deployer'       //Optional resolver user name (leave out to use anonymous resolution)
-            password = 'password'   //The resolver password
-            maven = true                //Resolve Maven-style artifacts and descriptors (true by default)
+            repoKey = 'libs-releases' //The Artifactory (preferably virtual) repository key to resolve from
+            maven = true //Resolve Maven-style artifacts and descriptors (true by default)
         }
     }
 }
@@ -29,8 +25,8 @@ dependencies {
     groovy group: 'org.codehaus.groovy', name: 'groovy', version: '2.0.0'
     compile group: 'org.codehaus.groovy.modules.http-builder', name: 'http-builder', version: '0.5.2'
     compile group: 'log4j', name: 'log4j', version: '1.2.17'
-    testCompile group: 'org.testng', name:'testng', version: '6.5.2'
-    testCompile group: 'com.googlecode.jsonschema2pojo', name:'jsonschema2pojo-core', version: '0.3.1'
+    compile group: 'com.googlecode.jsonschema2pojo', name: 'jsonschema2pojo-core', version: '0.3.1'
+    testCompile group: 'org.testng', name: 'testng', version: '6.5.2'
 }
 
 test {

@@ -11,6 +11,7 @@ public class ArtifactoryTests {
 
     @BeforeMethod
     public void init() {
-        artifactory = Artifactory.create("http://clienttests.artifactoryonline.com", "clienttests", "admin", "password");
+        artifactory =
+                Artifactory.create("http://clienttests.artifactoryonline.com", "clienttests", "admin", "password");
     }
 }
