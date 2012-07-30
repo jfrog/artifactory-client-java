@@ -46,8 +46,6 @@ public interface RemoteRepository extends Repository, NonVirtualRepository {
 
     boolean isSynchronizeProperties();
 
-    String getRepoLayoutRef();
-
     public enum RemoteRepoChecksumPolicyType {
         generate_if_absent("generate-if-absent"), fail("fail"), ignore_and_generate("ignore-and-generate"), pass_thru("pass-thru");
 
@@ -68,7 +66,7 @@ public interface RemoteRepository extends Repository, NonVirtualRepository {
             if (value == null || value.isEmpty()) {
                 return generate_if_absent;
             }
-            return valueOf(value.replaceAll("_", "-"));
+            return valueOf(value);
         }
     }
 }

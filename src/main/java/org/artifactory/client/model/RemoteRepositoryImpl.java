@@ -27,13 +27,12 @@ public class RemoteRepositoryImpl extends NonVirtualRepositoryBase implements Re
     private boolean fetchSourcesEagerly;
     private boolean shareConfiguration;
     private boolean synchronizeProperties;
-    private String repoLayoutRef;
 
     private RemoteRepositoryImpl() {
     }
 
     RemoteRepositoryImpl(String description, String excludesPattern, String includesPattern, String key, String notes, boolean blackedOut, boolean handleReleases, boolean handleSnapshots, int maxUniqueSnapshots, List<String> propertySets, SnapshotVersionBehavior snapshotVersionBehavior, boolean suppressPomConsistencyChecks, int failedRetrievalCachePeriodSecs, boolean fetchJarsEagerly, boolean fetchSourcesEagerly, boolean hardFail, String localAddress, int missedRetrievalCachePeriodSecs, boolean offline, String password, String proxy, RemoteRepoChecksumPolicyType remoteRepoChecksumPolicyType, int retrievalCachePeriodSecs, boolean shareConfiguration, int socketTimeoutMillis, boolean storeArtifactsLocally, boolean synchronizeProperties, boolean unusedArtifactsCleanupEnabled, int unusedArtifactsCleanupPeriodHours, String url, String username, String repoLayoutRef) {
-        super(description, excludesPattern, includesPattern, key, notes, blackedOut, handleReleases, handleSnapshots, maxUniqueSnapshots, propertySets, snapshotVersionBehavior, suppressPomConsistencyChecks);
+        super(description, excludesPattern, includesPattern, key, notes, blackedOut, handleReleases, handleSnapshots, maxUniqueSnapshots, propertySets, snapshotVersionBehavior, suppressPomConsistencyChecks, repoLayoutRef);
         this.failedRetrievalCachePeriodSecs = failedRetrievalCachePeriodSecs;
         this.fetchJarsEagerly = fetchJarsEagerly;
         this.fetchSourcesEagerly = fetchSourcesEagerly;
@@ -53,7 +52,6 @@ public class RemoteRepositoryImpl extends NonVirtualRepositoryBase implements Re
         this.unusedArtifactsCleanupPeriodHours = unusedArtifactsCleanupPeriodHours;
         this.url = url;
         this.username = username;
-        this.repoLayoutRef = repoLayoutRef;
     }
 
     @Override
@@ -233,15 +231,6 @@ public class RemoteRepositoryImpl extends NonVirtualRepositoryBase implements Re
     }
 
     @Override
-    public String getRepoLayoutRef() {
-        return repoLayoutRef;
-    }
-
-    private void setRepoLayoutRef(String repoLayoutRef) {
-        this.repoLayoutRef = repoLayoutRef;
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -266,8 +255,6 @@ public class RemoteRepositoryImpl extends NonVirtualRepositoryBase implements Re
         if (password != null ? !password.equals(that.password) : that.password != null) return false;
         if (proxy != null ? !proxy.equals(that.proxy) : that.proxy != null) return false;
         if (remoteRepoChecksumPolicyType != that.remoteRepoChecksumPolicyType) return false;
-        if (repoLayoutRef != null ? !repoLayoutRef.equals(that.repoLayoutRef) : that.repoLayoutRef != null)
-            return false;
         if (url != null ? !url.equals(that.url) : that.url != null) return false;
         if (username != null ? !username.equals(that.username) : that.username != null) return false;
 
@@ -296,7 +283,6 @@ public class RemoteRepositoryImpl extends NonVirtualRepositoryBase implements Re
         result = 31 * result + (fetchSourcesEagerly ? 1 : 0);
         result = 31 * result + (shareConfiguration ? 1 : 0);
         result = 31 * result + (synchronizeProperties ? 1 : 0);
-        result = 31 * result + (repoLayoutRef != null ? repoLayoutRef.hashCode() : 0);
         return result;
     }
 
@@ -322,7 +308,6 @@ public class RemoteRepositoryImpl extends NonVirtualRepositoryBase implements Re
                 ", fetchSourcesEagerly=" + fetchSourcesEagerly +
                 ", shareConfiguration=" + shareConfiguration +
                 ", synchronizeProperties=" + synchronizeProperties +
-                ", repoLayoutRef='" + repoLayoutRef + '\'' +
                 '}';
     }
 }

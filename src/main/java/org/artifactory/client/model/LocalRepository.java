@@ -27,10 +27,5 @@ public interface LocalRepository extends Repository, NonVirtualRepository {
         public String toString() {
             return name;
         }
-
-        @JsonCreator
-        public static ChecksumPolicyType parseValue(String value) {
-            return valueOf(value.replaceAll("_", "-"));
-        }
     }
 }

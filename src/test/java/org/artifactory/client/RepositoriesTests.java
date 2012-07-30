@@ -1,14 +1,13 @@
 package org.artifactory.client;
 
-import org.artifactory.client.model.LightweightRepository;
-import org.artifactory.client.model.RemoteRepository;
-import org.artifactory.client.model.Repository;
+import org.artifactory.client.model.*;
 import org.testng.annotations.Test;
 
 import java.util.List;
 
 import static org.artifactory.client.model.RepositoryType.*;
 import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
 
 
 /**
@@ -108,6 +107,31 @@ public class RepositoriesTests extends ArtifactoryTests {
         assertEquals(propertySets.size(), 1);
         assertEquals(propertySets.get(0), ("artifactory"));
         assertEquals(repo1.getRepoLayoutRef(), "maven-2-default");
+    }
+    @Test
+    public void testGetLocal() throws Exception {
+        Repository repository = artifactory.repositories().repoKey("libs-releases-local").get();
+        assertNotNull(repository);
+        assertTrue(LocalRepository.class.isAssignableFrom(repository.getClass()));
+        LocalRepository libsReleasesLocal = (LocalRepository) repository;
+        assertEquals(libsReleasesLocal.getKey(), "libs-releases-local");
+        assertEquals(libsReleasesLocal.getRclass().toString(), "local");
+        assertEquals(libsReleasesLocal.getDescription(), "Local repository for in-house libraries");
+        assertEquals(libsReleasesLocal.getNotes(), "");
+        assertEquals(libsReleasesLocal.getIncludesPattern(), "**/*");
+        assertEquals(libsReleasesLocal.getExcludesPattern(), "");
+        assertTrue(libsReleasesLocal.isHandleReleases());
+        assertFalse(libsReleasesLocal.isHandleSnapshots());
+        assertEquals(libsReleasesLocal.getMaxUniqueSnapshots(), 0);
+        assertFalse(libsReleasesLocal.isSuppressPomConsistencyChecks());
+        assertFalse(libsReleasesLocal.isBlackedOut());
+        List<String> propertySets = libsReleasesLocal.getPropertySets();
+        assertEquals(propertySets.size(), 1);
+        assertEquals(propertySets.get(0), ("artifactory"));
+        assertEquals(libsReleasesLocal.getRepoLayoutRef(), "maven-2-default");
+        assertEquals(libsReleasesLocal.getSnapshotVersionBehavior().toString(), "unique");
+        assertEquals(libsReleasesLocal.getChecksumPolicyType().toString(), "client-checksums");
+
     }
 
 }

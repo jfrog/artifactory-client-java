@@ -105,6 +105,7 @@ class Repositories {
         private List<String> propertySets = new ArrayList<String>()
         private NonVirtualRepository.SnapshotVersionBehavior snapshotVersionBehavior = non_unique
         private boolean suppressPomConsistencyChecks = false
+        private String repoLayoutRef
 
         LocalRepositoryBuilder blackedOut(boolean blackedOut) {
             this.blackedOut = blackedOut
@@ -171,8 +172,14 @@ class Repositories {
             this
         }
 
+        LocalRepositoryBuilder repoLayoutRef(String repoLayoutRef){
+            this.repoLayoutRef = repoLayoutRef
+            this
+        }
+
+
         LocalRepository build() {
-            return new LocalRepositoryImpl(description, excludesPattern, includesPattern, key, notes, blackedOut, handleReleases, handleSnapshots, maxUniqueSnapshots, propertySets, snapshotVersionBehavior, suppressPomConsistencyChecks, checksumPolicyType)
+            return new LocalRepositoryImpl(description, excludesPattern, includesPattern, key, notes, blackedOut, handleReleases, handleSnapshots, maxUniqueSnapshots, propertySets, snapshotVersionBehavior, suppressPomConsistencyChecks, checksumPolicyType, repoLayoutRef)
         }
     }
 

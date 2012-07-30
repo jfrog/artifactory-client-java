@@ -15,11 +15,12 @@ public abstract class NonVirtualRepositoryBase extends RepositoryBase implements
     private boolean suppressPomConsistencyChecks;
     private boolean blackedOut;
     private List<String> propertySets;
+    protected String repoLayoutRef;
 
     protected NonVirtualRepositoryBase() {
     }
 
-    protected NonVirtualRepositoryBase(String description, String excludesPattern, String includesPattern, String key, String notes, boolean blackedOut, boolean handleReleases, boolean handleSnapshots, int maxUniqueSnapshots, List<String> propertySets, SnapshotVersionBehavior snapshotVersionBehavior, boolean suppressPomConsistencyChecks) {
+    protected NonVirtualRepositoryBase(String description, String excludesPattern, String includesPattern, String key, String notes, boolean blackedOut, boolean handleReleases, boolean handleSnapshots, int maxUniqueSnapshots, List<String> propertySets, SnapshotVersionBehavior snapshotVersionBehavior, boolean suppressPomConsistencyChecks, String repoLayoutRef) {
         super(description, excludesPattern, includesPattern, key, notes);
         this.blackedOut = blackedOut;
         this.handleReleases = handleReleases;
@@ -28,6 +29,7 @@ public abstract class NonVirtualRepositoryBase extends RepositoryBase implements
         this.propertySets = propertySets;
         this.snapshotVersionBehavior = snapshotVersionBehavior;
         this.suppressPomConsistencyChecks = suppressPomConsistencyChecks;
+        this.repoLayoutRef = repoLayoutRef;
     }
 
     @Override
@@ -136,5 +138,14 @@ public abstract class NonVirtualRepositoryBase extends RepositoryBase implements
                 ", suppressPomConsistencyChecks=" + suppressPomConsistencyChecks +
                 ", propertySets=" + propertySets +
                 '}';
+    }
+
+    @Override
+    public String getRepoLayoutRef() {
+        return repoLayoutRef;
+    }
+
+    private void setRepoLayoutRef(String repoLayoutRef) {
+        this.repoLayoutRef = repoLayoutRef;
     }
 }

@@ -24,6 +24,8 @@ public interface NonVirtualRepository extends Repository {
 
     List<String> getPropertySets();
 
+    String getRepoLayoutRef();
+
     public enum SnapshotVersionBehavior {
         unique("unique"), non_unique("non-unique"), deployer("deployer");
 
@@ -37,11 +39,6 @@ public interface NonVirtualRepository extends Repository {
         @JsonValue
         public String toString() {
             return name;
-        }
-
-        @JsonCreator
-        public static SnapshotVersionBehavior parseValue(String value) {
-            return valueOf(value.replaceAll("_", "-"));
         }
 
     }
