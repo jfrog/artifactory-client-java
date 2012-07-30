@@ -1,5 +1,7 @@
 package org.artifactory.client
 
+import org.artifactory.client.model.ItemImpl
+
 /**
  *GET /api/storage/{repoKey}/{item-path}?lastModified
  *
@@ -30,6 +32,6 @@ class ItemLastModified {
         assert artifactory
         assert repoKey
         assert itemPath
-        artifactory.get("/api/storage/$repoKey/$itemPath", [lastModified:''])
+        artifactory.getJson("/api/storage/$repoKey/$itemPath", ItemImpl, [lastModified:''])
     }
 }

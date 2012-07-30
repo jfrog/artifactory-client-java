@@ -1,5 +1,8 @@
 package org.artifactory.client
 
+import org.artifactory.client.model.Item
+import org.artifactory.client.model.ItemImpl
+
 /**
  *
  * @author jbaruch
@@ -29,6 +32,6 @@ class FileInfo {
         assert artifactory
         assert repoKey
         assert filePath
-        artifactory.get("/api/storage/$repoKey/$filePath")
+        artifactory.getJson("/api/storage/$repoKey/$filePath", ItemImpl)
     }
 }

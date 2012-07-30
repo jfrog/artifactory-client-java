@@ -1,0 +1,14 @@
+{"metadataUri":"http://clienttests.artifactoryonline.com/clienttests/api/storage/repo1-cache/junit?mdns",
+    "repo":"repo1-cache",
+    "path":"/junit",
+    "created":"2012-07-25T09:42:37.863Z",
+    "createdBy":"deployer",
+    "lastModified":"2012-07-25T09:42:37.864Z",
+    "modifiedBy":"deployer",
+    "lastUpdated":"2012-07-25T09:42:37.864Z",
+    "children":[
+        {
+            "uri":"/junit",
+            "folder":true
+        }],
+    "uri":"http://clienttests.artifactoryonline.com/clienttests/api/storage/repo1-cache/junit"}

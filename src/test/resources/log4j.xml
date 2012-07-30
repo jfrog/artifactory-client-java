@@ -16,7 +16,7 @@
     <!-- Use DEBUG to see basic request/response info;
 Use TRACE to see headers for HttpURLClient. -->
     <category name="groovyx.net.http.HttpURLClient">
-        <priority value="INFO"/>
+        <priority value="DEBUG"/>
     </category>
 
     <category name="org.apache.http">

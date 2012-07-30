@@ -1,33 +1,25 @@
 package org.artifactory.client;
 
-import groovy.lang.Closure;
-import org.apache.http.HttpResponse;
+import junit.framework.Assert;
+import org.artifactory.client.model.Folder;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-
-import java.io.Reader;
 
 /**
  * @author jbaruch
  * @since 25/07/12
  */
-public class StorageTests {
-
-    private Artifactory artifactory;
-
-    @BeforeMethod
-    public void init() {
-        artifactory = Artifactory.create("http://clienttests.artifactoryonline.com", "clienttests", "deployer", "password");
-    }
+public class StorageTests extends ArtifactoryTests {
 
     @Test
     public void testFolderInfo() throws Exception {
-        Storage.folderInfo(artifactory).repoKey("repo1-cache").folderPath("junit").get();
+        Folder folder = artifactory.storage().folderInfo().repoKey("repo1-cache").folderPath("junit").get();
+        Assert.assertNotNull(folder);
     }
 
     @Test
     public void testFileInfo() throws Exception {
-        Storage.fileInfo(artifactory).repoKey("repo1").filePath("junit/junit/4.10/junit-4.10.jar");
+        artifactory.storage().fileInfo().repoKey("repo1").filePath("junit/junit/4.10/junit-4.10.jar");
 
     }
 

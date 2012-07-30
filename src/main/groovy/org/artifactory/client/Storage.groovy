@@ -7,15 +7,21 @@ package org.artifactory.client
  */
 class Storage {
 
-    static FolderInfo folderInfo(Artifactory artifactory) {
+    private Artifactory artifactory
+
+    Storage(Artifactory artifactory) {
+        this.artifactory = artifactory
+    }
+
+    FolderInfo folderInfo() {
         new FolderInfo(artifactory)
     }
 
-    static FileInfo fileInfo(Artifactory artifactory) {
+    FileInfo fileInfo() {
         new FileInfo(artifactory)
     }
 
-    static ItemLastModified itemLastModified(Artifactory artifactory) {
+    ItemLastModified itemLastModified() {
         new ItemLastModified(artifactory)
     }
 

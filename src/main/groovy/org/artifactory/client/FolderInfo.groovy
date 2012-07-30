@@ -1,5 +1,8 @@
 package org.artifactory.client
 
+import org.artifactory.client.model.FolderImpl
+import org.artifactory.client.model.Folder
+
 /**
  * 
  * @author jbaruch
@@ -25,10 +28,10 @@ class FolderInfo {
         this
     }
 
-    void get(){
+    Folder get(){
         assert artifactory
         assert repoKey
         assert folderPath
-        artifactory.get("/api/storage/$repoKey/$folderPath")
+        artifactory.getJson("/api/storage/$repoKey/$folderPath", FolderImpl)
     }
 }
