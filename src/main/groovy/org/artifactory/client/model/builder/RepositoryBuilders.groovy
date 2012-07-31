@@ -1,6 +1,6 @@
 package org.artifactory.client.model.builder
 
-import groovy.transform.PackageScope
+import org.artifactory.client.Repositories
 import org.artifactory.client.model.LocalRepository
 import org.artifactory.client.model.RemoteRepository
 import org.artifactory.client.model.VirtualRepository
@@ -13,11 +13,11 @@ import org.artifactory.client.model.VirtualRepository
 class RepositoryBuilders {
 
     RemoteRepositoryBuilder remoteRepositoryBuilder() {
-        return new RemoteRepositoryBuilder()
+        new RemoteRepositoryBuilder()
     }
 
     RemoteRepositoryBuilder builderFrom(RemoteRepository from) {
-        return new RemoteRepositoryBuilder().blackedOut(from.blackedOut).description(from.description).excludesPattern(from.excludesPattern).handleReleases(from.handleReleases)
+        new RemoteRepositoryBuilder().blackedOut(from.blackedOut).description(from.description).excludesPattern(from.excludesPattern).handleReleases(from.handleReleases)
                 .handleSnapshots(from.handleSnapshots).includesPattern(from.includesPattern).key(from.key).maxUniqueSnapshots(from.maxUniqueSnapshots).notes(from.notes)
                 .propertySets(from.propertySets).snapshotVersionBehavior(from.snapshotVersionBehavior).suppressPomConsistencyChecks(from.suppressPomConsistencyChecks).url(from.url)
                 .username(from.username).password(from.password).proxy(from.proxy).remoteRepoChecksumPolicyType(from.remoteRepoChecksumPolicyType).hardFail(from.hardFail)
@@ -33,7 +33,7 @@ class RepositoryBuilders {
     }
 
     LocalRepositoryBuilder builderFrom(LocalRepository from) {
-        return new LocalRepositoryBuilder().blackedOut(from.blackedOut).checksumPolicyType(from.checksumPolicyType).description(from.description)
+        new LocalRepositoryBuilder().blackedOut(from.blackedOut).checksumPolicyType(from.checksumPolicyType).description(from.description)
                 .excludesPattern(from.excludesPattern).handleReleases(from.handleReleases).handleSnapshots(from.handleSnapshots).includesPattern(from.includesPattern)
                 .key(from.key).maxUniqueSnapshots(from.maxUniqueSnapshots).notes(from.notes).propertySets(from.propertySets).snapshotVersionBehavior(from.snapshotVersionBehavior)
                 .suppressPomConsistencyChecks(from.suppressPomConsistencyChecks).repoLayoutRef(from.repoLayoutRef)
@@ -44,7 +44,7 @@ class RepositoryBuilders {
     }
 
     VirtualRepositoryBuilder builderFrom(VirtualRepository from) {
-        return new VirtualRepositoryBuilder().description(from.description).excludesPattern(from.excludesPattern).includesPattern(from.includesPattern).key(from.key)
+        new VirtualRepositoryBuilder().description(from.description).excludesPattern(from.excludesPattern).includesPattern(from.includesPattern).key(from.key)
                 .notes(from.notes).pomRepositoryReferencesCleanupPolicy(from.pomRepositoryReferencesCleanupPolicy)
                 .artifactoryRequestsCanRetrieveRemoteArtifacts(from.artifactoryRequestsCanRetrieveRemoteArtifacts).keyPair(from.keyPair).repositories(from.repositories)
     }

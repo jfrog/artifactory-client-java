@@ -20,8 +20,8 @@ public class VirtualRepositoryImpl extends RepositoryBase implements VirtualRepo
     private VirtualRepositoryImpl() {
     }
 
-    VirtualRepositoryImpl(String description, String excludesPattern, String includesPattern, String key, String notes, boolean artifactoryRequestsCanRetrieveRemoteArtifacts, String keyPair, PomRepositoryReferencesCleanupPolicy pomRepositoryReferencesCleanupPolicy, List<String> repositories) {
-        super(description, excludesPattern, includesPattern, key, notes);
+    VirtualRepositoryImpl(String description, String excludesPattern, String includesPattern, String key, String notes, boolean artifactoryRequestsCanRetrieveRemoteArtifacts, String keyPair, PomRepositoryReferencesCleanupPolicy pomRepositoryReferencesCleanupPolicy, List<String> repositories, String repoLayoutRef) {
+        super(description, excludesPattern, includesPattern, key, notes, repoLayoutRef);
         this.artifactoryRequestsCanRetrieveRemoteArtifacts = artifactoryRequestsCanRetrieveRemoteArtifacts;
         this.keyPair = keyPair;
         this.pomRepositoryReferencesCleanupPolicy = pomRepositoryReferencesCleanupPolicy;

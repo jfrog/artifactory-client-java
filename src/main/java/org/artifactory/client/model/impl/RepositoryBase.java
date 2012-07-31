@@ -15,16 +15,18 @@ public abstract class RepositoryBase implements Repository {
     private String notes;
     private String includesPattern;
     private String excludesPattern;
+    protected String repoLayoutRef;
 
     protected RepositoryBase() {
     }
 
-    protected RepositoryBase(String description, String excludesPattern, String includesPattern, String key, String notes) {
+    protected RepositoryBase(String description, String excludesPattern, String includesPattern, String key, String notes, String repoLayoutRef) {
         this.description = description;
         this.excludesPattern = excludesPattern;
         this.includesPattern = includesPattern;
         this.key = key;
         this.notes = notes;
+        this.repoLayoutRef = repoLayoutRef;
     }
 
     @Override
@@ -116,5 +118,14 @@ public abstract class RepositoryBase implements Repository {
                 ", includesPattern='" + includesPattern + '\'' +
                 ", excludesPattern='" + excludesPattern + '\'' +
                 '}';
+    }
+
+    @Override
+    public String getRepoLayoutRef() {
+        return repoLayoutRef;
+    }
+
+    private void setRepoLayoutRef(String repoLayoutRef) {
+        this.repoLayoutRef = repoLayoutRef;
     }
 }

@@ -14,19 +14,25 @@ import org.artifactory.client.model.impl.RepositoryBase
  * @author jbaruch
  * @since 29/07/12
  */
-@Mixin(RepositoryBuilders)
+
 class Repositories {
 
     private Artifactory artifactory
     private String repo
+    private RepositoryBuilders builders
 
     Repositories(Artifactory artifactory) {
         this.artifactory = artifactory
+        builders = new RepositoryBuilders()
     }
 
     Repositories(Artifactory artifactory, String repo) {
-        this.artifactory = artifactory
+        this(artifactory)
         this.repo = repo
+    }
+
+    RepositoryBuilders builders() {
+        builders
     }
 
     Items folder(String folderName) {

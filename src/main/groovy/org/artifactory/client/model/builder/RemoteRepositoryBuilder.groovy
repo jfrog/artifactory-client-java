@@ -13,23 +13,11 @@ import org.artifactory.client.model.impl.RemoteRepositoryImpl
  * @author jbaruch
  * @since 31/07/12
  */
-class RemoteRepositoryBuilder {
+class RemoteRepositoryBuilder extends NonVirtualRepositoryBuilderBase<RemoteRepositoryBuilder>{
 
     private RemoteRepositoryBuilder() {
     }
 
-    private String description
-    private String excludesPattern
-    private String includesPattern = '**/*'
-    private String key
-    private String notes
-    private boolean blackedOut = false
-    private boolean handleReleases = true
-    private boolean handleSnapshots = true
-    private int maxUniqueSnapshots = 0
-    private List<String> propertySets = new ArrayList<String>()
-    private NonVirtualRepository.SnapshotVersionBehavior snapshotVersionBehavior = non_unique
-    private boolean suppressPomConsistencyChecks = false
     private String url
     private String username
     private String password
@@ -49,67 +37,6 @@ class RemoteRepositoryBuilder {
     private boolean fetchSourcesEagerly
     private boolean shareConfiguration
     private boolean synchronizeProperties
-    private String repoLayoutRef
-
-    RemoteRepositoryBuilder blackedOut(boolean blackedOut) {
-        this.blackedOut = blackedOut
-        this
-    }
-
-    RemoteRepositoryBuilder description(String description) {
-        this.description = description
-        this
-    }
-
-    RemoteRepositoryBuilder excludesPattern(String excludesPattern) {
-        this.excludesPattern = excludesPattern
-        this
-    }
-
-    RemoteRepositoryBuilder handleReleases(boolean handleReleases) {
-        this.handleReleases = handleReleases
-        this
-    }
-
-    RemoteRepositoryBuilder handleSnapshots(boolean handleSnapshots) {
-        this.handleSnapshots = handleSnapshots
-        this
-    }
-
-    RemoteRepositoryBuilder includesPattern(String includesPattern) {
-        this.includesPattern = includesPattern
-        this
-    }
-
-    RemoteRepositoryBuilder key(String key) {
-        this.key = key
-        this
-    }
-
-    RemoteRepositoryBuilder maxUniqueSnapshots(int maxUniqueSnapshots) {
-        this.maxUniqueSnapshots = maxUniqueSnapshots
-        this
-    }
-
-    RemoteRepositoryBuilder notes(String notes) {
-        this.notes = notes
-        this
-    }
-
-    RemoteRepositoryBuilder propertySets(List<String> propertySets) {
-        this.propertySets = propertySets
-        this
-    }
-
-    RemoteRepositoryBuilder snapshotVersionBehavior(NonVirtualRepository.SnapshotVersionBehavior snapshotVersionBehavior) {
-        this.snapshotVersionBehavior = snapshotVersionBehavior
-        this
-    }
-
-    RemoteRepositoryBuilder suppressPomConsistencyChecks(boolean suppressPomConsistencyChecks) {
-        this.suppressPomConsistencyChecks = suppressPomConsistencyChecks
-        this
-    }
 
     RemoteRepositoryBuilder url(String url) {
         this.url = url
@@ -203,11 +130,6 @@ class RemoteRepositoryBuilder {
 
     RemoteRepositoryBuilder synchronizeProperties(boolean synchronizeProperties) {
         this.synchronizeProperties = synchronizeProperties
-        this
-    }
-
-    RemoteRepositoryBuilder repoLayoutRef(String repoLayoutRef) {
-        this.repoLayoutRef = repoLayoutRef
         this
     }
 

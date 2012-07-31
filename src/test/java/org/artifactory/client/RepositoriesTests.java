@@ -6,9 +6,9 @@ import org.testng.annotations.Test;
 
 import java.util.List;
 
+import static java.util.Arrays.asList;
 import static org.artifactory.client.model.RepositoryType.*;
 import static org.testng.Assert.*;
-import static org.testng.Assert.assertEquals;
 
 
 /**
@@ -18,10 +18,10 @@ import static org.testng.Assert.assertEquals;
 public class RepositoriesTests extends ArtifactoryTests {
 
     private static final String REPO1 = "repo1";
+    private static final String LIBS_RELEASES_LOCAL = "libs-releases-local";
 
     @Test
     public void testCreate() throws Exception {
-
     }
 
     @Test
@@ -109,13 +109,14 @@ public class RepositoriesTests extends ArtifactoryTests {
         assertEquals(propertySets.get(0), ("artifactory"));
         assertEquals(repo1.getRepoLayoutRef(), "maven-2-default");
     }
+
     @Test
     public void testGetLocal() throws Exception {
-        Repository repository = artifactory.repository("libs-releases-local").get();
+        Repository repository = artifactory.repository(LIBS_RELEASES_LOCAL).get();
         assertNotNull(repository);
         assertTrue(LocalRepository.class.isAssignableFrom(repository.getClass()));
         LocalRepository libsReleasesLocal = (LocalRepository) repository;
-        assertEquals(libsReleasesLocal.getKey(), "libs-releases-local");
+        assertEquals(libsReleasesLocal.getKey(), LIBS_RELEASES_LOCAL);
         assertEquals(libsReleasesLocal.getRclass().toString(), "local");
         assertEquals(libsReleasesLocal.getDescription(), "Local repository for in-house libraries");
         assertEquals(libsReleasesLocal.getNotes(), "");
@@ -132,6 +133,26 @@ public class RepositoriesTests extends ArtifactoryTests {
         assertEquals(libsReleasesLocal.getRepoLayoutRef(), "maven-2-default");
         assertEquals(libsReleasesLocal.getSnapshotVersionBehavior().toString(), "unique");
         assertEquals(libsReleasesLocal.getChecksumPolicyType().toString(), "client-checksums");
+
+    }
+
+    @Test
+    public void testGetVirtual() throws Exception {
+        Repository repository = artifactory.repository("libs-releases").get();
+        assertNotNull(repository);
+        assertTrue(VirtualRepository.class.isAssignableFrom(repository.getClass()));
+        VirtualRepository libsReleases = (VirtualRepository) repository;
+        assertEquals(libsReleases.getKey(), "libs-releases");
+        assertEquals(libsReleases.getRclass().toString(), "virtual");
+        assertEquals(libsReleases.getDescription(), "Virtual Repository which aggregates both uploaded and proxied releases");
+        assertEquals(libsReleases.getNotes(), "");
+        assertEquals(libsReleases.getIncludesPattern(), "**/*");
+        assertEquals(libsReleases.getExcludesPattern(), "");
+        assertEquals(libsReleases.getRepositories(), asList(LIBS_RELEASES_LOCAL, "ext-releases-local", "remote-repos"));
+        assertEquals(libsReleases.getPomRepositoryReferencesCleanupPolicy().toString(), "discard_active_reference");
+        assertFalse(libsReleases.isArtifactoryRequestsCanRetrieveRemoteArtifacts());
+        assertTrue(libsReleases.getKeyPair() == null || libsReleases.getKeyPair().isEmpty());
+        assertTrue(libsReleases.getRepoLayoutRef() == null || libsReleases.getRepoLayoutRef().isEmpty());
 
     }
 

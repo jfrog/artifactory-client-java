@@ -17,4 +17,5 @@ public interface Repository {
 
     String getExcludesPattern();
 
+    String getRepoLayoutRef();
 }
