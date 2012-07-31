@@ -7,9 +7,9 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import java.util.List;
 
 /**
-* @author jbaruch
-* @since 30/07/12
-*/
+ * @author jbaruch
+ * @since 30/07/12
+ */
 public enum RepositoryType {
     LOCAL(LocalRepositoryImpl.class, new TypeReference<List<LocalRepositoryImpl>>() {
     }),
@@ -30,6 +30,7 @@ public enum RepositoryType {
         return typeClass;
     }
 
+    //TODO: [by yl] Remove
     public TypeReference getTypeReference() {
         return typeReference;
     }

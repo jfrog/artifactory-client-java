@@ -2,7 +2,6 @@ package org.artifactory.client;
 
 import junit.framework.Assert;
 import org.artifactory.client.model.Folder;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 /**
