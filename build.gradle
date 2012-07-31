@@ -15,6 +15,8 @@ artifactory {
     contextUrl = 'http://clienttests.artifactoryonline.com/clienttests' //The base Artifactory URL if not overridden by the publisher/resolver
     resolve {
         repository {
+            username = project.username          //The publisher user name
+            password = project.password
             repoKey = 'libs-releases' //The Artifactory (preferably virtual) repository key to resolve from
             maven = true //Resolve Maven-style artifacts and descriptors (true by default)
         }
@@ -22,10 +24,14 @@ artifactory {
 }
 
 dependencies {
-    groovy group: 'org.codehaus.groovy', name: 'groovy', version: '2.0.0'
+    groovy group: 'org.codehaus.groovy', name: 'groovy', version: '2.0.1'
+    groovy group: 'org.codehaus.groovy', name: 'groovy-json', version: '2.0.1'
+    groovy group: 'org.codehaus.groovy', name: 'groovy-xml', version: '2.0.1'
     compile group: 'org.codehaus.groovy.modules.http-builder', name: 'http-builder', version: '0.5.2'
     compile group: 'log4j', name: 'log4j', version: '1.2.17'
-    compile group: 'com.googlecode.jsonschema2pojo', name: 'jsonschema2pojo-core', version: '0.3.1'
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.0.4'
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.0.4'
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.0.4'
     testCompile group: 'org.testng', name: 'testng', version: '6.5.2'
 }
 
