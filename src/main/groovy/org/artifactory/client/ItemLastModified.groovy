@@ -1,9 +1,9 @@
 package org.artifactory.client
 
-import org.artifactory.client.model.ItemImpl
+import org.artifactory.client.model.impl.ItemImpl
 
 /**
- *GET /api/storage/{repoKey}/{item-path}?lastModified
+ *GET /api/storage/{repo}/{item-path}?lastModified
  *
  * @author jbaruch
  * @since 25/07/12

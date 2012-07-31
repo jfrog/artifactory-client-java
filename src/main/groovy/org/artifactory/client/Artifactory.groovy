@@ -39,12 +39,16 @@ class Artifactory {
         new Artifactory(client, applicationName)
     }
 
-    Storage storage() {
-        return new Storage(this)
-    }
+//    Storage storage() {
+//        return new Storage(this)
+//    }
 
     Repositories repositories() {
         return new Repositories(this)
+    }
+
+    Repositories repository(String repo) {
+        return new Repositories(this, repo)
     }
 
     private <T> T getJson(String path, def target, Map query = new HashMap()) {

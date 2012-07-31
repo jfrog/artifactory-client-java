@@ -1,29 +1,28 @@
 package org.artifactory.client
 
-import org.artifactory.client.model.Item
-import org.artifactory.client.model.ItemImpl
+import org.artifactory.client.model.impl.ItemImpl
 
 /**
  *
  * @author jbaruch
  * @since 25/07/12
  */
-class FileInfo {
+class Files {
 
     private Artifactory artifactory
     private String repoKey
     private String filePath
 
-    FileInfo(Artifactory artifactory) {
+    Files(Artifactory artifactory) {
         this.artifactory = artifactory
     }
 
-    FileInfo repoKey(String repoKey) {
+    Files repoKey(String repoKey) {
         this.repoKey = repoKey
         this
     }
 
-    FileInfo filePath(String filePath) {
+    Files filePath(String filePath) {
         this.filePath = filePath
         this
     }

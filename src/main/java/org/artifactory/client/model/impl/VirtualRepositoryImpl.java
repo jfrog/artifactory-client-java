@@ -1,4 +1,7 @@
-package org.artifactory.client.model;
+package org.artifactory.client.model.impl;
+
+import org.artifactory.client.model.RepositoryType;
+import org.artifactory.client.model.VirtualRepository;
 
 import java.util.ArrayList;
 import java.util.List;

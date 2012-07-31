@@ -1,4 +1,6 @@
-package org.artifactory.client.model;
+package org.artifactory.client.model.impl;
+
+import org.artifactory.client.model.Item;
 
 /**
  * @author jbaruch

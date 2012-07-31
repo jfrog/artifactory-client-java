@@ -3,6 +3,10 @@ package org.artifactory.client.model;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 import com.fasterxml.jackson.core.type.TypeReference;
+import org.artifactory.client.model.impl.LocalRepositoryImpl;
+import org.artifactory.client.model.impl.RemoteRepositoryImpl;
+import org.artifactory.client.model.impl.RepositoryBase;
+import org.artifactory.client.model.impl.VirtualRepositoryImpl;
 
 import java.util.List;
 
@@ -11,12 +15,9 @@ import java.util.List;
  * @since 30/07/12
  */
 public enum RepositoryType {
-    LOCAL(LocalRepositoryImpl.class, new TypeReference<List<LocalRepositoryImpl>>() {
-    }),
-    REMOTE(RemoteRepositoryImpl.class, new TypeReference<List<RemoteRepositoryImpl>>() {
-    }),
-    VIRTUAL(VirtualRepositoryImpl.class, new TypeReference<List<VirtualRepositoryImpl>>() {
-    });
+    LOCAL(LocalRepositoryImpl.class, new TypeReference<List<LocalRepositoryImpl>>() { }),
+    REMOTE(RemoteRepositoryImpl.class, new TypeReference<List<RemoteRepositoryImpl>>() { }),
+    VIRTUAL(VirtualRepositoryImpl.class, new TypeReference<List<VirtualRepositoryImpl>>() { });
 
     RepositoryType(Class<? extends RepositoryBase> typeClass, TypeReference typeReference) {
         this.typeClass = typeClass;
@@ -30,8 +31,7 @@ public enum RepositoryType {
         return typeClass;
     }
 
-    //TODO: [by yl] Remove
-    public TypeReference getTypeReference() {
+    private TypeReference getTypeReference() {
         return typeReference;
     }
 

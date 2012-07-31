@@ -1,4 +1,7 @@
-package org.artifactory.client.model;
+package org.artifactory.client.model.impl;
+
+import org.artifactory.client.model.RemoteRepository;
+import org.artifactory.client.model.RepositoryType;
 
 import java.util.List;
 

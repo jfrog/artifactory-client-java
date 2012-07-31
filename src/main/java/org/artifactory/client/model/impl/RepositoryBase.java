@@ -1,4 +1,7 @@
-package org.artifactory.client.model;
+package org.artifactory.client.model.impl;
+
+import org.artifactory.client.model.Repository;
+import org.artifactory.client.model.RepositoryType;
 
 /**
  * @author jbaruch

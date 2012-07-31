@@ -1,5 +1,7 @@
-package org.artifactory.client.model;
+package org.artifactory.client.model.impl;
 
+
+import org.artifactory.client.model.Folder;
 
 import java.util.Date;
 import java.util.List;

@@ -1,5 +1,6 @@
 package org.artifactory.client;
 
+import junit.framework.Assert;
 import org.artifactory.client.model.*;
 import org.testng.annotations.Test;
 
@@ -71,7 +72,7 @@ public class RepositoriesTests extends ArtifactoryTests {
 
     @Test
     public void testGetRemote() throws Exception {
-        Repository repository = artifactory.repositories().repoKey(REPO1).get();
+        Repository repository = artifactory.repository(REPO1).get();
         assertNotNull(repository);
         assertTrue(RemoteRepository.class.isAssignableFrom(repository.getClass()));
         RemoteRepository repo1 = (RemoteRepository) repository;
@@ -110,7 +111,7 @@ public class RepositoriesTests extends ArtifactoryTests {
     }
     @Test
     public void testGetLocal() throws Exception {
-        Repository repository = artifactory.repositories().repoKey("libs-releases-local").get();
+        Repository repository = artifactory.repository("libs-releases-local").get();
         assertNotNull(repository);
         assertTrue(LocalRepository.class.isAssignableFrom(repository.getClass()));
         LocalRepository libsReleasesLocal = (LocalRepository) repository;
@@ -133,5 +134,12 @@ public class RepositoriesTests extends ArtifactoryTests {
         assertEquals(libsReleasesLocal.getChecksumPolicyType().toString(), "client-checksums");
 
     }
+
+    @Test
+    public void testGetFolder() throws Exception {
+        Folder folder = artifactory.repository("repo1-cache").folder("junit").get();
+        Assert.assertNotNull(folder);
+    }
+
 
 }
