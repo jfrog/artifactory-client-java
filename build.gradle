@@ -15,13 +15,16 @@ artifactory {
     contextUrl = 'http://clienttests.artifactoryonline.com/clienttests' //The base Artifactory URL if not overridden by the publisher/resolver
     resolve {
         repository {
-            username = project.username          //The publisher user name
+            username = project.username //The publisher user name
             password = project.password
             repoKey = 'libs-releases' //The Artifactory (preferably virtual) repository key to resolve from
             maven = true //Resolve Maven-style artifacts and descriptors (true by default)
         }
     }
 }
+
+group = 'com.jfrog.artifactory.client'
+version = '1-SNAPSHOT'
 
 dependencies {
     groovy group: 'org.codehaus.groovy', name: 'groovy', version: '2.0.1'
