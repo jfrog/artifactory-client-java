@@ -17,7 +17,7 @@ import static groovyx.net.http.ContentType.TEXT
  */
 class Artifactory {
 
-    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("YYYY-MM-dd'T'HH:mm:ss.SSS'Z'")
+    private static final SimpleDateFormat ISO8601_DATE_FORMAT = new SimpleDateFormat("YYYY-MM-dd'T'HH:mm:ss.SSS'Z'")
     private final HTTPBuilder client
     private final String applicationName
     private final ObjectMapper objectMapper
@@ -27,7 +27,7 @@ class Artifactory {
         this.applicationName = applicationName
         objectMapper = new ObjectMapper()
         objectMapper.configure WRITE_DATES_AS_TIMESTAMPS, false
-        objectMapper.dateFormat = DATE_FORMAT
+        objectMapper.dateFormat = ISO8601_DATE_FORMAT
         objectMapper.visibilityChecker = defaultInstance().withFieldVisibility(ANY)
     }
 
@@ -39,16 +39,16 @@ class Artifactory {
         new Artifactory(client, applicationName)
     }
 
-//    Storage storage() {
-//        return new Storage(this)
-//    }
+    //    Storage storage() {
+    //        return new Storage(this)
+    //    }
 
     Repositories repositories() {
-        return new Repositories(this)
+        new Repositories(this)
     }
 
     Repositories repository(String repo) {
-        return new Repositories(this, repo)
+        new Repositories(this, repo)
     }
 
     private <T> T getJson(String path, def target, Map query = new HashMap()) {
@@ -57,7 +57,6 @@ class Artifactory {
 
     private String getText(String path, Map query = new HashMap()) {
         get(path, query).text
-
     }
 
     private Reader get(String path, query) {
