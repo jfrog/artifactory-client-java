@@ -12,11 +12,9 @@ buildscript {
 }
 
 artifactory {
-    contextUrl = 'http://clienttests.artifactoryonline.com/clienttests' //The base Artifactory URL if not overridden by the publisher/resolver
+    contextUrl = 'http://repo.jfrog.org/artifactory' //The base Artifactory URL if not overridden by the publisher/resolver
     resolve {
         repository {
-            username = project.username          //The publisher user name
-            password = project.password
             repoKey = 'libs-releases' //The Artifactory (preferably virtual) repository key to resolve from
             maven = true //Resolve Maven-style artifacts and descriptors (true by default)
         }

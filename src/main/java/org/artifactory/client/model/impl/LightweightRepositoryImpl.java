@@ -13,6 +13,7 @@ public class LightweightRepositoryImpl implements LightweightRepository {
     private String description;
     private RepositoryType type;
     private String url;
+    private String configuration;
 
     private LightweightRepositoryImpl() {
     }
@@ -51,5 +52,14 @@ public class LightweightRepositoryImpl implements LightweightRepository {
 
     private void setUrl(String url) {
         this.url = url;
+    }
+
+    @Override
+    public String getConfiguration() {
+        return configuration;
+    }
+
+    private void setConfiguration(String configuration) {
+        this.configuration = configuration;
     }
 }

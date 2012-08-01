@@ -12,6 +12,12 @@ import org.artifactory.client.model.VirtualRepository
  */
 class RepositoryBuilders {
 
+    private RepositoryBuilders(){}
+
+    static RepositoryBuilders create(){
+        return new RepositoryBuilders()
+    }
+
     RemoteRepositoryBuilder remoteRepositoryBuilder() {
         new RemoteRepositoryBuilder()
     }

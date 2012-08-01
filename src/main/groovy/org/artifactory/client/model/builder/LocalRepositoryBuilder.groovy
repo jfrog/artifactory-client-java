@@ -1,11 +1,9 @@
 package org.artifactory.client.model.builder
 
 import org.artifactory.client.model.LocalRepository
-import org.artifactory.client.model.NonVirtualRepository
 import org.artifactory.client.model.impl.LocalRepositoryImpl
 
 import static org.artifactory.client.model.LocalRepository.ChecksumPolicyType.client_checksums
-import static org.artifactory.client.model.NonVirtualRepository.SnapshotVersionBehavior.non_unique
 
 /**
  *

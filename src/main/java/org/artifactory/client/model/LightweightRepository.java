@@ -12,4 +12,6 @@ public interface LightweightRepository {
     RepositoryType getType();
 
     String getUrl();
+
+    String getConfiguration();
 }

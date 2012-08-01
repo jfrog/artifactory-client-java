@@ -1,7 +1,7 @@
 package org.artifactory.client;
 
-import junit.framework.Assert;
 import org.artifactory.client.model.*;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.util.List;
@@ -19,19 +19,33 @@ public class RepositoriesTests extends ArtifactoryTests {
 
     private static final String REPO1 = "repo1";
     private static final String LIBS_RELEASES_LOCAL = "libs-releases-local";
+    private static final String NEW_LOCAL = "new-local";
+    private static final String LIST_PATH = "api/repositories";
+    private LocalRepository localRepository;
+
+    @BeforeMethod
+    protected void setUp() throws Exception {
+        localRepository = artifactory.repositories().builders().localRepositoryBuilder().key(NEW_LOCAL).description("new local repository").build();
+    }
 
     @Test
     public void testCreate() throws Exception {
+        assertTrue(artifactory.repository(NEW_LOCAL).create(2, localRepository).startsWith("Repository " + NEW_LOCAL + " created successfully."));
+        assertTrue(curl(LIST_PATH).contains(NEW_LOCAL));
+
     }
 
-    @Test
+    @Test(dependsOnMethods = "testCreate")
     public void testUpdate() throws Exception {
-
+        LocalRepository changedRepository = artifactory.repositories().builders().builderFrom(localRepository).description("new description").build();
+        artifactory.repository(NEW_LOCAL).update(changedRepository);
+        assertTrue(curl("api/repositories/" + NEW_LOCAL).contains("\"description\":\"new description\""));
     }
 
-    @Test
+    @Test(dependsOnMethods = "testUpdate")
     public void testDelete() throws Exception {
-
+        assertTrue(artifactory.repository(NEW_LOCAL).delete().startsWith("Repository " + NEW_LOCAL + " and all its content have been removed successfully."));
+        assertFalse(curl(LIST_PATH).contains(NEW_LOCAL));
     }
 
     @Test
@@ -159,7 +173,7 @@ public class RepositoriesTests extends ArtifactoryTests {
     @Test
     public void testGetFolder() throws Exception {
         Folder folder = artifactory.repository("repo1-cache").folder("junit").get();
-        Assert.assertNotNull(folder);
+        assertNotNull(folder);
     }
 
 

@@ -11,13 +11,13 @@ import static org.artifactory.client.model.NonVirtualRepository.SnapshotVersionB
  */
 abstract class NonVirtualRepositoryBuilderBase<T extends NonVirtualRepositoryBuilderBase> extends RepositoryBuilderBase<T> {
 
-    private boolean blackedOut = false
-    private boolean handleReleases = true
-    private boolean handleSnapshots = true
-    private int maxUniqueSnapshots = 0
-    private List<String> propertySets = new ArrayList<String>()
-    private boolean suppressPomConsistencyChecks = false
-    private NonVirtualRepository.SnapshotVersionBehavior snapshotVersionBehavior = non_unique
+    protected boolean blackedOut = false
+    protected boolean handleReleases = true
+    protected boolean handleSnapshots = true
+    protected int maxUniqueSnapshots = 0
+    protected List<String> propertySets = new ArrayList<String>()
+    protected boolean suppressPomConsistencyChecks = false
+    protected NonVirtualRepository.SnapshotVersionBehavior snapshotVersionBehavior = non_unique
 
     T blackedOut(boolean blackedOut) {
         this.blackedOut = blackedOut

@@ -39,16 +39,16 @@ class Repositories {
         new Items(artifactory, repo, folderName)
     }
 
-    String create(int position, RepositoryBase configuration) {
-        artifactory.put("/api/repositories/${repo}", String, [pos: position])
+    String create(int position, Repository configuration) {
+        artifactory.put("/api/repositories/${repo}", [pos: position], configuration)
     }
 
-    String update(RepositoryConfiguration) {
-        artifactory.post("/api/repositories/${repo}", String)
+    String update(Repository configuration) {
+        artifactory.post("/api/repositories/${repo}", configuration)
     }
 
     String delete() {
-        artifactory.delete("/api/repositories/${repo}", String, [pos: position])
+        artifactory.delete("/api/repositories/${repo}")
     }
 
     List<LightweightRepository> list(RepositoryType repositoryType) {

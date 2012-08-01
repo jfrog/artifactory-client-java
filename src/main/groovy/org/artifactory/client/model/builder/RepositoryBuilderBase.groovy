@@ -6,12 +6,12 @@ package org.artifactory.client.model.builder;
  */
 abstract class RepositoryBuilderBase<T extends RepositoryBuilderBase> {
 
-    private String description
-    private String excludesPattern
-    private String includesPattern = '**/*'
-    private String key
-    private String notes
-    private String repoLayoutRef
+    protected String description
+    protected String excludesPattern
+    protected String includesPattern = '**/*'
+    protected String key
+    protected String notes
+    protected String repoLayoutRef
 
 
     T description(String description) {

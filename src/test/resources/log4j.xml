@@ -20,13 +20,13 @@ Use TRACE to see headers for HttpURLClient. -->
     </category>
 
     <category name="org.apache.http">
-        <priority value="INFO"/>
+        <priority value="DEBUG"/>
     </category>
     <category name="org.apache.http.headers">
         <priority value="INFO"/>
     </category>
     <category name="org.apache.http.wire">
-        <priority value="INFO"/>
+        <priority value="DEBUG"/>
     </category>
 
     <root>
