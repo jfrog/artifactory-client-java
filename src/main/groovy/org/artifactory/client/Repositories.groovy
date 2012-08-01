@@ -8,6 +8,11 @@ import org.artifactory.client.model.RepositoryType
 import org.artifactory.client.model.builder.RepositoryBuilders
 import org.artifactory.client.model.impl.LightweightRepositoryImpl
 import org.artifactory.client.model.impl.RepositoryBase
+import org.artifactory.client.model.File
+import org.artifactory.client.model.impl.FileImpl
+import groovyx.net.http.ContentType
+
+import static groovyx.net.http.ContentType.BINARY
 
 /**
  *
@@ -60,5 +65,30 @@ class Repositories {
         JsonSlurper slurper = new JsonSlurper()
         def repo = slurper.parseText(repoJson)
         artifactory.parseText(repoJson, RepositoryType.parseString(repo.rclass).typeClass)
+    }
+
+    Artifact prepareArtifactFrom(InputStream content){
+        return new Artifact(content, this)
+    }
+
+    static class Artifact{
+        private InputStream content
+        private params = [:]
+        private Repositories repositories
+
+        private Artifact(InputStream content, Repositories repositories) {
+            this.content = content
+            this.repositories = repositories
+        }
+
+        Artifact addParameter(String name, String value, String... additionalValues){
+            params.name = values
+            this
+        }
+
+        File deployTo(String path){
+            repositories.artifactory.put("/$repositories.repo/$path", [:], content, FileImpl, BINARY)
+        }
+
     }
 }

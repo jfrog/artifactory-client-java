@@ -19,10 +19,10 @@ import static org.artifactory.client.Artifactory.create;
  */
 public class ArtifactoryTests {
     protected Artifactory artifactory;
-    private String username;
+    protected String username;
     private String password;
-    private String host;
-    private String applicationName;
+    protected String host;
+    protected String applicationName;
 
     @BeforeMethod
     public void init() throws IOException {

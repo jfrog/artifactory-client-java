@@ -9,6 +9,7 @@ import java.text.SimpleDateFormat
 import static com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS
 import static com.fasterxml.jackson.databind.introspect.VisibilityChecker.Std.defaultInstance
 import static groovyx.net.http.ContentType.*
+import groovyx.net.http.ContentType
 
 /**
  *
@@ -29,6 +30,9 @@ class Artifactory {
         objectMapper.configure WRITE_DATES_AS_TIMESTAMPS, false
         objectMapper.dateFormat = ISO8601_DATE_FORMAT
         objectMapper.visibilityChecker = defaultInstance().withFieldVisibility(JsonAutoDetect.Visibility.ANY)
+//        client.parser."$JSON" = {HttpResponse resp ->
+//            objectMapper.readValue(resp.entity.content, Object) //TODO (JB) seem unsolvable, when this code runs I don't know the type yet. If only JSON has root element!
+//        }
     }
 
 
@@ -36,7 +40,7 @@ class Artifactory {
         def client = new RESTClient(host)
         client.auth.basic username, password
         client.headers.'User-Agent' = 'Artifactory-Client/1.0'
-        client.headers.Authorization = "Basic ${"$username:$password".toString().bytes.encodeBase64()}" //TODO remove once RTFACT-5119 is fixed
+        client.headers.Authorization = "Basic ${"$username:$password".toString().bytes.encodeBase64()}" //TODO (JB) remove once RTFACT-5119 is fixed
         new Artifactory(client, applicationName)
     }
 
@@ -56,16 +60,29 @@ class Artifactory {
         client.get(path: "/$applicationName$path", query: query, headers: [Accept: JSON], contentType: TEXT).data
     }
 
-    private def putAndPostParams = {path, query, body ->
+    private def putAndPostJsonParams = {path, query, body ->
         [path: "/$applicationName$path", query: query, headers: [Accept: ANY, CONTENT_TYPE: JSON], contentType: TEXT, requestContentType: JSON, body: objectMapper.writeValueAsString(body)]
     }
 
-    private String put(String path, Map query = [:], body) {
-        client.put(putAndPostParams(path, query, body)).data.text
+    private <T>T put(String path, Map query = [:], body, Class responseType = String, ContentType requestContentType = JSON) {
+        Map params
+        if(requestContentType == JSON){
+            params = putAndPostJsonParams(path, query, body)
+        } else {
+            params = [path: "/$applicationName$path", query: query, headers: [Accept: ANY, CONTENT_TYPE: requestContentType], contentType: TEXT, requestContentType: requestContentType, body: body]
+
+        }
+        def data = client.put(params).data
+        //TODO (JB) need to try once more to replace this stuff with good parser that uses Jackson(if possible- see above)
+        if (responseType == String) {
+            data.text
+        } else {
+            objectMapper.readValue(data as Reader, responseType)
+        }
     }
 
     private String post(String path, Map query = [:], body) {
-        client.post(putAndPostParams(path, query, body)).data.text
+        client.post(putAndPostJsonParams(path, query, body)).data.text
     }
 
     private String delete(String path, Map query = [:]) {

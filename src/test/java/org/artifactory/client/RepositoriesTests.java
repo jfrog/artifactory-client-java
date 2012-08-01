@@ -4,6 +4,7 @@ import org.artifactory.client.model.*;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import java.io.InputStream;
 import java.util.List;
 
 import static java.util.Arrays.asList;
@@ -21,6 +22,7 @@ public class RepositoriesTests extends ArtifactoryTests {
     private static final String LIBS_RELEASES_LOCAL = "libs-releases-local";
     private static final String NEW_LOCAL = "new-local";
     private static final String LIST_PATH = "api/repositories";
+    private static final String PATH = "m/a/b/c.txt";
     private LocalRepository localRepository;
 
     @BeforeMethod
@@ -42,7 +44,7 @@ public class RepositoriesTests extends ArtifactoryTests {
         assertTrue(curl("api/repositories/" + NEW_LOCAL).contains("\"description\":\"new description\""));
     }
 
-    @Test(dependsOnMethods = "testUpdate")
+    @Test(dependsOnMethods = {"testCreate", "testUpdate", "testDeploy"})
     public void testDelete() throws Exception {
         assertTrue(artifactory.repository(NEW_LOCAL).delete().startsWith("Repository " + NEW_LOCAL + " and all its content have been removed successfully."));
         assertFalse(curl(LIST_PATH).contains(NEW_LOCAL));
@@ -176,5 +178,16 @@ public class RepositoriesTests extends ArtifactoryTests {
         assertNotNull(folder);
     }
 
-
+    @Test(dependsOnMethods = "testCreate")
+    public void testDeploy() {
+        InputStream inputStream = this.getClass().getResourceAsStream("/sample.txt");
+        assertNotNull(inputStream);
+        File deployed = artifactory.repository(NEW_LOCAL).prepareArtifactFrom(inputStream).addParameter("colors", "red", "gold", "green").deployTo(PATH);
+        assertNotNull(deployed);
+        assertEquals(deployed.getRepo(), NEW_LOCAL);
+        assertEquals(deployed.getPath(), "/"+PATH);
+        assertEquals(deployed.getCreatedBy(), username);
+        assertEquals(deployed.getDownloadUri(), host+"/"+applicationName+"/"+NEW_LOCAL+"/"+PATH);
+        assertEquals(deployed.getSize(), 3044);
+    }
 }
