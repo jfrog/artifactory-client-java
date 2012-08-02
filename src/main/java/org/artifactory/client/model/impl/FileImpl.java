@@ -20,6 +20,7 @@ public class FileImpl extends ItemImpl implements File {
     private String mimeType;
     private ChecksumsImpl checksums;
     private ChecksumsImpl originalChecksums;
+    private String remoteUrl;
 
     protected FileImpl() {
         super();
@@ -111,11 +112,18 @@ public class FileImpl extends ItemImpl implements File {
         this.originalChecksums = originalChecksums;
     }
 
+    public String getRemoteUrl() {
+        return remoteUrl;
+    }
+
+    public void setRemoteUrl(String remoteUrl) {
+        this.remoteUrl = remoteUrl;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
 
         FileImpl file = (FileImpl) o;
 
@@ -128,6 +136,7 @@ public class FileImpl extends ItemImpl implements File {
         if (originalChecksums != null ? !originalChecksums.equals(file.originalChecksums) : file.originalChecksums != null)
             return false;
         if (path != null ? !path.equals(file.path) : file.path != null) return false;
+        if (remoteUrl != null ? !remoteUrl.equals(file.remoteUrl) : file.remoteUrl != null) return false;
         if (repo != null ? !repo.equals(file.repo) : file.repo != null) return false;
 
         return true;
@@ -135,8 +144,7 @@ public class FileImpl extends ItemImpl implements File {
 
     @Override
     public int hashCode() {
-        int result = super.hashCode();
-        result = 31 * result + (downloadUri != null ? downloadUri.hashCode() : 0);
+        int result = downloadUri != null ? downloadUri.hashCode() : 0;
         result = 31 * result + (repo != null ? repo.hashCode() : 0);
         result = 31 * result + (path != null ? path.hashCode() : 0);
         result = 31 * result + (created != null ? created.hashCode() : 0);
@@ -145,6 +153,7 @@ public class FileImpl extends ItemImpl implements File {
         result = 31 * result + (mimeType != null ? mimeType.hashCode() : 0);
         result = 31 * result + (checksums != null ? checksums.hashCode() : 0);
         result = 31 * result + (originalChecksums != null ? originalChecksums.hashCode() : 0);
+        result = 31 * result + (remoteUrl != null ? remoteUrl.hashCode() : 0);
         return result;
     }
 
@@ -160,6 +169,7 @@ public class FileImpl extends ItemImpl implements File {
                 ", size=" + size +
                 ", mimeType='" + mimeType + '\'' +
                 ", originalChecksums=" + originalChecksums +
+                ", remoteUrl='" + remoteUrl + '\'' +
                 '}';
     }
 }

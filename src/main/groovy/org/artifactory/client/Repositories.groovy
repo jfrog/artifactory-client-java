@@ -2,17 +2,19 @@ package org.artifactory.client
 
 import com.fasterxml.jackson.core.type.TypeReference
 import groovy.json.JsonSlurper
+import org.artifactory.client.model.File
 import org.artifactory.client.model.LightweightRepository
 import org.artifactory.client.model.Repository
 import org.artifactory.client.model.RepositoryType
 import org.artifactory.client.model.builder.RepositoryBuilders
-import org.artifactory.client.model.impl.LightweightRepositoryImpl
-import org.artifactory.client.model.impl.RepositoryBase
-import org.artifactory.client.model.File
 import org.artifactory.client.model.impl.FileImpl
-import groovyx.net.http.ContentType
+import org.artifactory.client.model.impl.LightweightRepositoryImpl
 
 import static groovyx.net.http.ContentType.BINARY
+import org.artifactory.client.model.Item
+import org.artifactory.client.model.Folder
+import org.artifactory.client.model.impl.FolderImpl
+import org.artifactory.client.model.impl.ItemImpl
 
 /**
  *
@@ -41,7 +43,11 @@ class Repositories {
     }
 
     Items folder(String folderName) {
-        new Items(artifactory, repo, folderName)
+        new Items(artifactory, repo, folderName, FolderImpl)
+    }
+
+    Items file(String filePath){
+        new Items(artifactory, repo, filePath, FileImpl)
     }
 
     String create(int position, Repository configuration) {
@@ -67,27 +73,71 @@ class Repositories {
         artifactory.parseText(repoJson, RepositoryType.parseString(repo.rclass).typeClass)
     }
 
-    Artifact prepareArtifactFrom(InputStream content){
-        return new Artifact(content, this)
+    UploadableArtifact prepareUploadableArtifact() {
+        return new UploadableArtifact()
     }
 
-    static class Artifact{
-        private InputStream content
-        private params = [:]
-        private Repositories repositories
+    DownloadableArtifact prepareDownloadableArtifact() {
+        return new DownloadableArtifact()
+    }
 
-        private Artifact(InputStream content, Repositories repositories) {
-            this.content = content
-            this.repositories = repositories
+    static interface Uploadable {
+        File to(String path)
+    }
+
+    abstract class Artifact<T extends Artifact> {
+        protected props = [:]
+
+        protected Artifact() {
         }
 
-        Artifact addParameter(String name, String value, String... additionalValues){
-            params.name = values
+        T withProperty(String name, Object... values) {//for some strange reason def won't work here
+            props[name] = values.join(',')
+            this as T
+        }
+
+        T withProperty(String name, Object value) {
+            props[name] = value
+            this as T
+        }
+
+        protected String parseParams(Map props, String delimiter) {
+            props.inject([]) {result, entry ->
+                result << "$entry.key$delimiter$entry.value"
+            }.join(';')
+        }
+    }
+
+    class UploadableArtifact extends Artifact<UploadableArtifact> {
+        Uploadable upload(InputStream content) {
+            def uploadable = [:]
+            uploadable.to = {String path ->
+                def params = parseParams(props, '=')
+                params = params ? ";$params" : '' //TODO (jb there must be better solution for that!)
+                artifactory.put("/$repo/$path${params}", [:], content, FileImpl, BINARY)
+            }
+            return uploadable as Uploadable
+        }
+    }
+
+    class DownloadableArtifact extends Artifact<DownloadableArtifact> {
+
+        private mandatoryProps = [:]
+
+        InputStream downloadFrom(String path) {
+            def params = parseParams(props, '=') + (mandatoryProps ? ";${parseParams(mandatoryProps, '+=')}" : '') //TODO (jb there must be better solution for that!)
+            params = params ? ";$params" : ''
+            artifactory.getInputStream("/$repo/$path${params}")
+        }
+
+        DownloadableArtifact onlyWithProperty(String name, Object... values) {//for some strange reason def won't work here
+            mandatoryProps[name] = values.join(',')
             this
         }
 
-        File deployTo(String path){
-            repositories.artifactory.put("/$repositories.repo/$path", [:], content, FileImpl, BINARY)
+        DownloadableArtifact onlyWithProperty(String name, Object value) {
+            mandatoryProps[name] = value
+            this
         }
 
     }

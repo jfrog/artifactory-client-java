@@ -15,6 +15,8 @@ public class LocalRepositoryImpl extends NonVirtualRepositoryBase implements Loc
 
 
     private LocalRepositoryImpl() {
+        checksumPolicyType = ChecksumPolicyType.client_checksums;
+        repoLayoutRef = MAVEN_2_REPO_LAYOUT;
     }
 
     private LocalRepositoryImpl(String description, String excludesPattern, String includesPattern, String key, String notes, boolean blackedOut, boolean handleReleases, boolean handleSnapshots, int maxUniqueSnapshots, List<String> propertySets, SnapshotVersionBehavior snapshotVersionBehavior, boolean suppressPomConsistencyChecks, ChecksumPolicyType checksumPolicyType, String repoLayoutRef) {

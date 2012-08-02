@@ -13,21 +13,19 @@ class Items {
     private Artifactory artifactory
     private String repo
     private String path
+    private Class itemType
 
-    Items(Artifactory artifactory, String repo){
+    private Items(Artifactory artifactory, String repo, String path, Class itemType){
         this.artifactory = artifactory
         this.repo = repo
-    }
-
-    Items(Artifactory artifactory, String repo, String path){
-        this(artifactory, repo)
         this.path = path
+        this.itemType = itemType
     }
 
-    Folder get(){
+     public <T> T get(){
         assert artifactory
         assert repo
         assert path
-        artifactory.getJson("/api/storage/$repo/$path", FolderImpl)
+        artifactory.getJson("/api/storage/$repo/$path", itemType)
     }
 }
