@@ -184,7 +184,7 @@ public class RepositoriesTests extends ArtifactoryTests {
     public void testUploadWithSingleProperty() throws IOException {
         InputStream inputStream = this.getClass().getResourceAsStream("/sample.txt");
         assertNotNull(inputStream);
-        File deployed = artifactory.repository(NEW_LOCAL).prepareArtifact().withProperty("color", "red").upload(inputStream).to(PATH);
+        File deployed = artifactory.repository(NEW_LOCAL).prepareUploadableArtifact().withProperty("color", "red").upload(inputStream).to(PATH);
         assertNotNull(deployed);
         assertEquals(deployed.getRepo(), NEW_LOCAL);
         assertEquals(deployed.getPath(), "/" + PATH);
@@ -196,7 +196,7 @@ public class RepositoriesTests extends ArtifactoryTests {
 
     @Test(dependsOnMethods = "testUploadWithSingleProperty")//to spare all the checks
     public void testUploadWithMultipleProperties() throws IOException {
-        artifactory.repository(NEW_LOCAL).prepareArtifact()
+        artifactory.repository(NEW_LOCAL).prepareUploadableArtifact()
                 .withProperty("colors", "red")
                 .withProperty("build", 28)
                 .withProperty("released", false).upload(this.getClass().getResourceAsStream("/sample.txt")).to(PATH);
@@ -206,7 +206,7 @@ public class RepositoriesTests extends ArtifactoryTests {
     //TODO (jb) enable once RTFACT-5126 is fixed
     @Test(enabled = false, dependsOnMethods = "testUploadWithSingleProperty")
     public void testUploadWithMultiplePropertyValues() throws IOException {
-        artifactory.repository(NEW_LOCAL).prepareArtifact()
+        artifactory.repository(NEW_LOCAL).prepareUploadableArtifact()
                 .withProperty("colors", "red", "green", "blue")
                 .withProperty("build", 28)
                 .withProperty("released", false).upload(this.getClass().getResourceAsStream("/sample.txt")).to(PATH);
@@ -215,7 +215,7 @@ public class RepositoriesTests extends ArtifactoryTests {
 
     @Test(dependsOnMethods = "testUploadWithSingleProperty")
     public void testDownloadWithoutProperties() throws IOException {
-        InputStream inputStream = artifactory.repository(NEW_LOCAL).prepareArtifact().downloadFrom(PATH);
+        InputStream inputStream = artifactory.repository(NEW_LOCAL).prepareDownloadableArtifact().downloadFrom(PATH);
         String actual = textFrom(inputStream);
         assertEquals(actual, textFrom(this.getClass().getResourceAsStream("/sample.txt")));
     }
@@ -223,36 +223,61 @@ public class RepositoriesTests extends ArtifactoryTests {
     @Test(dependsOnMethods = "testUploadWithMultipleProperties")
     public void testDownloadWithMatchingNonMandatoryProperties() throws IOException {
         //property matches
-        InputStream inputStream = artifactory.repository(NEW_LOCAL).prepareArtifact().withProperty("colors", "red").downloadFrom(PATH);
+        InputStream inputStream = artifactory.repository(NEW_LOCAL).prepareDownloadableArtifact().withProperty("colors", "red").downloadFrom(PATH);
         assertEquals(textFrom(inputStream), textFrom(this.getClass().getResourceAsStream("/sample.txt")));
     }
+
     @Test(dependsOnMethods = "testUploadWithMultipleProperties")
     public void testDownloadWithNonExistingNonMandatoryProperties() throws IOException {
         //property doesn't exist
-        InputStream inputStream = artifactory.repository(NEW_LOCAL).prepareArtifact().withProperty("foo", "bar").downloadFrom(PATH);
+        InputStream inputStream = artifactory.repository(NEW_LOCAL).prepareDownloadableArtifact().withProperty("foo", "bar").downloadFrom(PATH);
         assertEquals(textFrom(inputStream), textFrom(this.getClass().getResourceAsStream("/sample.txt")));
-
     }
+
     @Test(dependsOnMethods = "testUploadWithMultipleProperties", expectedExceptions = HttpResponseException.class, expectedExceptionsMessageRegExp = "Not Found")
     public void testDownloadWithWrongNonMandatoryProperties() throws IOException {
         //property doesn't match, will fail
-        artifactory.repository(NEW_LOCAL).prepareArtifact().withProperty("colors", "black").downloadFrom(PATH);
+        artifactory.repository(NEW_LOCAL).prepareDownloadableArtifact().withProperty("colors", "black").downloadFrom(PATH);
+    }
 
+    @Test(dependsOnMethods = "testUploadWithMultipleProperties")
+    public void testDownloadWithMatchingMandatoryProperties() throws IOException {
+        //property matches
+        InputStream inputStream = artifactory.repository(NEW_LOCAL).prepareDownloadableArtifact().onlyWithProperty("colors", "red").downloadFrom(PATH);
+        assertEquals(textFrom(inputStream), textFrom(this.getClass().getResourceAsStream("/sample.txt")));
+    }
+
+    @Test(dependsOnMethods = "testUploadWithMultipleProperties", expectedExceptions = HttpResponseException.class, expectedExceptionsMessageRegExp = "Not Found")
+    public void testDownloadWithNonExistingMandatoryProperties() throws IOException {
+        //property doesn't exist, will fail
+        artifactory.repository(NEW_LOCAL).prepareDownloadableArtifact().onlyWithProperty("foo", "bar").downloadFrom(PATH);
+    }
+
+    @Test(dependsOnMethods = "testUploadWithMultipleProperties", expectedExceptions = HttpResponseException.class, expectedExceptionsMessageRegExp = "Not Found")
+    public void testDownloadWithWrongMandatoryProperties() throws IOException {
+        //property doesn't match, will fail
+        artifactory.repository(NEW_LOCAL).prepareDownloadableArtifact().onlyWithProperty("colors", "black").downloadFrom(PATH);
+    }
+
+    @Test(dependsOnMethods = "testUploadWithMultipleProperties")
+    public void testDownloadWithMandatoryAndNonMandatoryProperties() throws IOException {
+        InputStream inputStream = artifactory.repository(NEW_LOCAL).prepareDownloadableArtifact().withProperty("released", false).withProperty("foo", "bar").onlyWithProperty("colors", "red").downloadFrom(PATH);
+        assertEquals(textFrom(inputStream), textFrom(this.getClass().getResourceAsStream("/sample.txt")));
     }
 
 
     @Test(enabled = false)
-    public void testSearchByProperty(){
+    public void testSearchByProperty() {
 
     }
 
     @Test(enabled = false)
-    public void testQuickSearch(){
+    public void testQuickSearch() {
 
     }
 
     @Test(enabled = false)
-    public void testItemAndFolderInfo(){
+    public void testItemAndFolderInfo() {
 
     }
 }

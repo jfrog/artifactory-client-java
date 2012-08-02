@@ -98,7 +98,7 @@ class Artifactory {
     }
 
     private InputStream getInputStream(String path, Map query = [:]) {
-        client.get([path: "/$applicationName$path", query: query, contentType: BINARY,]).data
+        client.get([path: "/$applicationName$path", query: query, contentType: BINARY]).data
     }
 
     private <T> T parseText(String text, def target) {

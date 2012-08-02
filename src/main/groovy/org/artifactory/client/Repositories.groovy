@@ -2,6 +2,7 @@ package org.artifactory.client
 
 import com.fasterxml.jackson.core.type.TypeReference
 import groovy.json.JsonSlurper
+import org.artifactory.client.model.File
 import org.artifactory.client.model.LightweightRepository
 import org.artifactory.client.model.Repository
 import org.artifactory.client.model.RepositoryType
@@ -10,7 +11,6 @@ import org.artifactory.client.model.impl.FileImpl
 import org.artifactory.client.model.impl.LightweightRepositoryImpl
 
 import static groovyx.net.http.ContentType.BINARY
-import org.artifactory.client.model.File
 
 /**
  *
@@ -65,50 +65,72 @@ class Repositories {
         artifactory.parseText(repoJson, RepositoryType.parseString(repo.rclass).typeClass)
     }
 
-    Artifact prepareArtifact() {
-        return new Artifact(this)
+    UploadableArtifact prepareUploadableArtifact() {
+        return new UploadableArtifact()
     }
 
-    static interface Uploadable{
+    DownloadableArtifact prepareDownloadableArtifact() {
+        return new DownloadableArtifact()
+    }
+
+    static interface Uploadable {
         File to(String path)
     }
 
-    static class Artifact {
-        private props = [:]
-        private Repositories repositories
+    abstract class Artifact<T extends Artifact> {
+        protected props = [:]
 
-        private Artifact(Repositories repositories) {
-            this.repositories = repositories
+        protected Artifact() {
         }
 
-        Artifact withProperty(String name, Object... values) {//for some strange reason def won't work here
+        T withProperty(String name, Object... values) {//for some strange reason def won't work here
             props[name] = values.join(',')
-            this
+            this as T
         }
 
-        Artifact withProperty(String name, Object value) {
+        T withProperty(String name, Object value) {
             props[name] = value
-            this
+            this as T
         }
 
-        Uploadable upload(InputStream content) {
-            def uploadable = [:]
-            uploadable.to = {String path ->
-                repositories.artifactory.put("/$repositories.repo/$path${parseParams()}", [:], content, FileImpl, BINARY)
-            }
-            return uploadable as Uploadable
-        }
-
-        private String parseParams() {
-            String propsString = props.empty ? '' : ';' + props.inject([]) {result, entry ->
-                result << "$entry.key=$entry.value"
+        protected String parseParams(Map props, String delimiter) {
+            props.inject([]) {result, entry ->
+                result << "$entry.key$delimiter$entry.value"
             }.join(';')
-            propsString
-        }
-
-        InputStream downloadFrom(String path){
-            repositories.artifactory.getInputStream("/$repositories.repo/$path${parseParams()}")
         }
     }
 
+    class UploadableArtifact extends Artifact<UploadableArtifact> {
+        Uploadable upload(InputStream content) {
+            def uploadable = [:]
+            uploadable.to = {String path ->
+                def params = parseParams(props, '=')
+                params = params ? ";$params" : '' //TODO (jb there must be better solution for that!)
+                artifactory.put("/$repo/$path${params}", [:], content, FileImpl, BINARY)
+            }
+            return uploadable as Uploadable
+        }
+    }
+
+    class DownloadableArtifact extends Artifact<DownloadableArtifact> {
+
+        private mandatoryProps = [:]
+
+        InputStream downloadFrom(String path) {
+            def params = parseParams(props, '=') + (mandatoryProps ? ";${parseParams(mandatoryProps, '+=')}" : '') //TODO (jb there must be better solution for that!)
+            params = params ? ";$params" : ''
+            artifactory.getInputStream("/$repo/$path${params}")
+        }
+
+        DownloadableArtifact onlyWithProperty(String name, Object... values) {//for some strange reason def won't work here
+            mandatoryProps[name] = values.join(',')
+            this
+        }
+
+        DownloadableArtifact onlyWithProperty(String name, Object value) {
+            mandatoryProps[name] = value
+            this
+        }
+
+    }
 }
