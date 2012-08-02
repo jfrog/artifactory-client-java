@@ -4,6 +4,7 @@ import org.artifactory.client.model.LocalRepository
 import org.artifactory.client.model.impl.LocalRepositoryImpl
 
 import static org.artifactory.client.model.LocalRepository.ChecksumPolicyType.client_checksums
+import org.artifactory.client.model.Repository
 
 /**
  *
@@ -12,9 +13,12 @@ import static org.artifactory.client.model.LocalRepository.ChecksumPolicyType.cl
  */
 class LocalRepositoryBuilder extends NonVirtualRepositoryBuilderBase<LocalRepositoryBuilder> {
 
-    private LocalRepositoryBuilder() { }
+    private LocalRepositoryBuilder() {
+        this.repoLayoutRef = Repository.MAVEN_2_REPO_LAYOUT
+        this.checksumPolicyType = client_checksums
+    }
 
-    private LocalRepository.ChecksumPolicyType checksumPolicyType = client_checksums
+    private LocalRepository.ChecksumPolicyType checksumPolicyType
 
     LocalRepositoryBuilder checksumPolicyType(LocalRepository.ChecksumPolicyType checksumPolicyType) {
         this.checksumPolicyType = checksumPolicyType

@@ -7,6 +7,9 @@ import org.artifactory.client.model.RemoteRepository
 
 import static org.artifactory.client.model.RemoteRepository.RemoteRepoChecksumPolicyType.generate_if_absent
 import org.artifactory.client.model.impl.RemoteRepositoryImpl
+import org.artifactory.client.model.Repository
+
+import static org.artifactory.client.model.Repository.MAVEN_2_REPO_LAYOUT
 
 /**
  * 
@@ -16,13 +19,15 @@ import org.artifactory.client.model.impl.RemoteRepositoryImpl
 class RemoteRepositoryBuilder extends NonVirtualRepositoryBuilderBase<RemoteRepositoryBuilder>{
 
     private RemoteRepositoryBuilder() {
+        remoteRepoChecksumPolicyType = generate_if_absent
+        repoLayoutRef = MAVEN_2_REPO_LAYOUT
     }
 
     private String url
     private String username
     private String password
     private String proxy
-    private RemoteRepository.RemoteRepoChecksumPolicyType remoteRepoChecksumPolicyType = generate_if_absent
+    private RemoteRepository.RemoteRepoChecksumPolicyType remoteRepoChecksumPolicyType
     private boolean hardFail
     private boolean offline
     private boolean storeArtifactsLocally = true

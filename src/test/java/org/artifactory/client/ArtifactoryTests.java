@@ -36,25 +36,30 @@ public class ArtifactoryTests {
         username = props.getProperty("username");
         password = props.getProperty("password");
         host = "http://clienttests.artifactoryonline.com";
+//        host = "http://localhost:8080";
         applicationName = "clienttests";
+//        applicationName = "artifactory";
         artifactory = create(host, applicationName, username, password);
-//        artifactory = create("http://localhost:8080", "artifactory", "admin", "password");
     }
 
-    public String curl(String path) throws IOException {
+    protected String curl(String path) throws IOException {
         String authStringEnc = new String(encodeBase64((username + ":" + password).getBytes()));
         URLConnection urlConnection = new URL(host+"/"+applicationName+"/"+path).openConnection();
         urlConnection.setRequestProperty("Authorization", "Basic " + authStringEnc);
         try (InputStream is = urlConnection.getInputStream()) {
-            try (InputStreamReader isr = new InputStreamReader(is)) {
-                int numCharsRead;
-                char[] charArray = new char[1024];
-                StringBuilder sb = new StringBuilder();
-                while ((numCharsRead = isr.read(charArray)) > 0) {
-                    sb.append(charArray, 0, numCharsRead);
-                }
-                return sb.toString();
+            return textFrom(is);
+        }
+    }
+
+    protected String textFrom(InputStream is) throws IOException {
+        try (InputStreamReader isr = new InputStreamReader(is)) {
+            int numCharsRead;
+            char[] charArray = new char[1024];
+            StringBuilder sb = new StringBuilder();
+            while ((numCharsRead = isr.read(charArray)) > 0) {
+                sb.append(charArray, 0, numCharsRead);
             }
+            return sb.toString();
         }
     }
 }

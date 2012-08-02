@@ -6,13 +6,11 @@ import org.artifactory.client.model.LightweightRepository
 import org.artifactory.client.model.Repository
 import org.artifactory.client.model.RepositoryType
 import org.artifactory.client.model.builder.RepositoryBuilders
-import org.artifactory.client.model.impl.LightweightRepositoryImpl
-import org.artifactory.client.model.impl.RepositoryBase
-import org.artifactory.client.model.File
 import org.artifactory.client.model.impl.FileImpl
-import groovyx.net.http.ContentType
+import org.artifactory.client.model.impl.LightweightRepositoryImpl
 
 import static groovyx.net.http.ContentType.BINARY
+import org.artifactory.client.model.File
 
 /**
  *
@@ -67,28 +65,50 @@ class Repositories {
         artifactory.parseText(repoJson, RepositoryType.parseString(repo.rclass).typeClass)
     }
 
-    Artifact prepareArtifactFrom(InputStream content){
-        return new Artifact(content, this)
+    Artifact prepareArtifact() {
+        return new Artifact(this)
     }
 
-    static class Artifact{
-        private InputStream content
-        private params = [:]
+    static interface Uploadable{
+        File to(String path)
+    }
+
+    static class Artifact {
+        private props = [:]
         private Repositories repositories
 
-        private Artifact(InputStream content, Repositories repositories) {
-            this.content = content
+        private Artifact(Repositories repositories) {
             this.repositories = repositories
         }
 
-        Artifact addParameter(String name, String value, String... additionalValues){
-            params.name = values
+        Artifact withProperty(String name, Object... values) {//for some strange reason def won't work here
+            props[name] = values.join(',')
             this
         }
 
-        File deployTo(String path){
-            repositories.artifactory.put("/$repositories.repo/$path", [:], content, FileImpl, BINARY)
+        Artifact withProperty(String name, Object value) {
+            props[name] = value
+            this
         }
 
+        Uploadable upload(InputStream content) {
+            def uploadable = [:]
+            uploadable.to = {String path ->
+                repositories.artifactory.put("/$repositories.repo/$path${parseParams()}", [:], content, FileImpl, BINARY)
+            }
+            return uploadable as Uploadable
+        }
+
+        private String parseParams() {
+            String propsString = props.empty ? '' : ';' + props.inject([]) {result, entry ->
+                result << "$entry.key=$entry.value"
+            }.join(';')
+            propsString
+        }
+
+        InputStream downloadFrom(String path){
+            repositories.artifactory.getInputStream("/$repositories.repo/$path${parseParams()}")
+        }
     }
+
 }

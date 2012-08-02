@@ -2,6 +2,7 @@ package org.artifactory.client
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect
 import com.fasterxml.jackson.databind.ObjectMapper
+import groovyx.net.http.ContentType
 import groovyx.net.http.RESTClient
 
 import java.text.SimpleDateFormat
@@ -9,7 +10,6 @@ import java.text.SimpleDateFormat
 import static com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS
 import static com.fasterxml.jackson.databind.introspect.VisibilityChecker.Std.defaultInstance
 import static groovyx.net.http.ContentType.*
-import groovyx.net.http.ContentType
 
 /**
  *
@@ -56,17 +56,17 @@ class Artifactory {
         new Repositories(this, repo)
     }
 
-    private Reader get(String path, Map query) {
-        client.get(path: "/$applicationName$path", query: query, headers: [Accept: JSON], contentType: TEXT).data
+    private Reader get(String path, Map query, ContentType contentType = JSON, ContentType requestContentType = TEXT) {
+        client.get(path: "/$applicationName$path", query: query, headers: [Accept: contentType], contentType: requestContentType).data
     }
 
     private def putAndPostJsonParams = {path, query, body ->
         [path: "/$applicationName$path", query: query, headers: [Accept: ANY, CONTENT_TYPE: JSON], contentType: TEXT, requestContentType: JSON, body: objectMapper.writeValueAsString(body)]
     }
 
-    private <T>T put(String path, Map query = [:], body, Class responseType = String, ContentType requestContentType = JSON) {
+    private <T> T put(String path, Map query = [:], body, Class responseType = String, ContentType requestContentType = JSON) {
         Map params
-        if(requestContentType == JSON){
+        if (requestContentType == JSON) {
             params = putAndPostJsonParams(path, query, body)
         } else {
             params = [path: "/$applicationName$path", query: query, headers: [Accept: ANY, CONTENT_TYPE: requestContentType], contentType: TEXT, requestContentType: requestContentType, body: body]
@@ -95,6 +95,10 @@ class Artifactory {
 
     private String getText(String path, Map query = [:]) {
         get(path, query).text
+    }
+
+    private InputStream getInputStream(String path, Map query = [:]) {
+        client.get([path: "/$applicationName$path", query: query, contentType: BINARY,]).data
     }
 
     private <T> T parseText(String text, def target) {

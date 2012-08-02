@@ -1,6 +1,7 @@
 apply plugin: 'groovy'
 apply plugin: 'idea'
 apply plugin: 'artifactory'
+apply plugin:  'maven'
 
 buildscript {
     repositories {
@@ -19,6 +20,10 @@ artifactory {
             maven = true //Resolve Maven-style artifacts and descriptors (true by default)
         }
     }
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '1.1'
 }
 
 group = 'com.jfrog.artifactory.client'

@@ -32,6 +32,8 @@ public class RemoteRepositoryImpl extends NonVirtualRepositoryBase implements Re
     private boolean synchronizeProperties;
 
     private RemoteRepositoryImpl() {
+        remoteRepoChecksumPolicyType = RemoteRepoChecksumPolicyType.generate_if_absent;
+        repoLayoutRef = MAVEN_2_REPO_LAYOUT;
     }
 
     RemoteRepositoryImpl(String description, String excludesPattern, String includesPattern, String key, String notes, boolean blackedOut, boolean handleReleases, boolean handleSnapshots, int maxUniqueSnapshots, List<String> propertySets, SnapshotVersionBehavior snapshotVersionBehavior, boolean suppressPomConsistencyChecks, int failedRetrievalCachePeriodSecs, boolean fetchJarsEagerly, boolean fetchSourcesEagerly, boolean hardFail, String localAddress, int missedRetrievalCachePeriodSecs, boolean offline, String password, String proxy, RemoteRepoChecksumPolicyType remoteRepoChecksumPolicyType, int retrievalCachePeriodSecs, boolean shareConfiguration, int socketTimeoutMillis, boolean storeArtifactsLocally, boolean synchronizeProperties, boolean unusedArtifactsCleanupEnabled, int unusedArtifactsCleanupPeriodHours, String url, String username, String repoLayoutRef) {
