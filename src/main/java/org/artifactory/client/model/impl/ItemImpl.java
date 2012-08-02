@@ -2,18 +2,29 @@ package org.artifactory.client.model.impl;
 
 import org.artifactory.client.model.Item;
 
+import java.util.Date;
+
 /**
  * @author jbaruch
  * @since 29/07/12
  */
 
 public class ItemImpl implements Item {
-    String uri;
-    boolean folder;
+    private String uri;
+    private boolean folder;
+    private String metadataUri;
+    private Date lastModified;
+    private String modifiedBy;
+    private Date lastUpdated;
 
-    ItemImpl(boolean folder, String uri) {
+
+    ItemImpl(boolean folder, String uri, String metadataUri, Date lastModified, String modifiedBy, Date lastUpdated) {
         this.folder = folder;
         this.uri = uri;
+        this.metadataUri = metadataUri;
+        this.lastModified = lastModified;
+        this.modifiedBy = modifiedBy;
+        this.lastUpdated = lastUpdated;
     }
 
     protected ItemImpl() {
@@ -38,29 +49,38 @@ public class ItemImpl implements Item {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+    public String getMetadataUri() {
+        return metadataUri;
+    }
 
-        ItemImpl item = (ItemImpl) o;
-
-        return folder == item.folder && !(uri != null ? !uri.equals(item.uri) : item.uri != null);
-
+    private void setMetadataUri(String metadataUri) {
+        this.metadataUri = metadataUri;
     }
 
     @Override
-    public String toString() {
-        return "Item{" +
-                "folder=" + folder +
-                ", uri='" + uri + '\'' +
-                '}';
+    public Date getLastModified() {
+        return lastModified;
+    }
+
+    private void setLastModified(Date lastModified) {
+        this.lastModified = lastModified;
     }
 
     @Override
-    public int hashCode() {
-        int result = uri != null ? uri.hashCode() : 0;
-        result = 31 * result + (folder ? 1 : 0);
-        return result;
+    public String getModifiedBy() {
+        return modifiedBy;
     }
 
+    private void setModifiedBy(String modifiedBy) {
+        this.modifiedBy = modifiedBy;
+    }
+
+    @Override
+    public Date getLastUpdated() {
+        return lastUpdated;
+    }
+
+    private void setLastUpdated(Date lastUpdated) {
+        this.lastUpdated = lastUpdated;
+    }
 }

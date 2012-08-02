@@ -11,13 +11,11 @@ import java.util.List;
  * @since 30/07/12
  */
 public interface Folder extends Item {
-    List<ItemImpl> getChildren();
+    List<Item> getChildren();
 
     Date getCreated();
 
     String getCreatedBy();
-
-    Date getLastModified();
 
     Date getLastUpdated();
 

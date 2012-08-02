@@ -276,8 +276,20 @@ public class RepositoriesTests extends ArtifactoryTests {
 
     }
 
-    @Test(enabled = false)
-    public void testItemAndFolderInfo() {
+    @Test
+    public void testFolderInfo() {
+        Folder folder = artifactory.repository("repo1-cache").folder("junit").get();
+        assertNotNull(folder);
+        assertTrue(folder.isFolder());
+        assertEquals(folder.getChildren().size(), 1);
+        assertEquals(folder.getRepo(), "repo1-cache");
+        assertEquals(folder.getPath(), "/junit");
+    }
 
+    @Test
+    public void testFileInfo() {
+        File file = artifactory.repository("repo1-cache").file("junit/junit/4.10/junit-4.10-sources.jar").get();
+        assertNotNull(file);
+        assertFalse(file.isFolder());
     }
 }

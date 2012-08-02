@@ -11,6 +11,10 @@ import org.artifactory.client.model.impl.FileImpl
 import org.artifactory.client.model.impl.LightweightRepositoryImpl
 
 import static groovyx.net.http.ContentType.BINARY
+import org.artifactory.client.model.Item
+import org.artifactory.client.model.Folder
+import org.artifactory.client.model.impl.FolderImpl
+import org.artifactory.client.model.impl.ItemImpl
 
 /**
  *
@@ -39,7 +43,11 @@ class Repositories {
     }
 
     Items folder(String folderName) {
-        new Items(artifactory, repo, folderName)
+        new Items(artifactory, repo, folderName, FolderImpl)
+    }
+
+    Items file(String filePath){
+        new Items(artifactory, repo, filePath, FileImpl)
     }
 
     String create(int position, Repository configuration) {
