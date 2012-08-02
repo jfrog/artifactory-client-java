@@ -35,7 +35,6 @@ class Artifactory {
 //        }
     }
 
-
     static Artifactory create(String host, String applicationName, String username, String password) {
         def client = new RESTClient(host)
         client.auth.basic username, password
@@ -43,10 +42,6 @@ class Artifactory {
         client.headers.Authorization = "Basic ${"$username:$password".toString().bytes.encodeBase64()}" //TODO (JB) remove once RTFACT-5119 is fixed
         new Artifactory(client, applicationName)
     }
-
-    //    Storage storage() {
-    //        return new Storage(this)
-    //    }
 
     Repositories repositories() {
         new Repositories(this)
@@ -56,8 +51,16 @@ class Artifactory {
         new Repositories(this, repo)
     }
 
+    Searches searches(){
+        return new Searches(this)
+    }
+
     private Reader get(String path, Map query, ContentType contentType = JSON, ContentType requestContentType = TEXT) {
         client.get(path: "/$applicationName$path", query: query, headers: [Accept: contentType], contentType: requestContentType).data
+    }
+
+    private def getSlurper(String path, Map query) {
+        client.get(path: "/$applicationName$path", contentType: JSON, query: query).data
     }
 
     private def putAndPostJsonParams = {path, query, body ->

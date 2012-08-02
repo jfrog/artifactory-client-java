@@ -8,13 +8,11 @@ import org.artifactory.client.model.Repository
 import org.artifactory.client.model.RepositoryType
 import org.artifactory.client.model.builder.RepositoryBuilders
 import org.artifactory.client.model.impl.FileImpl
+import org.artifactory.client.model.impl.FolderImpl
 import org.artifactory.client.model.impl.LightweightRepositoryImpl
 
 import static groovyx.net.http.ContentType.BINARY
-import org.artifactory.client.model.Item
-import org.artifactory.client.model.Folder
-import org.artifactory.client.model.impl.FolderImpl
-import org.artifactory.client.model.impl.ItemImpl
+import static org.artifactory.client.model.RepositoryType.parseString
 
 /**
  *
@@ -27,6 +25,8 @@ class Repositories {
     private Artifactory artifactory
     private String repo
     private RepositoryBuilders builders
+
+    private REPOSITORIES_API = '/api/repositories/'
 
     Repositories(Artifactory artifactory) {
         this.artifactory = artifactory
@@ -46,31 +46,31 @@ class Repositories {
         new Items(artifactory, repo, folderName, FolderImpl)
     }
 
-    Items file(String filePath){
+    Items file(String filePath) {
         new Items(artifactory, repo, filePath, FileImpl)
     }
 
     String create(int position, Repository configuration) {
-        artifactory.put("/api/repositories/${repo}", [pos: position], configuration)
+        artifactory.put("$REPOSITORIES_API${repo}", [pos: position], configuration)
     }
 
     String update(Repository configuration) {
-        artifactory.post("/api/repositories/${repo}", configuration)
+        artifactory.post("$REPOSITORIES_API${repo}", configuration)
     }
 
     String delete() {
-        artifactory.delete("/api/repositories/${repo}")
+        artifactory.delete("$REPOSITORIES_API${repo}")
     }
 
     List<LightweightRepository> list(RepositoryType repositoryType) {
-        artifactory.getJson('/api/repositories/', new TypeReference<List<LightweightRepositoryImpl>>() {}, [type: repositoryType.toString()])
+        artifactory.getJson(REPOSITORIES_API, new TypeReference<List<LightweightRepositoryImpl>>() {}, [type: repositoryType.toString()])
     }
 
     Repository get() {
-        String repoJson = artifactory.getText("/api/repositories/${repo}")
+        String repoJson = artifactory.getText("$REPOSITORIES_API${repo}")
         JsonSlurper slurper = new JsonSlurper()
         def repo = slurper.parseText(repoJson)
-        artifactory.parseText(repoJson, RepositoryType.parseString(repo.rclass).typeClass)
+        artifactory.parseText(repoJson, parseString(repo.rclass).typeClass)
     }
 
     UploadableArtifact prepareUploadableArtifact() {
