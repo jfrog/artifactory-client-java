@@ -59,12 +59,9 @@ public class SearchesTests extends ArtifactoryTests {
         artifactory.searches().limitToRepository(REPO1).filterBy().property("released", false).search();
     }
 
-    //TODO (jb) multiple values create and or or?
-    @Test(dependsOnGroups = "uploadBasics", enabled = false)
+    @Test(dependsOnGroups = "uploadBasics", expectedExceptions = HttpResponseException.class, expectedExceptionsMessageRegExp = "Not Found")
     public void testSearchByMultipleCorrectProperties() throws HttpResponseException {
-        List<String> results = artifactory.searches().filterBy().property("colors", "red", "green", "blue").search();
-        assertEquals(results.size(), 1);
-        assertTrue(results.get(0).contains("a/b/c.txt"));
+        artifactory.searches().filterBy().property("colors", "red", "green", "blue").search();
     }
 
     @Test(dependsOnGroups = "uploadBasics")
