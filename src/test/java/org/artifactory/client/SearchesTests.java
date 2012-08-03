@@ -60,7 +60,7 @@ public class SearchesTests extends ArtifactoryTests {
     }
 
     @Test(dependsOnGroups = "uploadBasics", expectedExceptions = HttpResponseException.class, expectedExceptionsMessageRegExp = "Not Found")
-    public void testSearchByMultipleCorrectProperties() throws HttpResponseException {
+    public void testSearchByPropertyWithMulipleValue() throws HttpResponseException {
         artifactory.searches().filterBy().property("colors", "red", "green", "blue").search();
     }
 
