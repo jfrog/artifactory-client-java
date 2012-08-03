@@ -1,12 +1,9 @@
 package org.artifactory.client;
 
-import groovyx.net.http.HttpResponseException;
 import org.artifactory.client.model.*;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 
 import static java.util.Arrays.asList;
@@ -20,11 +17,7 @@ import static org.testng.Assert.*;
  */
 public class RepositoriesTests extends ArtifactoryTests {
 
-    private static final String REPO1 = "repo1";
-    private static final String LIBS_RELEASES_LOCAL = "libs-releases-local";
-    private static final String NEW_LOCAL = "new-local";
     private static final String LIST_PATH = "api/repositories";
-    private static final String PATH = "m/a/b/c.txt";
     private LocalRepository localRepository;
 
     @BeforeMethod
@@ -32,7 +25,7 @@ public class RepositoriesTests extends ArtifactoryTests {
         localRepository = artifactory.repositories().builders().localRepositoryBuilder().key(NEW_LOCAL).description("new local repository").build();
     }
 
-    @Test(dependsOnMethods = "testDelete")
+    @Test(groups = "repositoryBasics", dependsOnMethods = "testDelete")
     public void testCreate() throws Exception {
         assertTrue(artifactory.repository(NEW_LOCAL).create(2, localRepository).startsWith("Repository " + NEW_LOCAL + " created successfully."));
         assertTrue(curl(LIST_PATH).contains(NEW_LOCAL));
@@ -94,7 +87,7 @@ public class RepositoriesTests extends ArtifactoryTests {
         assertNotNull(repository);
         assertTrue(RemoteRepository.class.isAssignableFrom(repository.getClass()));
         RemoteRepository repo1 = (RemoteRepository) repository;
-        assertEquals(repo1.getKey(), "repo1");
+        assertEquals(repo1.getKey(), REPO1);
         assertEquals(repo1.getRclass().toString(), "remote");
         assertEquals(repo1.getUrl(), "http://repo-demo.jfrog.org/artifactory/repo1");
         assertEquals(repo1.getUsername(), "");
@@ -151,7 +144,6 @@ public class RepositoriesTests extends ArtifactoryTests {
         assertEquals(libsReleasesLocal.getRepoLayoutRef(), "maven-2-default");
         assertEquals(libsReleasesLocal.getSnapshotVersionBehavior().toString(), "unique");
         assertEquals(libsReleasesLocal.getChecksumPolicyType().toString(), "client-checksums");
-
     }
 
     @Test
@@ -171,125 +163,5 @@ public class RepositoriesTests extends ArtifactoryTests {
         assertFalse(libsReleases.isArtifactoryRequestsCanRetrieveRemoteArtifacts());
         assertTrue(libsReleases.getKeyPair() == null || libsReleases.getKeyPair().isEmpty());
         assertTrue(libsReleases.getRepoLayoutRef() == null || libsReleases.getRepoLayoutRef().isEmpty());
-
-    }
-
-    @Test
-    public void testGetFolder() throws Exception {
-        Folder folder = artifactory.repository("repo1-cache").folder("junit").get();
-        assertNotNull(folder);
-    }
-
-    @Test(dependsOnMethods = "testCreate")
-    public void testUploadWithSingleProperty() throws IOException {
-        InputStream inputStream = this.getClass().getResourceAsStream("/sample.txt");
-        assertNotNull(inputStream);
-        File deployed = artifactory.repository(NEW_LOCAL).prepareUploadableArtifact().withProperty("color", "red").upload(inputStream).to(PATH);
-        assertNotNull(deployed);
-        assertEquals(deployed.getRepo(), NEW_LOCAL);
-        assertEquals(deployed.getPath(), "/" + PATH);
-        assertEquals(deployed.getCreatedBy(), username);
-        assertEquals(deployed.getDownloadUri(), host + "/" + applicationName + "/" + NEW_LOCAL + "/" + PATH);
-        assertEquals(deployed.getSize(), 3044);
-        assertTrue(curl("api/storage/" + NEW_LOCAL + "/" + PATH + "?properties").contains("{\"color\":[\"red\"]}"));
-    }
-
-    @Test(dependsOnMethods = "testUploadWithSingleProperty")//to spare all the checks
-    public void testUploadWithMultipleProperties() throws IOException {
-        artifactory.repository(NEW_LOCAL).prepareUploadableArtifact()
-                .withProperty("colors", "red")
-                .withProperty("build", 28)
-                .withProperty("released", false).upload(this.getClass().getResourceAsStream("/sample.txt")).to(PATH);
-        assertTrue(curl("api/storage/" + NEW_LOCAL + "/" + PATH + "?properties").contains("{\"build\":[\"28\"],\"colors\":[\"red\"],\"released\":[\"false\"]}"));
-    }
-
-    //TODO (jb) enable once RTFACT-5126 is fixed
-    @Test(enabled = false, dependsOnMethods = "testUploadWithSingleProperty")
-    public void testUploadWithMultiplePropertyValues() throws IOException {
-        artifactory.repository(NEW_LOCAL).prepareUploadableArtifact()
-                .withProperty("colors", "red", "green", "blue")
-                .withProperty("build", 28)
-                .withProperty("released", false).upload(this.getClass().getResourceAsStream("/sample.txt")).to(PATH);
-        assertTrue(curl("api/storage/" + NEW_LOCAL + "/" + PATH + "?properties").contains("{\"build\":[\"28\"],\"colors\":[\"red\",\"green\",\"blue\"],\"released\":[\"false\"]}"));
-    }
-
-    @Test(dependsOnMethods = "testUploadWithSingleProperty")
-    public void testDownloadWithoutProperties() throws IOException {
-        InputStream inputStream = artifactory.repository(NEW_LOCAL).prepareDownloadableArtifact().downloadFrom(PATH);
-        String actual = textFrom(inputStream);
-        assertEquals(actual, textFrom(this.getClass().getResourceAsStream("/sample.txt")));
-    }
-
-    @Test(dependsOnMethods = "testUploadWithMultipleProperties")
-    public void testDownloadWithMatchingNonMandatoryProperties() throws IOException {
-        //property matches
-        InputStream inputStream = artifactory.repository(NEW_LOCAL).prepareDownloadableArtifact().withProperty("colors", "red").downloadFrom(PATH);
-        assertEquals(textFrom(inputStream), textFrom(this.getClass().getResourceAsStream("/sample.txt")));
-    }
-
-    @Test(dependsOnMethods = "testUploadWithMultipleProperties")
-    public void testDownloadWithNonExistingNonMandatoryProperties() throws IOException {
-        //property doesn't exist
-        InputStream inputStream = artifactory.repository(NEW_LOCAL).prepareDownloadableArtifact().withProperty("foo", "bar").downloadFrom(PATH);
-        assertEquals(textFrom(inputStream), textFrom(this.getClass().getResourceAsStream("/sample.txt")));
-    }
-
-    @Test(dependsOnMethods = "testUploadWithMultipleProperties", expectedExceptions = HttpResponseException.class, expectedExceptionsMessageRegExp = "Not Found")
-    public void testDownloadWithWrongNonMandatoryProperties() throws IOException {
-        //property doesn't match, will fail
-        artifactory.repository(NEW_LOCAL).prepareDownloadableArtifact().withProperty("colors", "black").downloadFrom(PATH);
-    }
-
-    @Test(dependsOnMethods = "testUploadWithMultipleProperties")
-    public void testDownloadWithMatchingMandatoryProperties() throws IOException {
-        //property matches
-        InputStream inputStream = artifactory.repository(NEW_LOCAL).prepareDownloadableArtifact().onlyWithProperty("colors", "red").downloadFrom(PATH);
-        assertEquals(textFrom(inputStream), textFrom(this.getClass().getResourceAsStream("/sample.txt")));
-    }
-
-    @Test(dependsOnMethods = "testUploadWithMultipleProperties", expectedExceptions = HttpResponseException.class, expectedExceptionsMessageRegExp = "Not Found")
-    public void testDownloadWithNonExistingMandatoryProperties() throws IOException {
-        //property doesn't exist, will fail
-        artifactory.repository(NEW_LOCAL).prepareDownloadableArtifact().onlyWithProperty("foo", "bar").downloadFrom(PATH);
-    }
-
-    @Test(dependsOnMethods = "testUploadWithMultipleProperties", expectedExceptions = HttpResponseException.class, expectedExceptionsMessageRegExp = "Not Found")
-    public void testDownloadWithWrongMandatoryProperties() throws IOException {
-        //property doesn't match, will fail
-        artifactory.repository(NEW_LOCAL).prepareDownloadableArtifact().onlyWithProperty("colors", "black").downloadFrom(PATH);
-    }
-
-    @Test(dependsOnMethods = "testUploadWithMultipleProperties")
-    public void testDownloadWithMandatoryAndNonMandatoryProperties() throws IOException {
-        InputStream inputStream = artifactory.repository(NEW_LOCAL).prepareDownloadableArtifact().withProperty("released", false).withProperty("foo", "bar").onlyWithProperty("colors", "red").downloadFrom(PATH);
-        assertEquals(textFrom(inputStream), textFrom(this.getClass().getResourceAsStream("/sample.txt")));
-    }
-
-
-    @Test(enabled = false)
-    public void testSearchByProperty() {
-
-    }
-
-    @Test(enabled = false)
-    public void testQuickSearch() {
-
-    }
-
-    @Test
-    public void testFolderInfo() {
-        Folder folder = artifactory.repository("repo1-cache").folder("junit").get();
-        assertNotNull(folder);
-        assertTrue(folder.isFolder());
-        assertEquals(folder.getChildren().size(), 1);
-        assertEquals(folder.getRepo(), "repo1-cache");
-        assertEquals(folder.getPath(), "/junit");
-    }
-
-    @Test
-    public void testFileInfo() {
-        File file = artifactory.repository("repo1-cache").file("junit/junit/4.10/junit-4.10-sources.jar").get();
-        assertNotNull(file);
-        assertFalse(file.isFolder());
     }
 }
