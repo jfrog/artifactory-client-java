@@ -116,7 +116,7 @@ class Repositories {
                 params = params ? ";$params" : '' //TODO (jb there must be better solution for that!)
                 artifactory.put("/$repo/$path${params}", [:], content, FileImpl, BINARY)
             }
-            return uploadable as Uploadable
+            uploadable as Uploadable
         }
     }
 

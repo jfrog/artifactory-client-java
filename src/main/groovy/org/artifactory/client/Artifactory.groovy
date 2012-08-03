@@ -10,6 +10,10 @@ import java.text.SimpleDateFormat
 import static com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS
 import static com.fasterxml.jackson.databind.introspect.VisibilityChecker.Std.defaultInstance
 import static groovyx.net.http.ContentType.*
+import groovyx.net.http.HttpResponseException
+import groovyx.net.http.Method
+
+import static groovyx.net.http.Method.GET
 
 /**
  *
@@ -59,8 +63,21 @@ class Artifactory {
         client.get(path: "/$applicationName$path", query: query, headers: [Accept: contentType], contentType: requestContentType).data
     }
 
-    private def getSlurper(String path, Map query) {
-        client.get(path: "/$applicationName$path", contentType: JSON, query: query).data
+    private def getSlurper(String path, Map query) throws HttpResponseException{
+        def ret
+        client.request(GET, JSON ) { req ->
+          uri.path = "/$applicationName$path"
+          uri.query = query
+
+          response.success = { resp, slurper ->
+            ret = slurper
+          }
+
+          response.'404' = { resp ->
+              throw new HttpResponseException(resp)
+          }
+        }
+        ret
     }
 
     private def putAndPostJsonParams = {path, query, body ->

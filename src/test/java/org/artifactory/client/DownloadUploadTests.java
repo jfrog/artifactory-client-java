@@ -31,7 +31,7 @@ public class DownloadUploadTests extends ArtifactoryTests {
         assertTrue(curl("api/storage/" + NEW_LOCAL + "/" + PATH + "?properties").contains("{\"color\":[\"red\"]}"));
     }
 
-    @Test(dependsOnMethods = "testUploadWithSingleProperty")//to spare all the checks
+    @Test(groups = "uploadBasics", dependsOnMethods = "testUploadWithSingleProperty")//to spare all the checks
     public void testUploadWithMultipleProperties() throws IOException {
         artifactory.repository(NEW_LOCAL).prepareUploadableArtifact()
                 .withProperty("colors", "red")
