@@ -26,7 +26,7 @@ public class DownloadUploadTest extends ArtifactoryTestBase {
         assertEquals(deployed.getPath(), "/" + PATH);
         assertEquals(deployed.getCreatedBy(), username);
         assertEquals(deployed.getDownloadUri(), url + "/" + NEW_LOCAL + "/" + PATH);
-        assertEquals(deployed.getSize(), 3017);
+        assertEquals(deployed.getSize(), 3044);
         assertTrue(curl("api/storage/" + NEW_LOCAL + "/" + PATH + "?properties").contains("{\"color\":[\"red\"]}"));
     }
 

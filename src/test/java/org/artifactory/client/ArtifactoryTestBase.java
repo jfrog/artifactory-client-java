@@ -36,7 +36,7 @@ public abstract class ArtifactoryTestBase {
                 "/artifactory.client.properties");//this file is not in GitHub. Create your own in src/test/resources.
         if (inputStream == null) {
             Assert.fail(
-                    "Credentials file is missing, create credentials.properties with 'username' and 'password' properties under src/test/resources");
+                    "Credentials file is missing, create artifactory.client.properties with 'username' and 'password' properties under src/test/resources");
         }
         props.load(inputStream);
         username = props.getProperty("username");

@@ -12,18 +12,27 @@ class Searches {
     private String SEARCHES_API = "/api/search/"
     private Artifactory artifactory
     private List<String> reposFilter = []
+    private String quickSearchTerm
 
     private Searches(Artifactory artifactory) {
         this.artifactory = artifactory
     }
 
     Searches repositories(String... repositories) {
-        this.reposFilter << repositories
+        this.reposFilter.addAll(repositories)
         this
     }
 
-    List<String> search(String name) throws HttpResponseException {
-        doSearch('artifact', [name: name])
+    Searches artifactsByName(String name){
+        this.quickSearchTerm = name
+        this
+    }
+
+    List<String> search() throws HttpResponseException {
+        if (!quickSearchTerm){
+            throw new IllegalArgumentException("Search term wasn't set. Please call 'artifactsByName(name to search)' before calling 'search()'")
+        }
+        doSearch('artifact', [name: quickSearchTerm])
     }
 
     private List<String> doSearch(String url, Map query) throws HttpResponseException {
@@ -34,29 +43,58 @@ class Searches {
         result.results.collect { it.uri }
     }
 
-    PropertyFilters filterBy() {
-        def propertyFilters = [:]
-        propertyFilters.filters = []
-        propertyFilters.property = {String name, Object... values ->
+    PropertyFilters properties() {
+        new PropertyFiltersImpl()
+    }
+
+    interface PropertyFilters {
+        PropertyFilters property(String name, Object... values)
+
+        PropertyFilters property(Map<String, ?> property)
+
+        PropertyFilters repositories(String... repositories)
+
+        List<String> search() throws HttpResponseException
+    }
+
+    class PropertyFiltersImpl implements PropertyFilters{
+
+        def filters = []
+
+        @Override
+        PropertyFilters property(String name, Object... values) {
             def filter = [:]
             filter.name = name
             filter.values = values
-            propertyFilters.filters << filter
-            propertyFilters as PropertyFilters
+            filters << filter
+            this
         }
-        propertyFilters.search = {
-            def propertiesQuery = (propertyFilters.filters as List).collectEntries {filter ->
+
+        @Override
+        PropertyFilters property(Map<String, ?> property) {
+            def filter = [:]
+            def name = property.keySet().toList()[0]
+            filter.name = name
+            def values = property[name]
+            filter.values = values instanceof Collection ? values : [values]
+            filters << filter
+            this
+        }
+
+        @Override
+        PropertyFilters repositories(String... repositories) {
+            reposFilter.addAll(repositories)
+            this
+        }
+
+        @Override
+        List<String> search() {
+            def propertiesQuery = (filters as List).collectEntries {filter ->
                 [filter.name, filter.values.join(',')]
             }
             doSearch('prop', propertiesQuery) as List<String>
+
         }
-        propertyFilters as PropertyFilters
-    }
-
-    static interface PropertyFilters {
-        PropertyFilters property(String name, Object... values)
-
-        List<String> search() throws HttpResponseException
     }
 
 }
