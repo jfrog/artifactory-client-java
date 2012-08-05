@@ -13,41 +13,40 @@ import static org.testng.Assert.*;
  * @author jbaruch
  * @since 03/08/12
  */
-public class DownloadUploadTests extends ArtifactoryTestBase {
+public class DownloadUploadTest extends ArtifactoryTestBase {
 
     @Test(dependsOnGroups = "repositoryBasics")
     public void testUploadWithSingleProperty() throws IOException {
         InputStream inputStream = this.getClass().getResourceAsStream("/sample.txt");
         assertNotNull(inputStream);
-        File deployed = artifactory.repository(NEW_LOCAL).prepareUploadableArtifact().withProperty("color", "red")
-                .upload(inputStream).to(PATH);
+        File deployed = artifactory.repository(NEW_LOCAL).upload(inputStream).withProperty("color", "red")
+                .withProperty("color", "red").toPath(PATH);
         assertNotNull(deployed);
         assertEquals(deployed.getRepo(), NEW_LOCAL);
         assertEquals(deployed.getPath(), "/" + PATH);
         assertEquals(deployed.getCreatedBy(), username);
         assertEquals(deployed.getDownloadUri(), url + "/" + NEW_LOCAL + "/" + PATH);
-        assertEquals(deployed.getSize(), 3044);
+        assertEquals(deployed.getSize(), 3017);
         assertTrue(curl("api/storage/" + NEW_LOCAL + "/" + PATH + "?properties").contains("{\"color\":[\"red\"]}"));
     }
 
     @Test(groups = "uploadBasics", dependsOnMethods = "testUploadWithSingleProperty")//to spare all the checks
     public void testUploadWithMultipleProperties() throws IOException {
-        artifactory.repository(NEW_LOCAL).prepareUploadableArtifact()
+        artifactory.repository(NEW_LOCAL).upload(this.getClass().getResourceAsStream("/sample.txt"))
                 .withProperty("colors", "red")
                 .withProperty("build", 28)
-                .withProperty("released", false).upload(this.getClass().getResourceAsStream("/sample.txt")).to(PATH);
+                .withProperty("released", false).toPath(PATH);
         assertTrue(curl("api/storage/" + NEW_LOCAL + "/" + PATH + "?properties")
                 .contains("{\"build\":[\"28\"],\"colors\":[\"red\"],\"released\":[\"false\"]}"));
     }
 
-
     //TODO (jb) enable once RTFACT-5126 is fixed
     @Test(enabled = false, dependsOnMethods = "testUploadWithSingleProperty")
     public void testUploadWithMultiplePropertyValues() throws IOException {
-        artifactory.repository(NEW_LOCAL).prepareUploadableArtifact()
+        artifactory.repository(NEW_LOCAL).upload(this.getClass().getResourceAsStream("/sample.txt"))
                 .withProperty("colors", "red", "green", "blue")
                 .withProperty("build", 28)
-                .withProperty("released", false).upload(this.getClass().getResourceAsStream("/sample.txt")).to(PATH);
+                .withProperty("released", false).toPath(PATH);
         assertTrue(curl("api/storage/" + NEW_LOCAL + "/" + PATH + "?properties")
                 .contains("{\"build\":[\"28\"],\"colors\":[\"red\",\"green\",\"blue\"],\"released\":[\"false\"]}"));
     }

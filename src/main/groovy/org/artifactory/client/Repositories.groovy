@@ -73,16 +73,12 @@ class Repositories {
         artifactory.parseText(repoJson, parseString(repo.rclass).typeClass)
     }
 
-    UploadableArtifact prepareUploadableArtifact() {
-        return new UploadableArtifact()
+    UploadableArtifact upload(InputStream content) {
+        return new UploadableArtifact(content)
     }
 
     DownloadableArtifact prepareDownloadableArtifact() {
         return new DownloadableArtifact()
-    }
-
-    static interface Uploadable {
-        File to(String path)
     }
 
     abstract class Artifact<T extends Artifact> {
@@ -91,7 +87,8 @@ class Repositories {
         protected Artifact() {
         }
 
-        T withProperty(String name, Object... values) {//for some strange reason def won't work here
+        T withProperty(String name, Object... values) {
+            //for some strange reason def won't work here
             props[name] = values.join(',')
             this as T
         }
@@ -109,14 +106,17 @@ class Repositories {
     }
 
     class UploadableArtifact extends Artifact<UploadableArtifact> {
-        Uploadable upload(InputStream content) {
-            def uploadable = [:]
-            uploadable.to = {String path ->
-                def params = parseParams(props, '=')
-                params = params ? ";$params" : '' //TODO (jb there must be better solution for that!)
-                artifactory.put("/$repo/$path${params}", [:], content, FileImpl, BINARY)
-            }
-            uploadable as Uploadable
+
+        private content
+
+        UploadableArtifact(InputStream content) {
+            this.content = content
+        }
+
+        File toPath(String path) {
+            def params = parseParams(props, '=')
+            params = params ? ";$params" : '' //TODO (jb there must be better solution for that!)
+            artifactory.put("/$repo/$path${params}", [:], content, FileImpl, BINARY)
         }
     }
 
@@ -125,12 +125,14 @@ class Repositories {
         private mandatoryProps = [:]
 
         InputStream downloadFrom(String path) {
-            def params = parseParams(props, '=') + (mandatoryProps ? ";${parseParams(mandatoryProps, '+=')}" : '') //TODO (jb there must be better solution for that!)
+            def params = parseParams(props, '=') + (mandatoryProps ? ";${parseParams(mandatoryProps, '+=')}" : '')
+            //TODO (jb there must be better solution for that!)
             params = params ? ";$params" : ''
             artifactory.getInputStream("/$repo/$path${params}")
         }
 
-        DownloadableArtifact onlyWithProperty(String name, Object... values) {//for some strange reason def won't work here
+        DownloadableArtifact onlyWithProperty(String name, Object... values) {
+            //for some strange reason def won't work here
             mandatoryProps[name] = values.join(',')
             this
         }

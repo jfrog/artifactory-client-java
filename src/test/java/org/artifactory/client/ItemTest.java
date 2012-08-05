@@ -10,7 +10,7 @@ import static org.testng.Assert.*;
  * @author jbaruch
  * @since 03/08/12
  */
-public class ItemTests extends ArtifactoryTestBase {
+public class ItemTest extends ArtifactoryTestBase {
 
     @Test
     public void testFolderInfo() {

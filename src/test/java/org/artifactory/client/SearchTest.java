@@ -12,7 +12,7 @@ import static org.testng.Assert.assertTrue;
  * @author jbaruch
  * @since 03/08/12
  */
-public class SearchesTests extends ArtifactoryTestBase {
+public class SearchTest extends ArtifactoryTestBase {
 
     @Test
     public void testLimitlessQuickSearch() throws HttpResponseException {

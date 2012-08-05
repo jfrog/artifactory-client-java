@@ -19,7 +19,7 @@ import static org.testng.Assert.*;
  * @author jbaruch
  * @since 30/07/12
  */
-public class RepositoriesTests extends ArtifactoryTestBase {
+public class RepositoryTest extends ArtifactoryTestBase {
 
     private static final String LIST_PATH = "api/repositories";
     private LocalRepository localRepository;
@@ -47,7 +47,7 @@ public class RepositoriesTests extends ArtifactoryTestBase {
         assertTrue(curl("api/repositories/" + NEW_LOCAL).contains("\"description\":\"new description\""));
     }
 
-    @Test
+    @Test(groups = "repositoryBasics")
     public void testDelete() throws Exception {
         assertTrue(artifactory.repository(NEW_LOCAL).delete()
                 .startsWith("Repository " + NEW_LOCAL + " and all its content have been removed successfully."));
