@@ -85,7 +85,7 @@ public class DownloadUploadTest extends ArtifactoryTestBase {
     public void testDownloadWithMatchingMandatoryProperties() throws IOException {
         //property matches
         InputStream inputStream =
-                artifactory.repository(NEW_LOCAL).download(PATH).havingProperty("colors", "red").execute();
+                artifactory.repository(NEW_LOCAL).download(PATH).withMandatoryProperty("colors", "red").execute();
         assertEquals(textFrom(inputStream), textFrom(this.getClass().getResourceAsStream("/sample.txt")));
     }
 
@@ -93,21 +93,21 @@ public class DownloadUploadTest extends ArtifactoryTestBase {
             expectedExceptionsMessageRegExp = "Not Found")
     public void testDownloadWithNonExistingMandatoryProperties() throws IOException {
         //property doesn't exist, will fail
-        artifactory.repository(NEW_LOCAL).download(PATH).havingProperty("foo", "bar").execute();
+        artifactory.repository(NEW_LOCAL).download(PATH).withMandatoryProperty("foo", "bar").execute();
     }
 
     @Test(dependsOnMethods = "testUploadWithMultipleProperties", expectedExceptions = HttpResponseException.class,
             expectedExceptionsMessageRegExp = "Not Found")
     public void testDownloadWithWrongMandatoryProperties() throws IOException {
         //property doesn't match, will fail
-        artifactory.repository(NEW_LOCAL).download(PATH).havingProperty("colors", "black").execute();
+        artifactory.repository(NEW_LOCAL).download(PATH).withMandatoryProperty("colors", "black").execute();
     }
 
     @Test(dependsOnMethods = "testUploadWithMultipleProperties")
     public void testDownloadWithMandatoryAndNonMandatoryProperties() throws IOException {
         InputStream inputStream =
                 artifactory.repository(NEW_LOCAL).download(PATH).withProperty("released", false)
-                        .withProperty("foo", "bar").havingProperty("colors", "red").execute();
+                        .withProperty("foo", "bar").withMandatoryProperty("colors", "red").execute();
         assertEquals(textFrom(inputStream), textFrom(this.getClass().getResourceAsStream("/sample.txt")));
     }
 }

@@ -137,13 +137,13 @@ class Repositories {
             artifactory.getInputStream("/$repo/$path${params}")
         }
 
-        DownloadableArtifact havingProperty(String name, Object... values) {
+        DownloadableArtifact withMandatoryProperty(String name, Object... values) {
             //for some strange reason def won't work here
             mandatoryProps[name] = values.join(',')
             this
         }
 
-        DownloadableArtifact havingProperty(String name, Object value) {
+        DownloadableArtifact withMandatoryProperty(String name, Object value) {
             mandatoryProps[name] = value
             this
         }
