@@ -16,8 +16,8 @@ artifactory {
     contextUrl = 'http://repo.jfrog.org/artifactory' //The base Artifactory URL if not overridden by the publisher/resolver
     resolve {
         repository {
-            repoKey = 'libs-releases' //The Artifactory (preferably virtual) repository key to resolve from
-            maven = true //Resolve Maven-style artifacts and descriptors (true by default)
+            repoKey = 'libs-releases'
+            maven = true
         }
     }
 }
@@ -28,6 +28,9 @@ task wrapper(type: Wrapper) {
 
 group = 'com.jfrog.artifactory.client'
 version = '1-SNAPSHOT'
+
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
 
 dependencies {
     groovy group: 'org.codehaus.groovy', name: 'groovy', version: '2.0.1'
@@ -43,4 +46,20 @@ dependencies {
 
 test {
     useTestNG()
+}
+
+idea {
+    project {
+        jdkName = '1.7'
+        languageLevel = '1.7'
+        wildcards += '?*.gradle'
+        ipr {
+            withXml { provider ->
+                def node = provider.asNode()
+                // Use git
+                def vcsConfig = node.component.find { it.'@name' == 'VcsDirectoryMappings' }
+                vcsConfig.mapping[0].'@vcs' = 'Git'
+            }
+        }
+    }
 }
