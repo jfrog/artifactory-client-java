@@ -17,7 +17,7 @@ import static org.artifactory.client.Artifactory.create;
  * @author jbaruch
  * @since 30/07/12
  */
-public class ArtifactoryTests {
+public abstract class ArtifactoryTestBase {
     protected static final String NEW_LOCAL = "new-local";
     protected static final String PATH = "m/a/b/c.txt";
     protected static final String LIBS_RELEASES_LOCAL = "libs-releases-local";
@@ -26,30 +26,29 @@ public class ArtifactoryTests {
     protected Artifactory artifactory;
     protected String username;
     private String password;
-    protected String host;
-    protected String applicationName;
+    protected String url;
 
     @BeforeMethod
     public void init() throws IOException {
 
         Properties props = new Properties();
-        InputStream inputStream = this.getClass().getResourceAsStream("/credentials.properties");//this file is not in GitHub. Create your own in src/test/resources.
+        InputStream inputStream = this.getClass().getResourceAsStream(
+                "/artifactory.client.properties");//this file is not in GitHub. Create your own in src/test/resources.
         if (inputStream == null) {
-            Assert.fail("Credentials file is missing, create credentials.properties with 'username' and 'password' properties under src/test/resources");
+            Assert.fail(
+                    "Credentials file is missing, create credentials.properties with 'username' and 'password' properties under src/test/resources");
         }
         props.load(inputStream);
         username = props.getProperty("username");
         password = props.getProperty("password");
-        host = "http://clienttests.artifactoryonline.com";
-//        host = "http://localhost:8080";
-        applicationName = "clienttests";
-//        applicationName = "artifactory";
-        artifactory = create(host, applicationName, username, password);
+        //url = "http://clienttests.artifactoryonline.com/clienttests";
+        url = "http://localhost:8080/artifactory";
+        artifactory = create(url, username, password);
     }
 
     protected String curl(String path) throws IOException {
         String authStringEnc = new String(encodeBase64((username + ":" + password).getBytes()));
-        URLConnection urlConnection = new URL(host+"/"+applicationName+"/"+path).openConnection();
+        URLConnection urlConnection = new URL(url + "/" + path).openConnection();
         urlConnection.setRequestProperty("Authorization", "Basic " + authStringEnc);
         try (InputStream is = urlConnection.getInputStream()) {
             return textFrom(is);

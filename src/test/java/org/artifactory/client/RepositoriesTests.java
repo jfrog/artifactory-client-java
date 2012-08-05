@@ -1,6 +1,10 @@
 package org.artifactory.client;
 
-import org.artifactory.client.model.*;
+import org.artifactory.client.model.LightweightRepository;
+import org.artifactory.client.model.LocalRepository;
+import org.artifactory.client.model.RemoteRepository;
+import org.artifactory.client.model.Repository;
+import org.artifactory.client.model.VirtualRepository;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -15,33 +19,38 @@ import static org.testng.Assert.*;
  * @author jbaruch
  * @since 30/07/12
  */
-public class RepositoriesTests extends ArtifactoryTests {
+public class RepositoriesTests extends ArtifactoryTestBase {
 
     private static final String LIST_PATH = "api/repositories";
     private LocalRepository localRepository;
 
     @BeforeMethod
     protected void setUp() throws Exception {
-        localRepository = artifactory.repositories().builders().localRepositoryBuilder().key(NEW_LOCAL).description("new local repository").build();
+        localRepository = artifactory.repositories().builders().localRepositoryBuilder().key(NEW_LOCAL)
+                .description("new local repository").build();
     }
 
     @Test(groups = "repositoryBasics", dependsOnMethods = "testDelete")
     public void testCreate() throws Exception {
-        assertTrue(artifactory.repository(NEW_LOCAL).create(2, localRepository).startsWith("Repository " + NEW_LOCAL + " created successfully."));
+        assertTrue(artifactory.repository(NEW_LOCAL).create(2, localRepository)
+                .startsWith("Repository " + NEW_LOCAL + " created successfully."));
         assertTrue(curl(LIST_PATH).contains(NEW_LOCAL));
 
     }
 
     @Test(dependsOnMethods = "testCreate")
     public void testUpdate() throws Exception {
-        LocalRepository changedRepository = artifactory.repositories().builders().builderFrom(localRepository).description("new description").build();
+        LocalRepository changedRepository =
+                artifactory.repositories().builders().builderFrom(localRepository).description("new description")
+                        .build();
         artifactory.repository(NEW_LOCAL).update(changedRepository);
         assertTrue(curl("api/repositories/" + NEW_LOCAL).contains("\"description\":\"new description\""));
     }
 
     @Test()
     public void testDelete() throws Exception {
-        assertTrue(artifactory.repository(NEW_LOCAL).delete().startsWith("Repository " + NEW_LOCAL + " and all its content have been removed successfully."));
+        assertTrue(artifactory.repository(NEW_LOCAL).delete()
+                .startsWith("Repository " + NEW_LOCAL + " and all its content have been removed successfully."));
         assertFalse(curl(LIST_PATH).contains(NEW_LOCAL));
     }
 
@@ -154,7 +163,8 @@ public class RepositoriesTests extends ArtifactoryTests {
         VirtualRepository libsReleases = (VirtualRepository) repository;
         assertEquals(libsReleases.getKey(), "libs-releases");
         assertEquals(libsReleases.getRclass().toString(), "virtual");
-        assertEquals(libsReleases.getDescription(), "Virtual Repository which aggregates both uploaded and proxied releases");
+        assertEquals(libsReleases.getDescription(),
+                "Virtual Repository which aggregates both uploaded and proxied releases");
         assertEquals(libsReleases.getNotes(), "");
         assertEquals(libsReleases.getIncludesPattern(), "**/*");
         assertEquals(libsReleases.getExcludesPattern(), "");
