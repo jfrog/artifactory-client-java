@@ -73,12 +73,12 @@ class Repositories {
         artifactory.parseText(repoJson, parseString(repo.rclass).typeClass)
     }
 
-    UploadableArtifact upload(InputStream content) {
-        return new UploadableArtifact(content)
+    UploadableArtifact upload(String targetPath, InputStream content) {
+        return new UploadableArtifact(targetPath, content)
     }
 
-    DownloadableArtifact prepareDownloadableArtifact() {
-        return new DownloadableArtifact()
+    DownloadableArtifact download(String path) {
+        return new DownloadableArtifact(path)
     }
 
     abstract class Artifact<T extends Artifact> {
@@ -99,7 +99,7 @@ class Repositories {
         }
 
         protected String parseParams(Map props, String delimiter) {
-            props.inject([]) {result, entry ->
+            props.inject(['']) {result, entry ->
                 result << "$entry.key$delimiter$entry.value"
             }.join(';')
         }
@@ -107,40 +107,45 @@ class Repositories {
 
     class UploadableArtifact extends Artifact<UploadableArtifact> {
 
+        private path
         private content
 
-        UploadableArtifact(InputStream content) {
+        UploadableArtifact(String path, InputStream content) {
+            this.path = path
             this.content = content
         }
 
-        File toPath(String path) {
+        File execute() {
             def params = parseParams(props, '=')
-            params = params ? ";$params" : '' //TODO (jb there must be better solution for that!)
             artifactory.put("/$repo/$path${params}", [:], content, FileImpl, BINARY)
         }
     }
 
     class DownloadableArtifact extends Artifact<DownloadableArtifact> {
+        private path
 
         private mandatoryProps = [:]
 
-        InputStream downloadFrom(String path) {
+        DownloadableArtifact(path) {
+            this.path = path
+        }
+
+        InputStream execute() {
             def params = parseParams(props, '=') + (mandatoryProps ? ";${parseParams(mandatoryProps, '+=')}" : '')
             //TODO (jb there must be better solution for that!)
             params = params ? ";$params" : ''
             artifactory.getInputStream("/$repo/$path${params}")
         }
 
-        DownloadableArtifact onlyWithProperty(String name, Object... values) {
+        DownloadableArtifact havingProperty(String name, Object... values) {
             //for some strange reason def won't work here
             mandatoryProps[name] = values.join(',')
             this
         }
 
-        DownloadableArtifact onlyWithProperty(String name, Object value) {
+        DownloadableArtifact havingProperty(String name, Object value) {
             mandatoryProps[name] = value
             this
         }
-
     }
 }
