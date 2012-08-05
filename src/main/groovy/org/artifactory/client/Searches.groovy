@@ -17,16 +17,16 @@ class Searches {
         this.artifactory = artifactory
     }
 
-    Searches limitToRepository(String repositories) {
+    Searches repositories(String... repositories) {
         this.reposFilter << repositories
         this
     }
 
-    List<String> search(String name) throws HttpResponseException{
+    List<String> search(String name) throws HttpResponseException {
         doSearch('artifact', [name: name])
     }
 
-    private List<String> doSearch(String url, Map query) throws HttpResponseException{
+    private List<String> doSearch(String url, Map query) throws HttpResponseException {
         if (reposFilter) {
             query.repos = reposFilter.join(',')
         }

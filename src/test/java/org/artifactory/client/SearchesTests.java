@@ -23,20 +23,19 @@ public class SearchesTests extends ArtifactoryTestBase {
     @Test(expectedExceptions = HttpResponseException.class, expectedExceptionsMessageRegExp = "Not Found")
     public void testQuickSearchWithWrongSingleLimit() throws HttpResponseException {
         //should fail
-        artifactory.searches().limitToRepository(LIBS_RELEASES_LOCAL).search("junit");
+        artifactory.searches().repositories(LIBS_RELEASES_LOCAL).search("junit");
     }
 
     @Test
     public void testQuickSearchWithRightSingleLimit() throws HttpResponseException {
-        List<String> results = artifactory.searches().limitToRepository(REPO1_CACHE).search("junit");
+        List<String> results = artifactory.searches().repositories(REPO1_CACHE).search("junit");
         assertJUnits(results);
     }
 
     @Test
     public void testQuickSearchWithMultipleLimits() throws HttpResponseException {
         List<String> results =
-                artifactory.searches().limitToRepository(LIBS_RELEASES_LOCAL).limitToRepository(REPO1_CACHE)
-                        .search("junit");
+                artifactory.searches().repositories(LIBS_RELEASES_LOCAL, REPO1_CACHE).search("junit");
         assertJUnits(results);
     }
 
@@ -50,7 +49,7 @@ public class SearchesTests extends ArtifactoryTestBase {
     @Test(dependsOnGroups = "uploadBasics")
     public void testSearchByPropertyAndRepoFilter() throws HttpResponseException {
         List<String> results =
-                artifactory.searches().limitToRepository(NEW_LOCAL).filterBy().property("released", false).search();
+                artifactory.searches().repositories(NEW_LOCAL).filterBy().property("released", false).search();
         assertEquals(results.size(), 1);
         assertTrue(results.get(0).contains("a/b/c.txt"));
     }
@@ -58,7 +57,7 @@ public class SearchesTests extends ArtifactoryTestBase {
     @Test(dependsOnGroups = "uploadBasics", expectedExceptions = HttpResponseException.class,
             expectedExceptionsMessageRegExp = "Not Found")
     public void testSearchByPropertyAndWrongRepoFilter() throws HttpResponseException {
-        artifactory.searches().limitToRepository(REPO1).filterBy().property("released", false).search();
+        artifactory.searches().repositories(REPO1).filterBy().property("released", false).search();
     }
 
     @Test(dependsOnGroups = "uploadBasics", expectedExceptions = HttpResponseException.class,

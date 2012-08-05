@@ -47,7 +47,7 @@ public class RepositoriesTests extends ArtifactoryTestBase {
         assertTrue(curl("api/repositories/" + NEW_LOCAL).contains("\"description\":\"new description\""));
     }
 
-    @Test()
+    @Test
     public void testDelete() throws Exception {
         assertTrue(artifactory.repository(NEW_LOCAL).delete()
                 .startsWith("Repository " + NEW_LOCAL + " and all its content have been removed successfully."));

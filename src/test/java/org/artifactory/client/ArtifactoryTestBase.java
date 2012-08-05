@@ -41,8 +41,8 @@ public abstract class ArtifactoryTestBase {
         props.load(inputStream);
         username = props.getProperty("username");
         password = props.getProperty("password");
-        //url = "http://clienttests.artifactoryonline.com/clienttests";
-        url = "http://localhost:8080/artifactory";
+        url = "http://clienttests.artifactoryonline.com/clienttests";
+        //url = "http://localhost:8080/artifactory";
         artifactory = create(url, username, password);
     }
 
