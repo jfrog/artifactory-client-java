@@ -23,13 +23,13 @@ class Searches {
         this
     }
 
-    Searches artifactsByName(String name){
+    Searches artifactsByName(String name) {
         this.quickSearchTerm = name
         this
     }
 
     List<String> search() throws HttpResponseException {
-        if (!quickSearchTerm){
+        if (!quickSearchTerm) {
             throw new IllegalArgumentException("Search term wasn't set. Please call 'artifactsByName(name to search)' before calling 'search()'")
         }
         doSearch('artifact', [name: quickSearchTerm])
@@ -43,21 +43,21 @@ class Searches {
         result.results.collect { it.uri }
     }
 
-    PropertyFilters properties() {
+    PropertyFilters itemsByProperty() {
         new PropertyFiltersImpl()
     }
 
     interface PropertyFilters {
         PropertyFilters property(String name, Object... values)
 
-        PropertyFilters property(Map<String, ?> property)
+        PropertyFilters properties(Map<String, ?> property)
 
         PropertyFilters repositories(String... repositories)
 
         List<String> search() throws HttpResponseException
     }
 
-    class PropertyFiltersImpl implements PropertyFilters{
+    class PropertyFiltersImpl implements PropertyFilters {
 
         def filters = []
 
@@ -71,7 +71,7 @@ class Searches {
         }
 
         @Override
-        PropertyFilters property(Map<String, ?> property) {
+        PropertyFilters properties(Map<String, ?> property) {
             def filter = [:]
             def name = property.keySet().toList()[0]
             filter.name = name

@@ -115,7 +115,7 @@ class Repositories {
             this.content = content
         }
 
-        File execute() {
+        File doUpload() {
             def params = parseParams(props, '=')
             artifactory.put("/$repo/$path${params}", [:], content, FileImpl, BINARY)
         }
@@ -130,7 +130,7 @@ class Repositories {
             this.path = path
         }
 
-        InputStream execute() {
+        InputStream doDownload() {
             def params = parseParams(props, '=') + (mandatoryProps ? ";${parseParams(mandatoryProps, '+=')}" : '')
             //TODO (jb there must be better solution for that!)
             params = params ? ";$params" : ''

@@ -15,18 +15,18 @@ import static org.testng.Assert.*;
  */
 public class DownloadUploadTest extends ArtifactoryTestBase {
 
-    @Test(dependsOnGroups = "repositoryBasics")
+    @Test(groups = "uploadBasics")
     public void testUploadWithSingleProperty() throws IOException {
         InputStream inputStream = this.getClass().getResourceAsStream("/sample.txt");
         assertNotNull(inputStream);
         File deployed = artifactory.repository(NEW_LOCAL).upload(PATH, inputStream).withProperty("color", "red")
-                .withProperty("color", "red").execute();
+                .withProperty("color", "red").doUpload();
         assertNotNull(deployed);
         assertEquals(deployed.getRepo(), NEW_LOCAL);
         assertEquals(deployed.getPath(), "/" + PATH);
         assertEquals(deployed.getCreatedBy(), username);
         assertEquals(deployed.getDownloadUri(), url + "/" + NEW_LOCAL + "/" + PATH);
-        assertEquals(deployed.getSize(), 3044);
+        assertEquals(deployed.getSize(), 3017);
         assertTrue(curl("api/storage/" + NEW_LOCAL + "/" + PATH + "?properties").contains("{\"color\":[\"red\"]}"));
     }
 
@@ -35,7 +35,7 @@ public class DownloadUploadTest extends ArtifactoryTestBase {
         artifactory.repository(NEW_LOCAL).upload(PATH, this.getClass().getResourceAsStream("/sample.txt"))
                 .withProperty("colors", "red")
                 .withProperty("build", 28)
-                .withProperty("released", false).execute();
+                .withProperty("released", false).doUpload();
         assertTrue(curl("api/storage/" + NEW_LOCAL + "/" + PATH + "?properties")
                 .contains("{\"build\":[\"28\"],\"colors\":[\"red\"],\"released\":[\"false\"]}"));
     }
@@ -46,14 +46,14 @@ public class DownloadUploadTest extends ArtifactoryTestBase {
         artifactory.repository(NEW_LOCAL).upload(PATH, this.getClass().getResourceAsStream("/sample.txt"))
                 .withProperty("colors", "red", "green", "blue")
                 .withProperty("build", 28)
-                .withProperty("released", false).execute();
+                .withProperty("released", false).doUpload();
         assertTrue(curl("api/storage/" + NEW_LOCAL + "/" + PATH + "?properties")
                 .contains("{\"build\":[\"28\"],\"colors\":[\"red\",\"green\",\"blue\"],\"released\":[\"false\"]}"));
     }
 
     @Test(dependsOnMethods = "testUploadWithSingleProperty")
     public void testDownloadWithoutProperties() throws IOException {
-        InputStream inputStream = artifactory.repository(NEW_LOCAL).download(PATH).execute();
+        InputStream inputStream = artifactory.repository(NEW_LOCAL).download(PATH).doDownload();
         String actual = textFrom(inputStream);
         assertEquals(actual, textFrom(this.getClass().getResourceAsStream("/sample.txt")));
     }
@@ -63,14 +63,15 @@ public class DownloadUploadTest extends ArtifactoryTestBase {
         //property matches
         InputStream inputStream =
                 artifactory.repository(NEW_LOCAL).download(PATH).withProperty("colors", "red")
-                        .execute();
+                        .doDownload();
         assertEquals(textFrom(inputStream), textFrom(this.getClass().getResourceAsStream("/sample.txt")));
     }
 
     @Test(dependsOnMethods = "testUploadWithMultipleProperties")
     public void testDownloadWithNonExistingNonMandatoryProperties() throws IOException {
         //property doesn't exist
-        InputStream inputStream = artifactory.repository(NEW_LOCAL).download(PATH).withProperty("foo", "bar").execute();
+        InputStream inputStream =
+                artifactory.repository(NEW_LOCAL).download(PATH).withProperty("foo", "bar").doDownload();
         assertEquals(textFrom(inputStream), textFrom(this.getClass().getResourceAsStream("/sample.txt")));
     }
 
@@ -78,14 +79,14 @@ public class DownloadUploadTest extends ArtifactoryTestBase {
             expectedExceptionsMessageRegExp = "Not Found")
     public void testDownloadWithWrongNonMandatoryProperties() throws IOException {
         //property doesn't match, will fail
-        artifactory.repository(NEW_LOCAL).download(PATH).withProperty("colors", "black").execute();
+        artifactory.repository(NEW_LOCAL).download(PATH).withProperty("colors", "black").doDownload();
     }
 
     @Test(dependsOnMethods = "testUploadWithMultipleProperties")
     public void testDownloadWithMatchingMandatoryProperties() throws IOException {
         //property matches
         InputStream inputStream =
-                artifactory.repository(NEW_LOCAL).download(PATH).withMandatoryProperty("colors", "red").execute();
+                artifactory.repository(NEW_LOCAL).download(PATH).withMandatoryProperty("colors", "red").doDownload();
         assertEquals(textFrom(inputStream), textFrom(this.getClass().getResourceAsStream("/sample.txt")));
     }
 
@@ -93,21 +94,21 @@ public class DownloadUploadTest extends ArtifactoryTestBase {
             expectedExceptionsMessageRegExp = "Not Found")
     public void testDownloadWithNonExistingMandatoryProperties() throws IOException {
         //property doesn't exist, will fail
-        artifactory.repository(NEW_LOCAL).download(PATH).withMandatoryProperty("foo", "bar").execute();
+        artifactory.repository(NEW_LOCAL).download(PATH).withMandatoryProperty("foo", "bar").doDownload();
     }
 
     @Test(dependsOnMethods = "testUploadWithMultipleProperties", expectedExceptions = HttpResponseException.class,
             expectedExceptionsMessageRegExp = "Not Found")
     public void testDownloadWithWrongMandatoryProperties() throws IOException {
         //property doesn't match, will fail
-        artifactory.repository(NEW_LOCAL).download(PATH).withMandatoryProperty("colors", "black").execute();
+        artifactory.repository(NEW_LOCAL).download(PATH).withMandatoryProperty("colors", "black").doDownload();
     }
 
     @Test(dependsOnMethods = "testUploadWithMultipleProperties")
     public void testDownloadWithMandatoryAndNonMandatoryProperties() throws IOException {
         InputStream inputStream =
                 artifactory.repository(NEW_LOCAL).download(PATH).withProperty("released", false)
-                        .withProperty("foo", "bar").withMandatoryProperty("colors", "red").execute();
+                        .withProperty("foo", "bar").withMandatoryProperty("colors", "red").doDownload();
         assertEquals(textFrom(inputStream), textFrom(this.getClass().getResourceAsStream("/sample.txt")));
     }
 }
