@@ -1,8 +1,5 @@
 package org.artifactory.client.model;
 
-import org.artifactory.client.model.impl.FolderImpl;
-import org.artifactory.client.model.impl.ItemImpl;
-
 import java.util.Date;
 import java.util.List;
 
@@ -26,5 +23,4 @@ public interface Folder extends Item {
     String getPath();
 
     String getRepo();
-
 }

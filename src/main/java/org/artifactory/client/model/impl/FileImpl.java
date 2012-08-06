@@ -121,28 +121,6 @@ public class FileImpl extends ItemImpl implements File {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        FileImpl file = (FileImpl) o;
-
-        if (size != file.size) return false;
-        if (checksums != null ? !checksums.equals(file.checksums) : file.checksums != null) return false;
-        if (created != null ? !created.equals(file.created) : file.created != null) return false;
-        if (createdBy != null ? !createdBy.equals(file.createdBy) : file.createdBy != null) return false;
-        if (downloadUri != null ? !downloadUri.equals(file.downloadUri) : file.downloadUri != null) return false;
-        if (mimeType != null ? !mimeType.equals(file.mimeType) : file.mimeType != null) return false;
-        if (originalChecksums != null ? !originalChecksums.equals(file.originalChecksums) : file.originalChecksums != null)
-            return false;
-        if (path != null ? !path.equals(file.path) : file.path != null) return false;
-        if (remoteUrl != null ? !remoteUrl.equals(file.remoteUrl) : file.remoteUrl != null) return false;
-        if (repo != null ? !repo.equals(file.repo) : file.repo != null) return false;
-
-        return true;
-    }
-
-    @Override
     public int hashCode() {
         int result = downloadUri != null ? downloadUri.hashCode() : 0;
         result = 31 * result + (repo != null ? repo.hashCode() : 0);

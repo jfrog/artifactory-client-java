@@ -83,4 +83,27 @@ public class ItemImpl implements Item {
     private void setLastUpdated(Date lastUpdated) {
         this.lastUpdated = lastUpdated;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof ItemImpl)) {
+            return false;
+        }
+
+        ItemImpl item = (ItemImpl) o;
+
+        if (!uri.equals(item.uri)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return uri.hashCode();
+    }
 }
