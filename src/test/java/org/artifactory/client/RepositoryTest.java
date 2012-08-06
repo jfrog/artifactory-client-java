@@ -47,6 +47,11 @@ public class RepositoryTest extends ArtifactoryTestBase {
         assertTrue(curl("api/repositories/" + NEW_LOCAL).contains("\"description\":\"new description\""));
     }
 
+    @Test(dependsOnMethods = "testCreate")
+    public void testReplicationStatus() throws Exception {
+        assertEquals(artifactory.repository(NEW_LOCAL).replicationStatus().getStatus(), "never_run");
+    }
+
     @Test(groups = "repositoryBasics")
     public void testDelete() throws Exception {
         assertTrue(artifactory.repository(NEW_LOCAL).delete()

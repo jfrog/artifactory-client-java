@@ -4,12 +4,14 @@ import com.fasterxml.jackson.core.type.TypeReference
 import groovy.json.JsonSlurper
 import org.artifactory.client.model.File
 import org.artifactory.client.model.LightweightRepository
+import org.artifactory.client.model.ReplicationStatus
 import org.artifactory.client.model.Repository
 import org.artifactory.client.model.RepositoryType
 import org.artifactory.client.model.builder.RepositoryBuilders
 import org.artifactory.client.model.impl.FileImpl
 import org.artifactory.client.model.impl.FolderImpl
 import org.artifactory.client.model.impl.LightweightRepositoryImpl
+import org.artifactory.client.model.impl.ReplicationStatusImpl
 
 import static groovyx.net.http.ContentType.BINARY
 import static org.artifactory.client.model.RepositoryType.parseString
@@ -63,11 +65,9 @@ class Repositories {
             new Items(artifactory, repo, filePath, FileImpl)
         }
 
-        String replicationStatus() {
-            String repoJson = artifactory.getText("$REPLICATION_API${repo}")
-            JsonSlurper slurper = new JsonSlurper()
-            /*def repo = */ slurper.parseText(repoJson)
-            //artifactory.parseText(repoJson, parseString(repo.rclass).typeClass)
+        ReplicationStatus replicationStatus() {
+            String replicationStatusJson = artifactory.getText("$REPLICATION_API${repo}")
+            artifactory.parseText(replicationStatusJson, ReplicationStatusImpl.class)
         }
 
         String delete() {

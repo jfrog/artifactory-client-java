@@ -6,7 +6,7 @@ import java.util.Date;
  * @author Yoav Landman
  */
 public interface ReplicationStatus {
-    String getStatusDate();
+    String getStatus();
 
     Date getLastCompleted();
 }

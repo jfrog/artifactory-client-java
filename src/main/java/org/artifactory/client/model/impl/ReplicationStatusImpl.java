@@ -8,12 +8,12 @@ import java.util.Date;
  * @author Yoav Landman
  */
 public class ReplicationStatusImpl implements ReplicationStatus {
-    private String statusDate;
+    private String status;
     private Date lastCompleted;
 
     @Override
-    public String getStatusDate() {
-        return statusDate;
+    public String getStatus() {
+        return status;
     }
 
     @Override
