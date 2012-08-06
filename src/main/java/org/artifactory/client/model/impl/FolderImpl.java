@@ -13,8 +13,6 @@ import java.util.List;
  */
 public class FolderImpl extends ItemImpl implements Folder {
 
-    private String repo;
-    private String path;
     private Date created;
     private String createdBy;
     private List<Item> children;
@@ -56,29 +54,11 @@ public class FolderImpl extends ItemImpl implements Folder {
     }
 
     @Override
-    public String getPath() {
-        return path;
-    }
-
-    private void setPath(String path) {
-        this.path = path;
-    }
-
-    @Override
-    public String getRepo() {
-        return repo;
-    }
-
-    private void setRepo(String repo) {
-        this.repo = repo;
-    }
-
-    @Override
     public String toString() {
         return "Folder{" +
                 "children=" + children +
-                ", repo='" + repo + '\'' +
-                ", path='" + path + '\'' +
+                ", repo='" + getRepo() + '\'' +
+                ", path='" + getPath() + '\'' +
                 ", created=" + created +
                 ", createdBy='" + createdBy + '\'' +
                 '}';

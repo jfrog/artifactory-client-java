@@ -15,10 +15,6 @@ public interface File extends Item {
 
     String getMimeType();
 
-    String getPath();
-
-    String getRepo();
-
     long getSize();
 
     Checksums getChecksums();

@@ -1,7 +1,5 @@
 package org.artifactory.client.model;
 
-import org.artifactory.client.model.impl.ItemImpl;
-
 import java.util.Date;
 
 /**
@@ -12,6 +10,10 @@ public interface Item {
     boolean isFolder();
 
     String getUri();
+
+    String getPath();
+
+    String getRepo();
 
     String getMetadataUri();
 

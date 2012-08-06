@@ -13,14 +13,4 @@ public interface Folder extends Item {
     Date getCreated();
 
     String getCreatedBy();
-
-    Date getLastUpdated();
-
-    String getMetadataUri();
-
-    String getModifiedBy();
-
-    String getPath();
-
-    String getRepo();
 }

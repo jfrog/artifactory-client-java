@@ -11,6 +11,8 @@ import java.util.Date;
 
 public class ItemImpl implements Item {
     private String uri;
+    private String repo;
+    private String path;
     private boolean folder;
     private String metadataUri;
     private Date lastModified;
@@ -28,6 +30,22 @@ public class ItemImpl implements Item {
     }
 
     protected ItemImpl() {
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    private void setPath(String path) {
+        this.path = path;
+    }
+
+    public String getRepo() {
+        return repo;
+    }
+
+    private void setRepo(String repo) {
+        this.repo = repo;
     }
 
     @Override

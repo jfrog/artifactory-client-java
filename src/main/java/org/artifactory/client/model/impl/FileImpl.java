@@ -12,8 +12,6 @@ import java.util.Date;
 public class FileImpl extends ItemImpl implements File {
 
     private String downloadUri;
-    private String repo;
-    private String path;
     private Date created;
     private String createdBy;
     private long size;
@@ -68,24 +66,6 @@ public class FileImpl extends ItemImpl implements File {
     }
 
     @Override
-    public String getPath() {
-        return path;
-    }
-
-    private void setPath(String path) {
-        this.path = path;
-    }
-
-    @Override
-    public String getRepo() {
-        return repo;
-    }
-
-    private void setRepo(String repo) {
-        this.repo = repo;
-    }
-
-    @Override
     public long getSize() {
         return size;
     }
@@ -121,27 +101,12 @@ public class FileImpl extends ItemImpl implements File {
     }
 
     @Override
-    public int hashCode() {
-        int result = downloadUri != null ? downloadUri.hashCode() : 0;
-        result = 31 * result + (repo != null ? repo.hashCode() : 0);
-        result = 31 * result + (path != null ? path.hashCode() : 0);
-        result = 31 * result + (created != null ? created.hashCode() : 0);
-        result = 31 * result + (createdBy != null ? createdBy.hashCode() : 0);
-        result = 31 * result + (int) (size ^ (size >>> 32));
-        result = 31 * result + (mimeType != null ? mimeType.hashCode() : 0);
-        result = 31 * result + (checksums != null ? checksums.hashCode() : 0);
-        result = 31 * result + (originalChecksums != null ? originalChecksums.hashCode() : 0);
-        result = 31 * result + (remoteUrl != null ? remoteUrl.hashCode() : 0);
-        return result;
-    }
-
-    @Override
     public String toString() {
         return "FileImpl{" +
                 "checksums=" + checksums +
                 ", downloadUri='" + downloadUri + '\'' +
-                ", repo='" + repo + '\'' +
-                ", path='" + path + '\'' +
+                ", repo='" + getRepo() + '\'' +
+                ", path='" + getPath() + '\'' +
                 ", created=" + created +
                 ", createdBy='" + createdBy + '\'' +
                 ", size=" + size +
