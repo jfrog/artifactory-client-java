@@ -66,8 +66,8 @@ class Artifactory {
         new Repositories(this)
     }
 
-    Repositories repository(String repo) {
-        new Repositories(this, repo)
+    Repositories.RepositoryHandler repository(String repo) {
+        new Repositories(this).repository(repo)
     }
 
     Searches searches() {
@@ -102,7 +102,7 @@ class Artifactory {
                 requestContentType: JSON, body: objectMapper.writeValueAsString(body)]
     }
 
-    private <T> T put(String path, Map query = [:], body, Class responseType = String, ContentType requestContentType = JSON) {
+    def <T> T put(String path, Map query = [:], body, Class responseType = String, ContentType requestContentType = JSON) {
         Map params
         if (requestContentType == JSON) {
             params = putAndPostJsonParams(path, query, body)

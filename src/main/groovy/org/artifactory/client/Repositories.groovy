@@ -23,68 +23,79 @@ import static org.artifactory.client.model.RepositoryType.parseString
 class Repositories {
 
     private Artifactory artifactory
-    private String repo
-    private RepositoryBuilders builders
+    static private RepositoryBuilders builders = new RepositoryBuilders()
 
     private REPOSITORIES_API = '/api/repositories/'
+    private REPLICATION_API = '/api/replication/'
+
+    String create(int position, Repository configuration) {
+        artifactory.put("$REPOSITORIES_API${configuration.getKey()}", [pos: position], configuration)
+    }
+
+    String update(Repository configuration) {
+        artifactory.post("$REPOSITORIES_API${configuration.getKey()}", configuration)
+    }
+
+    RepositoryHandler repository(String repo) {
+        new RepositoryHandler(repo)
+    }
 
     Repositories(Artifactory artifactory) {
         this.artifactory = artifactory
-        builders = new RepositoryBuilders()
-    }
-
-    Repositories(Artifactory artifactory, String repo) {
-        this(artifactory)
-        this.repo = repo
     }
 
     RepositoryBuilders builders() {
         builders
     }
 
-    Items folder(String folderName) {
-        new Items(artifactory, repo, folderName, FolderImpl)
-    }
+    class RepositoryHandler {
+        private String repo
 
-    Items file(String filePath) {
-        new Items(artifactory, repo, filePath, FileImpl)
-    }
+        RepositoryHandler(String repo) {
+            this.repo = repo
+        }
 
-    String create(int position, Repository configuration) {
-        artifactory.put("$REPOSITORIES_API${repo}", [pos: position], configuration)
-    }
+        Items folder(String folderName) {
+            new Items(artifactory, repo, folderName, FolderImpl)
+        }
 
-    String update(Repository configuration) {
-        artifactory.post("$REPOSITORIES_API${repo}", configuration)
-    }
+        Items file(String filePath) {
+            new Items(artifactory, repo, filePath, FileImpl)
+        }
 
-    String delete() {
-        artifactory.delete("$REPOSITORIES_API${repo}")
-    }
+        String replicationStatus() {
+            String repoJson = artifactory.getText("$REPLICATION_API${repo}")
+            JsonSlurper slurper = new JsonSlurper()
+            /*def repo = */ slurper.parseText(repoJson)
+            //artifactory.parseText(repoJson, parseString(repo.rclass).typeClass)
+        }
 
-    List<LightweightRepository> list(RepositoryType repositoryType) {
-        artifactory.getJson(REPOSITORIES_API, new TypeReference<List<LightweightRepositoryImpl>>() {}, [type: repositoryType.toString()])
-    }
+        String delete() {
+            artifactory.delete("$REPOSITORIES_API${repo}")
+        }
 
-    Repository get() {
-        String repoJson = artifactory.getText("$REPOSITORIES_API${repo}")
-        JsonSlurper slurper = new JsonSlurper()
-        def repo = slurper.parseText(repoJson)
-        artifactory.parseText(repoJson, parseString(repo.rclass).typeClass)
-    }
+        Repository get() {
+            String repoJson = artifactory.getText("$REPOSITORIES_API${repo}")
+            JsonSlurper slurper = new JsonSlurper()
+            def repo = slurper.parseText(repoJson)
+            artifactory.parseText(repoJson, parseString(repo.rclass).typeClass)
+        }
 
-    UploadableArtifact upload(String targetPath, InputStream content) {
-        return new UploadableArtifact(targetPath, content)
-    }
+        UploadableArtifact upload(String targetPath, InputStream content) {
+            return new UploadableArtifact(repo, targetPath, content)
+        }
 
-    DownloadableArtifact download(String path) {
-        return new DownloadableArtifact(path)
+        DownloadableArtifact download(String path) {
+            return new DownloadableArtifact(repo, path)
+        }
     }
 
     abstract class Artifact<T extends Artifact> {
+        protected repo;
         protected props = [:]
 
-        protected Artifact() {
+        protected Artifact(repo) {
+            this.repo = repo
         }
 
         T withProperty(String name, Object... values) {
@@ -110,7 +121,8 @@ class Repositories {
         private path
         private content
 
-        UploadableArtifact(String path, InputStream content) {
+        UploadableArtifact(String repo, String path, InputStream content) {
+            super(repo)
             this.path = path
             this.content = content
         }
@@ -121,12 +133,17 @@ class Repositories {
         }
     }
 
+    List<LightweightRepository> list(RepositoryType repositoryType) {
+        artifactory.getJson(REPOSITORIES_API, new TypeReference<List<LightweightRepositoryImpl>>() {}, [type: repositoryType.toString()])
+    }
+
     class DownloadableArtifact extends Artifact<DownloadableArtifact> {
         private path
 
         private mandatoryProps = [:]
 
-        DownloadableArtifact(path) {
+        DownloadableArtifact(String repo, String path) {
+            super(repo)
             this.path = path
         }
 

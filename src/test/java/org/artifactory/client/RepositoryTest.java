@@ -32,7 +32,7 @@ public class RepositoryTest extends ArtifactoryTestBase {
 
     @Test(groups = "repositoryBasics", dependsOnMethods = "testDelete")
     public void testCreate() throws Exception {
-        assertTrue(artifactory.repository(NEW_LOCAL).create(2, localRepository)
+        assertTrue(artifactory.repositories().create(2, localRepository)
                 .startsWith("Repository " + NEW_LOCAL + " created successfully."));
         assertTrue(curl(LIST_PATH).contains(NEW_LOCAL));
 
@@ -43,7 +43,7 @@ public class RepositoryTest extends ArtifactoryTestBase {
         LocalRepository changedRepository =
                 artifactory.repositories().builders().builderFrom(localRepository).description("new description")
                         .build();
-        artifactory.repository(NEW_LOCAL).update(changedRepository);
+        artifactory.repositories().update(changedRepository);
         assertTrue(curl("api/repositories/" + NEW_LOCAL).contains("\"description\":\"new description\""));
     }
 
