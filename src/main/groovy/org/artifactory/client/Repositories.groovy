@@ -57,6 +57,7 @@ class Repositories {
             this.repo = repo
         }
 
+        //TODO: [by yl] Use a FileHandler and a FolderHandler instead or returning Items
         Items folder(String folderName) {
             new Items(artifactory, repo, folderName, FolderImpl)
         }
@@ -74,6 +75,10 @@ class Repositories {
             artifactory.delete("$REPOSITORIES_API${repo}")
         }
 
+        String delete(String path) {
+            artifactory.delete("/${repo}/${path}")
+        }
+
         Repository get() {
             String repoJson = artifactory.getText("$REPOSITORIES_API${repo}")
             JsonSlurper slurper = new JsonSlurper()
@@ -82,11 +87,11 @@ class Repositories {
         }
 
         UploadableArtifact upload(String targetPath, InputStream content) {
-            return new UploadableArtifact(repo, targetPath, content)
+            new UploadableArtifact(repo, targetPath, content)
         }
 
         DownloadableArtifact download(String path) {
-            return new DownloadableArtifact(repo, path)
+            new DownloadableArtifact(repo, path)
         }
     }
 
@@ -128,8 +133,10 @@ class Repositories {
         }
 
         File doUpload() {
-            def params = parseParams(props, '=')
-            artifactory.put("/$repo/$path${params}", [:], content, FileImpl, BINARY)
+            content.withStream {
+                def params = parseParams(props, '=')
+                artifactory.put("/$repo/$path${params}", [:], content, FileImpl, BINARY)
+            }
         }
     }
 

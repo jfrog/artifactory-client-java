@@ -102,6 +102,10 @@ class Artifactory {
                 requestContentType: JSON, body: objectMapper.writeValueAsString(body)]
     }
 
+    def <T> T put(String path, Map query = [:], Class responseType = null) {
+        put(path, query, null, responseType, ANY)
+    }
+
     def <T> T put(String path, Map query = [:], body, Class responseType = String, ContentType requestContentType = JSON) {
         Map params
         if (requestContentType == JSON) {
@@ -110,11 +114,12 @@ class Artifactory {
             params = [path: "/$contextName$path", query: query,
                     headers: [Accept: ANY, CONTENT_TYPE: requestContentType],
                     contentType: TEXT, requestContentType: requestContentType, body: body]
-
         }
         def data = client.put(params).data
         //TODO (JB) need to try once more to replace this stuff with good parser that uses Jackson(if possible- see above)
-        if (responseType == String) {
+        if (responseType == null) {
+            null
+        } else if (responseType == String) {
             data.text
         } else {
             objectMapper.readValue(data as Reader, responseType)
@@ -122,11 +127,11 @@ class Artifactory {
     }
 
     private String post(String path, Map query = [:], body) {
-        client.post(putAndPostJsonParams(path, query, body)).data.text
+        client.post(putAndPostJsonParams(path, query, body)).data?.text
     }
 
     private String delete(String path, Map query = [:]) {
-        client.delete(path: "/$contextName$path", query: query).data.text
+        client.delete(path: "/$contextName$path", query: query).data?.text
     }
 
     private <T> T getJson(String path, def target, Map query = [:]) {

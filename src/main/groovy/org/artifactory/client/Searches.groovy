@@ -28,14 +28,14 @@ class Searches {
         this
     }
 
-    List<String> search() throws HttpResponseException {
+    List<String> doSearch() throws HttpResponseException {
         if (!quickSearchTerm) {
             throw new IllegalArgumentException("Search term wasn't set. Please call 'artifactsByName(name to search)' before calling 'search()'")
         }
-        doSearch('artifact', [name: quickSearchTerm])
+        search('artifact', [name: quickSearchTerm])
     }
 
-    private List<String> doSearch(String url, Map query) throws HttpResponseException {
+    private List<String> search(String url, Map query) throws HttpResponseException {
         if (reposFilter) {
             query.repos = reposFilter.join(',')
         }
@@ -54,7 +54,7 @@ class Searches {
 
         PropertyFilters repositories(String... repositories)
 
-        List<String> search() throws HttpResponseException
+        List<String> doSearch() throws HttpResponseException
     }
 
     class PropertyFiltersImpl implements PropertyFilters {
@@ -88,11 +88,11 @@ class Searches {
         }
 
         @Override
-        List<String> search() {
+        List<String> doSearch() {
             def propertiesQuery = (filters as List).collectEntries {filter ->
                 [filter.name, filter.values.join(',')]
             }
-            doSearch('prop', propertiesQuery) as List<String>
+            search('prop', propertiesQuery) as List<String>
 
         }
     }

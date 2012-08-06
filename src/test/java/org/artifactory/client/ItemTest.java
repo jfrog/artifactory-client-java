@@ -1,8 +1,15 @@
 package org.artifactory.client;
 
+import groovyx.net.http.HttpResponseException;
 import org.artifactory.client.model.File;
 import org.artifactory.client.model.Folder;
 import org.testng.annotations.Test;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import static org.testng.Assert.*;
 
@@ -34,4 +41,44 @@ public class ItemTest extends ArtifactoryTestBase {
         assertEquals(file.getChecksums().getSha1(), "6c98d6766e72d5575f96c9479d1c1d3b865c6e25");
     }
 
+    @Test
+    public void testSetItemProperties() {
+        //Upload a clean file
+        try {
+            artifactory.repository(NEW_LOCAL).delete("x/y/z");
+        } catch (Exception e) {
+            //noinspection ConstantConditions
+            if (!(e instanceof HttpResponseException) || ((HttpResponseException) e).getStatusCode() != 404) {
+                throw e;
+            }
+        }
+        artifactory.repository(NEW_LOCAL).upload("x/y/z", this.getClass().getResourceAsStream("/sample.txt"))
+                .doUpload();
+        Items file = artifactory.repository(NEW_LOCAL).file("x/y/z");
+        Map<String, ?> resProps = file.getProps();
+        assertTrue(resProps.isEmpty());
+        Map<String, String> props = new HashMap<>();
+        props.put("p1", "v1");
+        file.setProps(props);
+        resProps = file.getProps();
+        assertEquals(((List) resProps.get("p1")).get(0), "v1");
+        props.put("p2", "v2");
+        props.put("p3", "v3");
+        file.setProps(props);
+        resProps = file.getProps();
+        assertEquals(((List) resProps.get("p1")).get(0), "v1");
+        assertEquals(((List) resProps.get("p2")).get(0), "v2");
+        assertEquals(((List) resProps.get("p3")).get(0), "v3");
+        Set<String> propNames = new HashSet<>();
+        propNames.add("p1");
+        propNames.add("p3");
+        resProps = file.getProps(propNames);
+        assertEquals(resProps.size(), 2);
+        assertEquals(((List) resProps.get("p1")).get(0), "v1");
+        assertEquals(((List) resProps.get("p3")).get(0), "v3");
+        file.deleteProps(propNames);
+        resProps = file.getProps();
+        assertEquals(resProps.size(), 1);
+        assertEquals(((List) resProps.get("p2")).get(0), "v2");
+    }
 }

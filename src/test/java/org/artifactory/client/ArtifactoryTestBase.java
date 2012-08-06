@@ -39,10 +39,9 @@ public abstract class ArtifactoryTestBase {
                     "Credentials file is missing, create artifactory.client.properties with 'username' and 'password' properties under src/test/resources");
         }
         props.load(inputStream);
+        url = props.getProperty("url");
         username = props.getProperty("username");
         password = props.getProperty("password");
-        url = "http://clienttests.artifactoryonline.com/clienttests";
-        //url = "http://localhost:8080/artifactory";
         artifactory = create(url, username, password);
     }
 
