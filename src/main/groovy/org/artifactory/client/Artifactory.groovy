@@ -20,7 +20,7 @@ import static groovyx.net.http.Method.GET
  */
 class Artifactory {
 
-    private static final SimpleDateFormat ISO8601_DATE_FORMAT = new SimpleDateFormat("YYYY-MM-dd'T'HH:mm:ss.SSS'Z'")
+    private static final SimpleDateFormat ISO8601_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ")
 
     private final RESTClient client
     private final String contextName
