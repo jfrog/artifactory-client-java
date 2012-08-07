@@ -33,6 +33,7 @@ public class FolderImpl extends ItemImpl implements Folder {
     @JsonDeserialize(contentAs = ItemImpl.class)
     private void setChildren(List<Item> children) {
         this.children = children;
+        //TODO: [by yl] Use a childItem class since children ItemImpl lacks a lot of data
     }
 
     @Override
