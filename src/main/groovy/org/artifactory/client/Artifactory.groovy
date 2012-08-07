@@ -2,11 +2,12 @@ package org.artifactory.client
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.util.ISO8601DateFormat
 import groovyx.net.http.ContentType
 import groovyx.net.http.HttpResponseException
 import groovyx.net.http.RESTClient
 
-import java.text.SimpleDateFormat
+import java.text.DateFormat
 
 import static com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS
 import static com.fasterxml.jackson.databind.introspect.VisibilityChecker.Std.defaultInstance
@@ -20,7 +21,7 @@ import static groovyx.net.http.Method.GET
  */
 class Artifactory {
 
-    private static final SimpleDateFormat ISO8601_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ")
+    private static final DateFormat ISO8601_DATE_FORMAT = ISO8601DateFormat.newInstance()
 
     private final RESTClient client
     private final String contextName
