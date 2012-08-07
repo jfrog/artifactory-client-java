@@ -44,6 +44,20 @@ dependencies {
     testCompile group: 'org.testng', name: 'testng', version: '6.5.2'
 }
 
+task sourceJar(type: Jar) {
+    from sourceSets.main.allSource
+    classifier = 'sources'
+}
+jar.dependsOn sourceJar
+
+configurations {
+    allArchives
+}
+artifacts {
+    allArchives sourceJar, jar
+}
+install.configuration = configurations.allArchives
+
 test {
     useTestNG()
 }
