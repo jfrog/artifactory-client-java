@@ -67,7 +67,7 @@ class Artifactory {
         new Repositories(this)
     }
 
-    Repositories.RepositoryHandler repository(String repo) {
+    Repositories.RepositoryHandle repository(String repo) {
         new Repositories(this).repository(repo)
     }
 

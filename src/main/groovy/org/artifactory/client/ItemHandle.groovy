@@ -8,14 +8,14 @@ import org.artifactory.client.model.Folder
  * @author jbaruch
  * @since 25/07/12
  */
-class ItemHandler {
+class ItemHandle {
 
     private Artifactory artifactory
     private String repo
     private String path
     private Class itemType
 
-    private ItemHandler(Artifactory artifactory, String repo, String path, Class itemType) {
+    private ItemHandle(Artifactory artifactory, String repo, String path, Class itemType) {
         this.artifactory = artifactory
         this.repo = repo
         this.path = path

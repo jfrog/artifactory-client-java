@@ -54,7 +54,7 @@ public class ItemTest extends ArtifactoryTestBase {
         }
         artifactory.repository(NEW_LOCAL).upload("x/y/z", this.getClass().getResourceAsStream("/sample.txt"))
                 .doUpload();
-        ItemHandler file = artifactory.repository(NEW_LOCAL).file("x/y/z");
+        ItemHandle file = artifactory.repository(NEW_LOCAL).file("x/y/z");
         Map<String, ?> resProps = file.getProps();
         assertTrue(resProps.isEmpty());
         Map<String, String> props = new HashMap<>();

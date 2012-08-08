@@ -38,8 +38,8 @@ class Repositories {
         artifactory.post("$REPOSITORIES_API${configuration.getKey()}", configuration)
     }
 
-    RepositoryHandler repository(String repo) {
-        new RepositoryHandler(repo)
+    RepositoryHandle repository(String repo) {
+        new RepositoryHandle(repo)
     }
 
     Repositories(Artifactory artifactory) {
@@ -50,20 +50,20 @@ class Repositories {
         builders
     }
 
-    class RepositoryHandler {
+    class RepositoryHandle {
         private String repo
 
-        RepositoryHandler(String repo) {
+        RepositoryHandle(String repo) {
             this.repo = repo
         }
 
         //TODO: [by yl] Use a FileHandler and a FolderHandler instead or returning Items
-        ItemHandler folder(String folderName) {
-            new ItemHandler(artifactory, repo, folderName, FolderImpl)
+        ItemHandle folder(String folderName) {
+            new ItemHandle(artifactory, repo, folderName, FolderImpl)
         }
 
-        ItemHandler file(String filePath) {
-            new ItemHandler(artifactory, repo, filePath, FileImpl)
+        ItemHandle file(String filePath) {
+            new ItemHandle(artifactory, repo, filePath, FileImpl)
         }
 
         ReplicationStatus replicationStatus() {
