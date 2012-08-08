@@ -58,12 +58,12 @@ class Repositories {
         }
 
         //TODO: [by yl] Use a FileHandler and a FolderHandler instead or returning Items
-        Items folder(String folderName) {
-            new Items(artifactory, repo, folderName, FolderImpl)
+        ItemHandler folder(String folderName) {
+            new ItemHandler(artifactory, repo, folderName, FolderImpl)
         }
 
-        Items file(String filePath) {
-            new Items(artifactory, repo, filePath, FileImpl)
+        ItemHandler file(String filePath) {
+            new ItemHandler(artifactory, repo, filePath, FileImpl)
         }
 
         ReplicationStatus replicationStatus() {

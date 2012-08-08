@@ -1,20 +1,21 @@
 package org.artifactory.client
 
 import groovyx.net.http.HttpResponseException
+import org.artifactory.client.model.Folder
 
 /**
  *
  * @author jbaruch
  * @since 25/07/12
  */
-class Items {
+class ItemHandler {
 
     private Artifactory artifactory
     private String repo
     private String path
     private Class itemType
 
-    private Items(Artifactory artifactory, String repo, String path, Class itemType) {
+    private ItemHandler(Artifactory artifactory, String repo, String path, Class itemType) {
         this.artifactory = artifactory
         this.repo = repo
         this.path = path
@@ -38,6 +39,10 @@ class Items {
             if (e.statusCode == 404) return [:]
             throw e
         }
+    }
+
+    boolean isFolder() {
+        return Folder.class.isAssignableFrom(itemType)
     }
 
     public setProps(Map<String, ?> props, boolean recursive = false) {
