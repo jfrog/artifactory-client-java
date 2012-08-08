@@ -2,6 +2,7 @@ package org.artifactory.client.model.impl;
 
 import org.artifactory.client.model.Item;
 
+import java.io.File;
 import java.util.Date;
 
 /**
@@ -55,6 +56,11 @@ public class ItemImpl implements Item {
 
     private void setFolder(boolean folder) {
         this.folder = folder;
+    }
+
+    @Override
+    public String getName() {
+        return new File(uri).getName();
     }
 
     @Override

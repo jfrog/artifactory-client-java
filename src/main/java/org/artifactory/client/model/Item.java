@@ -9,6 +9,8 @@ import java.util.Date;
 public interface Item {
     boolean isFolder();
 
+    String getName();
+
     String getUri();
 
     String getPath();
