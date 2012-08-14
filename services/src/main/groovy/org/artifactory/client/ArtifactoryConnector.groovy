@@ -19,7 +19,7 @@ public class ArtifactoryConnector {
         }
         def client = new RESTClient(matcher[0][1])
         client.auth.basic username, password
-        client.headers.'User-Agent' = 'ArtifactoryImpl-Client/1.0'
+        client.headers.'User-Agent' = 'Artifactory-Client/1.0'
         //TODO (JB) remove preemptive auth once RTFACT-5119 is fixed
         client.headers.Authorization = "Basic ${"$username:$password".toString().bytes.encodeBase64()}"
         new ArtifactoryImpl(client, matcher[0][2])
