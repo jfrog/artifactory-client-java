@@ -1,1 +1,2 @@
+include 'api', 'services'
 rootProject.name = 'java-client'
