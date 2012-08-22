@@ -20,4 +20,6 @@ public interface Repository {
     String getExcludesPattern();
 
     String getRepoLayoutRef();
+
+    boolean isEnableNuGetSupport();
 }

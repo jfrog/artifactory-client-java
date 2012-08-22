@@ -7,4 +7,7 @@ package org.artifactory.client.model;
 public interface LocalRepository extends Repository, NonVirtualRepository {
     ChecksumPolicyType getChecksumPolicyType();
 
+    boolean isCalculateYumMetadata();
+
+    int getYumRootDepth();
 }

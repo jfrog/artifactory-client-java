@@ -15,6 +15,7 @@ abstract class RepositoryBuilderBase<B extends RepositoryBuilder, R extends Repo
     protected String key
     protected String notes
     protected String repoLayoutRef
+    protected boolean enableNuGetSupport = false
 
 
     B description(String description) {
@@ -44,6 +45,11 @@ abstract class RepositoryBuilderBase<B extends RepositoryBuilder, R extends Repo
 
     B repoLayoutRef(String repoLayoutRef) {
         this.repoLayoutRef = repoLayoutRef
+        this as B
+    }
+
+    B enableNuGetSupport(boolean enableNuGetSupport) {
+        this.enableNuGetSupport = enableNuGetSupport
         this as B
     }
 }

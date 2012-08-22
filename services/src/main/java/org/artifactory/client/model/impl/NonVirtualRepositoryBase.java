@@ -14,16 +14,17 @@ public abstract class NonVirtualRepositoryBase extends RepositoryBase implements
     private boolean handleReleases;
     private boolean handleSnapshots;
     private int maxUniqueSnapshots;
-    private SnapshotVersionBehaviorImpl snapshotVersionBehavior;
+    private SnapshotVersionBehavior snapshotVersionBehavior;
     private boolean suppressPomConsistencyChecks;
     private boolean blackedOut;
     private List<String> propertySets;
+    protected boolean archiveBrowsingEnabled;
 
     protected NonVirtualRepositoryBase() {
     }
 
-    protected NonVirtualRepositoryBase(String description, String excludesPattern, String includesPattern, String key, String notes, boolean blackedOut, boolean handleReleases, boolean handleSnapshots, int maxUniqueSnapshots, List<String> propertySets, SnapshotVersionBehaviorImpl snapshotVersionBehavior, boolean suppressPomConsistencyChecks, String repoLayoutRef) {
-        super(description, excludesPattern, includesPattern, key, notes, repoLayoutRef);
+    protected NonVirtualRepositoryBase(String description, String excludesPattern, String includesPattern, String key, String notes, boolean blackedOut, boolean handleReleases, boolean handleSnapshots, int maxUniqueSnapshots, List<String> propertySets, SnapshotVersionBehavior snapshotVersionBehavior, boolean suppressPomConsistencyChecks, String repoLayoutRef, boolean enableNuGetSupport, boolean archiveBrowsingEnabled) {
+        super(description, excludesPattern, includesPattern, key, notes, repoLayoutRef, enableNuGetSupport);
         this.blackedOut = blackedOut;
         this.handleReleases = handleReleases;
         this.handleSnapshots = handleSnapshots;
@@ -31,6 +32,7 @@ public abstract class NonVirtualRepositoryBase extends RepositoryBase implements
         this.propertySets = propertySets;
         this.snapshotVersionBehavior = snapshotVersionBehavior;
         this.suppressPomConsistencyChecks = suppressPomConsistencyChecks;
+        this.archiveBrowsingEnabled = archiveBrowsingEnabled;
     }
 
     @Override
@@ -98,19 +100,39 @@ public abstract class NonVirtualRepositoryBase extends RepositoryBase implements
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
 
         NonVirtualRepositoryBase that = (NonVirtualRepositoryBase) o;
 
-        if (blackedOut != that.blackedOut) return false;
-        if (handleReleases != that.handleReleases) return false;
-        if (handleSnapshots != that.handleSnapshots) return false;
-        if (maxUniqueSnapshots != that.maxUniqueSnapshots) return false;
-        if (suppressPomConsistencyChecks != that.suppressPomConsistencyChecks) return false;
-        if (propertySets != null ? !propertySets.equals(that.propertySets) : that.propertySets != null) return false;
-        if (snapshotVersionBehavior != that.snapshotVersionBehavior) return false;
+        if (blackedOut != that.blackedOut) {
+            return false;
+        }
+        if (handleReleases != that.handleReleases) {
+            return false;
+        }
+        if (handleSnapshots != that.handleSnapshots) {
+            return false;
+        }
+        if (maxUniqueSnapshots != that.maxUniqueSnapshots) {
+            return false;
+        }
+        if (suppressPomConsistencyChecks != that.suppressPomConsistencyChecks) {
+            return false;
+        }
+        if (propertySets != null ? !propertySets.equals(that.propertySets) : that.propertySets != null) {
+            return false;
+        }
+        if (snapshotVersionBehavior != that.snapshotVersionBehavior) {
+            return false;
+        }
 
         return true;
     }
@@ -130,15 +152,23 @@ public abstract class NonVirtualRepositoryBase extends RepositoryBase implements
 
     @Override
     public String toString() {
-        return super.toString() + "\nNonVirtualRepository{" +
-                "blackedOut=" + blackedOut +
-                ", handleReleases=" + handleReleases +
+        return "NonVirtualRepositoryBase{" +
+                "handleReleases=" + handleReleases +
                 ", handleSnapshots=" + handleSnapshots +
                 ", maxUniqueSnapshots=" + maxUniqueSnapshots +
                 ", snapshotVersionBehavior=" + snapshotVersionBehavior +
                 ", suppressPomConsistencyChecks=" + suppressPomConsistencyChecks +
+                ", blackedOut=" + blackedOut +
                 ", propertySets=" + propertySets +
                 '}';
     }
 
+    @Override
+    public boolean isArchiveBrowsingEnabled() {
+        return archiveBrowsingEnabled;
+    }
+
+    private void setArchiveBrowsingEnabled(boolean archiveBrowsingEnabled) {
+        this.archiveBrowsingEnabled = archiveBrowsingEnabled;
+    }
 }

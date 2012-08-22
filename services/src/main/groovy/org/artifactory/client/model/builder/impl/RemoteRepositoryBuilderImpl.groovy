@@ -39,6 +39,10 @@ class RemoteRepositoryBuilderImpl extends NonVirtualRepositoryBuilderBase<Remote
     private boolean fetchSourcesEagerly
     private boolean shareConfiguration
     private boolean synchronizeProperties
+    private long assumedOfflinePeriodSecs = 300
+    private boolean listRemoteFolderItems = true
+    private boolean rejectInvalidJars = false
+    private boolean p2Support = false
 
     RemoteRepositoryBuilder url(String url) {
         this.url = url
@@ -135,10 +139,30 @@ class RemoteRepositoryBuilderImpl extends NonVirtualRepositoryBuilderBase<Remote
         this
     }
 
+    RemoteRepositoryBuilder assumedOfflinePeriodSecs(long assumedOfflinePeriodSecs) {
+        this.assumedOfflinePeriodSecs = assumedOfflinePeriodSecs
+        this
+    }
+
+    RemoteRepositoryBuilder listRemoteFolderItems(boolean listRemoteFolderItems) {
+        this.listRemoteFolderItems = listRemoteFolderItems
+        this
+    }
+
+    RemoteRepositoryBuilder rejectInvalidJars(boolean rejectInvalidJars) {
+        this.rejectInvalidJars = rejectInvalidJars
+        this
+    }
+
+    RemoteRepositoryBuilder p2Support(boolean p2Support) {
+        this.p2Support = p2Support
+        this
+    }
+
     RemoteRepository build() {
-        return new RemoteRepositoryImpl(description, excludesPattern, includesPattern, key, notes, blackedOut, handleReleases, handleSnapshots,
-                maxUniqueSnapshots, propertySets, snapshotVersionBehavior, suppressPomConsistencyChecks, failedRetrievalCachePeriodSecs, fetchJarsEagerly, fetchSourcesEagerly,
-                hardFail, localAddress, missedRetrievalCachePeriodSecs, offline, password, proxy, remoteRepoChecksumPolicyType, retrievalCachePeriodSecs, shareConfiguration, socketTimeoutMillis,
-                storeArtifactsLocally, synchronizeProperties, unusedArtifactsCleanupEnabled, unusedArtifactsCleanupPeriodHours, url, username, repoLayoutRef)
+        return new RemoteRepositoryImpl(description, excludesPattern, includesPattern, key, notes, blackedOut,handleReleases, handleSnapshots, maxUniqueSnapshots,propertySets,
+        snapshotVersionBehavior, suppressPomConsistencyChecks, failedRetrievalCachePeriodSecs, fetchJarsEagerly, fetchSourcesEagerly,hardFail, localAddress, missedRetrievalCachePeriodSecs,
+        offline, password, proxy, remoteRepoChecksumPolicyType, retrievalCachePeriodSecs, shareConfiguration, socketTimeoutMillis, storeArtifactsLocally, synchronizeProperties,
+        unusedArtifactsCleanupEnabled, unusedArtifactsCleanupPeriodHours, url, username, repoLayoutRef, enableNuGetSupport, assumedOfflinePeriodSecs, archiveBrowsingEnabled, listRemoteFolderItems, rejectInvalidJars, p2Support)
     }
 }

@@ -15,17 +15,19 @@ public abstract class RepositoryBase implements Repository {
     private String includesPattern;
     private String excludesPattern;
     protected String repoLayoutRef;
+    protected boolean enableNuGetSupport;
 
     protected RepositoryBase() {
     }
 
-    protected RepositoryBase(String description, String excludesPattern, String includesPattern, String key, String notes, String repoLayoutRef) {
+    protected RepositoryBase(String description, String excludesPattern, String includesPattern, String key, String notes, String repoLayoutRef, boolean enableNuGetSupport) {
         this.description = description;
         this.excludesPattern = excludesPattern;
         this.includesPattern = includesPattern;
         this.key = key;
         this.notes = notes;
         this.repoLayoutRef = repoLayoutRef;
+        this.enableNuGetSupport = enableNuGetSupport;
     }
 
     @Override
@@ -126,5 +128,14 @@ public abstract class RepositoryBase implements Repository {
 
     private void setRepoLayoutRef(String repoLayoutRef) {
         this.repoLayoutRef = repoLayoutRef;
+    }
+
+    @Override
+    public boolean isEnableNuGetSupport() {
+        return enableNuGetSupport;
+    }
+
+    private void setEnableNuGetSupport(boolean enableNuGetSupport) {
+        this.enableNuGetSupport = enableNuGetSupport;
     }
 }

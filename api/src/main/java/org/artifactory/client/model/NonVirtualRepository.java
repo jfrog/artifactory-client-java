@@ -21,4 +21,5 @@ public interface NonVirtualRepository extends Repository {
 
     List<String> getPropertySets();
 
+    boolean isArchiveBrowsingEnabled();
 }

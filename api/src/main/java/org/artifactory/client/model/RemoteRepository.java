@@ -43,4 +43,11 @@ public interface RemoteRepository extends Repository, NonVirtualRepository {
 
     boolean isSynchronizeProperties();
 
+    long getAssumedOfflinePeriodSecs();
+
+    boolean isListRemoteFolderItems();
+
+    boolean isRejectInvalidJars();
+
+    boolean isP2Support();
 }

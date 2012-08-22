@@ -41,6 +41,6 @@ class VirtualRepositoryBuilderImpl extends RepositoryBuilderBase<VirtualReposito
     }
 
     VirtualRepository build() {
-        return new VirtualRepositoryImpl(description, excludesPattern, includesPattern, key, notes, artifactoryRequestsCanRetrieveRemoteArtifacts, keyPair, pomRepositoryReferencesCleanupPolicy, repositories)
+        return new VirtualRepositoryImpl(description, excludesPattern, includesPattern, key, notes, artifactoryRequestsCanRetrieveRemoteArtifacts, keyPair, pomRepositoryReferencesCleanupPolicy, repositories, repoLayoutRef, enableNuGetSupport)
     }
 }

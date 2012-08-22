@@ -18,17 +18,30 @@ class LocalRepositoryBuilderImpl extends NonVirtualRepositoryBuilderBase<LocalRe
     private LocalRepositoryBuilderImpl() {
         this.repoLayoutRef = Repository.MAVEN_2_REPO_LAYOUT
         this.checksumPolicyType = client_checksums
+
     }
 
-    private ChecksumPolicyTypeImpl checksumPolicyType
+    private ChecksumPolicyType checksumPolicyType
+    private boolean calculateYumMetadata
+    private int yumRootDepth
 
     LocalRepositoryBuilder checksumPolicyType(ChecksumPolicyType checksumPolicyType) {
         this.checksumPolicyType = checksumPolicyType
         this
     }
 
+    LocalRepositoryBuilder calculateYumMetadata(boolean calculateYumMetadata) {
+        this.calculateYumMetadata = calculateYumMetadata
+        this
+    }
+
+    LocalRepositoryBuilder yumRootDepth(int yumRootDepth) {
+        this.yumRootDepth = yumRootDepth
+        this
+    }
+
     LocalRepository build() {
-        return new LocalRepositoryImpl(description, excludesPattern, includesPattern, key, notes, blackedOut, handleReleases, handleSnapshots, maxUniqueSnapshots, propertySets, snapshotVersionBehavior, suppressPomConsistencyChecks, checksumPolicyType, repoLayoutRef)
+        return new LocalRepositoryImpl(description, excludesPattern, includesPattern, key, notes, blackedOut, handleReleases, handleSnapshots, maxUniqueSnapshots, propertySets, snapshotVersionBehavior, suppressPomConsistencyChecks, checksumPolicyType, repoLayoutRef, enableNuGetSupport, archiveBrowsingEnabled, calculateYumMetadata, yumRootDepth)
     }
 
 }

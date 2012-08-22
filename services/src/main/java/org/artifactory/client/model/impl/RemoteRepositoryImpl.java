@@ -3,6 +3,7 @@ package org.artifactory.client.model.impl;
 import org.artifactory.client.model.RemoteRepoChecksumPolicyType;
 import org.artifactory.client.model.RemoteRepository;
 import org.artifactory.client.model.RepositoryType;
+import org.artifactory.client.model.SnapshotVersionBehavior;
 
 import java.util.List;
 
@@ -16,7 +17,7 @@ public class RemoteRepositoryImpl extends NonVirtualRepositoryBase implements Re
     private String username;
     private String password;
     private String proxy;
-    private RemoteRepoChecksumPolicyTypeImpl remoteRepoChecksumPolicyType;
+    private RemoteRepoChecksumPolicyType remoteRepoChecksumPolicyType;
     private boolean hardFail;
     private boolean offline;
     private boolean storeArtifactsLocally;
@@ -31,14 +32,25 @@ public class RemoteRepositoryImpl extends NonVirtualRepositoryBase implements Re
     private boolean fetchSourcesEagerly;
     private boolean shareConfiguration;
     private boolean synchronizeProperties;
+    private long assumedOfflinePeriodSecs;
+    private boolean listRemoteFolderItems;
+    private boolean rejectInvalidJars;
+    private boolean p2Support;
 
     private RemoteRepositoryImpl() {
         remoteRepoChecksumPolicyType = RemoteRepoChecksumPolicyTypeImpl.generate_if_absent;
         repoLayoutRef = MAVEN_2_REPO_LAYOUT;
     }
 
-    RemoteRepositoryImpl(String description, String excludesPattern, String includesPattern, String key, String notes, boolean blackedOut, boolean handleReleases, boolean handleSnapshots, int maxUniqueSnapshots, List<String> propertySets, SnapshotVersionBehaviorImpl snapshotVersionBehavior, boolean suppressPomConsistencyChecks, int failedRetrievalCachePeriodSecs, boolean fetchJarsEagerly, boolean fetchSourcesEagerly, boolean hardFail, String localAddress, int missedRetrievalCachePeriodSecs, boolean offline, String password, String proxy, RemoteRepoChecksumPolicyTypeImpl remoteRepoChecksumPolicyType, int retrievalCachePeriodSecs, boolean shareConfiguration, int socketTimeoutMillis, boolean storeArtifactsLocally, boolean synchronizeProperties, boolean unusedArtifactsCleanupEnabled, int unusedArtifactsCleanupPeriodHours, String url, String username, String repoLayoutRef) {
-        super(description, excludesPattern, includesPattern, key, notes, blackedOut, handleReleases, handleSnapshots, maxUniqueSnapshots, propertySets, snapshotVersionBehavior, suppressPomConsistencyChecks, repoLayoutRef);
+    RemoteRepositoryImpl(String description, String excludesPattern, String includesPattern, String key, String notes, boolean blackedOut, boolean handleReleases, boolean handleSnapshots,
+                         int maxUniqueSnapshots, List<String> propertySets, SnapshotVersionBehavior snapshotVersionBehavior, boolean suppressPomConsistencyChecks,
+                         int failedRetrievalCachePeriodSecs, boolean fetchJarsEagerly, boolean fetchSourcesEagerly, boolean hardFail, String localAddress,
+                         int missedRetrievalCachePeriodSecs, boolean offline, String password, String proxy, RemoteRepoChecksumPolicyType remoteRepoChecksumPolicyType,
+                         int retrievalCachePeriodSecs, boolean shareConfiguration, int socketTimeoutMillis, boolean storeArtifactsLocally, boolean synchronizeProperties,
+                         boolean unusedArtifactsCleanupEnabled, int unusedArtifactsCleanupPeriodHours, String url, String username, String repoLayoutRef, boolean enableNuGetSupport,
+                         long assumedOfflinePeriodSecs, boolean archiveBrowsingEnabled, boolean listRemoteFolderItems, boolean rejectInvalidJars, boolean p2Support) {
+        super(description, excludesPattern, includesPattern, key, notes, blackedOut, handleReleases, handleSnapshots, maxUniqueSnapshots, propertySets, snapshotVersionBehavior,
+                suppressPomConsistencyChecks, repoLayoutRef, enableNuGetSupport, archiveBrowsingEnabled);
         this.failedRetrievalCachePeriodSecs = failedRetrievalCachePeriodSecs;
         this.fetchJarsEagerly = fetchJarsEagerly;
         this.fetchSourcesEagerly = fetchSourcesEagerly;
@@ -58,6 +70,10 @@ public class RemoteRepositoryImpl extends NonVirtualRepositoryBase implements Re
         this.unusedArtifactsCleanupPeriodHours = unusedArtifactsCleanupPeriodHours;
         this.url = url;
         this.username = username;
+        this.assumedOfflinePeriodSecs = assumedOfflinePeriodSecs;
+        this.listRemoteFolderItems = listRemoteFolderItems;
+        this.rejectInvalidJars = rejectInvalidJars;
+        this.p2Support = p2Support;
     }
 
     @Override
@@ -237,6 +253,33 @@ public class RemoteRepositoryImpl extends NonVirtualRepositoryBase implements Re
     }
 
     @Override
+    public long getAssumedOfflinePeriodSecs() {
+        return assumedOfflinePeriodSecs;
+    }
+
+    private void setAssumedOfflinePeriodSecs(long assumedOfflinePeriodSecs) {
+        this.assumedOfflinePeriodSecs = assumedOfflinePeriodSecs;
+    }
+
+    @Override
+    public boolean isListRemoteFolderItems() {
+        return listRemoteFolderItems;
+    }
+
+    private void setListRemoteFolderItems(boolean listRemoteFolderItems) {
+        this.listRemoteFolderItems = listRemoteFolderItems;
+    }
+
+    @Override
+    public boolean isRejectInvalidJars() {
+        return rejectInvalidJars;
+    }
+
+    private void setRejectInvalidJars(boolean rejectInvalidJars) {
+        this.rejectInvalidJars = rejectInvalidJars;
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -315,5 +358,14 @@ public class RemoteRepositoryImpl extends NonVirtualRepositoryBase implements Re
                 ", shareConfiguration=" + shareConfiguration +
                 ", synchronizeProperties=" + synchronizeProperties +
                 '}';
+    }
+
+    @Override
+    public boolean isP2Support() {
+        return p2Support;
+    }
+
+    private void setP2Support(boolean p2Support) {
+        this.p2Support = p2Support;
     }
 }

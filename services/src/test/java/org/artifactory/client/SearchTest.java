@@ -1,6 +1,7 @@
 package org.artifactory.client;
 
 import groovyx.net.http.HttpResponseException;
+import org.apache.commons.lang.StringUtils;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
@@ -9,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import static java.util.Arrays.asList;
+import static org.apache.commons.lang.StringUtils.countMatches;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
@@ -21,19 +23,19 @@ public class SearchTest extends ArtifactoryTestBase {
     @Test
     public void testLimitlessQuickSearch() throws IOException {
         List<String> results = artifactory.searches().artifactsByName("junit").doSearch();
-        assertJUnits(results);
+        assertEquals(results.size(), countMatches(curl("api/search/artifact?name=junit"), "{")-1);
     }
 
-    @Test(expectedExceptions = HttpResponseException.class, expectedExceptionsMessageRegExp = "Not Found")
+    @Test
     public void testQuickSearchWithWrongSingleLimit() throws IOException {
-        //should fail
-        artifactory.searches().artifactsByName("junit").repositories(LIBS_RELEASES_LOCAL).doSearch();
+        List<String> list = artifactory.searches().artifactsByName("junit").repositories(NEW_LOCAL).doSearch();
+        assertTrue(list.isEmpty());
     }
 
     @Test
     public void testQuickSearchWithRightSingleLimit() throws IOException {
         List<String> results = artifactory.searches().artifactsByName("junit").repositories(REPO1_CACHE).doSearch();
-        assertJUnits(results);
+        assertEquals(results.size(), countMatches(curl("api/search/artifact?name=junit&repos=repo1-cache"), "{") - 1);
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
@@ -46,7 +48,7 @@ public class SearchTest extends ArtifactoryTestBase {
         List<String> results =
                 artifactory.searches().artifactsByName("junit").repositories(LIBS_RELEASES_LOCAL, REPO1_CACHE)
                         .doSearch();
-        assertJUnits(results);
+        assertEquals(results.size(), countMatches(curl("api/search/artifact?name=junit&repos=libs-releases-local,repo1-cache"), "{") - 1);
     }
 
     @Test(dependsOnGroups = "uploadBasics")
@@ -73,24 +75,24 @@ public class SearchTest extends ArtifactoryTestBase {
         assertTrue(results.get(0).contains("a/b/c.txt"));
     }
 
-    @Test(dependsOnGroups = "uploadBasics", expectedExceptions = HttpResponseException.class,
-            expectedExceptionsMessageRegExp = "Not Found")
+    @Test(dependsOnGroups = "uploadBasics")
     public void testSearchByPropertyAndWrongRepoFilter() throws IOException {
-        artifactory.searches().repositories(REPO1).itemsByProperty().property("released", false).doSearch();
+        List<String> list = artifactory.searches().repositories(REPO1).itemsByProperty().property("released", false).doSearch();
+        assertTrue(list.isEmpty());
     }
 
-    @Test(dependsOnGroups = "uploadBasics", expectedExceptions = HttpResponseException.class,
-            expectedExceptionsMessageRegExp = "Not Found")
+    @Test(dependsOnGroups = "uploadBasics")
     public void testSearchByPropertyWithMulipleValue() throws IOException {
-        artifactory.searches().itemsByProperty().property("colors", "red", "green", "blue").doSearch();
+        List<String> list = artifactory.searches().itemsByProperty().property("colors", "red", "green", "blue").doSearch();
+        assertTrue(list.isEmpty());
     }
 
-    @Test(dependsOnGroups = "uploadBasics", expectedExceptions = HttpResponseException.class,
-            expectedExceptionsMessageRegExp = "Not Found")
+    @Test(dependsOnGroups = "uploadBasics")
     public void testSearchByPropertyMapNotationWithMulipleValue() throws IOException {
         Map<String, List<String>> property = new HashMap<>();
         property.put("colors", asList("red", "green", "blue"));
-        artifactory.searches().itemsByProperty().properties(property).doSearch();
+        List<String> list = artifactory.searches().itemsByProperty().properties(property).doSearch();
+        assertTrue(list.isEmpty());
     }
 
     @Test(dependsOnGroups = "uploadBasics")
@@ -100,12 +102,4 @@ public class SearchTest extends ArtifactoryTestBase {
         assertEquals(results.size(), 1);
         assertTrue(results.get(0).contains("a/b/c.txt"));
     }
-
-    private void assertJUnits(List<String> results) {
-        assertEquals(results.size(), 5);
-        for (String result : results) {
-            assertTrue(result.contains("junit"));
-        }
-    }
-
 }

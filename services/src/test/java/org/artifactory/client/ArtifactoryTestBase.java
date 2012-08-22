@@ -11,6 +11,7 @@ import java.net.URLConnection;
 import java.util.Properties;
 
 import static org.apache.commons.codec.binary.Base64.encodeBase64;
+import static org.apache.commons.lang.StringUtils.remove;
 import static org.artifactory.client.ArtifactoryConnector.create;
 
 /**
@@ -52,6 +53,14 @@ public abstract class ArtifactoryTestBase {
         try (InputStream is = urlConnection.getInputStream()) {
             return textFrom(is);
         }
+    }
+
+    protected String curlAndStrip(String path) throws IOException {
+        String result = curl(path);
+        result = remove(result, ' ');
+        result = remove(result, '\r');
+        result = remove(result, '\n');
+        return result;
     }
 
     protected String textFrom(InputStream is) throws IOException {

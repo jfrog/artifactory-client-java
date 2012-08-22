@@ -1,15 +1,19 @@
 package org.artifactory.client;
 
 import groovyx.net.http.HttpResponseException;
+import org.apache.commons.lang.StringUtils;
 import org.artifactory.client.model.*;
+import org.artifactory.client.model.impl.LightweightRepositoryImpl;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.util.List;
 
 import static java.util.Arrays.asList;
+import static org.apache.commons.lang.StringUtils.countMatches;
 import static org.artifactory.client.model.impl.RepositoryTypeImpl.*;
 import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
 
 
 /**
@@ -37,9 +41,9 @@ public class RepositoryTest extends ArtifactoryTestBase {
 
     @Test(dependsOnMethods = "testCreate")
     public void testUpdate() throws Exception {
-        LocalRepository changedRepository = artifactory.repositories().builders().builderFrom(localRepository).description("new description").build();
+        LocalRepository changedRepository = artifactory.repositories().builders().builderFrom(localRepository).description("new_description").build();
         artifactory.repositories().update(changedRepository);
-        assertTrue(curl("api/repositories/" + NEW_LOCAL).contains("\"description\":\"new description\""));
+        assertTrue(curlAndStrip("api/repositories/" + NEW_LOCAL).contains("\"description\":\"new_description\""));
     }
 
     @Test(dependsOnMethods = "testCreate")
@@ -64,24 +68,23 @@ public class RepositoryTest extends ArtifactoryTestBase {
     public void testListRemotes() throws Exception {
         List<LightweightRepository> remoteRepositories = artifactory.repositories().list(REMOTE);
         assertNotNull(remoteRepositories);
-        assertEquals(remoteRepositories.size(), 1);
+        String expected = curlAndStrip("api/repositories?type=remote");
+        assertEquals(remoteRepositories.size(), countMatches(expected, "{"));
         LightweightRepository repo = remoteRepositories.get(0);
         assertNotNull(repo);
         assertTrue(LightweightRepository.class.isAssignableFrom(repo.getClass()));
-        assertEquals(repo.getKey(), REPO1);
-        assertEquals(repo.getDescription(), "Central Repo1");
+        assertTrue(expected.substring(9).startsWith(repo.getKey()));
         assertEquals(repo.getType().toString(), "remote");
-        assertFalse(repo.getUrl().startsWith("http://clienttests.artifactoryonline.com/clienttests"));
-        assertEquals(repo.getUrl(), "http://repo-demo.jfrog.org/artifactory/repo1");
-
+        assertFalse(repo.getUrl().startsWith(url));
     }
 
     @Test(dependsOnMethods = "testCreate")// to be sure number of repos match
     public void testListLocals() throws Exception {
         List<LightweightRepository> localRepositories = artifactory.repositories().list(LOCAL);
-        assertEquals(localRepositories.size(), 7);
+        String expected = curl("api/repositories?type=local");
+        assertEquals(localRepositories.size(), countMatches(expected, "{"));
         for (LightweightRepository localRepository : localRepositories) {
-            assertTrue(localRepository.getUrl().startsWith("http://clienttests.artifactoryonline.com/clienttests"));
+            assertTrue(localRepository.getUrl().startsWith(url));
             assertEquals(localRepository.getType().toString(), "local");
         }
     }
@@ -89,9 +92,9 @@ public class RepositoryTest extends ArtifactoryTestBase {
     @Test
     public void testListVirtuals() throws Exception {
         List<LightweightRepository> virtualRepositories = artifactory.repositories().list(VIRTUAL);
-        assertEquals(virtualRepositories.size(), 7);
+        assertEquals(virtualRepositories.size(), countMatches(curl("api/repositories?type=virtual"), "{"));
         for (LightweightRepository virtualRepository : virtualRepositories) {
-            assertTrue(virtualRepository.getUrl().startsWith("http://clienttests.artifactoryonline.com/clienttests"));
+            assertTrue(virtualRepository.getUrl().startsWith(url));
             assertEquals(virtualRepository.getType().toString(), "virtual");
         }
     }
@@ -104,7 +107,8 @@ public class RepositoryTest extends ArtifactoryTestBase {
         RemoteRepository repo1 = (RemoteRepository) repository;
         assertEquals(repo1.getKey(), REPO1);
         assertEquals(repo1.getRclass().toString(), "remote");
-        assertEquals(repo1.getUrl(), "http://repo-demo.jfrog.org/artifactory/repo1");
+        //urls of repo1 are different for aol and standalone
+        assertTrue(repo1.getUrl().equals("http://repo-demo.jfrog.org/artifactory/repo1") || repo1.getUrl().equals("http://repo1.maven.org/maven2"));
         assertEquals(repo1.getUsername(), "");
         assertEquals(repo1.getPassword(), "");
         assertEquals(repo1.getDescription(), "Central Repo1");
@@ -123,7 +127,6 @@ public class RepositoryTest extends ArtifactoryTestBase {
         assertEquals(repo1.getSocketTimeoutMillis(), 15000);
         assertEquals(repo1.getLocalAddress(), "");
         assertEquals(repo1.getRetrievalCachePeriodSecs(), 43200);
-        assertEquals(repo1.getFailedRetrievalCachePeriodSecs(), 300);
         assertEquals(repo1.getMissedRetrievalCachePeriodSecs(), 7200);
         assertEquals(repo1.getUnusedArtifactsCleanupPeriodHours(), 0);
         assertFalse(repo1.isFetchJarsEagerly());

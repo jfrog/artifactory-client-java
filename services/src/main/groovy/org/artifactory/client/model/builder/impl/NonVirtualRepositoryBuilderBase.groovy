@@ -2,6 +2,7 @@ package org.artifactory.client.model.builder.impl
 
 import org.artifactory.client.model.NonVirtualRepository
 import org.artifactory.client.model.SnapshotVersionBehavior
+import org.artifactory.client.model.builder.LocalRepositoryBuilder
 import org.artifactory.client.model.builder.NonVirtualRepositoryBuilder
 import org.artifactory.client.model.impl.SnapshotVersionBehaviorImpl
 
@@ -20,6 +21,8 @@ abstract class NonVirtualRepositoryBuilderBase<B extends NonVirtualRepositoryBui
     protected List<String> propertySets = new ArrayList<String>()
     protected boolean suppressPomConsistencyChecks = false
     protected SnapshotVersionBehavior snapshotVersionBehavior = non_unique
+    protected boolean archiveBrowsingEnabled = false
+
 
     @Override
     B blackedOut(boolean blackedOut) {
@@ -62,4 +65,10 @@ abstract class NonVirtualRepositoryBuilderBase<B extends NonVirtualRepositoryBui
         this.propertySets = propertySets
         this as B
     }
+
+    B archiveBrowsingEnabled(boolean archiveBrowsingEnabled) {
+        this.archiveBrowsingEnabled = archiveBrowsingEnabled
+        this as B
+    }
+
 }

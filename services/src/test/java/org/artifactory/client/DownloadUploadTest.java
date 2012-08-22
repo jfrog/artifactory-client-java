@@ -1,6 +1,7 @@
 package org.artifactory.client;
 
 import groovyx.net.http.HttpResponseException;
+import org.apache.commons.lang.StringUtils;
 import org.artifactory.client.model.File;
 import org.testng.annotations.Test;
 
@@ -27,7 +28,7 @@ public class DownloadUploadTest extends ArtifactoryTestBase {
         assertEquals(deployed.getCreatedBy(), username);
         assertEquals(deployed.getDownloadUri(), url + "/" + NEW_LOCAL + "/" + PATH);
         assertEquals(deployed.getSize(), 3044);
-        assertTrue(curl("api/storage/" + NEW_LOCAL + "/" + PATH + "?properties").contains("{\"color\":[\"red\"]}"));
+        assertTrue(curlAndStrip("api/storage/" + NEW_LOCAL + "/" + PATH + "?properties").contains("\"color\":[\"red\"]"));
     }
 
     @Test(groups = "uploadBasics", dependsOnMethods = "testUploadWithSingleProperty")//to spare all the checks
@@ -36,8 +37,7 @@ public class DownloadUploadTest extends ArtifactoryTestBase {
                 .withProperty("colors", "red")
                 .withProperty("build", 28)
                 .withProperty("released", false).doUpload();
-        assertTrue(curl("api/storage/" + NEW_LOCAL + "/" + PATH + "?properties")
-                .contains("{\"build\":[\"28\"],\"colors\":[\"red\"],\"released\":[\"false\"]}"));
+        assertTrue(curlAndStrip("api/storage/" + NEW_LOCAL + "/" + PATH + "?properties").contains("{\"build\":[\"28\"],\"colors\":[\"red\"],\"released\":[\"false\"]}"));
     }
 
     //TODO (jb) enable once RTFACT-5126 is fixed
@@ -75,8 +75,7 @@ public class DownloadUploadTest extends ArtifactoryTestBase {
         assertEquals(textFrom(inputStream), textFrom(this.getClass().getResourceAsStream("/sample.txt")));
     }
 
-    @Test(dependsOnMethods = "testUploadWithMultipleProperties", expectedExceptions = HttpResponseException.class,
-            expectedExceptionsMessageRegExp = "Not Found")
+    @Test(dependsOnMethods = "testUploadWithMultipleProperties", expectedExceptions = HttpResponseException.class)
     public void testDownloadWithWrongNonMandatoryProperties() throws IOException {
         //property doesn't match, will fail
         artifactory.repository(NEW_LOCAL).download(PATH).withProperty("colors", "black").doDownload();
@@ -90,15 +89,13 @@ public class DownloadUploadTest extends ArtifactoryTestBase {
         assertEquals(textFrom(inputStream), textFrom(this.getClass().getResourceAsStream("/sample.txt")));
     }
 
-    @Test(dependsOnMethods = "testUploadWithMultipleProperties", expectedExceptions = HttpResponseException.class,
-            expectedExceptionsMessageRegExp = "Not Found")
+    @Test(dependsOnMethods = "testUploadWithMultipleProperties", expectedExceptions = HttpResponseException.class)
     public void testDownloadWithNonExistingMandatoryProperties() throws IOException {
         //property doesn't exist, will fail
         artifactory.repository(NEW_LOCAL).download(PATH).withMandatoryProperty("foo", "bar").doDownload();
     }
 
-    @Test(dependsOnMethods = "testUploadWithMultipleProperties", expectedExceptions = HttpResponseException.class,
-            expectedExceptionsMessageRegExp = "Not Found")
+    @Test(dependsOnMethods = "testUploadWithMultipleProperties", expectedExceptions = HttpResponseException.class)
     public void testDownloadWithWrongMandatoryProperties() throws IOException {
         //property doesn't match, will fail
         artifactory.repository(NEW_LOCAL).download(PATH).withMandatoryProperty("colors", "black").doDownload();

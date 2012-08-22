@@ -21,4 +21,6 @@ public interface RepositoryBuilder<B extends RepositoryBuilder, R extends Reposi
     B repoLayoutRef(String repoLayoutRef);
 
     R build();
+
+    B enableNuGetSupport(boolean enableNuGetSupport);
 }

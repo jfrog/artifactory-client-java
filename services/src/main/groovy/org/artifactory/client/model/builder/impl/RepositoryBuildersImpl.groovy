@@ -34,7 +34,9 @@ class RepositoryBuildersImpl implements RepositoryBuilders {
                 .retrievalCachePeriodSecs(from.retrievalCachePeriodSecs).missedRetrievalCachePeriodSecs(from.missedRetrievalCachePeriodSecs)
                 .failedRetrievalCachePeriodSecs(from.failedRetrievalCachePeriodSecs).unusedArtifactsCleanupEnabled(from.unusedArtifactsCleanupEnabled)
                 .unusedArtifactsCleanupPeriodHours(from.unusedArtifactsCleanupPeriodHours).fetchJarsEagerly(from.fetchJarsEagerly).fetchSourcesEagerly(from.fetchSourcesEagerly)
-                .shareConfiguration(from.shareConfiguration).synchronizeProperties(from.synchronizeProperties).repoLayoutRef(from.repoLayoutRef)
+                .shareConfiguration(from.shareConfiguration).synchronizeProperties(from.synchronizeProperties).repoLayoutRef(from.repoLayoutRef).enableNuGetSupport(from.enableNuGetSupport)
+                .assumedOfflinePeriodSecs(from.assumedOfflinePeriodSecs).archiveBrowsingEnabled(from.archiveBrowsingEnabled).listRemoteFolderItems(from.listRemoteFolderItems)
+                .rejectInvalidJars(from.rejectInvalidJars).p2Support(from.p2Support)
     }
 
     LocalRepositoryBuilder localRepositoryBuilder() {
@@ -45,7 +47,8 @@ class RepositoryBuildersImpl implements RepositoryBuilders {
         new LocalRepositoryBuilderImpl().blackedOut(from.blackedOut).checksumPolicyType(from.checksumPolicyType).description(from.description)
                 .excludesPattern(from.excludesPattern).handleReleases(from.handleReleases).handleSnapshots(from.handleSnapshots).includesPattern(from.includesPattern)
                 .key(from.key).maxUniqueSnapshots(from.maxUniqueSnapshots).notes(from.notes).propertySets(from.propertySets).snapshotVersionBehavior(from.snapshotVersionBehavior)
-                .suppressPomConsistencyChecks(from.suppressPomConsistencyChecks).repoLayoutRef(from.repoLayoutRef)
+                .suppressPomConsistencyChecks(from.suppressPomConsistencyChecks).repoLayoutRef(from.repoLayoutRef).archiveBrowsingEnabled(from.archiveBrowsingEnabled)
+                .enableNuGetSupport(from.enableNuGetSupport).calculateYumMetadata(from.calculateYumMetadata).yumRootDepth(from.yumRootDepth)
     }
 
     VirtualRepositoryBuilder virtualRepositoryBuilder() {

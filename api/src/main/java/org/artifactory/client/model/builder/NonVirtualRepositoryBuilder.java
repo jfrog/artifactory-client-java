@@ -24,4 +24,6 @@ public interface NonVirtualRepositoryBuilder<B extends NonVirtualRepositoryBuild
     B snapshotVersionBehavior(SnapshotVersionBehavior snapshotVersionBehavior);
 
     B suppressPomConsistencyChecks(boolean suppressPomConsistencyChecks);
+
+    B archiveBrowsingEnabled(boolean archiveBrowsingEnabled);
 }

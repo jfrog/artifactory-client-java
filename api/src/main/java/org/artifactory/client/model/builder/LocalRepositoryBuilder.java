@@ -10,5 +10,11 @@ import org.artifactory.client.model.LocalRepository;
 public interface LocalRepositoryBuilder extends NonVirtualRepositoryBuilder<LocalRepositoryBuilder, LocalRepository> {
 
     LocalRepositoryBuilder checksumPolicyType(ChecksumPolicyType checksumPolicyType);
+
+    LocalRepositoryBuilder calculateYumMetadata(boolean calculateYumMetadata);
+
+    LocalRepositoryBuilder yumRootDepth(int yumRootDepth);
+
+
 }
 

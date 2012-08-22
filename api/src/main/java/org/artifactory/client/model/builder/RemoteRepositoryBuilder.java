@@ -46,4 +46,14 @@ public interface RemoteRepositoryBuilder extends NonVirtualRepositoryBuilder<Rem
     RemoteRepositoryBuilder shareConfiguration(boolean shareConfiguration);
 
     RemoteRepositoryBuilder synchronizeProperties(boolean synchronizeProperties);
+
+    RemoteRepositoryBuilder assumedOfflinePeriodSecs(long assumedOfflinePeriodSecs);
+
+    RemoteRepositoryBuilder listRemoteFolderItems(boolean listRemoteFolderItems);
+
+    RemoteRepositoryBuilder rejectInvalidJars(boolean rejectInvalidJars);
+
+    RemoteRepositoryBuilder p2Support(boolean p2Support);
+
+
 }

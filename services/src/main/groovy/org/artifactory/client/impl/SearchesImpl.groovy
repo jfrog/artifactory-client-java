@@ -30,19 +30,23 @@ class SearchesImpl implements Searches {
         this
     }
 
-    List<String> doSearch() throws HttpResponseException {
+    List<String> doSearch() {
         if (!quickSearchTerm) {
             throw new IllegalArgumentException("Search term wasn't set. Please call 'artifactsByName(name to search)' before calling 'search()'")
         }
         search('artifact', [name: quickSearchTerm])
     }
 
-    private List<String> search(String url, Map query) throws HttpResponseException {
+    private List<String> search(String url, Map query) {
         if (reposFilter) {
             query.repos = reposFilter.join(',')
         }
-        def result = artifactory.getSlurper("${SEARCHES_API}$url", query)
-        result.results.collect { it.uri }
+        try {
+            def result = artifactory.getSlurper("${SEARCHES_API}$url", query)
+            result.results.collect { it.uri }
+        } catch (HttpResponseException e) {
+            return []
+        }
     }
 
     PropertyFilters itemsByProperty() {
