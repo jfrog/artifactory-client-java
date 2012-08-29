@@ -1,0 +1,27 @@
+apply plugin: 'groovy'
+
+dependencies {
+    compile project(':api')
+    groovy group: 'org.codehaus.groovy', name: 'groovy', version: '2.0.1'
+    groovy group: 'org.codehaus.groovy', name: 'groovy-json', version: '2.0.1'
+    groovy group: 'org.codehaus.groovy', name: 'groovy-xml', version: '2.0.1'
+    compile group: 'org.codehaus.groovy.modules.http-builder', name: 'http-builder', version: '0.5.2'
+    compile group: 'log4j', name: 'log4j', version: '1.2.17'
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.0.4'
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.0.4'
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.0.4'
+    testCompile group: 'org.testng', name: 'testng', version: '6.5.2'
+}
+
+    task uberJar(type: Jar) {
+         dependsOn configurations.runtime
+          from { configurations.runtime.collect { it.isDirectory() ? it : zipTree(it) } }
+        classifier = 'uber'
+    }
+
+    uberJar.dependsOn jar
+
+    artifacts {
+        archives sourceJar, uberJar, jar
+    }
+
