@@ -1,6 +1,13 @@
 *.class
-
-# Package Files #
-*.jar
-*.war
-*.ear
+Recursive
+target
+build
+*.iml
+*.ipr
+*.iws
+cobertura.ser
+DS_Store
+.gradle
+.vagrant
+BINTRAY_HOME
+out
