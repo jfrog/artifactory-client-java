@@ -16,7 +16,7 @@ class ItemHandleImpl implements ItemHandle {
     private String path
     private Class itemType
 
-    private ItemHandleImpl(ArtifactoryImpl artifactory, String repo, String path, Class itemType) {
+    ItemHandleImpl(ArtifactoryImpl artifactory, String repo, String path, Class itemType) {
         this.artifactory = artifactory
         this.repo = repo
         this.path = path

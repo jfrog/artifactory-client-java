@@ -16,7 +16,7 @@ class SearchesImpl implements Searches {
     private List<String> reposFilter = []
     private String quickSearchTerm
 
-    private SearchesImpl(Artifactory artifactory) {
+    SearchesImpl(Artifactory artifactory) {
         this.artifactory = artifactory as ArtifactoryImpl
     }
 

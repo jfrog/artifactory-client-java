@@ -15,4 +15,6 @@ public interface Artifactory {
     RepositoryHandle repository(String repo);
 
     Searches searches();
+
+    Security security();
 }

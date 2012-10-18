@@ -15,7 +15,7 @@ import org.artifactory.client.model.builder.VirtualRepositoryBuilder
  */
 class RepositoryBuildersImpl implements RepositoryBuilders {
 
-    private RepositoryBuildersImpl() {}
+    RepositoryBuildersImpl() {}
 
     static RepositoryBuildersImpl create() {
         return new RepositoryBuildersImpl()

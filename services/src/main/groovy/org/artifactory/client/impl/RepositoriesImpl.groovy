@@ -17,7 +17,12 @@ import org.artifactory.client.model.impl.LightweightRepositoryImpl
 class RepositoriesImpl implements Repositories {
 
     private ArtifactoryImpl artifactory
+
     static private RepositoryBuildersImpl builders = new RepositoryBuildersImpl()
+
+    RepositoriesImpl(ArtifactoryImpl artifactory) {
+        this.artifactory = artifactory
+    }
 
     String create(int position, Repository configuration) {
         artifactory.put("$REPOSITORIES_API${configuration.getKey()}", [pos: position], configuration)
@@ -29,10 +34,6 @@ class RepositoriesImpl implements Repositories {
 
     RepositoryHandle repository(String repo) {
         new RepositoryHandleImpl(artifactory, repo)
-    }
-
-    RepositoriesImpl(ArtifactoryImpl artifactory) {
-        this.artifactory = artifactory
     }
 
     RepositoryBuildersImpl builders() {
