@@ -1,5 +1,7 @@
 package org.artifactory.client.model.builder;
 
+import org.artifactory.client.model.User;
+
 import java.util.Collection;
 
 /**
@@ -23,4 +25,7 @@ public interface UserBuilder {
 
     UserBuilder groups(Collection<String> groups);
 
+    UserBuilder addGroup(String group);
+
+    User build();
 }

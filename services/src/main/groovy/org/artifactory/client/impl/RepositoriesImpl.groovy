@@ -6,8 +6,10 @@ import org.artifactory.client.RepositoryHandle
 import org.artifactory.client.model.LightweightRepository
 import org.artifactory.client.model.Repository
 import org.artifactory.client.model.RepositoryType
+import org.artifactory.client.model.builder.RepositoryBuilders
 import org.artifactory.client.model.builder.impl.RepositoryBuildersImpl
 import org.artifactory.client.model.impl.LightweightRepositoryImpl
+
 /**
  *
  * @author jbaruch
@@ -18,7 +20,7 @@ class RepositoriesImpl implements Repositories {
 
     private ArtifactoryImpl artifactory
 
-    static private RepositoryBuildersImpl builders = new RepositoryBuildersImpl()
+    static private RepositoryBuilders builders = RepositoryBuildersImpl.create()
 
     RepositoriesImpl(ArtifactoryImpl artifactory) {
         this.artifactory = artifactory
@@ -36,7 +38,7 @@ class RepositoriesImpl implements Repositories {
         new RepositoryHandleImpl(artifactory, repo)
     }
 
-    RepositoryBuildersImpl builders() {
+    RepositoryBuilders builders() {
         builders
     }
 

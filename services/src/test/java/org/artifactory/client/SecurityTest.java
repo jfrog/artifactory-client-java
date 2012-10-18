@@ -1,5 +1,8 @@
 package org.artifactory.client;
 
+import org.artifactory.client.model.User;
+import org.artifactory.client.model.builder.UserBuilder;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.Test;
 
 import java.util.Collection;
@@ -13,18 +16,32 @@ import static org.testng.Assert.assertTrue;
  */
 public class SecurityTest extends ArtifactoryTestBase {
 
-    private static final String LIST_USERS_PATH = Security.SECURITY_API + "users";
-    private static final String USER_NAME = "testUser" + ("" + System.currentTimeMillis()).substring(5);
+    private static final String USER_NAME = "test" + ("" + System.currentTimeMillis()).substring(5);
+
+    @AfterMethod
+    public void leaveItClean() {
+        try {
+            artifactory.security().deleteUser(USER_NAME);
+        } catch (Exception ignore) {
+        }
+    }
 
     @Test
     public void testListUserNames() throws Exception {
         Collection<String> userNames = artifactory.security().userNames();
         assertTrue(userNames.size() > 2);
-/*
-        if (userNames.contains(USER_NAME)) {
-            artifactory.security().deleteUser(USER_NAME);
-        }
-        assertFalse(curl(LIST_USERS_PATH).contains(USER_NAME));
-*/
+    }
+
+    @Test
+    public void testCreateUser() throws Exception {
+        UserBuilder userBuilder = artifactory.security().builders().userBuilder();
+        User user = userBuilder.name(USER_NAME).email("test@test.com").admin(false)
+                .profileUpdatable(true)
+                .password("test")
+                .build();
+        artifactory.security().createOrUpdate(user);
+        String resp = curl(Security.SECURITY_USERS_API.substring(1));
+        System.out.println(resp);
+        assertTrue(resp.contains(USER_NAME));
     }
 }

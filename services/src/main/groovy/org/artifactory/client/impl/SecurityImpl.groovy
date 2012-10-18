@@ -1,9 +1,12 @@
 package org.artifactory.client.impl
 
+import com.fasterxml.jackson.core.type.TypeReference
 import groovy.json.JsonSlurper
 import org.artifactory.client.Security
 import org.artifactory.client.model.User
 import org.artifactory.client.model.builder.SecurityBuilders
+import org.artifactory.client.model.builder.impl.SecurityBuildersImpl
+import org.artifactory.client.model.impl.UserImpl
 
 /**
  *
@@ -14,18 +17,20 @@ import org.artifactory.client.model.builder.SecurityBuilders
 class SecurityImpl implements Security {
     private ArtifactoryImpl artifactory
 
+    static private SecurityBuilders builders = SecurityBuildersImpl.create()
+
     SecurityImpl(ArtifactoryImpl artifactory) {
         this.artifactory = artifactory
     }
 
     @Override
     SecurityBuilders builders() {
-        return null  //To change body of implemented methods use File | Settings | File Templates.
+        return builders
     }
 
     @Override
     Collection<String> userNames() {
-        String allUsers = artifactory.getText("${SECURITY_API}users")
+        String allUsers = artifactory.getText(SECURITY_USERS_API)
         JsonSlurper slurper = new JsonSlurper()
         def users = slurper.parseText(allUsers)
         users.collect { it.name }
@@ -33,16 +38,16 @@ class SecurityImpl implements Security {
 
     @Override
     User user(String name) {
-        return null  //To change body of implemented methods use File | Settings | File Templates.
+        artifactory.getJson("${SECURITY_USERS_API}/$name", new TypeReference<UserImpl>() {})
     }
 
     @Override
-    String createOrUpdate(User user) {
-        return null  //To change body of implemented methods use File | Settings | File Templates.
+    void createOrUpdate(User user) {
+        artifactory.put("${SECURITY_USERS_API}/${user.name}", [:], user, null)
     }
 
     @Override
     String deleteUser(String name) {
-        return null  //To change body of implemented methods use File | Settings | File Templates.
+        artifactory.delete("${SECURITY_USERS_API}/$name")
     }
 }

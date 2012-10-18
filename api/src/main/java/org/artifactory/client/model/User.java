@@ -16,7 +16,7 @@ public interface User {
 
     boolean isAdmin();
 
-    boolean isUpdatableProfile();
+    boolean isProfileUpdatable();
 
     boolean isInternalPasswordDisabled();
 

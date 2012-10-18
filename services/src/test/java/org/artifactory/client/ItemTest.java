@@ -3,6 +3,7 @@ package org.artifactory.client;
 import groovyx.net.http.HttpResponseException;
 import org.artifactory.client.model.File;
 import org.artifactory.client.model.Folder;
+import org.artifactory.client.model.LocalRepository;
 import org.testng.annotations.Test;
 
 import java.util.*;
@@ -32,7 +33,7 @@ public class ItemTest extends ArtifactoryTestBase {
         assertFalse(file.isFolder());
         assertEquals(file.getSize(), 141185);
         assertEquals(file.getDownloadUri(),
-                url+"/repo1-cache/junit/junit/4.10/junit-4.10-sources.jar");
+                url + "/repo1-cache/junit/junit/4.10/junit-4.10-sources.jar");
         assertEquals(file.getChecksums().getMd5(), "8f17d4271b86478a2731deebdab8c846");
         assertEquals(file.getChecksums().getSha1(), "6c98d6766e72d5575f96c9479d1c1d3b865c6e25");
     }
@@ -41,6 +42,10 @@ public class ItemTest extends ArtifactoryTestBase {
     public void testSetItemProperties() {
         //Upload a clean file
         try {
+            // Make sure the local repo exists
+            LocalRepository localRepository = artifactory.repositories().builders().localRepositoryBuilder().key(NEW_LOCAL)
+                    .description("new local repository").build();
+            artifactory.repositories().create(2, localRepository);
             artifactory.repository(NEW_LOCAL).delete("x/y/z");
         } catch (Exception e) {
             //noinspection ConstantConditions

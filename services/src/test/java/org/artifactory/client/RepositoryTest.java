@@ -1,9 +1,7 @@
 package org.artifactory.client;
 
 import groovyx.net.http.HttpResponseException;
-import org.apache.commons.lang.StringUtils;
 import org.artifactory.client.model.*;
-import org.artifactory.client.model.impl.LightweightRepositoryImpl;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -13,7 +11,6 @@ import static java.util.Arrays.asList;
 import static org.apache.commons.lang.StringUtils.countMatches;
 import static org.artifactory.client.model.impl.RepositoryTypeImpl.*;
 import static org.testng.Assert.*;
-import static org.testng.Assert.assertEquals;
 
 
 /**
@@ -108,7 +105,7 @@ public class RepositoryTest extends ArtifactoryTestBase {
         assertEquals(repo1.getKey(), REPO1);
         assertEquals(repo1.getRclass().toString(), "remote");
         //urls of repo1 are different for aol and standalone
-        assertTrue(repo1.getUrl().equals("http://repo-demo.jfrog.org/artifactory/repo1") || repo1.getUrl().equals("http://repo1.maven.org/maven2"));
+        assertTrue(repo1.getUrl().equals("http://repo.jfrog.org/artifactory/repo1") || repo1.getUrl().equals("http://repo1.maven.org/maven2"));
         assertEquals(repo1.getUsername(), "");
         assertEquals(repo1.getPassword(), "");
         assertEquals(repo1.getDescription(), "Central Repo1");

@@ -29,7 +29,7 @@ class ArtifactoryImpl implements Artifactory {
     private final String contextName
     private final ObjectMapper objectMapper
 
-    private ArtifactoryImpl(RESTClient client, String contextName) {
+    ArtifactoryImpl(RESTClient client, String contextName) {
         this.client = client
         this.contextName = contextName
         objectMapper = new ObjectMapper()
@@ -39,6 +39,10 @@ class ArtifactoryImpl implements Artifactory {
         //        client.parser."$JSON" = {HttpResponse resp ->
         //            objectMapper.readValue(resp.entity.content, Object) //TODO (JB) seem unsolvable, when this code runs I don't know the type yet. If only JSON has root element!
         //        }
+    }
+
+    void close() {
+        client.shutdown()
     }
 
     String getUri() {

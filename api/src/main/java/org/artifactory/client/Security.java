@@ -14,6 +14,7 @@ import java.util.Collection;
 public interface Security {
 
     final static String SECURITY_API = "/api/security/";
+    final static String SECURITY_USERS_API = SECURITY_API + "users";
 
     SecurityBuilders builders();
 
@@ -21,7 +22,7 @@ public interface Security {
 
     User user(String name);
 
-    String createOrUpdate(User user);
+    void createOrUpdate(User user);
 
     String deleteUser(String name);
 }

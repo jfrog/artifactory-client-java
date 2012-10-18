@@ -17,4 +17,6 @@ public interface Artifactory {
     Searches searches();
 
     Security security();
+
+    void close();
 }
