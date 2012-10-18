@@ -11,3 +11,5 @@ DS_Store
 .vagrant
 BINTRAY_HOME
 out
+services/src/test/resources/artifactory-client.properties
+atlassian-*.xml
