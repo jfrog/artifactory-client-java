@@ -7,7 +7,7 @@ import org.artifactory.client.impl.ArtifactoryImpl
  * @author jbaruch
  * @since 12/08/12
  */
-public class ArtifactoryConnector {
+public class ArtifactoryClient {
 
     static Artifactory create(String url, String username, String password) {
         def matcher = url =~ /(https?:\/\/[^\/]+)\/+([^\/]*).*/

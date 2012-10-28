@@ -13,7 +13,7 @@ import java.util.Properties;
 
 import static org.apache.commons.codec.binary.Base64.encodeBase64;
 import static org.apache.commons.lang.StringUtils.remove;
-import static org.artifactory.client.ArtifactoryConnector.create;
+import static org.artifactory.client.ArtifactoryClient.create;
 
 /**
  * @author jbaruch
