@@ -6,10 +6,9 @@ import com.fasterxml.jackson.databind.util.ISO8601DateFormat
 import groovyx.net.http.ContentType
 import groovyx.net.http.HttpResponseException
 import groovyx.net.http.RESTClient
+import org.artifactory.client.*
 
 import java.text.DateFormat
-
-import org.artifactory.client.*
 
 import static com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS
 import static com.fasterxml.jackson.databind.introspect.VisibilityChecker.Std.defaultInstance
@@ -25,7 +24,7 @@ class ArtifactoryImpl implements Artifactory {
 
     private static final DateFormat ISO8601_DATE_FORMAT = ISO8601DateFormat.newInstance()
 
-    private final RESTClient client
+    final RESTClient client
     private final String contextName
     private final ObjectMapper objectMapper
 
@@ -91,7 +90,7 @@ class ArtifactoryImpl implements Artifactory {
         ret
     }
 
-    private def putAndPostJsonParams = {path, query, body ->
+    private def putAndPostJsonParams = { path, query, body ->
         [path: "/$contextName$path", query: query, headers:
                 [Accept: ANY, CONTENT_TYPE: JSON], contentType: TEXT,
                 requestContentType: JSON, body: objectMapper.writeValueAsString(body)]
