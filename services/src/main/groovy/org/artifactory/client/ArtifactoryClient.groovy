@@ -14,7 +14,7 @@ public class ArtifactoryClient {
         if (!matcher) {
             matcher = url =~ /(https?:\/\/[^\/]+)\/*()/
             if (!matcher) {
-                throw new IllegalArgumentException("Invalid ArtifactoryImpl URL: ${url}.")
+                throw new IllegalArgumentException("Invalid Artifactory URL: ${url}.")
             }
         }
         def client = new RESTClient(matcher[0][1])
