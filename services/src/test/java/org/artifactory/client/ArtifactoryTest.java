@@ -5,7 +5,7 @@ import org.testng.annotations.Test;
 import java.io.IOException;
 
 import static junit.framework.Assert.assertEquals;
-import static org.artifactory.client.ArtifactoryConnector.create;
+import static org.artifactory.client.ArtifactoryClient.create;
 
 /**
  * @author yoavl
