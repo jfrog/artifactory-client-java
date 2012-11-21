@@ -108,7 +108,7 @@ public class RepositoryTest extends ArtifactoryTestBase {
         assertEquals(repo1.getKey(), REPO1);
         assertEquals(repo1.getRclass().toString(), "remote");
         //urls of repo1 are different for aol and standalone
-        assertTrue(repo1.getUrl().equals("http://repo-demo.jfrog.org/artifactory/repo1") || repo1.getUrl().equals("http://repo1.maven.org/maven2"));
+        assertTrue(repo1.getUrl().equals("http://repo-demo.jfrog.org/artifactory/repo1") || repo1.getUrl().equals("http://repo1.maven.org/maven2")|| repo1.getUrl().equals("http://repo.jfrog.org/artifactory/repo1"));
         assertEquals(repo1.getUsername(), "");
         assertEquals(repo1.getPassword(), "");
         assertEquals(repo1.getDescription(), "Central Repo1");

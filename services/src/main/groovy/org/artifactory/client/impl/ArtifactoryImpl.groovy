@@ -92,16 +92,17 @@ class ArtifactoryImpl implements Artifactory {
     }
 
     private def <T> T put(String path, Map query = [:], Class responseType = null) {
-        put(path, query, null, responseType, ANY)
+        put(path, query, null, [:], responseType, ANY)
     }
 
-    private def <T> T put(String path, Map query = [:], body, Class responseType = String, ContentType requestContentType = JSON) {
+    private def <T> T put(String path, Map query = [:], body, Map headers, Class responseType = String, ContentType requestContentType = JSON) {
         Map params
+        headers << [Accept: ANY, CONTENT_TYPE: requestContentType]
         if (requestContentType == JSON) {
             params = putAndPostJsonParams(path, query, body)
         } else {
             params = [path: "/$contextName$path", query: query,
-                    headers: [Accept: ANY, CONTENT_TYPE: requestContentType],
+                    headers: headers,
                     contentType: TEXT, requestContentType: requestContentType, body: body]
         }
         def data = client.put(params).data

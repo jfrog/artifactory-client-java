@@ -20,7 +20,7 @@ class RepositoriesImpl implements Repositories {
     static private RepositoryBuildersImpl builders = new RepositoryBuildersImpl()
 
     String create(int position, Repository configuration) {
-        artifactory.put("$REPOSITORIES_API${configuration.getKey()}", [pos: position], configuration)
+        artifactory.put("$REPOSITORIES_API${configuration.getKey()}", [pos: position], configuration, [:])
     }
 
     String update(Repository configuration) {
