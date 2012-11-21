@@ -38,7 +38,7 @@ public class ItemTest extends ArtifactoryTestBase {
     }
 
     @Test
-    public void testSetItemProperties() {
+    public void testSetItemProperties() throws Exception {
         //Upload a clean file
         try {
             artifactory.repository(NEW_LOCAL).delete("x/y/z");

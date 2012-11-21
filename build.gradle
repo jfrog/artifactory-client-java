@@ -20,7 +20,7 @@ allprojects {
                 maven = true
             }
         }
-    }
+            }
 
     group = 'com.jfrog.artifactory.client'
     version = '1-SNAPSHOT'
@@ -51,7 +51,7 @@ subprojects {
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '1.1'
+    gradleVersion = '1.2'
 }
 
 idea {

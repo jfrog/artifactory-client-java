@@ -53,7 +53,7 @@ public class SearchTest extends ArtifactoryTestBase {
 
     @Test(dependsOnGroups = "uploadBasics")
     public void testSearchByProperty() throws IOException {
-        List<String> results = artifactory.searches().itemsByProperty().property("released", false).doSearch();
+        List<String> results = artifactory.searches().itemsByProperty().property("colors", "red").doSearch();
         assertEquals(results.size(), 1);
         assertTrue(results.get(0).contains("a/b/c.txt"));
     }

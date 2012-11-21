@@ -9,4 +9,8 @@ import org.artifactory.client.model.File;
 public interface UploadableArtifact extends Artifact<UploadableArtifact> {
 
     File doUpload();
+
+    UploadableArtifact withListener(UploadListener listener);
+
+    UploadableArtifact byChecksum();
 }

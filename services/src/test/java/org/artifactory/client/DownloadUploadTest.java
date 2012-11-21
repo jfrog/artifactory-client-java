@@ -1,12 +1,13 @@
 package org.artifactory.client;
 
 import groovyx.net.http.HttpResponseException;
-import org.apache.commons.lang.StringUtils;
 import org.artifactory.client.model.File;
 import org.testng.annotations.Test;
 
+import java.beans.PropertyChangeEvent;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URISyntaxException;
 
 import static org.testng.Assert.*;
 
@@ -15,6 +16,8 @@ import static org.testng.Assert.*;
  * @since 03/08/12
  */
 public class DownloadUploadTest extends ArtifactoryTestBase {
+
+    private static final int SAMPLE_FILE_SIZE = 3044;
 
     @Test(groups = "uploadBasics", dependsOnGroups = "repositoryBasics")
     public void testUploadWithSingleProperty() throws IOException {
@@ -29,6 +32,44 @@ public class DownloadUploadTest extends ArtifactoryTestBase {
         assertEquals(deployed.getDownloadUri(), url + "/" + NEW_LOCAL + "/" + PATH);
         assertEquals(deployed.getSize(), 3044);
         assertTrue(curlAndStrip("api/storage/" + NEW_LOCAL + "/" + PATH + "?properties").contains("\"color\":[\"red\"]"));
+    }
+
+    @Test(groups = "uploadBasics", dependsOnGroups = "repositoryBasics")
+    public void testUploadWithListener() throws URISyntaxException, IOException {
+        java.io.File file = new java.io.File(this.getClass().getResource("/sample.txt").toURI());
+        final long[] uploaded = {0};
+        File deployed = artifactory.repository(NEW_LOCAL).upload(PATH, file).withListener(new UploadListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                uploaded[0] = (long) evt.getNewValue();
+            }
+        }).doUpload();
+        assertNotNull(deployed);
+        assertEquals(deployed.getRepo(), NEW_LOCAL);
+        assertEquals(deployed.getPath(), "/" + PATH);
+        assertEquals(deployed.getCreatedBy(), username);
+        assertEquals(deployed.getDownloadUri(), url + "/" + NEW_LOCAL + "/" + PATH);
+        assertEquals(deployed.getSize(), SAMPLE_FILE_SIZE);
+        assertEquals(uploaded[0], SAMPLE_FILE_SIZE);
+    }
+
+    @Test(groups = "uploadBasics", dependsOnGroups = "repositoryBasics")
+    public void testUploadByChecksum() throws URISyntaxException, IOException {
+        java.io.File file = new java.io.File(this.getClass().getResource("/sample.txt").toURI());
+        final long[] uploaded = {0};
+        File deployed = artifactory.repository(NEW_LOCAL).upload(PATH, file).withListener(new UploadListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                uploaded[0] = (long) evt.getNewValue();
+            }
+        }).byChecksum().doUpload();
+        assertNotNull(deployed);
+        assertEquals(deployed.getRepo(), NEW_LOCAL);
+        assertEquals(deployed.getPath(), "/" + PATH);
+        assertEquals(deployed.getCreatedBy(), username);
+        assertEquals(deployed.getDownloadUri(), url + "/" + NEW_LOCAL + "/" + PATH);
+        assertEquals(deployed.getSize(), SAMPLE_FILE_SIZE);
+        assertEquals(uploaded[0], SAMPLE_FILE_SIZE);
     }
 
     @Test(groups = "uploadBasics", dependsOnMethods = "testUploadWithSingleProperty")//to spare all the checks
