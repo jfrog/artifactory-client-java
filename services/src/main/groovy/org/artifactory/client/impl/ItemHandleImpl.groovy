@@ -4,6 +4,11 @@ import groovyx.net.http.HttpResponseException
 import org.artifactory.client.ItemHandle
 import org.artifactory.client.PropertiesContainer
 import org.artifactory.client.model.Folder
+import org.artifactory.client.model.Permission
+import org.artifactory.client.model.Permissions
+import org.artifactory.client.model.Principal
+import org.artifactory.client.model.impl.PermissionsImpl
+import org.artifactory.client.model.impl.PrincipalImpl
 
 /**
  *
@@ -70,6 +75,21 @@ class ItemHandleImpl implements ItemHandle {
     }
 
     @Override
+    Permissions effectivePermissions() {
+        Map json = artifactory.getJson("/api/storage/${repo}/${path}", Map, ['permissions': null]) as Map
+        new PermissionsImpl(mapToPrincipals(json.principals.users), mapToPrincipals(json.principals.groups))
+    }
+
+    private static Map<String, Principal> mapToPrincipals(Map<String, List> map) {
+        map.collectEntries { String key, List value ->
+            List permissions = value.collect() {
+                Permission.parseAbbreviation(it as char)
+            }
+            [key, new PrincipalImpl(key, permissions)]
+        } as Map<String, Principal>
+    }
+
+    @Override
     public Map<String, ?> deleteProperty(String property) {
         assert artifactory
         assert repo
@@ -80,15 +100,5 @@ class ItemHandleImpl implements ItemHandle {
             if (e.statusCode == 404) return [:]
             throw e
         }
-    }
-
-    @Override
-    def <T> T setProperty(String propertyName,String value) {
-        setProperties(["$propertyName" : value])
-    }
-
-    @Override
-    def <T> T setProperty(String propertyName, String... values) {
-        setProperties(["$propertyName" : values])
     }
 }
