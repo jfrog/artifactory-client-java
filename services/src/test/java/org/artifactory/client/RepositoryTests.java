@@ -1,9 +1,7 @@
 package org.artifactory.client;
 
 import groovyx.net.http.HttpResponseException;
-import org.apache.commons.lang.StringUtils;
 import org.artifactory.client.model.*;
-import org.artifactory.client.model.impl.LightweightRepositoryImpl;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -13,14 +11,13 @@ import static java.util.Arrays.asList;
 import static org.apache.commons.lang.StringUtils.countMatches;
 import static org.artifactory.client.model.impl.RepositoryTypeImpl.*;
 import static org.testng.Assert.*;
-import static org.testng.Assert.assertEquals;
 
 
 /**
  * @author jbaruch
  * @since 30/07/12
  */
-public class RepositoryTest extends ArtifactoryTestBase {
+public class RepositoryTests extends ArtifactoryTestsBase {
 
     private static final String LIST_PATH = "api/repositories";
     private LocalRepository localRepository;
@@ -108,10 +105,10 @@ public class RepositoryTest extends ArtifactoryTestBase {
         assertEquals(repo1.getKey(), REPO1);
         assertEquals(repo1.getRclass().toString(), "remote");
         //urls of repo1 are different for aol and standalone
-        assertTrue(repo1.getUrl().equals("http://repo-demo.jfrog.org/artifactory/repo1") || repo1.getUrl().equals("http://repo1.maven.org/maven2")|| repo1.getUrl().equals("http://repo.jfrog.org/artifactory/repo1"));
+        assertTrue(repo1.getUrl().equals("http://repo-demo.jfrog.org/artifactory/repo1") || repo1.getUrl().equals("http://repo1.maven.org/maven2") || repo1.getUrl().equals("http://repo.jfrog.org/artifactory/repo1"));
         assertEquals(repo1.getUsername(), "");
         assertEquals(repo1.getPassword(), "");
-        assertEquals(repo1.getDescription(), "Central Repo1");
+        assertTrue(repo1.getDescription().equals("Central Repo1") || repo1.getDescription().equals("Central Maven 2 repository"));
         assertEquals(repo1.getNotes(), "");
         assertEquals(repo1.getIncludesPattern(), "**/*");
         assertEquals(repo1.getExcludesPattern(), "");

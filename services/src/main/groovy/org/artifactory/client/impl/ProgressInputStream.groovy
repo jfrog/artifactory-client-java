@@ -1,33 +1,20 @@
 package org.artifactory.client.impl
 
-import java.beans.PropertyChangeListener
-import java.beans.PropertyChangeSupport
+import org.artifactory.client.UploadListener
+
 /**
  * @author jbaruch
  * @since 21/11/12
  */
 class ProgressInputStream extends FilterInputStream {
-    private final PropertyChangeSupport propertyChangeSupport
-    private final long maxNumBytes
-    private volatile long totalNumBytesRead
+    private final UploadListener listener
+    private final long totalBytes
+    private volatile long totalBytesRead
 
-    public ProgressInputStream(InputStream inputStream, long maxNumBytes, PropertyChangeListener listener) {
+    public ProgressInputStream(InputStream inputStream, long totalBytes, UploadListener listener) {
         super(inputStream)
-        this.propertyChangeSupport = new PropertyChangeSupport(this)
-        this.maxNumBytes = maxNumBytes
-        this.propertyChangeSupport.addPropertyChangeListener(listener)
-    }
-
-    public long getTotalNumBytesRead() {
-        return totalNumBytesRead;
-    }
-
-    public void addPropertyChangeListener(PropertyChangeListener l) {
-        propertyChangeSupport.addPropertyChangeListener(l);
-    }
-
-    public void removePropertyChangeListener(PropertyChangeListener l) {
-        propertyChangeSupport.removePropertyChangeListener(l);
+        this.totalBytes = totalBytes
+        this.listener = listener
     }
 
     @Override
@@ -47,12 +34,11 @@ class ProgressInputStream extends FilterInputStream {
         return updateProgress(super.skip(n));
     }
 
-    private long updateProgress(long numBytesRead) {
-        if (numBytesRead > 0) {
-            long oldTotalNumBytesRead = this.totalNumBytesRead;
-            this.totalNumBytesRead += numBytesRead;
-            propertyChangeSupport.firePropertyChange("totalNumBytesRead", oldTotalNumBytesRead, this.totalNumBytesRead);
+    private long updateProgress(long bytesRead) {
+        if (bytesRead > 0) {
+            this.totalBytesRead += bytesRead;
+            listener.uploadProgress(totalBytesRead, totalBytes)
         }
-        numBytesRead;
+        bytesRead;
     }
 }

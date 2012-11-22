@@ -12,5 +12,7 @@ public interface UploadableArtifact extends Artifact<UploadableArtifact> {
 
     UploadableArtifact withListener(UploadListener listener);
 
-    UploadableArtifact byChecksum();
+    UploadableArtifact bySha1Checksum();
+
+    UploadableArtifact bySha1Checksum(String sha1);
 }

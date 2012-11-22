@@ -9,6 +9,7 @@ import org.artifactory.client.model.impl.FileImpl
 import java.security.MessageDigest
 
 import static groovyx.net.http.ContentType.BINARY
+
 /**
  *
  * @author jbaruch
@@ -16,7 +17,8 @@ import static groovyx.net.http.ContentType.BINARY
  */
 class UploadableArtifactImpl extends ArtifactBase<UploadableArtifact> implements UploadableArtifact {
 
-    public File file
+    private UploadListener listener
+    private File file
     private String path
     private InputStream content
     private ArtifactoryImpl artifactory
@@ -48,11 +50,13 @@ class UploadableArtifactImpl extends ArtifactBase<UploadableArtifact> implements
             }
         } else {
             uploadContent(params)
-
         }
     }
 
     private uploadContent(params) {
+        if (listener) {
+            content = new ProgressInputStream(content, file.size(), listener)
+        }
         content.withStream {
             artifactory.put("/$repo/$path${params}", [:], content, [:], FileImpl, BINARY)
         } as org.artifactory.client.model.File
@@ -61,13 +65,19 @@ class UploadableArtifactImpl extends ArtifactBase<UploadableArtifact> implements
     @Override
     UploadableArtifact withListener(UploadListener listener) {
         if (!file) throw new IllegalStateException('Can\'t attach listener to content of unknown size. Try uploading file instead of input stream');
-        content = new ProgressInputStream(content, file.size(), listener)
+        this.listener = listener
         this
     }
 
     @Override
-    UploadableArtifact byChecksum() {
-        if (!file) throw new IllegalStateException('Can\'t upload by checksum steaming content. Try uploading file instead of input stream');
+    UploadableArtifact bySha1Checksum(String sha1) {
+        this.sha1 = sha1
+        this
+    }
+
+    @Override
+    UploadableArtifact bySha1Checksum() {
+        if (!file) throw new IllegalStateException('Can\'t calculate checksum for streaming content. Try uploading file instead of input stream or provide checksum');
         MessageDigest md = MessageDigest.getInstance('SHA1')
         byte[] dataBytes = new byte[1024]
         int nread

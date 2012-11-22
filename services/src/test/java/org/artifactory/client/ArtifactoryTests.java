@@ -11,7 +11,7 @@ import static org.artifactory.client.ArtifactoryConnector.create;
  * @author yoavl
  * @since 30/07/12
  */
-public abstract class ArtifactoryTest {
+public abstract class ArtifactoryTests {
 
     @Test
     public void urlsTest() throws IOException {
