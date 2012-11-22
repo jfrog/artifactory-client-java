@@ -6,12 +6,10 @@ import com.fasterxml.jackson.databind.util.ISO8601DateFormat
 import groovyx.net.http.ContentType
 import groovyx.net.http.HttpResponseException
 import groovyx.net.http.RESTClient
-import org.artifactory.client.Artifactory
-import org.artifactory.client.Repositories
-import org.artifactory.client.RepositoryHandle
-import org.artifactory.client.Searches
 
 import java.text.DateFormat
+
+import org.artifactory.client.*
 
 import static com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS
 import static com.fasterxml.jackson.databind.introspect.VisibilityChecker.Std.defaultInstance
@@ -31,7 +29,7 @@ class ArtifactoryImpl implements Artifactory {
     private final String contextName
     private final ObjectMapper objectMapper
 
-    private ArtifactoryImpl(RESTClient client, String contextName) {
+    ArtifactoryImpl(RESTClient client, String contextName) {
         this.client = client
         this.contextName = contextName
         objectMapper = new ObjectMapper()
@@ -41,6 +39,10 @@ class ArtifactoryImpl implements Artifactory {
         //        client.parser."$JSON" = {HttpResponse resp ->
         //            objectMapper.readValue(resp.entity.content, Object) //TODO (JB) seem unsolvable, when this code runs I don't know the type yet. If only JSON has root element!
         //        }
+    }
+
+    void close() {
+        client.shutdown()
     }
 
     String getUri() {
@@ -61,6 +63,10 @@ class ArtifactoryImpl implements Artifactory {
 
     Searches searches() {
         return new SearchesImpl(this)
+    }
+
+    Security security() {
+        new SecurityImpl(this)
     }
 
     private Reader get(String path, Map query, ContentType contentType = JSON, ContentType requestContentType = TEXT) {
@@ -116,27 +122,27 @@ class ArtifactoryImpl implements Artifactory {
         }
     }
 
-    private String post(String path, Map query = [:], body) {
+    protected String post(String path, Map query = [:], body) {
         client.post(putAndPostJsonParams(path, query, body)).data?.text
     }
 
-    private String delete(String path, Map query = [:]) {
+    protected String delete(String path, Map query = [:]) {
         client.delete(path: "/$contextName$path", query: query).data?.text
     }
 
-    private <T> T getJson(String path, def target, Map query = [:]) {
+    protected <T> T getJson(String path, def target, Map query = [:]) {
         objectMapper.readValue(get(path, query), target) as T
     }
 
-    private String getText(String path, Map query = [:]) {
+    protected String getText(String path, Map query = [:]) {
         get(path, query).text
     }
 
-    private InputStream getInputStream(String path, Map query = [:]) {
+    protected InputStream getInputStream(String path, Map query = [:]) {
         client.get([path: "/$contextName$path", query: query, contentType: BINARY]).data
     }
 
-    private <T> T parseText(String text, def target) {
+    protected <T> T parseText(String text, def target) {
         objectMapper.readValue text, target
     }
 }

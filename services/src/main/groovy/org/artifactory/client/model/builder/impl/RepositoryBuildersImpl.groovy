@@ -17,7 +17,7 @@ class RepositoryBuildersImpl implements RepositoryBuilders {
 
     private RepositoryBuildersImpl() {}
 
-    static RepositoryBuildersImpl create() {
+    static RepositoryBuilders create() {
         return new RepositoryBuildersImpl()
     }
 

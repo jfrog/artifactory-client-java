@@ -1,7 +1,8 @@
 package org.artifactory.client;
 
 import junit.framework.Assert;
-import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,7 +13,7 @@ import java.util.Properties;
 
 import static org.apache.commons.codec.binary.Base64.encodeBase64;
 import static org.apache.commons.lang.StringUtils.remove;
-import static org.artifactory.client.ArtifactoryConnector.create;
+import static org.artifactory.client.ArtifactoryClient.create;
 
 /**
  * @author jbaruch
@@ -29,7 +30,7 @@ public abstract class ArtifactoryTestsBase {
     private String password;
     protected String url;
 
-    @BeforeMethod
+    @BeforeClass
     public void init() throws IOException {
 
         Properties props = new Properties();
@@ -44,6 +45,11 @@ public abstract class ArtifactoryTestsBase {
         username = props.getProperty("username");
         password = props.getProperty("password");
         artifactory = create(url, username, password);
+    }
+
+    @AfterClass
+    public void clean() {
+        artifactory.close();
     }
 
     protected String curl(String path) throws IOException {

@@ -17,14 +17,14 @@ public class FolderImpl extends ItemImpl implements Folder {
     private String createdBy;
     private List<Item> children;
 
-    private FolderImpl(String uri, String metadataUri, Date lastModified, String modifiedBy, Date lastUpdated, Date created, String createdBy, List<Item> children) {
+    public FolderImpl(String uri, String metadataUri, Date lastModified, String modifiedBy, Date lastUpdated, Date created, String createdBy, List<Item> children) {
         super(true, uri, metadataUri, lastModified, modifiedBy, lastUpdated);
         this.created = created;
         this.createdBy = createdBy;
         this.children = children;
     }
 
-    private FolderImpl() {
+    public FolderImpl() {
     }
 
     @Override

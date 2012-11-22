@@ -3,6 +3,7 @@ package org.artifactory.client;
 import groovyx.net.http.HttpResponseException;
 import org.artifactory.client.model.File;
 import org.artifactory.client.model.Folder;
+import org.artifactory.client.model.LocalRepository;
 import org.testng.annotations.Test;
 
 import java.util.*;
@@ -41,6 +42,10 @@ public class ItemTests extends ArtifactoryTestsBase {
     public void testSetItemProperties() throws Exception {
         //Upload a clean file
         try {
+            // Make sure the local repo exists
+            LocalRepository localRepository = artifactory.repositories().builders().localRepositoryBuilder().key(NEW_LOCAL)
+                    .description("new local repository").build();
+            artifactory.repositories().create(2, localRepository);
             artifactory.repository(NEW_LOCAL).delete("x/y/z");
         } catch (Exception e) {
             //noinspection ConstantConditions

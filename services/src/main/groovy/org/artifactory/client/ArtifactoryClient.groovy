@@ -7,14 +7,14 @@ import org.artifactory.client.impl.ArtifactoryImpl
  * @author jbaruch
  * @since 12/08/12
  */
-public class ArtifactoryConnector {
+public class ArtifactoryClient {
 
     static Artifactory create(String url, String username, String password) {
         def matcher = url =~ /(https?:\/\/[^\/]+)\/+([^\/]*).*/
         if (!matcher) {
             matcher = url =~ /(https?:\/\/[^\/]+)\/*()/
             if (!matcher) {
-                throw new IllegalArgumentException("Invalid ArtifactoryImpl URL: ${url}.")
+                throw new IllegalArgumentException("Invalid Artifactory URL: ${url}.")
             }
         }
         def client = new RESTClient(matcher[0][1])

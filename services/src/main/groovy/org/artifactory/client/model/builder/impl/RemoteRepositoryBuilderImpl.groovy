@@ -1,13 +1,14 @@
 package org.artifactory.client.model.builder.impl
 
 import org.artifactory.client.model.RemoteRepoChecksumPolicyType
-import org.artifactory.client.model.impl.RemoteRepoChecksumPolicyTypeImpl
 import org.artifactory.client.model.RemoteRepository
 import org.artifactory.client.model.builder.RemoteRepositoryBuilder
+import org.artifactory.client.model.impl.RemoteRepoChecksumPolicyTypeImpl
 import org.artifactory.client.model.impl.RemoteRepositoryImpl
 
 import static RemoteRepoChecksumPolicyTypeImpl.generate_if_absent
 import static org.artifactory.client.model.Repository.MAVEN_2_REPO_LAYOUT
+
 /**
  *
  * @author jbaruch
@@ -15,7 +16,7 @@ import static org.artifactory.client.model.Repository.MAVEN_2_REPO_LAYOUT
  */
 class RemoteRepositoryBuilderImpl extends NonVirtualRepositoryBuilderBase<RemoteRepositoryBuilder, RemoteRepository> implements RemoteRepositoryBuilder {
 
-    private RemoteRepositoryBuilderImpl() {
+    RemoteRepositoryBuilderImpl() {
         remoteRepoChecksumPolicyType = generate_if_absent
         repoLayoutRef = MAVEN_2_REPO_LAYOUT
     }
@@ -160,9 +161,9 @@ class RemoteRepositoryBuilderImpl extends NonVirtualRepositoryBuilderBase<Remote
     }
 
     RemoteRepository build() {
-        return new RemoteRepositoryImpl(description, excludesPattern, includesPattern, key, notes, blackedOut,handleReleases, handleSnapshots, maxUniqueSnapshots,propertySets,
-        snapshotVersionBehavior, suppressPomConsistencyChecks, failedRetrievalCachePeriodSecs, fetchJarsEagerly, fetchSourcesEagerly,hardFail, localAddress, missedRetrievalCachePeriodSecs,
-        offline, password, proxy, remoteRepoChecksumPolicyType, retrievalCachePeriodSecs, shareConfiguration, socketTimeoutMillis, storeArtifactsLocally, synchronizeProperties,
-        unusedArtifactsCleanupEnabled, unusedArtifactsCleanupPeriodHours, url, username, repoLayoutRef, enableNuGetSupport, assumedOfflinePeriodSecs, archiveBrowsingEnabled, listRemoteFolderItems, rejectInvalidJars, p2Support)
+        return new RemoteRepositoryImpl(description, excludesPattern, includesPattern, key, notes, blackedOut, handleReleases, handleSnapshots, maxUniqueSnapshots, propertySets,
+                snapshotVersionBehavior, suppressPomConsistencyChecks, failedRetrievalCachePeriodSecs, fetchJarsEagerly, fetchSourcesEagerly, hardFail, localAddress, missedRetrievalCachePeriodSecs,
+                offline, password, proxy, remoteRepoChecksumPolicyType, retrievalCachePeriodSecs, shareConfiguration, socketTimeoutMillis, storeArtifactsLocally, synchronizeProperties,
+                unusedArtifactsCleanupEnabled, unusedArtifactsCleanupPeriodHours, url, username, repoLayoutRef, enableNuGetSupport, assumedOfflinePeriodSecs, archiveBrowsingEnabled, listRemoteFolderItems, rejectInvalidJars, p2Support)
     }
 }
