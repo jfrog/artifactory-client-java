@@ -17,7 +17,7 @@ public class ItemTests extends ArtifactoryTestsBase {
 
     @Test
     public void testFolderInfo() {
-        Folder folder = artifactory.repository(REPO1_CACHE).folder("junit").get();
+        Folder folder = artifactory.repository(REPO1_CACHE).folder("junit").info();
         assertNotNull(folder);
         assertTrue(folder.isFolder());
         assertEquals(folder.getChildren().size(), 1);
@@ -27,7 +27,7 @@ public class ItemTests extends ArtifactoryTestsBase {
 
     @Test
     public void testFileInfo() {
-        File file = artifactory.repository(REPO1_CACHE).file("junit/junit/4.10/junit-4.10-sources.jar").get();
+        File file = artifactory.repository(REPO1_CACHE).file("junit/junit/4.10/junit-4.10-sources.jar").info();
         assertNotNull(file);
         assertFalse(file.isFolder());
         assertEquals(file.getSize(), 141185);

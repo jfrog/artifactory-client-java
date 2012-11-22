@@ -3,10 +3,7 @@ package org.artifactory.client.impl
 import groovyx.net.http.HttpResponseException
 import org.artifactory.client.ItemHandle
 import org.artifactory.client.PropertiesContainer
-import org.artifactory.client.model.Folder
-import org.artifactory.client.model.Permission
-import org.artifactory.client.model.Permissions
-import org.artifactory.client.model.Principal
+import org.artifactory.client.model.*
 import org.artifactory.client.model.impl.PermissionsImpl
 import org.artifactory.client.model.impl.PrincipalImpl
 
@@ -29,7 +26,7 @@ class ItemHandleImpl implements ItemHandle {
         this.itemType = itemType
     }
 
-    public <T> T get() {
+    public <T> T info() {
         assert artifactory
         assert repo
         assert path
@@ -48,7 +45,7 @@ class ItemHandleImpl implements ItemHandle {
         }
     }
 
-    public List<String> getPropertyValues(String propertyName){
+    public List<String> getPropertyValues(String propertyName) {
         Map<String, ?> properties = getProperties([propertyName] as String[])
         properties[propertyName]
     }
@@ -57,7 +54,7 @@ class ItemHandleImpl implements ItemHandle {
         return Folder.class.isAssignableFrom(itemType)
     }
 
-    public PropertiesContainer properties(){
+    public PropertiesContainer properties() {
         return new PropertiesContainerImpl(artifactory, repo, path);
     }
 
@@ -73,6 +70,7 @@ class ItemHandleImpl implements ItemHandle {
             throw e
         }
     }
+
 
     @Override
     Permissions effectivePermissions() {

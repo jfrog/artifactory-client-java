@@ -1,5 +1,6 @@
 package org.artifactory.client;
 
+import org.artifactory.client.model.Item;
 import org.artifactory.client.model.Permissions;
 
 import java.util.List;
@@ -12,7 +13,7 @@ import java.util.Set;
  */
 public interface ItemHandle {
 
-    <T> T get();
+    <T> T info();
 
     boolean isFolder();
 
