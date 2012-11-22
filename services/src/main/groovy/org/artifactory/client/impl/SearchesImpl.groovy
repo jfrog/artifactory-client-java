@@ -4,6 +4,9 @@ import groovyx.net.http.HttpResponseException
 import org.artifactory.client.Artifactory
 import org.artifactory.client.PropertyFilters
 import org.artifactory.client.Searches
+import org.artifactory.client.model.RepoPath
+import org.artifactory.client.model.impl.RepoPathImpl
+
 /**
  *
  * @author jbaruch
@@ -30,20 +33,24 @@ class SearchesImpl implements Searches {
         this
     }
 
-    List<String> doSearch() {
+    List<RepoPath> doSearch() {
         if (!quickSearchTerm) {
             throw new IllegalArgumentException("Search term wasn't set. Please call 'artifactsByName(name to search)' before calling 'search()'")
         }
         search('artifact', [name: quickSearchTerm])
     }
 
-    private List<String> search(String url, Map query) {
+    private List<RepoPath> search(String url, Map query) {
         if (reposFilter) {
             query.repos = reposFilter.join(',')
         }
         try {
             def result = artifactory.getSlurper("${SEARCHES_API}$url", query)
-            result.results.collect { it.uri }
+            result.results.collect {
+                String path = it.uri - "$artifactory.uri/$artifactory.contextName/api/storage/"
+                String repo = path.split('/')[0]
+                new RepoPathImpl(repo, path - (repo + '/'))
+            }
         } catch (HttpResponseException e) {
             return []
         }
