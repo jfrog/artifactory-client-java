@@ -2,6 +2,7 @@ package org.artifactory.client.impl
 
 import groovyx.net.http.HttpResponseException
 import org.artifactory.client.ItemHandle
+import org.artifactory.client.PropertiesContainer
 import org.artifactory.client.model.Folder
 
 /**
@@ -30,41 +31,64 @@ class ItemHandleImpl implements ItemHandle {
         artifactory.getJson("/api/storage/$repo/$path", itemType)
     }
 
-    public Map<String, ?> getProps(Set props = []) {
+    public Map<String, List<String>> getProperties(String... properties) {
         assert artifactory
         assert repo
         assert path
         try {
-            artifactory.getJson("/api/storage/$repo/$path", Map, [properties: props.join(',')])?.properties
+            artifactory.getJson("/api/storage/$repo/$path", Map, [properties: properties.join(',')])?.properties
         } catch (HttpResponseException e) {
             if (e.statusCode == 404) return [:]
             throw e
         }
+    }
+
+    public List<String> getPropertyValues(String propertyName){
+        Map<String, ?> properties = getProperties([propertyName] as String[])
+        properties[propertyName]
     }
 
     boolean isFolder() {
         return Folder.class.isAssignableFrom(itemType)
     }
 
-    public <T> T setProps(Map<String, ?> props, boolean recursive = false) {
-        assert artifactory
-        assert repo
-        assert path
-        def propList = props.inject([]) {result, entry ->
-            result << "$entry.key=$entry.value"
-        }.join('|')
-        artifactory.put("/api/storage/$repo/$path", [properties: propList, recursive: recursive ? 1 : 0])
+    public PropertiesContainer properties(){
+        return new PropertiesContainerImpl(artifactory, repo, path);
     }
 
-    public Map<String, ?> deleteProps(Set props = []) {
+    @Override
+    public Map<String, ?> deleteProperties(String... properties) {
         assert artifactory
         assert repo
         assert path
         try {
-            artifactory.delete("/api/storage/$repo/$path", [properties: props.join(',')])?.properties
+            artifactory.delete("/api/storage/$repo/$path", [properties: properties.join(',')])?.properties
         } catch (HttpResponseException e) {
             if (e.statusCode == 404) return [:]
             throw e
         }
+    }
+
+    @Override
+    public Map<String, ?> deleteProperty(String property) {
+        assert artifactory
+        assert repo
+        assert path
+        try {
+            artifactory.delete("/api/storage/$repo/$path", [properties: property])?.properties
+        } catch (HttpResponseException e) {
+            if (e.statusCode == 404) return [:]
+            throw e
+        }
+    }
+
+    @Override
+    def <T> T setProperty(String propertyName,String value) {
+        setProperties(["$propertyName" : value])
+    }
+
+    @Override
+    def <T> T setProperty(String propertyName, String... values) {
+        setProperties(["$propertyName" : values])
     }
 }

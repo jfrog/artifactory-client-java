@@ -1,5 +1,6 @@
 package org.artifactory.client;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -9,19 +10,17 @@ import java.util.Set;
  */
 public interface ItemHandle {
 
-    public <T> T get();
-
-    public Map<String, ?> getProps();
-
-    public Map<String, ?> getProps(Set props);
+    <T> T get();
 
     boolean isFolder();
 
-    public <T> T setProps(Map<String, ?> props);
+    Map<String, List<String>> getProperties(String... properties);
 
-    public <T> T setProps(Map<String, ?> props, boolean recursive);
+    List<String> getPropertyValues(String propertyName);
 
-    public Map<String, ?> deleteProps(Set props);
+    PropertiesContainer properties();
 
-    public Map<String, ?> deleteProps();
+    Map<String, ?> deleteProperty(String property);
+    Map<String, ?> deleteProperties(String... properties);
+
 }
