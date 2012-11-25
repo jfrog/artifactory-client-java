@@ -13,7 +13,11 @@ public enum Permission {
 
     private char abbreviation;
 
-    public static Permission parseAbbreviation(char abbreviation){
+    public char getAbbreviation() {
+        return abbreviation;
+    }
+
+    public static Permission fromAbbreviation(char abbreviation){
         for (Permission permission : values()) {
             if(permission.abbreviation == abbreviation){
                 return permission;

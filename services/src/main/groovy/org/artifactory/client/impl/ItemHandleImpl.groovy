@@ -81,7 +81,7 @@ class ItemHandleImpl implements ItemHandle {
     private static Map<String, Principal> mapToPrincipals(Map<String, List> map) {
         map.collectEntries { String key, List value ->
             List permissions = value.collect() {
-                Permission.parseAbbreviation(it as char)
+                Permission.fromAbbreviation(it as char)
             }
             [key, new PrincipalImpl(key, permissions)]
         } as Map<String, Principal>
