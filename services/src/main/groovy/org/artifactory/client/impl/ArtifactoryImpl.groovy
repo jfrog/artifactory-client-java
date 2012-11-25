@@ -37,7 +37,7 @@ class ArtifactoryImpl implements Artifactory {
         objectMapper.dateFormat = ISO8601_DATE_FORMAT
         objectMapper.visibilityChecker = defaultInstance().withFieldVisibility(JsonAutoDetect.Visibility.ANY)
         //        client.parser."$JSON" = {HttpResponse resp ->
-        //            objectMapper.readValue(resp.entity.content, Object) //TODO (JB) seem unsolvable, when this code runs I don't know the type yet. If only JSON has root element!
+        //            objectMapper.readValue(resp.entity.content, Object) //TODO (JB) seem unsolvable, when this code runs I don't know the type yet. If only JSON had root element!
         //        }
     }
 
@@ -113,7 +113,7 @@ class ArtifactoryImpl implements Artifactory {
         }
         def data = client.put(params).data
         //TODO (JB) need to try once more to replace this stuff with good parser that uses Jackson(if possible- see above)
-        if (responseType == null) {
+        if (responseType == null || data == null) {
             null
         } else if (responseType == String) {
             data.text
