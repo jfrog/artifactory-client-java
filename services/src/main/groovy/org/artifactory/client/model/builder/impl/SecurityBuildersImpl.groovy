@@ -1,6 +1,8 @@
 package org.artifactory.client.model.builder.impl
 
+import org.artifactory.client.model.PermissionTarget
 import org.artifactory.client.model.User
+import org.artifactory.client.model.builder.PermissionTargetBuilder
 import org.artifactory.client.model.builder.SecurityBuilders
 import org.artifactory.client.model.builder.UserBuilder
 
@@ -26,6 +28,16 @@ class SecurityBuildersImpl implements SecurityBuilders {
 
     @Override
     UserBuilder builderFrom(User from) {
-        return null  //To change body of implemented methods use File | Settings | File Templates.
+        return null  //TODO implement copy builder for User
+    }
+
+    @Override
+    PermissionTargetBuilder permissionTargetBuilder() {
+        return new PermissionTargetBuilderImpl();
+    }
+
+    @Override
+    PermissionTargetBuilder builderFrom(PermissionTarget from) {
+        return null  //TODO implement copy builder for PermissionTarget
     }
 }

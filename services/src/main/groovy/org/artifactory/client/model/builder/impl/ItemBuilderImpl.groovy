@@ -9,21 +9,21 @@ import org.artifactory.client.model.impl.ItemImpl
  * @since 31/07/12
  */
 class ItemBuilderImpl implements ItemBuilder {
-    private String uri;
-    private boolean folder;
+    private String uri
+    private boolean folder
 
 
     private ItemBuilderImpl() {
     }
 
     ItemBuilderImpl uri(String uri) {
-        this.uri = uri;
-        return this;
+        this.uri = uri
+        this
     }
 
     ItemBuilderImpl isFolder(boolean folder) {
-        this.folder = folder;
-        return this;
+        this.folder = folder
+        this
     }
 
     Item build() {

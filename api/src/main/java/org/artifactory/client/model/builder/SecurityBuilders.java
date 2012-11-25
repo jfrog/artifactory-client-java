@@ -1,5 +1,6 @@
 package org.artifactory.client.model.builder;
 
+import org.artifactory.client.model.PermissionTarget;
 import org.artifactory.client.model.User;
 
 /**
@@ -12,4 +13,9 @@ public interface SecurityBuilders {
     UserBuilder userBuilder();
 
     UserBuilder builderFrom(User from);
+
+    PermissionTargetBuilder permissionTargetBuilder();
+
+    PermissionTargetBuilder builderFrom(PermissionTarget from);
+
 }
