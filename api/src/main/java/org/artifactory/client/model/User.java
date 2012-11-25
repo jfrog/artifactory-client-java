@@ -9,8 +9,7 @@ import java.util.Date;
  *
  * @author freds
  */
-public interface User {
-    String getName();
+public interface User extends Subject {
 
     String getEmail();
 
@@ -21,8 +20,6 @@ public interface User {
     boolean isInternalPasswordDisabled();
 
     Date getLastLoggedIn();
-
-    String getRealm();
 
     Collection<String> getGroups();
 }

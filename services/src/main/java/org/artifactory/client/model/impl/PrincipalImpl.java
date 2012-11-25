@@ -1,6 +1,6 @@
 package org.artifactory.client.model.impl;
 
-import org.artifactory.client.model.Permission;
+import org.artifactory.client.model.Privilege;
 import org.artifactory.client.model.Principal;
 
 import java.util.List;
@@ -12,11 +12,11 @@ import java.util.List;
 public class PrincipalImpl implements Principal {
 
     private final String name;
-    private final List<Permission> permissions;
+    private final List<Privilege> privileges;
 
-    public PrincipalImpl(String name, List<Permission> permissions) {
+    public PrincipalImpl(String name, List<Privilege> privileges) {
         this.name = name;
-        this.permissions = permissions;
+        this.privileges = privileges;
     }
 
     @Override
@@ -25,14 +25,14 @@ public class PrincipalImpl implements Principal {
     }
 
     @Override
-    public List<Permission> getPermissions() {
-        return permissions;
+    public List<Privilege> getPrivileges() {
+        return privileges;
     }
 
     @Override
-    public boolean isAllowedTo(Permission... permissions) {
-        for (Permission permission : permissions) {
-            if(!this.permissions.contains(permission)) {
+    public boolean isAllowedTo(Privilege... privileges) {
+        for (Privilege privilege : privileges) {
+            if(!this.privileges.contains(privilege)) {
                 return false;
             }
         }

@@ -4,8 +4,10 @@ import groovyx.net.http.HttpResponseException
 import org.artifactory.client.ItemHandle
 import org.artifactory.client.PropertiesContainer
 import org.artifactory.client.model.*
-import org.artifactory.client.model.impl.PermissionsImpl
-import org.artifactory.client.model.impl.PrincipalImpl
+import org.artifactory.client.model.impl.GroupImpl
+import org.artifactory.client.model.impl.ItemPermissionImpl
+import org.artifactory.client.model.impl.RepoPathImpl
+import org.artifactory.client.model.impl.UserImpl
 
 /**
  *
@@ -73,18 +75,18 @@ class ItemHandleImpl implements ItemHandle {
 
 
     @Override
-    Permissions effectivePermissions() {
+    List<ItemPermission> effectivePermissions() {
         Map json = artifactory.getJson("/api/storage/${repo}/${path}", Map, ['permissions': null]) as Map
-        new PermissionsImpl(mapToPrincipals(json.principals.users), mapToPrincipals(json.principals.groups))
+        mapToItemPermissions(json.principals.users, User) + mapToItemPermissions(json.principals.groups, Group)
     }
 
-    private static Map<String, Principal> mapToPrincipals(Map<String, List> map) {
-        map.collectEntries { String key, List value ->
-            List permissions = value.collect() {
-                Permission.fromAbbreviation(it as char)
+    private List<? extends ItemPermission> mapToItemPermissions(Map<String, List> map, Class<? extends Subject> type) {
+        map.collect { String key, List value ->
+            List<Privilege> permissions = value.collect() {
+                Privilege.fromAbbreviation(it as char)
             }
-            [key, new PrincipalImpl(key, permissions)]
-        } as Map<String, Principal>
+            new ItemPermissionImpl(new RepoPathImpl(repo, path), type == User ? new UserImpl(key) : new GroupImpl(key), permissions)
+        }
     }
 
     @Override

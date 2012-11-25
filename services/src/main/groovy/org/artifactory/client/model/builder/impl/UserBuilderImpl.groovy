@@ -18,7 +18,6 @@ class UserBuilderImpl implements UserBuilder {
     boolean profileUpdatable = true
     boolean internalPasswordDisabled = false
     Date lastLoggedIn
-    String realm
     Set<String> groups = new HashSet<String>(1)
 
     @Override
@@ -72,6 +71,6 @@ class UserBuilderImpl implements UserBuilder {
     @Override
     User build() {
         return new UserImpl(name, email, password, admin, profileUpdatable, internalPasswordDisabled,
-                lastLoggedIn, realm, groups)
+                lastLoggedIn, groups)
     }
 }

@@ -1,11 +1,9 @@
 package org.artifactory.client;
 
-import org.artifactory.client.model.Item;
-import org.artifactory.client.model.Permissions;
+import org.artifactory.client.model.ItemPermission;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * @author jbaruch
@@ -26,5 +24,5 @@ public interface ItemHandle {
     Map<String, ?> deleteProperty(String property);
     Map<String, ?> deleteProperties(String... properties);
 
-    Permissions effectivePermissions();
+    List<ItemPermission> effectivePermissions();
 }

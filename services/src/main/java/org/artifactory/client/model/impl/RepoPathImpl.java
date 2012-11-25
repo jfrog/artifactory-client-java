@@ -7,7 +7,7 @@ import org.artifactory.client.model.RepoPath;
  * @author jbaruch
  * @since 22/11/12
  */
-class RepoPathImpl implements RepoPath {
+public class RepoPathImpl implements RepoPath {
     private String repoKey;
     private String itemPath;
 

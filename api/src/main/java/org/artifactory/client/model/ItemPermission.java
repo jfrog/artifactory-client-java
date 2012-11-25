@@ -4,12 +4,15 @@ import java.util.List;
 
 /**
  * @author jbaruch
- * @since 22/11/12
+ * @since 26/11/12
  */
-public interface Principal {
+public interface ItemPermission {
 
-    String getName();
+    RepoPath getRepoPath();
+
     List<Privilege> getPrivileges();
+
+    Subject getSubject();
 
     boolean isAllowedTo(Privilege... privileges);
 }

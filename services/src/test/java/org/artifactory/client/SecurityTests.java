@@ -1,18 +1,18 @@
 package org.artifactory.client;
 
 import junit.framework.Assert;
-import org.artifactory.client.model.Permissions;
-import org.artifactory.client.model.Principal;
+import org.artifactory.client.model.Group;
+import org.artifactory.client.model.ItemPermission;
+import org.artifactory.client.model.Subject;
 import org.artifactory.client.model.User;
 import org.artifactory.client.model.builder.UserBuilder;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.Test;
 
 import java.util.Collection;
+import java.util.List;
 
-import static org.artifactory.client.model.Permission.*;
-import static org.artifactory.client.model.Permission.DEPLOY;
-import static org.artifactory.client.model.Permission.READ;
+import static org.artifactory.client.model.Privilege.*;
 import static org.testng.Assert.assertTrue;
 
 
@@ -52,12 +52,25 @@ public class SecurityTests extends ArtifactoryTestsBase {
     }
 
     @Test(groups = "security", dependsOnGroups = "uploadBasics")
-        public void testEffectiveItemPermission() throws Exception {
-            Permissions permissions = artifactory.repository(NEW_LOCAL).file(PATH).effectivePermissions();
-            Assert.assertTrue(permissions.user("admin").isAllowedTo(ADMIN, DEPLOY, ANNOTATE, DELETE, READ));
-            Principal anonymous = permissions.user("anonymous");
-            Assert.assertTrue(anonymous.isAllowedTo(READ) && !anonymous.isAllowedTo(DEPLOY));
-            Principal readers = permissions.group("readers");
-            Assert.assertTrue(readers.isAllowedTo(READ) && !readers.isAllowedTo(DEPLOY));
+    public void testEffectiveItemPermission() throws Exception {
+        List<ItemPermission> itemPermissions = artifactory.repository(NEW_LOCAL).file(PATH).effectivePermissions();
+        for (ItemPermission itemPermission : itemPermissions) {
+            Subject subject = itemPermission.getSubject();
+            if (subject.getName().equals("admin")) {
+                Assert.assertTrue(itemPermission.isAllowedTo(ADMIN, DEPLOY, ANNOTATE, DELETE, READ));
+                Assert.assertFalse(subject.isGroup());
+                Assert.assertTrue(subject instanceof User);
+            }
+            if (subject.getName().equals("anonymous")) {
+                Assert.assertTrue(itemPermission.isAllowedTo(READ) && !itemPermission.isAllowedTo(DEPLOY));
+                Assert.assertFalse(subject.isGroup());
+                Assert.assertTrue(subject instanceof User);
+            }
+            if (subject.getName().equals("readers")) {
+                Assert.assertTrue(itemPermission.isAllowedTo(READ) && !itemPermission.isAllowedTo(DEPLOY));
+                Assert.assertTrue(subject.isGroup());
+                Assert.assertTrue(subject instanceof Group);
+            }
         }
+    }
 }
