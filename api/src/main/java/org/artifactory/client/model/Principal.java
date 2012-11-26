@@ -1,6 +1,7 @@
 package org.artifactory.client.model;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author jbaruch
@@ -9,7 +10,7 @@ import java.util.List;
 public interface Principal {
 
     String getName();
-    List<Privilege> getPrivileges();
+    Set<Privilege> getPrivileges();
 
     boolean isAllowedTo(Privilege... privileges);
 }

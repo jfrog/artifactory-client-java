@@ -1,9 +1,12 @@
 package org.artifactory.client.model.impl;
 
-import org.artifactory.client.model.Privilege;
 import org.artifactory.client.model.Principal;
+import org.artifactory.client.model.Privilege;
 
-import java.util.List;
+import java.util.Collections;
+import java.util.Set;
+
+import static java.util.Collections.unmodifiableSet;
 
 /**
  * @author jbaruch
@@ -12,11 +15,11 @@ import java.util.List;
 public class PrincipalImpl implements Principal {
 
     private final String name;
-    private final List<Privilege> privileges;
+    private final Set<Privilege> privileges;
 
-    public PrincipalImpl(String name, List<Privilege> privileges) {
+    public PrincipalImpl(String name, Set<Privilege> privileges) {
         this.name = name;
-        this.privileges = privileges;
+        this.privileges = unmodifiableSet(privileges);
     }
 
     @Override
@@ -25,14 +28,14 @@ public class PrincipalImpl implements Principal {
     }
 
     @Override
-    public List<Privilege> getPrivileges() {
+    public Set<Privilege> getPrivileges() {
         return privileges;
     }
 
     @Override
     public boolean isAllowedTo(Privilege... privileges) {
         for (Privilege privilege : privileges) {
-            if(!this.privileges.contains(privilege)) {
+            if (!this.privileges.contains(privilege)) {
                 return false;
             }
         }

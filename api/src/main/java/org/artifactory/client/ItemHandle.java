@@ -4,6 +4,7 @@ import org.artifactory.client.model.ItemPermission;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author jbaruch
@@ -22,7 +23,8 @@ public interface ItemHandle {
     PropertiesContainer properties();
 
     Map<String, ?> deleteProperty(String property);
+
     Map<String, ?> deleteProperties(String... properties);
 
-    List<ItemPermission> effectivePermissions();
+    Set<ItemPermission> effectivePermissions();
 }

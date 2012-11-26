@@ -10,7 +10,7 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.Test;
 
 import java.util.Collection;
-import java.util.List;
+import java.util.Set;
 
 import static org.artifactory.client.model.Privilege.*;
 import static org.testng.Assert.assertTrue;
@@ -53,7 +53,7 @@ public class SecurityTests extends ArtifactoryTestsBase {
 
     @Test(groups = "security", dependsOnGroups = "uploadBasics")
     public void testEffectiveItemPermission() throws Exception {
-        List<ItemPermission> itemPermissions = artifactory.repository(NEW_LOCAL).file(PATH).effectivePermissions();
+        Set<ItemPermission> itemPermissions = artifactory.repository(NEW_LOCAL).file(PATH).effectivePermissions();
         for (ItemPermission itemPermission : itemPermissions) {
             Subject subject = itemPermission.getSubject();
             if (subject.getName().equals("admin")) {

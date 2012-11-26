@@ -9,6 +9,8 @@ import org.artifactory.client.model.impl.ItemPermissionImpl
 import org.artifactory.client.model.impl.RepoPathImpl
 import org.artifactory.client.model.impl.UserImpl
 
+import static java.util.Collections.unmodifiableSet
+
 /**
  *
  * @author jbaruch
@@ -75,12 +77,12 @@ class ItemHandleImpl implements ItemHandle {
 
 
     @Override
-    List<ItemPermission> effectivePermissions() {
+    Set<ItemPermission> effectivePermissions() {
         Map json = artifactory.getJson("/api/storage/${repo}/${path}", Map, ['permissions': null]) as Map
-        mapToItemPermissions(json.principals.users, User) + mapToItemPermissions(json.principals.groups, Group)
+        unmodifiableSet(mapToItemPermissions(json.principals.users, User) + mapToItemPermissions(json.principals.groups, Group) as Set<? extends ItemPermission>) as Set<ItemPermission>
     }
 
-    private List<? extends ItemPermission> mapToItemPermissions(Map<String, List> map, Class<? extends Subject> type) {
+    private Set<? extends ItemPermission> mapToItemPermissions(Map<String, List> map, Class<? extends Subject> type) {
         map.collect { String key, List value ->
             List<Privilege> permissions = value.collect() {
                 Privilege.fromAbbreviation(it as char)
