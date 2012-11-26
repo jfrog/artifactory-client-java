@@ -8,14 +8,14 @@ import org.artifactory.client.Artifact
  * @since 12/08/12
  */
 abstract class ArtifactBase<T extends Artifact> implements Artifact<T> {
-    protected repo;
+    protected String repo;
     protected props = [:]
 
     protected ArtifactBase() {
 
     }
 
-    protected ArtifactBase(repo) {
+    protected ArtifactBase(String repo) {
         this.repo = repo
     }
 

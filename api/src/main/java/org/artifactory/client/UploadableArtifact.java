@@ -9,4 +9,10 @@ import org.artifactory.client.model.File;
 public interface UploadableArtifact extends Artifact<UploadableArtifact> {
 
     File doUpload();
+
+    UploadableArtifact withListener(UploadListener listener);
+
+    UploadableArtifact bySha1Checksum();
+
+    UploadableArtifact bySha1Checksum(String sha1);
 }

@@ -3,6 +3,7 @@ package org.artifactory.client;
 import org.artifactory.client.model.ReplicationStatus;
 import org.artifactory.client.model.Repository;
 
+import java.io.File;
 import java.io.InputStream;
 
 /**
@@ -24,6 +25,8 @@ public interface RepositoryHandle {
     Repository get();
 
     UploadableArtifact upload(String targetPath, InputStream content);
+
+    UploadableArtifact upload(String targetPath, File content);
 
     DownloadableArtifact download(String path);
 }
