@@ -86,9 +86,11 @@ subprojects {
 
     test {
         useTestNG()
-        afterTest { desc, result -> 
-        println "Executing test ${desc.name} [${desc.className}] with result: ${result.resultType}"
-       }
+            testLogging {
+            exceptionFormat "full"
+            events "started", "passed", "skipped", "failed", "standardOut", "standardError"
+            minGranularity 0
+        }
     }
 
 }
