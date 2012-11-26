@@ -23,6 +23,7 @@ import static org.testng.Assert.*;
 public class DownloadUploadTests extends ArtifactoryTestsBase {
 
     private static final int SAMPLE_FILE_SIZE = 3044;
+    private static final int SAMPLE_FILE_SIZE_WIN_ENDINGS=3017;
 
     @Test(groups = "uploadBasics", dependsOnGroups = "repositoryBasics")
     public void testUploadWithSingleProperty() throws IOException {
@@ -55,8 +56,8 @@ public class DownloadUploadTests extends ArtifactoryTestsBase {
         assertEquals(deployed.getPath(), "/" + PATH);
         assertEquals(deployed.getCreatedBy(), username);
         assertEquals(deployed.getDownloadUri(), url + "/" + NEW_LOCAL + "/" + PATH);
-        assertEquals(deployed.getSize(), SAMPLE_FILE_SIZE);
-        assertEquals(uploaded[0], SAMPLE_FILE_SIZE);
+        assertTrue(deployed.getSize() == SAMPLE_FILE_SIZE || deployed.getSize() == SAMPLE_FILE_SIZE_WIN_ENDINGS);
+        assertTrue(uploaded[0] == SAMPLE_FILE_SIZE || uploaded[0] == SAMPLE_FILE_SIZE_WIN_ENDINGS);
     }
 
     @Test(groups = "uploadBasics", dependsOnGroups = "repositoryBasics")
