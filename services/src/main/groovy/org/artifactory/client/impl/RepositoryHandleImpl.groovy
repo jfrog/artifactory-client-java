@@ -61,6 +61,12 @@ class RepositoryHandleImpl implements RepositoryHandle {
         new UploadableArtifactImpl(repo, targetPath, content, artifactory)
     }
 
+    @Override
+    UploadableArtifact upload(String targetPath, File content) {
+        assert content.isFile()
+        new UploadableArtifactImpl(repo, targetPath, content, artifactory)
+    }
+
     DownloadableArtifact download(String path) {
         new DownloadableArtifactImpl(repo, path, artifactory)
     }

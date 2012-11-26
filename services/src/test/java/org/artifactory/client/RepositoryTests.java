@@ -17,7 +17,7 @@ import static org.testng.Assert.*;
  * @author jbaruch
  * @since 30/07/12
  */
-public class RepositoryTest extends ArtifactoryTestBase {
+public class RepositoryTests extends ArtifactoryTestsBase {
 
     private static final String LIST_PATH = "api/repositories";
     private LocalRepository localRepository;
@@ -105,10 +105,10 @@ public class RepositoryTest extends ArtifactoryTestBase {
         assertEquals(repo1.getKey(), REPO1);
         assertEquals(repo1.getRclass().toString(), "remote");
         //urls of repo1 are different for aol and standalone
-        assertTrue(repo1.getUrl().equals("http://repo.jfrog.org/artifactory/repo1") || repo1.getUrl().equals("http://repo1.maven.org/maven2"));
+        assertTrue(repo1.getUrl().equals("http://repo-demo.jfrog.org/artifactory/repo1") || repo1.getUrl().equals("http://repo1.maven.org/maven2") || repo1.getUrl().equals("http://repo.jfrog.org/artifactory/repo1"));
         assertEquals(repo1.getUsername(), "");
         assertEquals(repo1.getPassword(), "");
-        assertEquals(repo1.getDescription(), "Central Repo1");
+        assertTrue(repo1.getDescription().equals("Central Repo1") || repo1.getDescription().equals("Central Maven 2 repository"));
         assertEquals(repo1.getNotes(), "");
         assertEquals(repo1.getIncludesPattern(), "**/*");
         assertEquals(repo1.getExcludesPattern(), "");

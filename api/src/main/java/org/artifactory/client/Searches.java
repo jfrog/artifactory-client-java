@@ -1,5 +1,7 @@
 package org.artifactory.client;
 
+import org.artifactory.client.model.RepoPath;
+
 import java.io.IOException;
 import java.util.List;
 
@@ -13,7 +15,7 @@ public interface Searches {
 
     Searches artifactsByName(String name);
 
-    List<String> doSearch() throws IOException;
+    List<RepoPath> doSearch();
 
     PropertyFilters itemsByProperty();
 

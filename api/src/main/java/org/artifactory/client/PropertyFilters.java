@@ -1,5 +1,7 @@
 package org.artifactory.client;
 
+import org.artifactory.client.model.RepoPath;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -15,5 +17,5 @@ public interface PropertyFilters {
 
     PropertyFilters repositories(String... repositories);
 
-    List<String> doSearch() throws IOException;
+    List<RepoPath> doSearch() throws IOException;
 }

@@ -11,38 +11,28 @@ import java.util.Date;
  *
  * @author freds
  */
-public class UserImpl implements User {
-    private String name;
+public class UserImpl extends SubjectImpl implements User {
     private String email;
     private String password;
     private boolean admin;
     private boolean profileUpdatable;
     private boolean internalPasswordDisabled;
     private Date lastLoggedIn;
-    private String realm;
     private Collection<String> groups;
 
-    public UserImpl(String name, String email, String password, boolean admin, boolean profileUpdatable, boolean internalPasswordDisabled, Date lastLoggedIn, String realm, Collection<String> groups) {
-        this.name = name;
+    public UserImpl(String name, String email, String password, boolean admin, boolean profileUpdatable, boolean internalPasswordDisabled, Date lastLoggedIn, Collection<String> groups) {
+        super(name);
         this.email = email;
         this.password = password;
         this.admin = admin;
         this.profileUpdatable = profileUpdatable;
         this.internalPasswordDisabled = internalPasswordDisabled;
         this.lastLoggedIn = lastLoggedIn;
-        this.realm = realm;
         this.groups = groups;
     }
 
-    public UserImpl() {
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+    public UserImpl(String name) {
+        super(name);
     }
 
     public String getEmail() {
@@ -93,12 +83,9 @@ public class UserImpl implements User {
         this.lastLoggedIn = lastLoggedIn;
     }
 
-    public String getRealm() {
-        return realm;
-    }
-
-    public void setRealm(String realm) {
-        this.realm = realm;
+    @Override
+    public boolean isGroup() {
+        return false;
     }
 
     public Collection<String> getGroups() {
