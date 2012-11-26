@@ -14,11 +14,11 @@ import static org.testng.Assert.*;
  * @author jbaruch
  * @since 03/08/12
  */
-public class ItemTest extends ArtifactoryTestBase {
+public class ItemTests extends ArtifactoryTestsBase {
 
     @Test
     public void testFolderInfo() {
-        Folder folder = artifactory.repository(REPO1_CACHE).folder("junit").get();
+        Folder folder = artifactory.repository(REPO1_CACHE).folder("junit").info();
         assertNotNull(folder);
         assertTrue(folder.isFolder());
         assertEquals(folder.getChildren().size(), 1);
@@ -28,7 +28,7 @@ public class ItemTest extends ArtifactoryTestBase {
 
     @Test
     public void testFileInfo() {
-        File file = artifactory.repository(REPO1_CACHE).file("junit/junit/4.10/junit-4.10-sources.jar").get();
+        File file = artifactory.repository(REPO1_CACHE).file("junit/junit/4.10/junit-4.10-sources.jar").info();
         assertNotNull(file);
         assertFalse(file.isFolder());
         assertEquals(file.getSize(), 141185);
@@ -38,7 +38,7 @@ public class ItemTest extends ArtifactoryTestBase {
         assertEquals(file.getChecksums().getSha1(), "6c98d6766e72d5575f96c9479d1c1d3b865c6e25");
     }
 
-    @Test
+    @Test(groups = "items", dependsOnGroups = "repositoryBasics")
     public void testSetItemProperties() throws Exception {
         //Upload a clean file
         try {
@@ -49,37 +49,35 @@ public class ItemTest extends ArtifactoryTestBase {
             artifactory.repository(NEW_LOCAL).delete("x/y/z");
         } catch (Exception e) {
             //noinspection ConstantConditions
-            if (!(e instanceof HttpResponseException) || ((HttpResponseException) e).getStatusCode() != 404) {
+            if (!(e instanceof HttpResponseException) || !(((HttpResponseException) e).getStatusCode() == 404 || ((HttpResponseException) e).getStatusCode() == 405)) {
                 throw e;
             }
         }
         artifactory.repository(NEW_LOCAL).upload("x/y/z", this.getClass().getResourceAsStream("/sample.txt"))
                 .doUpload();
         ItemHandle file = artifactory.repository(NEW_LOCAL).file("x/y/z");
-        Map<String, ?> resProps = file.getProps();
+        Map<String, ?> resProps = file.getProperties();
         assertTrue(resProps.isEmpty());
         Map<String, String> props = new HashMap<>();
-        props.put("p1", "v1");
-        file.setProps(props);
-        resProps = file.getProps();
-        assertEquals(((List) resProps.get("p1")).get(0), "v1");
         props.put("p2", "v2");
         props.put("p3", "v3");
-        file.setProps(props);
-        resProps = file.getProps();
+        file.properties().addProperty("p1", "v1").addProperties(props).doSet(false);
+        resProps = file.getProperties();
         assertEquals(((List) resProps.get("p1")).get(0), "v1");
         assertEquals(((List) resProps.get("p2")).get(0), "v2");
         assertEquals(((List) resProps.get("p3")).get(0), "v3");
-        Set<String> propNames = new HashSet<>();
-        propNames.add("p1");
-        propNames.add("p3");
-        resProps = file.getProps(propNames);
+        resProps = file.getProperties("p1", "p3");
         assertEquals(resProps.size(), 2);
         assertEquals(((List) resProps.get("p1")).get(0), "v1");
         assertEquals(((List) resProps.get("p3")).get(0), "v3");
-        file.deleteProps(propNames);
-        resProps = file.getProps();
-        assertEquals(resProps.size(), 1);
-        assertEquals(((List) resProps.get("p2")).get(0), "v2");
+        file.deleteProperties("p1", "p3");
+        List<String> p2 = file.getPropertyValues("p2");
+        assertEquals(p2.size(), 1);
+        assertEquals(p2.get(0), "v2");
+
+        file.properties().addProperty("multi", "a", "b").doSet();
+        List<String> multi = file.getPropertyValues("multi");
+        assertEquals(multi.size(), 2);
+        assertTrue(multi.contains("a") && multi.contains("b"));
     }
 }

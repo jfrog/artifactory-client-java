@@ -43,7 +43,7 @@ class SecurityImpl implements Security {
 
     @Override
     void createOrUpdate(User user) {
-        artifactory.put("${SECURITY_USERS_API}/${user.name}", [:], user, null)
+        artifactory.put("${SECURITY_USERS_API}/${user.name}", [:], user, [:])
     }
 
     @Override

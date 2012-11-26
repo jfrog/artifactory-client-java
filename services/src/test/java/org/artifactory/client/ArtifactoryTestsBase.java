@@ -19,7 +19,7 @@ import static org.artifactory.client.ArtifactoryClient.create;
  * @author jbaruch
  * @since 30/07/12
  */
-public abstract class ArtifactoryTestBase {
+public abstract class ArtifactoryTestsBase {
     protected static final String NEW_LOCAL = "new-local";
     protected static final String PATH = "m/a/b/c.txt";
     protected static final String LIBS_RELEASES_LOCAL = "libs-releases-local";
@@ -38,7 +38,7 @@ public abstract class ArtifactoryTestBase {
                 "/artifactory-client.properties");//this file is not in GitHub. Create your own in src/test/resources.
         if (inputStream == null) {
             Assert.fail(
-                    "Credentials file is missing, create artifactory.client.properties with 'username' and 'password' properties under src/test/resources");
+                    "Credentials file is missing, create artifactory-client.properties with 'url', 'username' and 'password' properties under src/test/resources");
         }
         props.load(inputStream);
         url = props.getProperty("url");

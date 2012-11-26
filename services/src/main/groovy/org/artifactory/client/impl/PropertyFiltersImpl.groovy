@@ -1,6 +1,7 @@
 package org.artifactory.client.impl
 
 import org.artifactory.client.PropertyFilters
+import org.artifactory.client.model.RepoPath
 
 /**
  *
@@ -43,7 +44,7 @@ class PropertyFiltersImpl implements PropertyFilters {
     }
 
     @Override
-    List<String> doSearch() {
+    List<RepoPath> doSearch() {
         def propertiesQuery = (filters as List).collectEntries {filter ->
             [filter.name, filter.values.join(',')]
         }
