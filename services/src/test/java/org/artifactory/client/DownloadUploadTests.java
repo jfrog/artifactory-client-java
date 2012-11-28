@@ -11,7 +11,8 @@ import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.nio.file.*;
-import java.nio.file.Files;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.Arrays;
 
 import static org.testng.Assert.*;
@@ -43,10 +44,12 @@ public class DownloadUploadTests extends ArtifactoryTestsBase {
     public void testUploadWithListener() throws URISyntaxException, IOException {
         java.io.File file = new java.io.File(this.getClass().getResource("/sample.txt").toURI());
         final long[] uploaded = {0};
+        final NumberFormat format = DecimalFormat.getPercentInstance();
+        format.setMaximumFractionDigits(4);
         File deployed = artifactory.repository(NEW_LOCAL).upload(PATH, file).withListener(new UploadListener() {
             @Override
             public void uploadProgress(long bytesRead, long totalBytes) {
-                System.out.println("Uploaded " + bytesRead / totalBytes * 100 + " percent.");
+                System.out.println("Uploaded " + format.format((double) bytesRead / totalBytes));
                 uploaded[0] = bytesRead;
             }
         }).doUpload();
