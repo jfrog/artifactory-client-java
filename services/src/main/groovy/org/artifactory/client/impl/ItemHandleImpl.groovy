@@ -2,7 +2,7 @@ package org.artifactory.client.impl
 
 import groovyx.net.http.HttpResponseException
 import org.artifactory.client.ItemHandle
-import org.artifactory.client.PropertiesContainer
+import org.artifactory.client.PropertiesHandler
 import org.artifactory.client.model.*
 import org.artifactory.client.model.impl.GroupImpl
 import org.artifactory.client.model.impl.ItemPermissionImpl
@@ -44,7 +44,9 @@ class ItemHandleImpl implements ItemHandle {
         try {
             artifactory.getJson("/api/storage/$repo/$path", Map, [properties: properties.join(',')])?.properties
         } catch (HttpResponseException e) {
-            if (e.statusCode == 404) return [:]
+            if (e.statusCode == 404) {
+                return [:]
+            }
             throw e
         }
     }
@@ -58,8 +60,8 @@ class ItemHandleImpl implements ItemHandle {
         return Folder.class.isAssignableFrom(itemType)
     }
 
-    public PropertiesContainer properties() {
-        return new PropertiesContainerImpl(artifactory, repo, path);
+    public PropertiesHandler properties() {
+        return new PropertiesHandlerImpl(artifactory, repo, path);
     }
 
     @Override
@@ -70,7 +72,9 @@ class ItemHandleImpl implements ItemHandle {
         try {
             artifactory.delete("/api/storage/$repo/$path", [properties: properties.join(',')])?.properties
         } catch (HttpResponseException e) {
-            if (e.statusCode == 404) return [:]
+            if (e.statusCode == 404) {
+                return [:]
+            }
             throw e
         }
     }
@@ -99,7 +103,9 @@ class ItemHandleImpl implements ItemHandle {
         try {
             artifactory.delete("/api/storage/$repo/$path", [properties: property])?.properties
         } catch (HttpResponseException e) {
-            if (e.statusCode == 404) return [:]
+            if (e.statusCode == 404) {
+                return [:]
+            }
             throw e
         }
     }
