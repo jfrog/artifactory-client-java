@@ -6,7 +6,9 @@ import org.artifactory.client.model.Folder;
 import org.artifactory.client.model.LocalRepository;
 import org.testng.annotations.Test;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static org.testng.Assert.*;
 
@@ -43,7 +45,8 @@ public class ItemTests extends ArtifactoryTestsBase {
         //Upload a clean file
         try {
             // Make sure the local repo exists
-            LocalRepository localRepository = artifactory.repositories().builders().localRepositoryBuilder().key(NEW_LOCAL)
+            LocalRepository localRepository = artifactory.repositories().builders().localRepositoryBuilder().key(
+                    NEW_LOCAL)
                     .description("new local repository").build();
             artifactory.repositories().create(2, localRepository);
             artifactory.repository(NEW_LOCAL).delete("x/y/z");
@@ -79,5 +82,10 @@ public class ItemTests extends ArtifactoryTestsBase {
         List<String> multi = file.getPropertyValues("multi");
         assertEquals(multi.size(), 2);
         assertTrue(multi.contains("a") && multi.contains("b"));
+
+        file.properties().addProperty("label", "<label for\\=\"male\">Male\\, \\| And Female \\= Love</label>").doSet();
+        List<String> specialChars = file.getPropertyValues("label");
+        assertEquals(specialChars.size(), 1);
+        assertTrue(specialChars.contains("<label for=\"male\">Male, | And Female = Love</label>"));
     }
 }
