@@ -1,13 +1,13 @@
 package org.artifactory.client.impl
 
-import org.artifactory.client.PropertiesContainer
+import org.artifactory.client.PropertiesHandler
 
 /**
- * 
+ *
  * @author jbaruch
  * @since 22/11/12
  */
-class PropertiesContainerImpl implements PropertiesContainer {
+class PropertiesHandlerImpl implements PropertiesHandler {
 
     private final ArtifactoryImpl artifactory
     private final String repo
@@ -15,7 +15,7 @@ class PropertiesContainerImpl implements PropertiesContainer {
 
     private Map<String, ?> props
 
-    public PropertiesContainerImpl(ArtifactoryImpl artifactory, String repo, String path){
+    public PropertiesHandlerImpl(ArtifactoryImpl artifactory, String repo, String path) {
         this.path = path
         this.repo = repo
         this.artifactory = artifactory
@@ -23,19 +23,19 @@ class PropertiesContainerImpl implements PropertiesContainer {
     }
 
     @Override
-    PropertiesContainer addProperties(Map<String, ?> properties) {
+    PropertiesHandler addProperties(Map<String, ?> properties) {
         props << properties
         this
     }
 
     @Override
-    PropertiesContainer addProperty(String propertyName, String... values) {
+    PropertiesHandler addProperty(String propertyName, String... values) {
         props.put(propertyName, values)
         this
     }
 
     @Override
-    PropertiesContainer addProperty(String propertyName, String value) {
+    PropertiesHandler addProperty(String propertyName, String value) {
         props.put(propertyName, value)
         this
     }
@@ -45,13 +45,13 @@ class PropertiesContainerImpl implements PropertiesContainer {
         assert artifactory
         assert repo
         assert path
-        if (!props){
+        if (!props) {
             throw new IllegalStateException("Please add some properties first using add* methods")
         }
-        def propList = props.inject([]) {result, entry ->
+        def propList = props.inject([]) { result, entry ->
             def value = entry.value
             if (value.metaClass.respondsTo(value, 'join')) {
-              value = value.join(',')
+                value = value.join(',')
             }
             result << "$entry.key=$value"
         }.join('|')
