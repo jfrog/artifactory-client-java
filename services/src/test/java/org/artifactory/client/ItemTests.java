@@ -83,7 +83,7 @@ public class ItemTests extends ArtifactoryTestsBase {
         assertEquals(multi.size(), 2);
         assertTrue(multi.contains("a") && multi.contains("b"));
 
-        file.properties().addProperty("label", "<label for\\=\"male\">Male\\, \\| And Female \\= Love</label>").doSet();
+        file.properties().addProperty("label", "<label for=\"male\">Male, | And Female = Love</label>").doSet();
         List<String> specialChars = file.getPropertyValues("label");
         assertEquals(specialChars.size(), 1);
         assertTrue(specialChars.contains("<label for=\"male\">Male, | And Female = Love</label>"));
