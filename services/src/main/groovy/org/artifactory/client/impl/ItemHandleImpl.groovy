@@ -2,7 +2,14 @@ package org.artifactory.client.impl
 
 import groovyx.net.http.HttpResponseException
 import org.artifactory.client.ItemHandle
-import org.artifactory.client.model.Folder
+import org.artifactory.client.PropertiesHandler
+import org.artifactory.client.model.*
+import org.artifactory.client.model.impl.GroupImpl
+import org.artifactory.client.model.impl.ItemPermissionImpl
+import org.artifactory.client.model.impl.RepoPathImpl
+import org.artifactory.client.model.impl.UserImpl
+
+import static java.util.Collections.unmodifiableSet
 
 /**
  *
@@ -23,47 +30,82 @@ class ItemHandleImpl implements ItemHandle {
         this.itemType = itemType
     }
 
-    public <T> T get() {
+    public <T> T info() {
         assert artifactory
         assert repo
         assert path
         artifactory.getJson("/api/storage/$repo/$path", itemType)
     }
 
-    public Map<String, ?> getProps(Set props = []) {
+    public Map<String, List<String>> getProperties(String... properties) {
         assert artifactory
         assert repo
         assert path
         try {
-            artifactory.getJson("/api/storage/$repo/$path", Map, [properties: props.join(',')])?.properties
+            artifactory.getJson("/api/storage/$repo/$path", Map, [properties: properties.join(',')])?.properties
         } catch (HttpResponseException e) {
-            if (e.statusCode == 404) return [:]
+            if (e.statusCode == 404) {
+                return [:]
+            }
             throw e
         }
+    }
+
+    public List<String> getPropertyValues(String propertyName) {
+        Map<String, ?> properties = getProperties([propertyName] as String[])
+        properties[propertyName]
     }
 
     boolean isFolder() {
         return Folder.class.isAssignableFrom(itemType)
     }
 
-    public <T> T setProps(Map<String, ?> props, boolean recursive = false) {
-        assert artifactory
-        assert repo
-        assert path
-        def propList = props.inject([]) {result, entry ->
-            result << "$entry.key=$entry.value"
-        }.join('|')
-        artifactory.put("/api/storage/$repo/$path", [properties: propList, recursive: recursive ? 1 : 0])
+    public PropertiesHandler properties() {
+        return new PropertiesHandlerImpl(artifactory, repo, path);
     }
 
-    public Map<String, ?> deleteProps(Set props = []) {
+    @Override
+    public Map<String, ?> deleteProperties(String... properties) {
         assert artifactory
         assert repo
         assert path
         try {
-            artifactory.delete("/api/storage/$repo/$path", [properties: props.join(',')])?.properties
+            artifactory.delete("/api/storage/$repo/$path", [properties: properties.join(',')])?.properties
         } catch (HttpResponseException e) {
-            if (e.statusCode == 404) return [:]
+            if (e.statusCode == 404) {
+                return [:]
+            }
+            throw e
+        }
+    }
+
+
+    @Override
+    Set<ItemPermission> effectivePermissions() {
+        Map json = artifactory.getJson("/api/storage/${repo}/${path}", Map, ['permissions': null]) as Map
+        unmodifiableSet(mapToItemPermissions(json.principals.users, User) + mapToItemPermissions(json.principals.groups, Group) as Set<? extends ItemPermission>) as Set<ItemPermission>
+    }
+
+    private Set<? extends ItemPermission> mapToItemPermissions(Map<String, List> map, Class<? extends Subject> type) {
+        map.collect { String key, List value ->
+            List<Privilege> permissions = value.collect() {
+                Privilege.fromAbbreviation(it as char)
+            }
+            new ItemPermissionImpl(new RepoPathImpl(repo, path), type == User ? new UserImpl(key) : new GroupImpl(key), permissions)
+        }
+    }
+
+    @Override
+    public Map<String, ?> deleteProperty(String property) {
+        assert artifactory
+        assert repo
+        assert path
+        try {
+            artifactory.delete("/api/storage/$repo/$path", [properties: property])?.properties
+        } catch (HttpResponseException e) {
+            if (e.statusCode == 404) {
+                return [:]
+            }
             throw e
         }
     }
