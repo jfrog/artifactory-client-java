@@ -22,7 +22,7 @@ public class SearchTests extends ArtifactoryTestsBase {
     @Test
     public void testLimitlessQuickSearch() throws IOException {
         List<RepoPath> results = artifactory.searches().artifactsByName("junit").doSearch();
-        assertEquals(results.size(), countMatches(curl("api/search/artifact?name=junit"), "{")-1);
+        assertEquals(results.size(), countMatches(curl("api/search/artifact?name=junit"), "{") - 1);
     }
 
     @Test
@@ -47,7 +47,8 @@ public class SearchTests extends ArtifactoryTestsBase {
         List<RepoPath> results =
                 artifactory.searches().artifactsByName("junit").repositories(LIBS_RELEASES_LOCAL, REPO1_CACHE)
                         .doSearch();
-        assertEquals(results.size(), countMatches(curl("api/search/artifact?name=junit&repos=libs-releases-local,repo1-cache"), "{") - 1);
+        assertEquals(results.size(),
+                countMatches(curl("api/search/artifact?name=junit&repos=libs-releases-local,repo1-cache"), "{") - 1);
     }
 
     @Test(dependsOnGroups = "uploadBasics")
@@ -76,13 +77,15 @@ public class SearchTests extends ArtifactoryTestsBase {
 
     @Test(dependsOnGroups = "uploadBasics")
     public void testSearchByPropertyAndWrongRepoFilter() throws IOException {
-        List<RepoPath> list = artifactory.searches().repositories(REPO1).itemsByProperty().property("released", false).doSearch();
+        List<RepoPath> list = artifactory.searches().repositories(REPO1).itemsByProperty().property("released",
+                false).doSearch();
         assertTrue(list.isEmpty());
     }
 
     @Test(dependsOnGroups = "uploadBasics")
     public void testSearchByPropertyWithMulipleValue() throws IOException {
-        List<RepoPath> list = artifactory.searches().itemsByProperty().property("colors", "red", "green", "blue").doSearch();
+        List<RepoPath> list = artifactory.searches().itemsByProperty().property("colors", "red", "green",
+                "blue").doSearch();
         assertTrue(list.isEmpty());
     }
 
@@ -98,6 +101,13 @@ public class SearchTests extends ArtifactoryTestsBase {
     public void testSearchByPropertyWithoutValue() throws IOException {
         List<RepoPath> results =
                 artifactory.searches().itemsByProperty().property("released").property("build", 28).doSearch();
+        assertEquals(results.size(), 1);
+        assertTrue(results.get(0).getItemPath().contains("a/b/c.txt"));
+    }
+
+    @Test(dependsOnGroups = "uploadBasics")
+    public void testSearchByPropertyWithWildCards() throws IOException {
+        List<RepoPath> results = artifactory.searches().itemsByProperty().property("colors", "r*?").doSearch();
         assertEquals(results.size(), 1);
         assertTrue(results.get(0).getItemPath().contains("a/b/c.txt"));
     }
