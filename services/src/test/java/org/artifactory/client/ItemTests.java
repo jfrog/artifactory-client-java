@@ -42,20 +42,8 @@ public class ItemTests extends ArtifactoryTestsBase {
 
     @Test(groups = "items", dependsOnGroups = "repositoryBasics")
     public void testSetItemProperties() throws Exception {
+        setupLocalRepo();
         //Upload a clean file
-        try {
-            // Make sure the local repo exists
-            LocalRepository localRepository = artifactory.repositories().builders().localRepositoryBuilder().key(
-                    NEW_LOCAL)
-                    .description("new local repository").build();
-            artifactory.repositories().create(2, localRepository);
-            artifactory.repository(NEW_LOCAL).delete("x/y/z");
-        } catch (Exception e) {
-            //noinspection ConstantConditions
-            if (!(e instanceof HttpResponseException) || !(((HttpResponseException) e).getStatusCode() == 404 || ((HttpResponseException) e).getStatusCode() == 405)) {
-                throw e;
-            }
-        }
         artifactory.repository(NEW_LOCAL).upload("x/y/z", this.getClass().getResourceAsStream("/sample.txt"))
                 .doUpload();
         ItemHandle file = artifactory.repository(NEW_LOCAL).file("x/y/z");
@@ -87,5 +75,42 @@ public class ItemTests extends ArtifactoryTestsBase {
         List<String> specialChars = file.getPropertyValues("label");
         assertEquals(specialChars.size(), 1);
         assertTrue(specialChars.contains("<label for=\"male\">Male, | And Female = Love</label>"));
+    }
+
+    private void setupLocalRepo() {
+        try {
+            // Make sure the local repo exists
+            LocalRepository localRepository = artifactory.repositories().builders().localRepositoryBuilder().key(
+                    NEW_LOCAL)
+                    .description("new local repository").build();
+            artifactory.repositories().create(2, localRepository);
+            artifactory.repository(NEW_LOCAL).delete("x/y/z");
+        } catch (Exception e) {
+            //noinspection ConstantConditions
+            if (!(e instanceof HttpResponseException) || !(((HttpResponseException) e).getStatusCode() == 404 || ((HttpResponseException) e).getStatusCode() == 405)) {
+                throw e;
+            }
+        }
+    }
+
+    @Test(groups = "items", dependsOnGroups = "repositoryBasics")
+    public void testSetItemPropertiesOnNonExistingDirectory() throws Exception {
+        setupLocalRepo();
+        ItemHandle folder = artifactory.repository(NEW_LOCAL).folder("x/y/z");
+        try {
+            folder.info();
+            //should fail
+        } catch (Exception e) {
+            //noinspection ConstantConditions
+            if (!(e instanceof HttpResponseException) || !(((HttpResponseException) e).getStatusCode() == 404 || ((HttpResponseException) e).getStatusCode() == 405)) {
+                throw e;
+            }
+        }
+        folder.properties().addProperty("v1", "b2").doSet();
+        Folder info = folder.info();
+        assertNotNull(info);
+        assertTrue(info.isFolder());
+        assertTrue(folder.getPropertyValues("v1").contains("b2"));
+
     }
 }

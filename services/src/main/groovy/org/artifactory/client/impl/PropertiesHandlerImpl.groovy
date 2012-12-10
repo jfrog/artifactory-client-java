@@ -1,5 +1,6 @@
 package org.artifactory.client.impl
 
+import groovyx.net.http.HttpResponseException
 import org.apache.commons.lang.StringUtils
 import org.artifactory.client.PropertiesHandler
 
@@ -55,7 +56,15 @@ class PropertiesHandlerImpl implements PropertiesHandler {
         if (!props) {
             throw new IllegalStateException("Please add some properties first using add* methods")
         }
-        artifactory.put("/api/storage/$repo/$path", [properties: getPropList(), recursive: recursive ? 1 : 0])
+        try {
+            artifactory.put("/api/storage/$repo/$path", [properties: getPropList(), recursive: recursive ? 1 : 0])
+        } catch (HttpResponseException e) {
+            if (e.statusCode == 404) {
+                artifactory.put("/$repo/$path/;${getPropList().replaceAll(/\|/, ';')}")
+            } else {
+                throw e
+            }
+        }
     }
 
     private String getPropList() {
