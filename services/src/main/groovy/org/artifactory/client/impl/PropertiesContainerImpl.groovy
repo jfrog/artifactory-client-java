@@ -55,6 +55,15 @@ class PropertiesContainerImpl implements PropertiesContainer {
             }
             result << "$entry.key=$value"
         }.join('|')
-        artifactory.put("/api/storage/$repo/$path", [properties: propList, recursive: recursive ? 1 : 0])
+        
+        try {
+            artifactory.put("/api/storage/$repo/$path", [properties: propList, recursive: recursive ? 1 : 0])
+        } catch (HttpResponseException e) {
+            if (e.statusCode == 404) {
+                artifactory.put("/$repo/$path/;${propList.replaceAll(/\|/, ';')}")
+                        } else {
+                throw e
+            }
+        }    
     }
 }
