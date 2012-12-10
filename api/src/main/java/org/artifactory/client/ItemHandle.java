@@ -20,7 +20,7 @@ public interface ItemHandle {
 
     List<String> getPropertyValues(String propertyName);
 
-    PropertiesContainer properties();
+    PropertiesHandler properties();
 
     Map<String, ?> deleteProperty(String property);
 
