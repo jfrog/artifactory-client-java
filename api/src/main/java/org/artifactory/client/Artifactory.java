@@ -18,5 +18,7 @@ public interface Artifactory {
 
     Security security();
 
+    Plugins plugins();
+
     void close();
 }
