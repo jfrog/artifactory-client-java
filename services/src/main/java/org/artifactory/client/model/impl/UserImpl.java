@@ -11,7 +11,7 @@ import java.util.Date;
  *
  * @author freds
  */
-public class UserImpl extends SubjectImpl implements User {
+class UserImpl extends SubjectImpl implements User {
     private String email;
     private String password;
     private boolean admin;
@@ -20,7 +20,7 @@ public class UserImpl extends SubjectImpl implements User {
     private Date lastLoggedIn;
     private Collection<String> groups;
 
-    public UserImpl(String name, String email, String password, boolean admin, boolean profileUpdatable, boolean internalPasswordDisabled, Date lastLoggedIn, Collection<String> groups) {
+    private UserImpl(String name, String email, String password, boolean admin, boolean profileUpdatable, boolean internalPasswordDisabled, Date lastLoggedIn, Collection<String> groups) {
         super(name);
         this.email = email;
         this.password = password;
@@ -31,7 +31,7 @@ public class UserImpl extends SubjectImpl implements User {
         this.groups = groups;
     }
 
-    public UserImpl(String name) {
+    private UserImpl(String name) {
         super(name);
     }
 

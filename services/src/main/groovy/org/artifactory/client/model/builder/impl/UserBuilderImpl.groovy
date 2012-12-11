@@ -68,9 +68,10 @@ class UserBuilderImpl implements UserBuilder {
         return this
     }
 
+    @SuppressWarnings("GroovyAccessibility")
     @Override
     User build() {
-        return new UserImpl(name, email, password, admin, profileUpdatable, internalPasswordDisabled,
+        new UserImpl(name, email, password, admin, profileUpdatable, internalPasswordDisabled,
                 lastLoggedIn, groups)
     }
 }
