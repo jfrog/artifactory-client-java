@@ -75,6 +75,12 @@ public class ItemTests extends ArtifactoryTestsBase {
         List<String> specialChars = file.getPropertyValues("label");
         assertEquals(specialChars.size(), 1);
         assertTrue(specialChars.contains("<label for=\"male\">Male, | And Female = Love</label>"));
+
+        file.properties().addProperty("testName", "<b>NetApp FAS/V-Series Storage Replication Adapter</b><br/>Version 2.0.1 | Released 09/10/2012").doSet();
+        List<String> pipeTestValues = file.getPropertyValues("testName");
+        assertEquals(pipeTestValues.size(), 1);
+        assertTrue(pipeTestValues.contains("<b>NetApp FAS/V-Series Storage Replication Adapter</b><br/>Version 2.0.1 | Released 09/10/2012"));
+
     }
 
     private void setupLocalRepo() {
