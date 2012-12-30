@@ -5,6 +5,7 @@ import org.artifactory.client.DownloadableArtifact
 import org.artifactory.client.ItemHandle
 import org.artifactory.client.RepositoryHandle
 import org.artifactory.client.UploadableArtifact
+import org.artifactory.client.model.ItemPermission
 import org.artifactory.client.model.ReplicationStatus
 import org.artifactory.client.model.Repository
 import org.artifactory.client.model.impl.FileImpl
@@ -14,6 +15,7 @@ import org.artifactory.client.model.impl.ReplicationStatusImpl
 import static org.artifactory.client.Repositories.REPLICATION_API
 import static org.artifactory.client.Repositories.REPOSITORIES_API
 import static org.artifactory.client.model.impl.RepositoryTypeImpl.parseString
+
 /**
  *
  * @author jbaruch
@@ -69,5 +71,10 @@ class RepositoryHandleImpl implements RepositoryHandle {
 
     DownloadableArtifact download(String path) {
         new DownloadableArtifactImpl(repo, path, artifactory)
+    }
+
+    @Override
+    Set<ItemPermission> effectivePermissions() {
+        this.folder('').effectivePermissions()
     }
 }

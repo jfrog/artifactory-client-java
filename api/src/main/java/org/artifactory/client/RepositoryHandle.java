@@ -1,10 +1,12 @@
 package org.artifactory.client;
 
+import org.artifactory.client.model.ItemPermission;
 import org.artifactory.client.model.ReplicationStatus;
 import org.artifactory.client.model.Repository;
 
 import java.io.File;
 import java.io.InputStream;
+import java.util.Set;
 
 /**
  * @author jbaruch
@@ -29,4 +31,6 @@ public interface RepositoryHandle {
     UploadableArtifact upload(String targetPath, File content);
 
     DownloadableArtifact download(String path);
+
+    Set<ItemPermission> effectivePermissions();
 }
