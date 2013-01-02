@@ -6,6 +6,7 @@ import org.artifactory.client.model.File;
 import org.testng.annotations.Test;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
@@ -24,7 +25,7 @@ import static org.testng.Assert.*;
 public class DownloadUploadTests extends ArtifactoryTestsBase {
 
     private static final int SAMPLE_FILE_SIZE = 3044;
-    private static final int SAMPLE_FILE_SIZE_WIN_ENDINGS=3017;
+    private static final int SAMPLE_FILE_SIZE_WIN_ENDINGS = 3017;
 
     @Test(groups = "uploadBasics", dependsOnGroups = "repositoryBasics")
     public void testUploadWithSingleProperty() throws IOException {
@@ -39,6 +40,53 @@ public class DownloadUploadTests extends ArtifactoryTestsBase {
         assertEquals(deployed.getDownloadUri(), url + "/" + NEW_LOCAL + "/" + PATH);
         assertTrue(deployed.getSize() == 3044 || deployed.getSize() == 3017);
         assertTrue(curlAndStrip("api/storage/" + NEW_LOCAL + "/" + PATH + "?properties").contains("\"color\":[\"red\"]"));
+    }
+
+    /**
+     * This test requires a 'set_property' user plugin
+     *
+     * @throws IOException
+     */
+    @Test(groups = "uploadBasics", dependsOnGroups = "repositoryBasics")
+    public void testUploadWithSinglePropertyOnArbitraryLocationNoKeep() throws IOException {
+        InputStream inputStream = this.getClass().getResourceAsStream("/sample.txt");
+        assertNotNull(inputStream);
+        File deployed = artifactory.repository(NEW_LOCAL).upload(PATH, inputStream).withProperty("color", "red")
+                .withProperty("target", "m/a").doUpload();
+        assertNotNull(deployed);
+        assertEquals(deployed.getRepo(), NEW_LOCAL);
+        assertEquals(deployed.getPath(), "/" + PATH);
+        assertEquals(deployed.getCreatedBy(), username);
+        assertEquals(deployed.getDownloadUri(), url + "/" + NEW_LOCAL + "/" + PATH);
+        assertTrue(deployed.getSize() == 3044 || deployed.getSize() == 3017);
+        assertTrue(curlAndStrip("api/storage/" + NEW_LOCAL + "/" + "m/a" + "?properties").contains("\"color\":[\"red\"]"));
+        try {
+            curlAndStrip("api/storage/" + NEW_LOCAL + "/" + PATH + "?properties");
+        } catch (IOException e) {
+            assertEquals(e.getClass(), FileNotFoundException.class);
+        }
+    }
+
+    /**
+     * This test requires a 'set_property' user plugin
+     *
+     * @throws IOException
+     */
+    @Test(groups = "uploadBasics", dependsOnGroups = "repositoryBasics")
+    public void testUploadWithSinglePropertyOnArbitraryLocationAndKeep() throws IOException {
+        InputStream inputStream = this.getClass().getResourceAsStream("/sample.txt");
+        assertNotNull(inputStream);
+        File deployed = artifactory.repository(NEW_LOCAL).upload(PATH, inputStream).withProperty("color", "red")
+                .withProperty("target", "m", "keep").doUpload();
+        assertNotNull(deployed);
+        assertEquals(deployed.getRepo(), NEW_LOCAL);
+        assertEquals(deployed.getPath(), "/" + PATH);
+        assertEquals(deployed.getCreatedBy(), username);
+        assertEquals(deployed.getDownloadUri(), url + "/" + NEW_LOCAL + "/" + PATH);
+        assertTrue(deployed.getSize() == 3044 || deployed.getSize() == 3017);
+        assertTrue(curlAndStrip("api/storage/" + NEW_LOCAL + "/" + "m" + "?properties").contains("\"color\":[\"red\"]"));
+        assertTrue(curlAndStrip("api/storage/" + NEW_LOCAL + "/" + PATH + "?properties").contains("\"color\":[\"red\"]"));
+        assertFalse(curlAndStrip("api/storage/" + NEW_LOCAL + "/" + PATH + "?properties").contains("\"target\":[\"m/a\"]"));
     }
 
     @Test(groups = "uploadBasics", dependsOnGroups = "repositoryBasics")
@@ -108,6 +156,7 @@ public class DownloadUploadTests extends ArtifactoryTestsBase {
                 .withProperty("released", false).doUpload();
         assertTrue(curlAndStrip("api/storage/" + NEW_LOCAL + "/" + PATH + "?properties").contains("{\"build\":[\"28\"],\"colors\":[\"red\"],\"released\":[\"false\"]}"));
     }
+
 
     //TODO (jb) enable once RTFACT-5126 is fixed
     @Test(enabled = false, dependsOnMethods = "testUploadWithSingleProperty")

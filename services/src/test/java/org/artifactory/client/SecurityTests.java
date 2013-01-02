@@ -55,6 +55,10 @@ public class SecurityTests extends ArtifactoryTestsBase {
     @Test(groups = "security", dependsOnGroups = "uploadBasics")
     public void testEffectiveItemPermissions() throws Exception {
         Set<ItemPermission> itemPermissions = artifactory.repository(NEW_LOCAL).file(PATH).effectivePermissions();
+        assertItemPermissions(itemPermissions);
+    }
+
+    private void assertItemPermissions(Set<ItemPermission> itemPermissions) {
         for (ItemPermission itemPermission : itemPermissions) {
             Subject subject = itemPermission.getSubject();
             switch (subject.getName()) {
@@ -69,9 +73,15 @@ public class SecurityTests extends ArtifactoryTestsBase {
                     assertPermissions(itemPermission, true, new Privilege[]{READ}, new Privilege[]{DEPLOY});
                     break;
             }
-
         }
     }
+
+    @Test(groups = "security", dependsOnGroups = "repositoryBasics")
+    public void testEffectiveRepoPermissions(){
+        Set<ItemPermission> itemPermissions = artifactory.repository(NEW_LOCAL).effectivePermissions();
+        assertItemPermissions(itemPermissions);
+    }
+
 
     private void assertPermissions(ItemPermission itemPermission, boolean isGroup, Privilege[] allowedPrivileges,
             Privilege[] notAllowedPrivileges) {

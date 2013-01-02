@@ -79,7 +79,6 @@ class ItemHandleImpl implements ItemHandle {
         }
     }
 
-
     @Override
     Set<ItemPermission> effectivePermissions() {
         Map json = artifactory.getJson("/api/storage/${repo}/${path}", Map, ['permissions': null]) as Map

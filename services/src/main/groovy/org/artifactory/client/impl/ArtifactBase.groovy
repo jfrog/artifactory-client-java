@@ -21,7 +21,10 @@ abstract class ArtifactBase<T extends Artifact> implements Artifact<T> {
 
     T withProperty(String name, Object... values) {
         //for some strange reason def won't work here
-        props[name] = values.join(',')
+        values.each {
+            props[name]
+        }
+        props[name] = values
         this as T
     }
 
@@ -31,8 +34,15 @@ abstract class ArtifactBase<T extends Artifact> implements Artifact<T> {
     }
 
     protected String parseParams(Map props, String delimiter) {
-        props.inject(['']) {result, entry ->
-            result << "$entry.key$delimiter$entry.value"
+        props.inject(['']) { result, key, value ->
+            if (value.class.isArray()) {
+                value.each {
+                    result << "$key$delimiter$it"
+                }
+            } else {
+                result << "$key$delimiter${value}"
+            }
+            result
         }.join(';')
     }
 }

@@ -68,6 +68,10 @@ class ArtifactoryImpl implements Artifactory {
         new SecurityImpl(this)
     }
 
+    Plugins plugins(){
+        new PluginsImpl(this)
+    }
+
     private Reader get(String path, Map query, ContentType contentType = JSON, ContentType requestContentType = TEXT) {
         client.get(path: "/$contextName$path", query: query,
                 headers: [Accept: contentType], contentType: requestContentType).data

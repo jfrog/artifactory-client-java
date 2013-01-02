@@ -55,7 +55,7 @@ allprojects {
                 maven = true
             }
         }
-    }
+            }
 
     group = 'com.jfrog.artifactory.client'
     version = globalVersion

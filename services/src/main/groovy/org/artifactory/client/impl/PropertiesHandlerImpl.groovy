@@ -1,7 +1,8 @@
 package org.artifactory.client.impl
 
-import org.apache.commons.lang.StringUtils
+import groovyx.net.http.HttpResponseException
 import org.artifactory.client.PropertiesHandler
+import org.artifactory.client.impl.util.QueryUtil
 
 /**
  *
@@ -55,23 +56,16 @@ class PropertiesHandlerImpl implements PropertiesHandler {
         if (!props) {
             throw new IllegalStateException("Please add some properties first using add* methods")
         }
-        artifactory.put("/api/storage/$repo/$path", [properties: getPropList(), recursive: recursive ? 1 : 0])
-    }
-
-    private String getPropList() {
-        def propList = new StringBuilder()
-        props.eachWithIndex { entry, pi ->
-            if (pi != 0) propList.append('|')
-            propList.append(escape(entry.key)).append('=')
-            entry.value.eachWithIndex { val, vi ->
-                if (vi != 0) propList.append(',')
-                propList.append(escape(val))
+        def propList = QueryUtil.getQueryList(props)
+        try {
+            artifactory.put("/api/storage/$repo/$path", [properties: propList, recursive: recursive ? 1 : 0])
+        } catch (HttpResponseException e) {
+            if (e.statusCode == 404) {
+                artifactory.put("/$repo/$path/;${propList.replaceAll(/\|/, ';')}")
+            } else {
+                throw e
             }
         }
-        propList.toString()
     }
 
-    String escape(Object o) {
-        StringUtils.replaceEach(o?.toString(), [',', '\\', '|', '='] as String[], ['\\,', '\\\\', '\\|', '\\='] as String[])
-    }
 }
