@@ -64,7 +64,9 @@ class UploadableArtifactImpl extends ArtifactBase<UploadableArtifact> implements
 
     @Override
     UploadableArtifact withListener(UploadListener listener) {
-        if (!file) throw new IllegalStateException('Can\'t attach listener to content of unknown size. Try uploading file instead of input stream');
+        if (!file) {
+            throw new IllegalStateException('Can\'t attach listener to content of unknown size. Try uploading a file instead of an input stream.')
+        };
         this.listener = listener
         this
     }
@@ -77,7 +79,9 @@ class UploadableArtifactImpl extends ArtifactBase<UploadableArtifact> implements
 
     @Override
     UploadableArtifact bySha1Checksum() {
-        if (!file) throw new IllegalStateException('Can\'t calculate checksum for streaming content. Try uploading file instead of input stream or provide checksum');
+        if (!file) {
+            throw new IllegalStateException('Can\'t calculate checksum for streaming content. Try uploading a file instead of an input stream or provide a checksum.')
+        };
         MessageDigest md = MessageDigest.getInstance('SHA1')
         byte[] dataBytes = new byte[1024]
         int nread
