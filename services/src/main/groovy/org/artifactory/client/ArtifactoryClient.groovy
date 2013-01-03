@@ -24,6 +24,7 @@ public class ArtifactoryClient {
 
         //Set an entity with a length for a stream that has the totalBytes method on it
         def er = new EncoderRegistry() {
+            //TODO: [by yl] move totalBytes() to a stream interface that clients can implement
             @Override
             InputStreamEntity encodeStream(Object data, Object contentType) throws UnsupportedEncodingException {
                 if (data.metaClass.getMetaMethod("totalBytes")) {
@@ -38,15 +39,6 @@ public class ArtifactoryClient {
                 }
             }
         }
-        /*def er = [encodeStream: { Object data, Object contentType ->
-                if (data.totalBytes()) {
-                    InputStreamEntity entity = new InputStreamEntity( (InputStream)data, data.totalBytes() );
-                    if ( contentType == null ) contentType = ContentType.BINARY;
-                    entity.setContentType( contentType.toString() );
-                } else {
-                    EncoderRegistry.encodeStream(data, contentType)
-                }
-        }] as EncoderRegistry*/
         client.encoders = er
 
         client.auth.basic username, password
