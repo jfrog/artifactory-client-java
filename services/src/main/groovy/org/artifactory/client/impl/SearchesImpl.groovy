@@ -47,7 +47,7 @@ class SearchesImpl implements Searches {
         try {
             def result = artifactory.getSlurper("${SEARCHES_API}$url", query)
             result.results.collect {
-                String path = it.uri - "$artifactory.uri/$artifactory.contextName/api/storage/"
+                String path = it.uri.split('/api/storage/')[1]
                 String repo = path.split('/')[0]
                 new RepoPathImpl(repo, path - (repo + '/'))
             }
