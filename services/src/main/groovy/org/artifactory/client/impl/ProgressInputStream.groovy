@@ -34,6 +34,10 @@ class ProgressInputStream extends FilterInputStream {
         return updateProgress(super.skip(n));
     }
 
+    public long totalBytes() {
+        totalBytes
+    }
+
     private long updateProgress(long bytesRead) {
         if (bytesRead > 0) {
             this.totalBytesRead += bytesRead;

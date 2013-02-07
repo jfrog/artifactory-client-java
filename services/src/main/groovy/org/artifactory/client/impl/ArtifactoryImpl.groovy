@@ -24,7 +24,7 @@ class ArtifactoryImpl implements Artifactory {
 
     private static final DateFormat ISO8601_DATE_FORMAT = ISO8601DateFormat.newInstance()
 
-    private final RESTClient client
+    final RESTClient client
     private final String contextName
     private final ObjectMapper objectMapper
 
