@@ -2,16 +2,36 @@ apply plugin: 'groovy'
 
 dependencies {
     compile project(':api')
-    groovy group: 'org.codehaus.groovy', name: 'groovy', version: '2.0.1'
-    groovy group: 'org.codehaus.groovy', name: 'groovy-json', version: '2.0.1'
-    groovy group: 'org.codehaus.groovy', name: 'groovy-xml', version: '2.0.1'
+    groovy addGroovy('groovy')
+    groovy addGroovy('groovy-json')
+    groovy addGroovy('groovy-xml')
     compile group: 'org.codehaus.groovy.modules.http-builder', name: 'http-builder', version: '0.6'
     compile group: 'net.sourceforge.nekohtml', name: 'nekohtml', version: '1.9.17'
-    compile group: 'log4j', name: 'log4j', version: '1.2.17'
-    compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.0.4'
-    compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.0.4'
-    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.0.4'
+    compile addSlf4J('slf4j-api')
+    compile addSlf4J('log4j-over-slf4j')
+    compile addSlf4J('jcl-over-slf4j')
+    compile group: 'ch.qos.logback', name: 'logback-classic', version: '1.0.9'
+    compile addJackson('jackson-core')
+    compile addJackson('jackson-annotations')
+    compile addJackson('jackson-databind')
     testCompile group: 'org.testng', name: 'testng', version: '6.5.2'
+}
+
+def addGroovy(name) {
+    [group: 'org.codehaus.groovy', name: name, version: '2.1.0', classifier: 'indy']
+}
+
+def addJackson(name) {
+    [group: 'com.fasterxml.jackson.core', name: name, version: '2.0.4']
+}
+
+def addSlf4J(name){
+    [group: 'org.slf4j', name: name, version: '1.7.2']
+}
+
+configurations {
+    all*.exclude group: 'log4j', module: 'log4j'
+    all*.exclude group: 'commons-logging', module: 'commons-logging'
 }
 
 task uberJar(type: Jar) {
