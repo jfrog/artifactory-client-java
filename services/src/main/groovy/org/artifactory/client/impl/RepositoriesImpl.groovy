@@ -26,6 +26,7 @@ class RepositoriesImpl implements Repositories {
         this.artifactory = artifactory
     }
 
+    //TODO overload without index
     String create(int position, Repository configuration) {
         artifactory.put("$REPOSITORIES_API${configuration.getKey()}", [pos: position], configuration, [:])
     }
