@@ -1,4 +1,5 @@
 apply plugin: 'groovy'
+apply plugin: 'fatjar'
 
 dependencies {
     compile project(':api')
@@ -25,7 +26,7 @@ def addJackson(name) {
     [group: 'com.fasterxml.jackson.core', name: name, version: '2.0.4']
 }
 
-def addSlf4J(name){
+def addSlf4J(name) {
     [group: 'org.slf4j', name: name, version: '1.7.2']
 }
 
@@ -34,15 +35,11 @@ configurations {
     all*.exclude group: 'commons-logging', module: 'commons-logging'
 }
 
-task uberJar(type: Jar) {
-    dependsOn configurations.runtime
-    from { configurations.runtime.collect { it.isDirectory() ? it : zipTree(it) } }
-    classifier = 'uber'
+fatJar {
+    baseName = 'artifactory-client-java'
 }
 
-uberJar.dependsOn jar
-
 artifacts {
-    archives sourceJar, uberJar, jar
+    archives sourceJar, fatJar, jar
 }
 

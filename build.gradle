@@ -6,6 +6,7 @@ buildscript {
     }
     dependencies {
         classpath(group: 'org.jfrog.buildinfo', name: 'build-info-extractor-gradle', version: '2.0.16')
+        classpath(group: 'eu.appsatori', name: 'gradle-fatjar-plugin', version: '0.2-rc1')
     }
 }
 
@@ -55,7 +56,7 @@ allprojects {
                 maven = true
             }
         }
-            }
+    }
 
     group = 'com.jfrog.artifactory.client'
     version = globalVersion
@@ -86,7 +87,7 @@ subprojects {
 
     test {
         useTestNG()
-            testLogging {
+        testLogging {
             exceptionFormat "full"
             events "started", "passed", "skipped", "failed", "standardOut", "standardError"
             minGranularity 0
@@ -96,7 +97,7 @@ subprojects {
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '1.3'
+    gradleVersion = '1.5'
 }
 
 idea {
