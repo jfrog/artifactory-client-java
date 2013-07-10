@@ -72,6 +72,11 @@ class ArtifactoryImpl implements Artifactory {
         new PluginsImpl(this)
     }
 
+    @Override
+    ArtifactorySystem system() {
+        new ArtifactorySystemImpl(this)
+    }
+
     private Reader get(String path, Map query, ContentType contentType = JSON, ContentType requestContentType = TEXT) {
         client.get(path: "/$contextName$path", query: query,
                 headers: [Accept: contentType], contentType: requestContentType).data
