@@ -1,7 +1,7 @@
 package org.artifactory.client.impl
 
 import com.fasterxml.jackson.core.type.TypeReference
-import org.apache.http.entity.ContentType
+import static groovyx.net.http.ContentType.*
 import org.artifactory.client.ArtifactorySystem
 import org.artifactory.client.model.Version
 import org.artifactory.client.model.impl.VersionImpl
@@ -21,7 +21,7 @@ class ArtifactorySystemImpl implements ArtifactorySystem {
     @Override
     boolean ping() {
         try {
-            artifactory.getText(SYSTEM_PING_API)
+            artifactory.get(SYSTEM_PING_API, [:], TEXT)
             return true // No Exception thrown
         } catch(IOException ioe) {
             return false
@@ -30,12 +30,13 @@ class ArtifactorySystemImpl implements ArtifactorySystem {
 
     @Override
     String configuration() {
-        artifactory.get(SYSTEM_CONFIGURATION_API, [:], ContentType.APPLICATION_XML)
+        def reader = artifactory.get(SYSTEM_CONFIGURATION_API, [:], XML, TEXT)
+        return reader.text
     }
 
     @Override
     void configuration(String xml) {
-        artifactory.put(SYSTEM_CONFIGURATION_API, [:], xml, String, ContentType.APPLICATION_XML)
+        artifactory.put(SYSTEM_CONFIGURATION_API, [:], xml, String, XML)
     }
 
     @Override

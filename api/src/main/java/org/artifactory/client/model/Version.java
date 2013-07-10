@@ -12,5 +12,7 @@ public interface Version {
 
     String getRevision();
 
+    String getLicense();
+
     List<String> getAddons();
 }
