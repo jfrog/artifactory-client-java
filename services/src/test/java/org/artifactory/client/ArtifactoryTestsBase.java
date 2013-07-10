@@ -22,7 +22,8 @@ import static org.artifactory.client.ArtifactoryClient.create;
 public abstract class ArtifactoryTestsBase {
     protected static final String NEW_LOCAL = "new-local";
     protected static final String PATH = "m/a/b/c.txt";
-    protected static final String LIBS_RELEASES_LOCAL = "libs-releases-local";
+    protected static final String LIBS_RELEASES_LOCAL = "libs-release-local";
+    protected static final String LIBS_RELEASES_VIRTUAL = "libs-release";
     protected static final String REPO1 = "repo1";
     protected static final String REPO1_CACHE = REPO1 + "-cache";
     protected Artifactory artifactory;

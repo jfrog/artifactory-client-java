@@ -60,7 +60,7 @@ class RepositoryHandleImpl implements RepositoryHandle {
     }
 
     UploadableArtifact upload(String targetPath, InputStream content) {
-        new UploadableArtifactImpl(repo, targetPath, content, artifactory)
+        new UploadableArtifactImpl(repo, targetPath, (InputStream) content, artifactory)
     }
 
     @Override
