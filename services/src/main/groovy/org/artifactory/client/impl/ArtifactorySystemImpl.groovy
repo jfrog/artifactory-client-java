@@ -36,7 +36,7 @@ class ArtifactorySystemImpl implements ArtifactorySystem {
 
     @Override
     void configuration(String xml) {
-        artifactory.put(SYSTEM_CONFIGURATION_API, [:], xml, String, XML)
+        artifactory.post(SYSTEM_CONFIGURATION_API, [:], xml, [:], String, XML)
     }
 
     @Override

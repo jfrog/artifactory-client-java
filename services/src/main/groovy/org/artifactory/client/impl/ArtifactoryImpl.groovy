@@ -105,11 +105,37 @@ class ArtifactoryImpl implements Artifactory {
                 requestContentType: JSON, body: objectMapper.writeValueAsString(body)]
     }
 
+    private def <T> T post(String path, Map query = [:], Class responseType = null) {
+        post(path, query, null, [:], responseType, ANY)
+    }
+
     private def <T> T put(String path, Map query = [:], Class responseType = null) {
         put(path, query, null, [:], responseType, ANY)
     }
 
-    private def <T> T put(String path, Map query = [:], body, Map headers, Class responseType = String, ContentType requestContentType = JSON) {
+    private def <T> T post(String path, Map query = [:], body, Map headers = [:], Class responseType = String, ContentType requestContentType = JSON) {
+        Map params
+        headers << [Accept: ANY, CONTENT_TYPE: requestContentType]
+        if (requestContentType == JSON) {
+            params = putAndPostJsonParams(path, query, body)
+        } else {
+            //encode the query string
+            params = [path: "/$contextName$path", query: query,
+                    headers: headers,
+                    contentType: TEXT, requestContentType: requestContentType, body: body]
+        }
+        def data = client.post(params).data
+        //TODO (JB) need to try once more to replace this stuff with good parser that uses Jackson(if possible- see above)
+        if (responseType == null || data == null) {
+            null
+        } else if (responseType == String) {
+            data.text
+        } else {
+            objectMapper.readValue(data as Reader, responseType)
+        }
+    }
+
+    private def <T> T put(String path, Map query = [:], body, Map headers = [:], Class responseType = String, ContentType requestContentType = JSON) {
         Map params
         headers << [Accept: ANY, CONTENT_TYPE: requestContentType]
         if (requestContentType == JSON) {
@@ -129,10 +155,6 @@ class ArtifactoryImpl implements Artifactory {
         } else {
             objectMapper.readValue(data as Reader, responseType)
         }
-    }
-
-    protected String post(String path, Map query = [:], body) {
-        client.post(putAndPostJsonParams(path, query, body)).data?.text
     }
 
     protected String delete(String path, Map query = [:]) {

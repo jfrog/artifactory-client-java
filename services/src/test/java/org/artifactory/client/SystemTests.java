@@ -34,4 +34,21 @@ public class SystemTests extends ArtifactoryTestsBase {
         assertTrue(xml.contains("localRepositories"));
         assertTrue(xml.contains("repoLayouts"));
     }
+
+    @Test
+    public void testUploadOfSystemConfiguration() {
+        String oldXml = artifactory.system().configuration();
+        String changedXml = oldXml.replace("<excludeBuilds>false</excludeBuilds>", "<excludeBuilds>true</excludeBuilds>");
+
+        artifactory.system().configuration(changedXml);
+
+        String updatedXml = artifactory.system().configuration();
+        assertTrue(updatedXml.contains("backups"));
+        assertTrue(updatedXml.contains("localRepositories"));
+        assertTrue(updatedXml.contains("repoLayouts"));
+
+        // Restore
+        String restoredXml = updatedXml.replace("<excludeBuilds>true</excludeBuilds>", "<excludeBuilds>false</excludeBuilds>");
+        artifactory.system().configuration(restoredXml);
+    }
 }
