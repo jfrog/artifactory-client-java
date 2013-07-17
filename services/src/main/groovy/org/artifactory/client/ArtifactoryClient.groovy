@@ -27,8 +27,16 @@ public class ArtifactoryClient {
             //TODO: [by yl] move totalBytes() to a stream interface that clients can implement
             @Override
             InputStreamEntity encodeStream(Object data, Object contentType) throws UnsupportedEncodingException {
-                if (data.metaClass.getMetaMethod("totalBytes")) {
+                if (data.metaClass.getMetaMethod('totalBytes')) {
                     InputStreamEntity entity = new InputStreamEntity((InputStream) data, data.totalBytes());
+                    if (contentType == null) {
+                        contentType = ContentType.BINARY
+                    };
+                    entity.setContentType(contentType.toString());
+                    return entity
+                } else if (data instanceof InputStream) {
+                    final InputStream stream = (InputStream) data
+                    InputStreamEntity entity = new InputStreamEntity(stream, stream.available());
                     if (contentType == null) {
                         contentType = ContentType.BINARY
                     };

@@ -40,7 +40,7 @@ class UploadableArtifactImpl extends ArtifactBase<UploadableArtifact> implements
         def params = parseParams(props, '=')
         if (sha1) {
             try {
-                artifactory.put("/$repo/$path${params}", [:], null, ['X-Checksum-Deploy': true, 'X-Checksum-Sha1': sha1], FileImpl, BINARY)
+                artifactory.put("/$repo/$path${params}", [:], null, ['X-Checksum-Deploy': true, 'X-Checksum-Sha1': sha1], FileImpl, BINARY, file ? file.length() : -1)
             } catch (HttpResponseException e) {
                 if (e.statusCode == 404) {
                     uploadContent(params)
@@ -58,7 +58,7 @@ class UploadableArtifactImpl extends ArtifactBase<UploadableArtifact> implements
             content = new ProgressInputStream(content, file.size(), listener)
         }
         content.withStream {
-            artifactory.put("/$repo/$path${params}", [:], content, [:], FileImpl, BINARY)
+            artifactory.put("/$repo/$path${params}", [:], content, [:], FileImpl, BINARY, file ? file.size() : -1)
         } as org.artifactory.client.model.File
     }
 

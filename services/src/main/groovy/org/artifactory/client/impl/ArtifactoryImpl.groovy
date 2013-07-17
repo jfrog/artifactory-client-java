@@ -14,7 +14,7 @@ import static com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS
 import static com.fasterxml.jackson.databind.introspect.VisibilityChecker.Std.defaultInstance
 import static groovyx.net.http.ContentType.*
 import static groovyx.net.http.Method.GET
-
+import static org.apache.http.HttpHeaders.*
 /**
  *
  * @author jbaruch
@@ -68,7 +68,7 @@ class ArtifactoryImpl implements Artifactory {
         new SecurityImpl(this)
     }
 
-    Plugins plugins(){
+    Plugins plugins() {
         new PluginsImpl(this)
     }
 
@@ -96,7 +96,7 @@ class ArtifactoryImpl implements Artifactory {
 
     private def putAndPostJsonParams = { path, query, body ->
         [path: "/$contextName$path", query: query, headers:
-                [Accept: ANY, CONTENT_TYPE: JSON], contentType: TEXT,
+                [(ACCEPT): ANY, (CONTENT_TYPE): JSON], contentType: TEXT,
                 requestContentType: JSON, body: objectMapper.writeValueAsString(body)]
     }
 
@@ -104,16 +104,25 @@ class ArtifactoryImpl implements Artifactory {
         put(path, query, null, [:], responseType, ANY)
     }
 
-    private def <T> T put(String path, Map query = [:], body, Map headers, Class responseType = String, ContentType requestContentType = JSON) {
+    private
+    def <T> T put(String path, Map query = [:], body, Map headers, Class responseType = String, ContentType requestContentType = JSON, long contentLength = -1) {
         Map params
-        headers << [Accept: ANY, CONTENT_TYPE: requestContentType]
+        headers << [(ACCEPT): ANY, (CONTENT_TYPE): requestContentType]
+//        if (contentLength >= 0) {
+//            headers << [(CONTENT_LENGTH): contentLength]
+//        }
         if (requestContentType == JSON) {
             params = putAndPostJsonParams(path, query, body)
         } else {
             //encode the query string
-            params = [path: "/$contextName$path", query: query,
+            params = [
+                    path: "/$contextName$path",
+                    query: query,
                     headers: headers,
-                    contentType: TEXT, requestContentType: requestContentType, body: body]
+                    contentType: TEXT,
+                    requestContentType: requestContentType,
+                    body: body,
+            ]
         }
         def data = client.put(params).data
         //TODO (JB) need to try once more to replace this stuff with good parser that uses Jackson(if possible- see above)

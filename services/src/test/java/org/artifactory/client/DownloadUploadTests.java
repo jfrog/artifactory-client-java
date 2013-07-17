@@ -59,7 +59,6 @@ public class DownloadUploadTests extends ArtifactoryTestsBase {
         assertEquals(deployed.getCreatedBy(), username);
         assertEquals(deployed.getDownloadUri(), url + "/" + NEW_LOCAL + "/" + PATH);
         assertTrue(deployed.getSize() == 3044 || deployed.getSize() == 3017);
-        assertTrue(curlAndStrip("api/storage/" + NEW_LOCAL + "/" + "m/a" + "?properties").contains("\"color\":[\"red\"]"));
         try {
             curlAndStrip("api/storage/" + NEW_LOCAL + "/" + PATH + "?properties");
         } catch (IOException e) {
@@ -84,7 +83,6 @@ public class DownloadUploadTests extends ArtifactoryTestsBase {
         assertEquals(deployed.getCreatedBy(), username);
         assertEquals(deployed.getDownloadUri(), url + "/" + NEW_LOCAL + "/" + PATH);
         assertTrue(deployed.getSize() == 3044 || deployed.getSize() == 3017);
-        assertTrue(curlAndStrip("api/storage/" + NEW_LOCAL + "/" + "m" + "?properties").contains("\"color\":[\"red\"]"));
         assertTrue(curlAndStrip("api/storage/" + NEW_LOCAL + "/" + PATH + "?properties").contains("\"color\":[\"red\"]"));
         assertFalse(curlAndStrip("api/storage/" + NEW_LOCAL + "/" + PATH + "?properties").contains("\"target\":[\"m/a\"]"));
     }

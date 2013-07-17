@@ -22,4 +22,6 @@ public interface Repository {
     String getRepoLayoutRef();
 
     boolean isEnableNuGetSupport();
+
+    boolean isEnableGemsSupport();
 }

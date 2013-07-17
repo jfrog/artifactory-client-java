@@ -23,4 +23,6 @@ public interface RepositoryBuilder<B extends RepositoryBuilder, R extends Reposi
     R build();
 
     B enableNuGetSupport(boolean enableNuGetSupport);
+
+    B enableGemsSupport(boolean enableGemsSupport);
 }
