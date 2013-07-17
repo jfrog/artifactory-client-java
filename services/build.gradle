@@ -37,6 +37,7 @@ configurations {
 
 fatJar {
     baseName = 'artifactory-client-java'
+    classifier = 'fat'
 }
 
 artifacts {
