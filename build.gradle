@@ -53,7 +53,7 @@ allprojects {
         //The base Artifactory URL if not overridden by the publisher/resolver
         resolve {
             repository {
-                repoKey = 'libs-releases'
+                repoKey = 'libs-release'
                 maven = true
             }
         }
