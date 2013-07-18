@@ -42,14 +42,13 @@ class Version {
     }
 }
 
-
 allprojects {
     apply plugin: 'idea'
     apply plugin: 'maven'
     apply plugin: 'artifactory'
 
     artifactory {
-        contextUrl = 'https://oss.jfrog.org'
+        contextUrl = "${System.env.ARTIFACTORY_URL}"
         //The base Artifactory URL if not overridden by the publisher/resolver
         resolve {
             repository {
@@ -60,10 +59,19 @@ allprojects {
         publish {
             repository {
                 repoKey = 'oss-snaphost-local'   //The Artifactory repository key to publish to
-                username = "$System.env.ARTIFACTORY_USERNAME"          //The publisher user name
-                password = "$System.env.ARTIFACTORY_PASSWORD"       //The publisher password
+                username = "${System.env.ARTIFACTORY_USERNAME}"          //The publisher user name
+                password = "${System.env.ARTIFACTORY_PASSWORD}"       //The publisher password
+            }
+            defaults{
+                properties {
+                    buildInfo.build.number="${System.env.CI_BUILD_NUMBER}"
+                    buildInfo.build.url="${System.env.CI_BUILD_URL}"
+                    buildInfo.agent.name="${System.env.CI_NAME}"
+                    buildInfo.principal="${System.env.CI_COMMITTER_USERNAME}"
+                }
             }
         }
+
     }
 
     group = 'com.jfrog.artifactory.client'
@@ -73,9 +81,7 @@ allprojects {
     project.tasks.withType(Jar).each {
         it.version = currentVersion
     }
-
 }
-
 
 subprojects {
     apply plugin: 'java'
@@ -101,7 +107,6 @@ subprojects {
             minGranularity 0
         }
     }
-
 }
 
 task wrapper(type: Wrapper) {
