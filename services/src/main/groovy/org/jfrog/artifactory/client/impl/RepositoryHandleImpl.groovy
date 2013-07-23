@@ -13,12 +13,9 @@ import org.jfrog.artifactory.client.model.impl.FileImpl
 import org.jfrog.artifactory.client.model.impl.FolderImpl
 import org.jfrog.artifactory.client.model.impl.ReplicationStatusImpl
 
-import static groovyx.net.http.ContentType.JSON
-import static groovyx.net.http.ContentType.TEXT
 import static org.jfrog.artifactory.client.Repositories.REPLICATION_API
 import static org.jfrog.artifactory.client.Repositories.REPOSITORIES_API
 import static org.jfrog.artifactory.client.model.impl.RepositoryTypeImpl.parseString
-
 /**
  *
  * @author jbaruch
@@ -43,20 +40,20 @@ class RepositoryHandleImpl implements RepositoryHandle {
     }
 
     ReplicationStatus replicationStatus() {
-        artifactory.get("$REPLICATION_API${repo}", JSON, ReplicationStatusImpl.class)
+        artifactory.get("$REPLICATION_API${repo}", ContentType.JSON, ReplicationStatusImpl.class)
     }
 
     String delete() {
-        artifactory.delete("$REPOSITORIES_API${repo}", [:], TEXT)
+        artifactory.delete("$REPOSITORIES_API${repo}", [:], ContentType.TEXT)
     }
 
     String delete(String path) {
-        artifactory.delete("/${repo}/${path}", [:], TEXT)
+        artifactory.delete("/${repo}/${path}", [:], ContentType.TEXT)
     }
 
     Repository get() {
         // Use response to deserialize against proper type.
-        String repoJson = artifactory.get("$REPOSITORIES_API${repo}", JSON, String)
+        String repoJson = artifactory.get("$REPOSITORIES_API${repo}", ContentType.JSON, String)
         JsonSlurper slurper = new JsonSlurper()
         def repo = slurper.parseText(repoJson)
         artifactory.parseText(repoJson, parseString(repo.rclass).typeClass)

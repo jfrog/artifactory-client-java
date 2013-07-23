@@ -2,19 +2,17 @@ package org.jfrog.artifactory.client.impl
 
 import groovyx.net.http.ContentType
 import groovyx.net.http.HttpResponseException
+import net.sf.json.JSON
 import org.jfrog.artifactory.client.ItemHandle
 import org.jfrog.artifactory.client.PropertiesHandler
-import org.jfrog.artifactory.client.model.Group
-import org.jfrog.artifactory.client.model.ItemPermission
-import org.jfrog.artifactory.client.model.Privilege
-import org.jfrog.artifactory.client.model.Subject
-import org.jfrog.artifactory.client.model.User
+import org.jfrog.artifactory.client.model.*
 import org.jfrog.artifactory.client.model.impl.GroupImpl
 import org.jfrog.artifactory.client.model.impl.ItemPermissionImpl
 import org.jfrog.artifactory.client.model.impl.RepoPathImpl
 import org.jfrog.artifactory.client.model.impl.UserImpl
 
 import static java.util.Collections.unmodifiableSet
+
 /**
  *
  * @author jbaruch

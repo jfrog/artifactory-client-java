@@ -2,6 +2,7 @@ package org.jfrog.artifactory.client.impl
 
 import com.fasterxml.jackson.core.type.TypeReference
 import groovyx.net.http.ContentType
+import net.sf.json.JSON
 import org.jfrog.artifactory.client.PluginHandle
 import org.jfrog.artifactory.client.Plugins
 import org.jfrog.artifactory.client.model.Plugin
@@ -25,12 +26,12 @@ public class PluginsImpl implements Plugins {
 
     @Override
     Map<PluginType, List<Plugin>> list() {
-        artifactory.get(PLUGINS_API, JSON, new TypeReference<Map<PluginType, List<PluginImpl>>>() {})
+        artifactory.get(PLUGINS_API, ContentType.JSON, new TypeReference<Map<PluginType, List<PluginImpl>>>() {})
     }
 
     @Override
     List<Plugin> list(PluginType type) {
-        def pluginsMap = artifactory.get("$PLUGINS_API/$type", JSON, new TypeReference<Map<PluginType, List<PluginImpl>>>() {})
+        def pluginsMap = artifactory.get("$PLUGINS_API/$type", ContentType.JSON, new TypeReference<Map<PluginType, List<PluginImpl>>>() {})
         pluginsMap[type] as List<Plugin>
     }
 

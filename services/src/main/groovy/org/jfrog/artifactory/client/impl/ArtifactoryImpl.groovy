@@ -7,8 +7,16 @@ import groovyx.net.http.ContentType
 import groovyx.net.http.HttpResponseException
 import groovyx.net.http.Method
 import groovyx.net.http.RESTClient
-import org.jfrog.artifactory.client.*
 import org.apache.http.HttpResponse
+import org.apache.http.protocol.HTTP
+import org.jfrog.artifactory.client.Artifactory
+import org.jfrog.artifactory.client.ArtifactorySystem
+import org.jfrog.artifactory.client.Plugins
+import org.jfrog.artifactory.client.Repositories
+import org.jfrog.artifactory.client.RepositoryHandle
+import org.jfrog.artifactory.client.Searches
+import org.jfrog.artifactory.client.Security
+import org.jfrog.artifactory.client.model.impl.PluginImpl
 
 import java.text.DateFormat
 
@@ -95,7 +103,7 @@ class ArtifactoryImpl implements Artifactory {
     }
 
     def <T> T delete(String path, Map query = null, ContentType responseContentType = ANY, def responseClass = null, Map addlHeaders = null) {
-        rest(DELETE, path, query, responseContentType, responseClass, ContentType.TEXT, null, addlHeaders)
+        rest(DELETE, path, query, responseContentType, responseClass, TEXT, null, addlHeaders)
     }
 
     def <T> T post(String path, Map query = null, ContentType responseContentType = ANY, def responseClass = null, ContentType requestContentType = JSON, requestBody = null, Map addlHeaders = null, long contentLength = -1) {
@@ -129,7 +137,7 @@ class ArtifactoryImpl implements Artifactory {
                 // They just want us to leave the response alone
                 client.parser.putAt(responseType, originalTextParser)
             } else if (responseType == JSON && responseClass) {
-                client.parser.putAt(JSON) { org.apache.http.HttpResponse resp ->
+                client.parser.putAt(JSON) { HttpResponse resp ->
                     InputStream is = resp.entity.content
                     return objectMapper.readValue(is, responseClass) as T
                 }

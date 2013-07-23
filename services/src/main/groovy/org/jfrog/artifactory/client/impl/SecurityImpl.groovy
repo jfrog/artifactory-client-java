@@ -1,16 +1,12 @@
 package org.jfrog.artifactory.client.impl
 
 import com.fasterxml.jackson.core.type.TypeReference
-import groovy.json.JsonSlurper
 import groovyx.net.http.ContentType
 import org.jfrog.artifactory.client.Security
 import org.jfrog.artifactory.client.model.User
 import org.jfrog.artifactory.client.model.builder.SecurityBuilders
 import org.jfrog.artifactory.client.model.builder.impl.SecurityBuildersImpl
 import org.jfrog.artifactory.client.model.impl.UserImpl
-
-import static groovyx.net.http.ContentType.ANY
-import static groovyx.net.http.ContentType.JSON
 
 /**
  *
@@ -34,18 +30,18 @@ class SecurityImpl implements Security {
 
     @Override
     Collection<String> userNames() {
-        def users = artifactory.get(SECURITY_USERS_API, JSON)
+        def users = artifactory.get(SECURITY_USERS_API, ContentType.JSON)
         users.collect { it.name }
     }
 
     @Override
     User user(String name) {
-        artifactory.get("${SECURITY_USERS_API}/$name", JSON, new TypeReference<UserImpl>() {})
+        artifactory.get("${SECURITY_USERS_API}/$name", ContentType.JSON, new TypeReference<UserImpl>() {})
     }
 
     @Override
     void createOrUpdate(User user) {
-        artifactory.put("${SECURITY_USERS_API}/${user.name}", [:], ANY, null, JSON, user)
+        artifactory.put("${SECURITY_USERS_API}/${user.name}", [:], ContentType.ANY, null, ContentType.JSON, user)
     }
 
     @Override
