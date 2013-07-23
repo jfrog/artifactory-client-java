@@ -49,7 +49,7 @@ allprojects {
     final env = System.getenv()
 
     artifactory {
-        contextUrl = env['ARTIFACTORY_URL']
+        contextUrl = artifactoryUrl?:env['ARTIFACTORY_URL']
         //The base Artifactory URL if not overridden by the publisher/resolver
         resolve {
             repository {
@@ -66,7 +66,7 @@ allprojects {
         }
     }
 
-    group = 'com.jfrog.artifactory.client'
+    group = 'org.jfrog.artifactory.client'
     version = currentVersion
     status = version.endsWith('-SNAPSHOT') ? 'integration' : 'release'
 
@@ -102,7 +102,7 @@ subprojects {
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '1.5'
+    gradleVersion = '1.6'
 }
 
 idea {
