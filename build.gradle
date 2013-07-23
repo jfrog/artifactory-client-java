@@ -15,7 +15,7 @@ allprojects {
     final env = System.getenv()
 
     artifactory {
-        contextUrl = artifactoryUrl?:env['ARTIFACTORY_URL']
+        contextUrl = hasProperty('artifactoryUrl')?artifactoryUrl:env['ARTIFACTORY_URL']
         //The base Artifactory URL if not overridden by the publisher/resolver
         resolve {
             repository {
@@ -26,8 +26,8 @@ allprojects {
         publish {
             repository {
                 repoKey = 'oss-snapshot-local'   //The Artifactory repository key to publish to
-                username = artifactoryUsername?:env['ARTIFACTORY_USERNAME']          //The publisher user name
-                password = artifactoryPassword?:env['ARTIFACTORY_PASSWORD']       //The publisher password
+                username = hasProperty('artifactoryUsername')?artifactoryUsername:env['ARTIFACTORY_USERNAME']          //The publisher user name
+                password = hasProperty('artifactoryPassword')?artifactoryPassword:env['ARTIFACTORY_PASSWORD']       //The publisher password
             }
         }
     }
