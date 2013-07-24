@@ -30,8 +30,8 @@ public class RepositoryTests extends ArtifactoryTestsBase {
 
     @Test(groups = "repositoryBasics", dependsOnMethods = "testDelete")
     public void testCreate() throws Exception {
-        assertTrue(artifactory.repositories().create(2, localRepository)
-                .startsWith("Repository " + NEW_LOCAL + " created successfully."));
+        String result = artifactory.repositories().create(2, localRepository);
+        assertTrue(result.startsWith("Repository " + NEW_LOCAL + " created successfully."));
         assertTrue(curl(LIST_PATH).contains(NEW_LOCAL));
 
     }
@@ -51,7 +51,8 @@ public class RepositoryTests extends ArtifactoryTestsBase {
     @Test(groups = "repositoryBasics")
     public void testDelete() throws Exception {
         try {
-            assertTrue(artifactory.repository(NEW_LOCAL).delete()
+            String result =  artifactory.repository(NEW_LOCAL).delete();
+            assertTrue(result
                     .startsWith("Repository " + NEW_LOCAL + " and all its content have been removed successfully."));
             assertFalse(curl(LIST_PATH).contains(NEW_LOCAL));
         } catch (HttpResponseException e) {
