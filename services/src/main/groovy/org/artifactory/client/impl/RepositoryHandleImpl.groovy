@@ -1,6 +1,7 @@
 package org.artifactory.client.impl
 
 import groovy.json.JsonSlurper
+import groovyx.net.http.ContentType
 import org.artifactory.client.DownloadableArtifact
 import org.artifactory.client.ItemHandle
 import org.artifactory.client.RepositoryHandle
@@ -40,27 +41,27 @@ class RepositoryHandleImpl implements RepositoryHandle {
     }
 
     ReplicationStatus replicationStatus() {
-        String replicationStatusJson = artifactory.getText("$REPLICATION_API${repo}")
-        artifactory.parseText(replicationStatusJson, ReplicationStatusImpl.class)
+        artifactory.get("$REPLICATION_API${repo}", ContentType.JSON, ReplicationStatusImpl.class)
     }
 
     String delete() {
-        artifactory.delete("$REPOSITORIES_API${repo}")
+        artifactory.delete("$REPOSITORIES_API${repo}", [:], ContentType.TEXT)
     }
 
     String delete(String path) {
-        artifactory.delete("/${repo}/${path}")
+        artifactory.delete("/${repo}/${path}", [:], ContentType.TEXT)
     }
 
     Repository get() {
-        String repoJson = artifactory.getText("$REPOSITORIES_API${repo}")
+        // Use response to deserialize against proper type.
+        String repoJson = artifactory.get("$REPOSITORIES_API${repo}", ContentType.JSON, String)
         JsonSlurper slurper = new JsonSlurper()
         def repo = slurper.parseText(repoJson)
         artifactory.parseText(repoJson, parseString(repo.rclass).typeClass)
     }
 
     UploadableArtifact upload(String targetPath, InputStream content) {
-        new UploadableArtifactImpl(repo, targetPath, content, artifactory)
+        new UploadableArtifactImpl(repo, targetPath, (InputStream) content, artifactory)
     }
 
     @Override

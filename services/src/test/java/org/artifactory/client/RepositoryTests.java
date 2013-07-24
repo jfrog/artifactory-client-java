@@ -30,8 +30,8 @@ public class RepositoryTests extends ArtifactoryTestsBase {
 
     @Test(groups = "repositoryBasics", dependsOnMethods = "testDelete")
     public void testCreate() throws Exception {
-        assertTrue(artifactory.repositories().create(2, localRepository)
-                .startsWith("Repository " + NEW_LOCAL + " created successfully."));
+        String result = artifactory.repositories().create(2, localRepository);
+        assertTrue(result.startsWith("Repository " + NEW_LOCAL + " created successfully."));
         assertTrue(curl(LIST_PATH).contains(NEW_LOCAL));
 
     }
@@ -51,7 +51,8 @@ public class RepositoryTests extends ArtifactoryTestsBase {
     @Test(groups = "repositoryBasics")
     public void testDelete() throws Exception {
         try {
-            assertTrue(artifactory.repository(NEW_LOCAL).delete()
+            String result =  artifactory.repository(NEW_LOCAL).delete();
+            assertTrue(result
                     .startsWith("Repository " + NEW_LOCAL + " and all its content have been removed successfully."));
             assertFalse(curl(LIST_PATH).contains(NEW_LOCAL));
         } catch (HttpResponseException e) {
@@ -163,18 +164,19 @@ public class RepositoryTests extends ArtifactoryTestsBase {
 
     @Test
     public void testGetVirtual() throws Exception {
-        Repository repository = artifactory.repository("libs-releases").get();
+        Repository repository = artifactory.repository(LIBS_RELEASES_VIRTUAL).get();
         assertNotNull(repository);
         assertTrue(VirtualRepository.class.isAssignableFrom(repository.getClass()));
         VirtualRepository libsReleases = (VirtualRepository) repository;
-        assertEquals(libsReleases.getKey(), "libs-releases");
+        assertEquals(libsReleases.getKey(), LIBS_RELEASES_VIRTUAL);
         assertEquals(libsReleases.getRclass().toString(), "virtual");
-        assertEquals(libsReleases.getDescription(),
-                "Virtual Repository which aggregates both uploaded and proxied releases");
+        // Stock Artifactory doesn't set this
+//        assertEquals(libsReleases.getDescription(),
+//                "Virtual Repository which aggregates both uploaded and proxied releases");
         assertEquals(libsReleases.getNotes(), "");
         assertEquals(libsReleases.getIncludesPattern(), "**/*");
         assertEquals(libsReleases.getExcludesPattern(), "");
-        assertEquals(libsReleases.getRepositories(), asList(LIBS_RELEASES_LOCAL, "ext-releases-local", "remote-repos"));
+        assertEquals(libsReleases.getRepositories(), asList(LIBS_RELEASES_LOCAL, "ext-release-local", "remote-repos"));
         assertEquals(libsReleases.getPomRepositoryReferencesCleanupPolicy().toString(), "discard_active_reference");
         assertFalse(libsReleases.isArtifactoryRequestsCanRetrieveRemoteArtifacts());
         assertTrue(libsReleases.getKeyPair() == null || libsReleases.getKeyPair().isEmpty());

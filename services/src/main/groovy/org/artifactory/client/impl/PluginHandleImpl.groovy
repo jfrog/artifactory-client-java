@@ -47,7 +47,7 @@ class PluginHandleImpl implements PluginHandle {
             query.params = QueryUtil.getQueryList(params)
         }
         query.async = async ? 1 : 0
-        artifactory.post("$PluginsImpl.PLUGINS_API/execute/$name", query, null)
+        artifactory.post("$PluginsImpl.PLUGINS_API/execute/$name", query)
     }
 
 }

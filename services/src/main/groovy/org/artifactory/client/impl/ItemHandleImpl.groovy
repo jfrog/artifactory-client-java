@@ -1,6 +1,8 @@
 package org.artifactory.client.impl
 
+import groovyx.net.http.ContentType
 import groovyx.net.http.HttpResponseException
+import net.sf.json.JSON
 import org.artifactory.client.ItemHandle
 import org.artifactory.client.PropertiesHandler
 import org.artifactory.client.model.*
@@ -34,7 +36,7 @@ class ItemHandleImpl implements ItemHandle {
         assert artifactory
         assert repo
         assert path
-        artifactory.getJson("/api/storage/$repo/$path", itemType)
+        artifactory.get("/api/storage/$repo/$path", ContentType.JSON, itemType)
     }
 
     public Map<String, List<String>> getProperties(String... properties) {
@@ -42,7 +44,7 @@ class ItemHandleImpl implements ItemHandle {
         assert repo
         assert path
         try {
-            artifactory.getJson("/api/storage/$repo/$path", Map, [properties: properties.join(',')])?.properties
+            artifactory.get("/api/storage/$repo/$path", [properties: properties.join(',')], ContentType.JSON, Map.class)?.properties
         } catch (HttpResponseException e) {
             if (e.statusCode == 404) {
                 return [:]
@@ -81,7 +83,7 @@ class ItemHandleImpl implements ItemHandle {
 
     @Override
     Set<ItemPermission> effectivePermissions() {
-        Map json = artifactory.getJson("/api/storage/${repo}/${path}", Map, ['permissions': null]) as Map
+        Map json = artifactory.get("/api/storage/${repo}/${path}", ['permissions': null], ContentType.JSON, Map) as Map
         unmodifiableSet(mapToItemPermissions(json.principals.users, User) + mapToItemPermissions(json.principals.groups, Group) as Set<? extends ItemPermission>) as Set<ItemPermission>
     }
 

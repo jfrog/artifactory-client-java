@@ -1,5 +1,6 @@
 package org.artifactory.client.impl
 
+import groovyx.net.http.ContentType
 import groovyx.net.http.HttpResponseException
 import org.artifactory.client.Artifactory
 import org.artifactory.client.PropertyFilters
@@ -45,7 +46,7 @@ class SearchesImpl implements Searches {
             query.repos = reposFilter.join(',')
         }
         try {
-            def result = artifactory.getSlurper("${SEARCHES_API}$url", query)
+            def result = artifactory.get("${SEARCHES_API}$url", query, ContentType.JSON)
             result.results.collect {
                 String path = it.uri.split('/api/storage/')[1]
                 String repo = path.split('/')[0]

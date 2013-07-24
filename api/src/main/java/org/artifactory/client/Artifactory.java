@@ -20,5 +20,7 @@ public interface Artifactory {
 
     Plugins plugins();
 
+    ArtifactorySystem system();
+
     void close();
 }
