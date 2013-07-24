@@ -16,40 +16,53 @@ abstract class RepositoryBuilderBase<B extends RepositoryBuilder, R extends Repo
     protected String notes
     protected String repoLayoutRef
     protected boolean enableNuGetSupport = false
+    protected boolean enableGemsSupport = false
 
-
+    @Override
     B description(String description) {
         this.description = description
         this as B
     }
 
+    @Override
     B excludesPattern(String excludesPattern) {
         this.excludesPattern = excludesPattern
         this as B
     }
 
+    @Override
     B includesPattern(String includesPattern) {
         this.includesPattern = includesPattern
         this as B
     }
 
+    @Override
     B key(String key) {
         this.key = key
         this as B
     }
 
+    @Override
     B notes(String notes) {
         this.notes = notes
         this as B
     }
 
+    @Override
     B repoLayoutRef(String repoLayoutRef) {
         this.repoLayoutRef = repoLayoutRef
         this as B
     }
 
+    @Override
     B enableNuGetSupport(boolean enableNuGetSupport) {
         this.enableNuGetSupport = enableNuGetSupport
+        this as B
+    }
+
+    @Override
+    B enableGemsSupport(boolean enableGemsSupport) {
+        this.enableGemsSupport = enableGemsSupport
         this as B
     }
 }

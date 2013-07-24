@@ -34,7 +34,7 @@ public class PluginsTests extends ArtifactoryTestsBase {
         assertEquals("helloWorld", helloWorldPlugin.getName());
         Map<String, String> params = helloWorldPlugin.getParams();
         assertEquals(params.size(), 1);
-        assertEquals("world", params.get("message"));
+        assertEquals("world", params.get("msg"));
     }
 
     @Test
@@ -45,13 +45,13 @@ public class PluginsTests extends ArtifactoryTestsBase {
 
     @Test
     public void testExecutePlugin(){
-        verifyExecutionResult(null, artifactory.plugins().execute(PLUGIN_NAME).sync());
+        verifyExecutionResult(artifactory.plugins().execute(PLUGIN_NAME).sync(), null);
 
         String variable = "world";
-        verifyExecutionResult("["+variable+"]", artifactory.plugins().execute(PLUGIN_NAME).withParameter("message", variable).sync());
+        verifyExecutionResult(artifactory.plugins().execute(PLUGIN_NAME).withParameter("msg", variable).sync(), "["+variable+"]");
     }
 
-    private void verifyExecutionResult(String variable, String returnValue) {
+    private void verifyExecutionResult(String returnValue, String variable) {
         assertEquals(returnValue, "Hello "+variable);
     }
 }

@@ -49,11 +49,19 @@ allprojects {
     apply plugin: 'artifactory'
 
     artifactory {
-        contextUrl = 'http://repo.jfrog.org/artifactory' //The base Artifactory URL if not overridden by the publisher/resolver
+        contextUrl = 'https://oss.jfrog.org'
+        //The base Artifactory URL if not overridden by the publisher/resolver
         resolve {
             repository {
-                repoKey = 'libs-releases'
+                repoKey = 'libs-release'
                 maven = true
+            }
+        }
+        publish {
+            repository {
+                repoKey = 'oss-snaphost-local'   //The Artifactory repository key to publish to
+                username = "$System.env.ARTIFACTORY_USERNAME"          //The publisher user name
+                password = "$System.env.ARTIFACTORY_PASSWORD"       //The publisher password
             }
         }
     }

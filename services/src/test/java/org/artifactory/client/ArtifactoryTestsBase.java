@@ -26,6 +26,8 @@ public abstract class ArtifactoryTestsBase {
     protected static final String LIBS_RELEASES_VIRTUAL = "libs-release";
     protected static final String REPO1 = "repo1";
     protected static final String REPO1_CACHE = REPO1 + "-cache";
+    private static final String CLIENTTESTS_ARTIFACTORY_ENV_VAR_PREFIX = "CLIENTTESTS_ARTIFACTORY_";
+    private static final String CLIENTTESTS_ARTIFACTORY_PROPERTIES_PREFIX = "clienttests.artifactory.";
     protected Artifactory artifactory;
     protected String username;
     private String password;
@@ -37,15 +39,45 @@ public abstract class ArtifactoryTestsBase {
         Properties props = new Properties();
         InputStream inputStream = this.getClass().getResourceAsStream(
                 "/artifactory-client.properties");//this file is not in GitHub. Create your own in src/test/resources.
-        if (inputStream == null) {
-            Assert.fail(
-                    "Credentials file is missing, create artifactory-client.properties with 'url', 'username' and 'password' properties under src/test/resources");
+        if (inputStream != null) {
+            props.load(inputStream);
+            url = props.getProperty(CLIENTTESTS_ARTIFACTORY_PROPERTIES_PREFIX + "url");
+            username = props.getProperty(CLIENTTESTS_ARTIFACTORY_PROPERTIES_PREFIX + "username");
+            password = props.getProperty(CLIENTTESTS_ARTIFACTORY_PROPERTIES_PREFIX + "password");
+        } else {
+            url = System.getProperty(CLIENTTESTS_ARTIFACTORY_PROPERTIES_PREFIX + "url");
+            if(url == null) {
+                url = System.getenv(CLIENTTESTS_ARTIFACTORY_ENV_VAR_PREFIX + "URL");
+            }
+            if(url == null){
+                failInit();
+            }
+            username = System.getProperty(CLIENTTESTS_ARTIFACTORY_PROPERTIES_PREFIX + "username");
+            if(username == null) {
+                username = System.getenv(CLIENTTESTS_ARTIFACTORY_ENV_VAR_PREFIX + "USERNAME");
+            }
+            if(username == null){
+                failInit();
+            }
+            password = System.getProperty(CLIENTTESTS_ARTIFACTORY_PROPERTIES_PREFIX + "password");
+            if(password == null) {
+                password = System.getenv(CLIENTTESTS_ARTIFACTORY_ENV_VAR_PREFIX + "PASSWORD");
+            }
+            if(password == null){
+                failInit();
+            }
+
+
         }
-        props.load(inputStream);
-        url = props.getProperty("url");
-        username = props.getProperty("username");
-        password = props.getProperty("password");
         artifactory = create(url, username, password);
+    }
+
+    private void failInit() {
+        Assert.fail(
+                "Failed to load test Artifactory instance credentials." +
+                        "Looking for System properties '" + CLIENTTESTS_ARTIFACTORY_PROPERTIES_PREFIX + "url', 'clienttests.artifactory.username' and 'clienttests.artifactory.password', " +
+                        "or properties file with those properties in classpath," +
+                        "or Environment variables '" + CLIENTTESTS_ARTIFACTORY_ENV_VAR_PREFIX + "URL', 'CLIENTTESTS_ARTIFACTORY_USERNAME' and 'CLIENTTESTS_ARTIFACTORY_PASSWORD'");
     }
 
     @AfterClass

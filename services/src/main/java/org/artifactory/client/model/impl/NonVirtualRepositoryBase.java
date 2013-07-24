@@ -23,8 +23,8 @@ public abstract class NonVirtualRepositoryBase extends RepositoryBase implements
     protected NonVirtualRepositoryBase() {
     }
 
-    protected NonVirtualRepositoryBase(String description, String excludesPattern, String includesPattern, String key, String notes, boolean blackedOut, boolean handleReleases, boolean handleSnapshots, int maxUniqueSnapshots, List<String> propertySets, SnapshotVersionBehavior snapshotVersionBehavior, boolean suppressPomConsistencyChecks, String repoLayoutRef, boolean enableNuGetSupport, boolean archiveBrowsingEnabled) {
-        super(description, excludesPattern, includesPattern, key, notes, repoLayoutRef, enableNuGetSupport);
+    protected NonVirtualRepositoryBase(String description, String excludesPattern, String includesPattern, String key, String notes, boolean blackedOut, boolean handleReleases, boolean handleSnapshots, int maxUniqueSnapshots, List<String> propertySets, SnapshotVersionBehavior snapshotVersionBehavior, boolean suppressPomConsistencyChecks, String repoLayoutRef, boolean enableNuGetSupport, boolean archiveBrowsingEnabled, boolean enableGemsSupport) {
+        super(description, excludesPattern, includesPattern, key, notes, repoLayoutRef, enableNuGetSupport, enableGemsSupport);
         this.blackedOut = blackedOut;
         this.handleReleases = handleReleases;
         this.handleSnapshots = handleSnapshots;
