@@ -42,9 +42,6 @@ class ArtifactoryImpl implements Artifactory {
         objectMapper.configure WRITE_DATES_AS_TIMESTAMPS, false
         objectMapper.dateFormat = ISO8601_DATE_FORMAT
         objectMapper.visibilityChecker = defaultInstance().withFieldVisibility(JsonAutoDetect.Visibility.ANY)
-        //        client.parser."$JSON" = {HttpResponse resp ->
-        //            objectMapper.readValue(resp.entity.content, Object) //TODO (JB) seem unsolvable, when this code runs I don't know the type yet. If only JSON had root element!
-        //        }
     }
 
     void close() {
@@ -75,7 +72,7 @@ class ArtifactoryImpl implements Artifactory {
         new SecurityImpl(this)
     }
 
-    Plugins plugins(){
+    Plugins plugins() {
         new PluginsImpl(this)
     }
 
@@ -88,7 +85,6 @@ class ArtifactoryImpl implements Artifactory {
         // Otherwise when we leave the response.success block, ensureConsumed will be called to close the stream
         def ret = client.get([path: "/$contextName$path", query: query, contentType: BINARY])
         return ret.data
-//        rest(GET, path, query, BINARY, null, ANY, null, null)
     }
 
     def <T> T get(String path, ContentType responseContentType = ANY, def responseClass = null, Map headers = null) {
@@ -103,12 +99,12 @@ class ArtifactoryImpl implements Artifactory {
         rest(DELETE, path, query, responseContentType, responseClass, ContentType.TEXT, null, addlHeaders)
     }
 
-    def <T> T post(String path, Map query = null, ContentType responseContentType = ANY, def responseClass = null, ContentType requestContentType = JSON, requestBody = null, Map addlHeaders = null) {
-        rest(POST, path, query, responseContentType, responseClass, requestContentType, requestBody, addlHeaders)
+    def <T> T post(String path, Map query = null, ContentType responseContentType = ANY, def responseClass = null, ContentType requestContentType = JSON, requestBody = null, Map addlHeaders = null, long contentLength = -1) {
+        rest(POST, path, query, responseContentType, responseClass, requestContentType, requestBody, addlHeaders, contentLength)
     }
 
-    def <T> T put(String path, Map query = null, ContentType responseContentType = ANY, def responseClass = null, ContentType requestContentType = JSON, requestBody = null, Map addlHeaders = null) {
-        rest(PUT, path, query, responseContentType, responseClass, requestContentType, requestBody, addlHeaders)
+    def <T> T put(String path, Map query = null, ContentType responseContentType = ANY, def responseClass = null, ContentType requestContentType = JSON, requestBody = null, Map addlHeaders = null, long contentLength = -1) {
+        rest(PUT, path, query, responseContentType, responseClass, requestContentType, requestBody, addlHeaders, contentLength)
     }
 
     /**
@@ -123,7 +119,7 @@ class ArtifactoryImpl implements Artifactory {
      * @param addlHeaders
      * @return
      */
-    private def <T> T rest(Method method, String path, Map query = null, responseType = ANY, def responseClass, ContentType requestContentType = JSON, requestBody = null, Map addlHeaders = null ) {
+    private def <T> T rest(Method method, String path, Map query = null, responseType = ANY, def responseClass, ContentType requestContentType = JSON, requestBody = null, Map addlHeaders = null, long contentLength = -1 ) {
         def originalParser
         try {
             // Let us send one thing to the server and parse it differently. But we have to careful to restore it.
@@ -140,17 +136,20 @@ class ArtifactoryImpl implements Artifactory {
                 }
             }
 
-            restWrapped(method, path, query, responseType, responseClass, requestContentType, requestBody, addlHeaders)
+            restWrapped(method, path, query, responseType, responseClass, requestContentType, requestBody, addlHeaders, contentLength)
         } finally {
             client.parser.putAt(responseType, originalParser)
         }
     }
 
-    private def <T> T restWrapped(Method method, String path, Map query = null, responseType = ANY, def responseClass, ContentType requestContentType = JSON, requestBody = null, Map addlHeaders = null ) {
+    private def <T> T restWrapped(Method method, String path, Map query = null, responseType = ANY, def responseClass, ContentType requestContentType = JSON, requestBody = null, Map addlHeaders = null, long contentLength = -1 ) {
         def ret
 
         //TODO Ensure requestContentType is not null
         def allHeaders = addlHeaders?addlHeaders.clone():[:]
+//        if (contentLength >= 0) {
+//            headers << [(HTTP.CONTENT_LEN): contentLength]
+//        }
 
         // responseType will be used as the type to parse (XML, JSON, or Reader), it'll also create a header for Accept
         // Artifactory typically only returns one type, so let's ANY align those two. The caller can then do the appropriate thing.
