@@ -1,5 +1,6 @@
 package org.artifactory.client.impl
 
+import groovyx.net.http.ContentType
 import groovyx.net.http.HttpResponseException
 import org.artifactory.client.Artifactory
 import org.artifactory.client.UploadListener
@@ -40,7 +41,7 @@ class UploadableArtifactImpl extends ArtifactBase<UploadableArtifact> implements
         def params = parseParams(props, '=')
         if (sha1) {
             try {
-                artifactory.put("/$repo/$path${params}", [:], null, ['X-Checksum-Deploy': true, 'X-Checksum-Sha1': sha1], FileImpl, BINARY)
+                artifactory.put("/$repo/$path${params}", [:], ContentType.JSON, FileImpl, ContentType.BINARY, null, ['X-Checksum-Deploy': true, 'X-Checksum-Sha1': sha1])
             } catch (HttpResponseException e) {
                 if (e.statusCode == 404) {
                     uploadContent(params)
@@ -58,7 +59,7 @@ class UploadableArtifactImpl extends ArtifactBase<UploadableArtifact> implements
             content = new ProgressInputStream(content, file.size(), listener)
         }
         content.withStream {
-            artifactory.put("/$repo/$path${params}", [:], content, [:], FileImpl, BINARY)
+            artifactory.put("/$repo/$path${params}", [:], ContentType.JSON, FileImpl, ContentType.BINARY, content)
         } as org.artifactory.client.model.File
     }
 

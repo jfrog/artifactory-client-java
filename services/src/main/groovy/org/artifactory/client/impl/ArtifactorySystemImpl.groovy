@@ -1,6 +1,8 @@
 package org.artifactory.client.impl
 
 import com.fasterxml.jackson.core.type.TypeReference
+import groovyx.net.http.ContentType
+
 import static groovyx.net.http.ContentType.*
 import org.artifactory.client.ArtifactorySystem
 import org.artifactory.client.model.Version
@@ -30,17 +32,17 @@ class ArtifactorySystemImpl implements ArtifactorySystem {
 
     @Override
     String configuration() {
-        def reader = artifactory.get(SYSTEM_CONFIGURATION_API, [:], XML, TEXT)
-        return reader.text
+        def reader = artifactory.get(SYSTEM_CONFIGURATION_API, [:], ContentType.XML, String)
+        return reader
     }
 
     @Override
     void configuration(String xml) {
-        artifactory.post(SYSTEM_CONFIGURATION_API, [:], xml, [:], String, XML)
+        artifactory.post(SYSTEM_CONFIGURATION_API, [:], ContentType.TEXT, null, ContentType.XML, xml)
     }
 
     @Override
     Version version() {
-        artifactory.getJson(SYSTEM_VERSION_API, new TypeReference<VersionImpl>() {})
+        artifactory.get(SYSTEM_VERSION_API, JSON, new TypeReference<VersionImpl>() {})
     }
 }

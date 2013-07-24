@@ -1,6 +1,7 @@
 package org.artifactory.client.impl
 
 import com.fasterxml.jackson.core.type.TypeReference
+import groovyx.net.http.ContentType
 import org.artifactory.client.Repositories
 import org.artifactory.client.RepositoryHandle
 import org.artifactory.client.model.LightweightRepository
@@ -28,11 +29,11 @@ class RepositoriesImpl implements Repositories {
 
     //TODO overload without index
     String create(int position, Repository configuration) {
-        artifactory.put("$REPOSITORIES_API${configuration.getKey()}", [pos: position], configuration, [:])
+        artifactory.put("$REPOSITORIES_API${configuration.getKey()}", [pos: position], ContentType.TEXT, null, ContentType.JSON, configuration)
     }
 
     String update(Repository configuration) {
-        artifactory.post("$REPOSITORIES_API${configuration.getKey()}", configuration)
+        artifactory.post("$REPOSITORIES_API${configuration.getKey()}", [:], ContentType.TEXT, null, ContentType.JSON, configuration)
     }
 
     RepositoryHandle repository(String repo) {
@@ -44,7 +45,7 @@ class RepositoriesImpl implements Repositories {
     }
 
     List<LightweightRepository> list(RepositoryType repositoryType) {
-        artifactory.getJson(REPOSITORIES_API, new TypeReference<List<LightweightRepositoryImpl>>() {}, [type: repositoryType.toString()])
+        artifactory.get(REPOSITORIES_API, [type: repositoryType.toString()], ContentType.JSON, new TypeReference<List<LightweightRepositoryImpl>>() {})
     }
 
 }
