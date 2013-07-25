@@ -120,6 +120,7 @@ public class DownloadUploadTests extends ArtifactoryTestsBase {
         java.nio.file.Files.copy(new FileInputStream(file), tempFile, StandardCopyOption.REPLACE_EXISTING);
         Files.write(tempFile, Arrays.asList(Double.toHexString(Math.random())), Charset.defaultCharset(), StandardOpenOption.APPEND);
         java.io.File temp = tempFile.toFile();
+        temp.deleteOnExit();
         final long[] uploaded = {0};
         //first upload, should upload content, watch the listener
         artifactory.repository(NEW_LOCAL).upload(PATH, temp).withListener(new UploadListener() {
