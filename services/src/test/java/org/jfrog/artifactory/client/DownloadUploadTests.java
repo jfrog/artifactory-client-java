@@ -11,7 +11,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
-import java.nio.file.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
+import java.nio.file.StandardOpenOption;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Arrays;
@@ -116,7 +119,7 @@ public class DownloadUploadTests extends ArtifactoryTestsBase {
         //upload again, listener shouldn't work (no upload should happen)
 
         java.io.File file = new java.io.File(this.getClass().getResource("/sample.txt").toURI());
-        Path tempFile = FileSystems.getDefault().getPath("temp.txt");
+        Path tempFile = Files.createTempFile(null, null);
         java.nio.file.Files.copy(new FileInputStream(file), tempFile, StandardCopyOption.REPLACE_EXISTING);
         Files.write(tempFile, Arrays.asList(Double.toHexString(Math.random())), Charset.defaultCharset(), StandardOpenOption.APPEND);
         java.io.File temp = tempFile.toFile();
