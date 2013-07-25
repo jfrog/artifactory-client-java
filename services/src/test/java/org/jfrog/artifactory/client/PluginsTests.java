@@ -45,9 +45,10 @@ public class PluginsTests extends ArtifactoryTestsBase {
 
     @Test
     public void testExecutePlugin(){
+        //TODO change to assert default params instead of null once RTFACT-5867 is fixed
         verifyExecutionResult(artifactory.plugins().execute(PLUGIN_NAME).sync(), null);
 
-        String variable = "world";
+        String variable = "test";
         verifyExecutionResult(artifactory.plugins().execute(PLUGIN_NAME).withParameter("whom", variable).sync(), "["+variable+"]");
     }
 
