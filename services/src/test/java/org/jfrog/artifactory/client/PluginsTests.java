@@ -34,7 +34,7 @@ public class PluginsTests extends ArtifactoryTestsBase {
         assertEquals("helloWorld", helloWorldPlugin.getName());
         Map<String, String> params = helloWorldPlugin.getParams();
         assertEquals(params.size(), 1);
-        assertEquals("world", params.get("msg"));
+        assertEquals("world", params.get("whom"));
     }
 
     @Test
@@ -45,10 +45,11 @@ public class PluginsTests extends ArtifactoryTestsBase {
 
     @Test
     public void testExecutePlugin(){
+        //TODO change to assert default params instead of null once RTFACT-5867 is fixed
         verifyExecutionResult(artifactory.plugins().execute(PLUGIN_NAME).sync(), null);
 
-        String variable = "world";
-        verifyExecutionResult(artifactory.plugins().execute(PLUGIN_NAME).withParameter("msg", variable).sync(), "["+variable+"]");
+        String variable = "test";
+        verifyExecutionResult(artifactory.plugins().execute(PLUGIN_NAME).withParameter("whom", variable).sync(), "["+variable+"]");
     }
 
     private void verifyExecutionResult(String returnValue, String variable) {
