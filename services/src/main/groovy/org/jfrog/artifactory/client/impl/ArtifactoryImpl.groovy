@@ -182,7 +182,7 @@ class ArtifactoryImpl implements Artifactory {
             response.success = { HttpResponse resp, slurped ->
                 if ( responseClass==String || responseType == TEXT) {
                     // we overrode the parser to be just text, but oddly it returns an InputStreamReader instead of a String
-                    ret = slurped.text
+                    ret = slurped?.text
                 } else {
                     ret = slurped // Will be type according to responseType
                 }

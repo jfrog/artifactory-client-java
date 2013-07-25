@@ -26,6 +26,6 @@ appender(consoleAppender, ConsoleAppender) {
 }
 
 root(INFO, [consoleAppender])
-logger('org.apache.http', DEBUG)
-logger('org.apache.http.headers', INFO)
-logger('org.apache.http.wire', DEBUG)
+//logger('org.apache.http', DEBUG)
+//logger('org.apache.http.headers', INFO)
+//logger('org.apache.http.wire', DEBUG)
