@@ -1,11 +1,15 @@
 package org.artifactory.client.impl
 
 import com.fasterxml.jackson.core.type.TypeReference
+import groovyx.net.http.ContentType
+import net.sf.json.JSON
 import org.artifactory.client.PluginHandle
 import org.artifactory.client.Plugins
 import org.artifactory.client.model.Plugin
 import org.artifactory.client.model.PluginType
 import org.artifactory.client.model.impl.PluginImpl
+
+import static groovyx.net.http.ContentType.*
 
 /**
  * @author jbaruch
@@ -22,12 +26,12 @@ public class PluginsImpl implements Plugins {
 
     @Override
     Map<PluginType, List<Plugin>> list() {
-        artifactory.getJson(PLUGINS_API, new TypeReference<Map<PluginType, List<PluginImpl>>>() {}, [:])
+        artifactory.get(PLUGINS_API, ContentType.JSON, new TypeReference<Map<PluginType, List<PluginImpl>>>() {})
     }
 
     @Override
     List<Plugin> list(PluginType type) {
-        def pluginsMap = artifactory.getJson("$PLUGINS_API/$type", new TypeReference<Map<PluginType, List<PluginImpl>>>() {}, [:])
+        def pluginsMap = artifactory.get("$PLUGINS_API/$type", ContentType.JSON, new TypeReference<Map<PluginType, List<PluginImpl>>>() {})
         pluginsMap[type] as List<Plugin>
     }
 
