@@ -156,7 +156,7 @@ class ArtifactoryImpl implements Artifactory {
         //TODO Ensure requestContentType is not null
         def allHeaders = addlHeaders?addlHeaders.clone():[:]
 //        if (contentLength >= 0) {
-//            headers << [(HTTP.CONTENT_LEN): contentLength]
+//            allHeaders << [(HTTP.CONTENT_LEN): contentLength]
 //        }
 
         // responseType will be used as the type to parse (XML, JSON, or Reader), it'll also create a header for Accept
@@ -173,7 +173,8 @@ class ArtifactoryImpl implements Artifactory {
             uriBuilder.path = fullpath
             if (query) {
                 uriBuilder.query = query
-            }            headers.putAll(allHeaders)
+            }
+            headers.putAll(allHeaders)
 
             if(requestBody) {
                 if (requestContentType == JSON) {
