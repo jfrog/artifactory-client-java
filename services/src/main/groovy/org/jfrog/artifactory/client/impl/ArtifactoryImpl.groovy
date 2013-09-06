@@ -7,6 +7,7 @@ import groovyx.net.http.ContentType
 import groovyx.net.http.HttpResponseException
 import groovyx.net.http.Method
 import groovyx.net.http.RESTClient
+import groovyx.net.http.URIBuilder
 import org.apache.http.HttpResponse
 import org.apache.http.protocol.HTTP
 import org.jfrog.artifactory.client.Artifactory
@@ -162,11 +163,17 @@ class ArtifactoryImpl implements Artifactory {
         // Artifactory typically only returns one type, so let's ANY align those two. The caller can then do the appropriate thing.
         // Artifactory returns Content-Type: application/vnd.org.jfrog.artifactory.repositories.RepositoryDetailsList+json when ANT is used.
         client.request(method, responseType) { req ->
-            uri.path = "/$contextName$path"
-            if (query) {
-                uri.query = query
+            // There might be a conflict with the getUri above, so lets be specific and typesafe
+            URIBuilder uriBuilder = delegate.uri
+            def fullpath = "${contextName}${path}"
+            // URIBuilder will try to "simplify" the url, so if there's double slashes it'll remove the first part of the uri purposefully
+            if (!fullpath.startsWith('/')) {
+                fullpath = "/${fullpath}"
             }
-            headers.putAll(allHeaders)
+            uriBuilder.path = fullpath
+            if (query) {
+                uriBuilder.query = query
+            }            headers.putAll(allHeaders)
 
             if(requestBody) {
                 if (requestContentType == JSON) {
