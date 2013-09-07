@@ -35,7 +35,8 @@ allprojects {
         }
     } else {
         repositories {
-            mavenRepo(url: 'http://jcenter.bintray.com')
+            //mavenRepo(url: 'http://jcenter.bintray.com')
+            mavenCentral()
         }
     }
     
