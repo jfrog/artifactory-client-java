@@ -91,7 +91,7 @@ class ArtifactoryImpl implements Artifactory {
 
     protected InputStream getInputStream(String path, Map query = [:]) {
         // Otherwise when we leave the response.success block, ensureConsumed will be called to close the stream
-        def ret = client.get([path: "/$contextName$path", query: query, contentType: BINARY])
+        def ret = client.get([path: cleanPath(path), query: query, contentType: BINARY])
         return ret.data
     }
 
@@ -150,6 +150,15 @@ class ArtifactoryImpl implements Artifactory {
         }
     }
 
+    def cleanPath(path) {
+        def fullpath = "${contextName}${path}"
+        // URIBuilder will try to "simplify" the url, so if there's double slashes it'll remove the first part of the uri purposefully
+        if (!fullpath.startsWith('/')) {
+            fullpath = "/${fullpath}"
+        }
+        return fullpath
+    }
+
     private def <T> T restWrapped(Method method, String path, Map query = null, responseType = ANY, def responseClass, ContentType requestContentType = JSON, requestBody = null, Map addlHeaders = null, long contentLength = -1 ) {
         def ret
 
@@ -165,12 +174,7 @@ class ArtifactoryImpl implements Artifactory {
         client.request(method, responseType) { req ->
             // There might be a conflict with the getUri above, so lets be specific and typesafe
             URIBuilder uriBuilder = delegate.uri
-            def fullpath = "${contextName}${path}"
-            // URIBuilder will try to "simplify" the url, so if there's double slashes it'll remove the first part of the uri purposefully
-            if (!fullpath.startsWith('/')) {
-                fullpath = "/${fullpath}"
-            }
-            uriBuilder.path = fullpath
+            uriBuilder.path = cleanPath(path)
             if (query) {
                 uriBuilder.query = query
             }
