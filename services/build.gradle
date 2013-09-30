@@ -3,9 +3,9 @@ apply plugin: 'fatjar'
 
 dependencies {
     compile project(':api')
-    groovy addGroovy('groovy')
-    groovy addGroovy('groovy-json')
-    groovy addGroovy('groovy-xml')
+    compile addGroovy('groovy')
+    compile addGroovy('groovy-json')
+    compile addGroovy('groovy-xml')
     compile group: 'org.codehaus.groovy.modules.http-builder', name: 'http-builder', version: '0.6'
     compile group: 'net.sourceforge.nekohtml', name: 'nekohtml', version: '1.9.17'
     compile addSlf4J('slf4j-api')
