@@ -14,24 +14,32 @@ allprojects {
     apply plugin: 'artifactory'
     final env = System.getenv()
 
-    artifactory {
-        contextUrl = hasProperty('artifactoryUrl')?artifactoryUrl:env['ARTIFACTORY_URL']
-        //The base Artifactory URL if not overridden by the publisher/resolver
-        resolve {
-            repository {
-                repoKey = 'libs-release'
-                maven = true
+    def artifactoryUrl = hasProperty('artifactoryUrl')?artifactoryUrl:env['ARTIFACTORY_URL']
+    if (artifactoryUrl) {
+        artifactory {
+            contextUrl = artifactoryUrl
+            //The base Artifactory URL if not overridden by the publisher/resolver
+            resolve {
+                repository {
+                    repoKey = 'libs-release'
+                    maven = true
+                }
+            }
+            publish {
+                repository {
+                    repoKey = 'oss-snapshot-local'   //The Artifactory repository key to publish to
+                    username = hasProperty('artifactoryUsername')?artifactoryUsername:env['ARTIFACTORY_USERNAME'] //The publisher user name
+                    password = hasProperty('artifactoryPassword')?artifactoryPassword:env['ARTIFACTORY_PASSWORD'] //The publisher password
+                }
             }
         }
-        publish {
-            repository {
-                repoKey = 'oss-snapshot-local'   //The Artifactory repository key to publish to
-                username = hasProperty('artifactoryUsername')?artifactoryUsername:env['ARTIFACTORY_USERNAME']          //The publisher user name
-                password = hasProperty('artifactoryPassword')?artifactoryPassword:env['ARTIFACTORY_PASSWORD']       //The publisher password
-            }
+    } else {
+        repositories {
+            //mavenRepo(url: 'http://jcenter.bintray.com')
+            mavenCentral()
         }
     }
-
+    
     group = 'org.jfrog.artifactory.client'
     version = currentVersion
     status = version.endsWith('-SNAPSHOT') ? 'integration' : 'release'
