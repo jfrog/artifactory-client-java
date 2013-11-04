@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.testng.Assert.*;
+import static org.testng.Assert.assertTrue;
 
 /**
  * @author jbaruch
@@ -43,7 +44,7 @@ public class ItemTests extends ArtifactoryTestsBase {
 
     @Test(groups = "items", dependsOnGroups = "repositoryBasics")
     public void testSetItemProperties() throws Exception {
-        setupLocalRepo();
+        setupLocalRepo(NEW_LOCAL);
         //Upload a clean file
         InputStream content = this.getClass().getResourceAsStream("/sample.txt");
         assertNotNull(content);
@@ -85,14 +86,13 @@ public class ItemTests extends ArtifactoryTestsBase {
 
     }
 
-    private void setupLocalRepo() {
+    private void setupLocalRepo(String repoName) {
         try {
             // Make sure the local repo exists
             LocalRepository localRepository = artifactory.repositories().builders().localRepositoryBuilder().key(
-                    NEW_LOCAL)
+                    repoName)
                     .description("new local repository").build();
             artifactory.repositories().create(2, localRepository);
-            artifactory.repository(NEW_LOCAL).delete("x/y/z");
         } catch (Exception e) {
             //noinspection ConstantConditions
             if (!(e instanceof HttpResponseException) || !(((HttpResponseException) e).getStatusCode() == 404 || ((HttpResponseException) e).getStatusCode() == 405)) {
@@ -103,7 +103,7 @@ public class ItemTests extends ArtifactoryTestsBase {
 
     @Test(groups = "items", dependsOnGroups = "repositoryBasics")
     public void testSetItemPropertiesOnNonExistingDirectory() throws Exception {
-        setupLocalRepo();
+        setupLocalRepo(NEW_LOCAL);
         ItemHandle folder = artifactory.repository(NEW_LOCAL).folder("x/y/z");
         try {
             folder.info();
@@ -120,5 +120,28 @@ public class ItemTests extends ArtifactoryTestsBase {
         assertTrue(info.isFolder());
         assertTrue(folder.getPropertyValues("v1").contains("b2"));
 
+    }
+
+    @Test(groups = "items", dependsOnGroups = "repositoryBasics")
+    public void testMoveItems() throws Exception {
+        deleteRepoIfExists(NEW_LOCAL_FROM);
+        deleteRepoIfExists(NEW_LOCAL_TO);
+        setupLocalRepo(NEW_LOCAL_FROM);
+        setupLocalRepo(NEW_LOCAL_TO);
+        InputStream content = this.getClass().getResourceAsStream("/sample.txt");
+        assertNotNull(content);
+        artifactory.repository(NEW_LOCAL_FROM).upload("x/y/z", content).doUpload();
+        ItemHandle itemHandle = artifactory.repository(NEW_LOCAL_FROM).file("x");
+        itemHandle.move(NEW_LOCAL_TO + "/x");
+    }
+
+    private void deleteRepoIfExists(String repoName) {
+        try {
+            artifactory.repository(repoName).delete();
+        } catch (Exception e) {
+            if (!e.getMessage().equals("Not Found")) { //if repo wasn't found - that's ok. It means testCreate didn't run.
+                throw e;
+            }
+        }
     }
 }

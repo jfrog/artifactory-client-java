@@ -110,4 +110,9 @@ class ItemHandleImpl implements ItemHandle {
             throw e
         }
     }
+
+    String move(String to) {
+        def query = ["to":to]
+        artifactory.post("/api/move/$repo/$path",query,ContentType.JSON,String)
+    }
 }
