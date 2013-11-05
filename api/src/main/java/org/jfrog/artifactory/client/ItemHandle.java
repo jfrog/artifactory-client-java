@@ -28,5 +28,7 @@ public interface ItemHandle {
 
     Set<ItemPermission> effectivePermissions();
 
-    String move(String to);
+    ItemHandle move(String toRepo, String toPath);
+
+    ItemHandle copy(String toRepo, String toPath);
 }

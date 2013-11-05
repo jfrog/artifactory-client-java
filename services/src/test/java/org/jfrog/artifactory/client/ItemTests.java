@@ -12,13 +12,15 @@ import java.util.List;
 import java.util.Map;
 
 import static org.testng.Assert.*;
-import static org.testng.Assert.assertTrue;
 
 /**
  * @author jbaruch
  * @since 03/08/12
  */
 public class ItemTests extends ArtifactoryTestsBase {
+
+    protected static final String NEW_LOCAL_FROM = "new-local-from";
+    protected static final String NEW_LOCAL_TO = "new-local-to";
 
     @Test
     public void testFolderInfo() {
@@ -101,7 +103,7 @@ public class ItemTests extends ArtifactoryTestsBase {
         }
     }
 
-    @Test(groups = "items", dependsOnGroups = "repositoryBasics")
+    @Test//(groups = "items", dependsOnGroups = "repositoryBasics")
     public void testSetItemPropertiesOnNonExistingDirectory() throws Exception {
         setupLocalRepo(NEW_LOCAL);
         ItemHandle folder = artifactory.repository(NEW_LOCAL).folder("x/y/z");
@@ -119,11 +121,25 @@ public class ItemTests extends ArtifactoryTestsBase {
         assertNotNull(info);
         assertTrue(info.isFolder());
         assertTrue(folder.getPropertyValues("v1").contains("b2"));
-
     }
 
-    @Test(groups = "items", dependsOnGroups = "repositoryBasics")
-    public void testMoveItems() throws Exception {
+    @Test
+    public void testMoveItem() throws Exception {
+        prepareRepositoriesForMovingAndCoping();
+        ItemHandle itemHandle = artifactory.repository(NEW_LOCAL_FROM).file("x");
+        ItemHandle newItemHandle = itemHandle.move(NEW_LOCAL_TO, "x");
+        assertNotNull(newItemHandle);
+    }
+
+    @Test
+    public void testCopyItem() throws Exception {
+        prepareRepositoriesForMovingAndCoping();
+        ItemHandle itemHandle = artifactory.repository(NEW_LOCAL_FROM).file("x");
+        ItemHandle newItemHandle = itemHandle.copy(NEW_LOCAL_TO, "x");
+        assertNotNull(newItemHandle);
+    }
+
+    private void prepareRepositoriesForMovingAndCoping() {
         deleteRepoIfExists(NEW_LOCAL_FROM);
         deleteRepoIfExists(NEW_LOCAL_TO);
         setupLocalRepo(NEW_LOCAL_FROM);
@@ -131,8 +147,6 @@ public class ItemTests extends ArtifactoryTestsBase {
         InputStream content = this.getClass().getResourceAsStream("/sample.txt");
         assertNotNull(content);
         artifactory.repository(NEW_LOCAL_FROM).upload("x/y/z", content).doUpload();
-        ItemHandle itemHandle = artifactory.repository(NEW_LOCAL_FROM).file("x");
-        itemHandle.move(NEW_LOCAL_TO + "/x");
     }
 
     private void deleteRepoIfExists(String repoName) {

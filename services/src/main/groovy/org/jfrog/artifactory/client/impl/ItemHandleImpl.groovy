@@ -2,7 +2,6 @@ package org.jfrog.artifactory.client.impl
 
 import groovyx.net.http.ContentType
 import groovyx.net.http.HttpResponseException
-import net.sf.json.JSON
 import org.jfrog.artifactory.client.ItemHandle
 import org.jfrog.artifactory.client.PropertiesHandler
 import org.jfrog.artifactory.client.model.*
@@ -12,7 +11,6 @@ import org.jfrog.artifactory.client.model.impl.RepoPathImpl
 import org.jfrog.artifactory.client.model.impl.UserImpl
 
 import static java.util.Collections.unmodifiableSet
-
 /**
  *
  * @author jbaruch
@@ -87,6 +85,7 @@ class ItemHandleImpl implements ItemHandle {
         unmodifiableSet(mapToItemPermissions(json.principals.users, User) + mapToItemPermissions(json.principals.groups, Group) as Set<? extends ItemPermission>) as Set<ItemPermission>
     }
 
+
     private Set<? extends ItemPermission> mapToItemPermissions(Map<String, List> map, Class<? extends Subject> type) {
         map.collect { String key, List value ->
             List<Privilege> permissions = value.collect() {
@@ -111,8 +110,20 @@ class ItemHandleImpl implements ItemHandle {
         }
     }
 
-    String move(String to) {
-        def query = ["to":to]
-        artifactory.post("/api/move/$repo/$path",query,ContentType.JSON,String)
+    ItemHandle move(String toRepo, String toPath) {
+        moveOrCopy(toRepo, toPath, "move")
+    }
+
+    ItemHandle copy(String toRepo, String toPath) {
+        moveOrCopy(toRepo, toPath, "copy")
+    }
+
+    ItemHandle moveOrCopy(String toRepo, String toPath, String method) {
+        def query = ["to": toRepo + "/" + toPath]
+        CopyMoveResultReport message = artifactory.post("/api/$method/$repo/$path", query, ContentType.JSON, CopyMoveResultReportImpl)
+        if (!message.getMessages().get(0).getLevel().equals("INFO")) {
+            throw new CopyMoveException(message)
+        }
+        artifactory.repository(toRepo).file(toPath)
     }
 }
