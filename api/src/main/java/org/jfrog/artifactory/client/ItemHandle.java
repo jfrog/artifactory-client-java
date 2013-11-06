@@ -27,4 +27,8 @@ public interface ItemHandle {
     Map<String, ?> deleteProperties(String... properties);
 
     Set<ItemPermission> effectivePermissions();
+
+    ItemHandle move(String toRepo, String toPath);
+
+    ItemHandle copy(String toRepo, String toPath);
 }
