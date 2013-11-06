@@ -54,7 +54,7 @@ public class RepositoryTests extends ArtifactoryTestsBase {
             String result =  artifactory.repository(NEW_LOCAL).delete();
             assertTrue(result
                     .startsWith("Repository " + NEW_LOCAL + " and all its content have been removed successfully."));
-            assertFalse(curl(LIST_PATH).contains(NEW_LOCAL));
+            assertFalse(curl(LIST_PATH).contains("\""+NEW_LOCAL+"\""));
         } catch (HttpResponseException e) {
             if (!e.getMessage().equals("Not Found")) { //if repo wasn't found - that's ok. It means testCreate didn't run.
                 throw e;
