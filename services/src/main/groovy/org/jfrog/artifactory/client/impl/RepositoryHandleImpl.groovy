@@ -43,6 +43,7 @@ class RepositoryHandleImpl implements RepositoryHandle {
         artifactory.get("$REPLICATION_API${repo}", ContentType.JSON, ReplicationStatusImpl.class)
     }
 
+
     String delete() {
         artifactory.delete("$REPOSITORIES_API${repo}", [:], ContentType.TEXT)
     }

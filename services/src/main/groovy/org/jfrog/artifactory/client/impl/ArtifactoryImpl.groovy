@@ -131,7 +131,7 @@ class ArtifactoryImpl implements Artifactory {
         def originalParser
         try {
             // Let us send one thing to the server and parse it differently. But we have to careful to restore it.
-            originalParser = client.parser.getAt(responseType)
+                originalParser = client.parser.getAt(responseType)
 
             // Change the JSON parser on the fly, not thread safe since the responseClass we're using is locked to this call's argument
             if (responseClass == String) {

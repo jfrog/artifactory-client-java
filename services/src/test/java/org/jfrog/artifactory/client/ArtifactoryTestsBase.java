@@ -12,8 +12,8 @@ import java.util.Properties;
 
 import static org.apache.commons.codec.binary.Base64.encodeBase64;
 import static org.apache.commons.lang.StringUtils.remove;
-import static org.jfrog.artifactory.client.ArtifactoryClient.*;
-import static org.testng.Assert.*;
+import static org.jfrog.artifactory.client.ArtifactoryClient.create;
+import static org.testng.Assert.fail;
 
 /**
  * @author jbaruch
