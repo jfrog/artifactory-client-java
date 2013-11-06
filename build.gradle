@@ -1,9 +1,9 @@
 buildscript {
     repositories {
-        mavenRepo(url: 'http://jcenter.bintray.com')
+        jcenter()
     }
     dependencies {
-        classpath(group: 'org.jfrog.buildinfo', name: 'build-info-extractor-gradle', version: '2.0.16')
+        classpath(group: 'org.jfrog.buildinfo', name: 'build-info-extractor-gradle', version: '2.2.2')
         classpath(group: 'eu.appsatori', name: 'gradle-fatjar-plugin', version: '0.2-rc1')
     }
 }
@@ -35,8 +35,7 @@ allprojects {
         }
     } else {
         repositories {
-            //mavenRepo(url: 'http://jcenter.bintray.com')
-            mavenCentral()
+            jcenter()
         }
     }
     
@@ -76,7 +75,7 @@ subprojects {
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '1.6'
+    gradleVersion = '1.8'
 }
 
 idea {
