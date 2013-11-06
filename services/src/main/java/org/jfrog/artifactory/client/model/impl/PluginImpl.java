@@ -20,6 +20,7 @@ public class PluginImpl implements Plugin {
     private List<String> users;
     private List<String> groups;
     private Map<String, String> params;
+    private String httpMethod;
 
     public PluginImpl() {
         users = new ArrayList<>();
@@ -31,13 +32,14 @@ public class PluginImpl implements Plugin {
         this.name = name;
     }
 
-    private PluginImpl(String name, String version, String description, List<String> users, List<String> groups, Map<String, String> params) {
+    private PluginImpl(String name, String version, String description, List<String> users, List<String> groups, Map<String, String> params, String httpMethod) {
         this.name = name;
         this.version = version;
         this.description = description;
         this.users = users;
         this.groups = groups;
         this.params = params;
+        this.httpMethod = httpMethod;
     }
 
     @Override
@@ -91,6 +93,11 @@ public class PluginImpl implements Plugin {
     }
 
     @Override
+    public String getHttpMethod() {
+        return httpMethod;
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -115,6 +122,7 @@ public class PluginImpl implements Plugin {
                 ", users=" + users +
                 ", groups=" + groups +
                 ", params=" + params +
+                ", httpMethod=" + httpMethod +
                 '}';
     }
 }

@@ -33,6 +33,8 @@ public class PluginsTests extends ArtifactoryTestsBase {
         Plugin helloWorldPlugin = executionPlugins.get(0);
         assertEquals("helloWorld", helloWorldPlugin.getName());
         Map<String, String> params = helloWorldPlugin.getParams();
+        String httpMethod = helloWorldPlugin.getHttpMethod();
+        assertEquals(httpMethod, "POST");
         assertEquals(params.size(), 1);
         assertEquals("world", params.get("whom"));
     }

@@ -19,4 +19,6 @@ public interface Plugin {
     List<String> getGroups();
 
     Map<String, String> getParams();
+
+    String getHttpMethod();
 }
