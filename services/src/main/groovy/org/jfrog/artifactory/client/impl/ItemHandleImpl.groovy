@@ -124,6 +124,10 @@ class ItemHandleImpl implements ItemHandle {
         if (!message.getMessages().get(0).getLevel().equals("INFO")) {
             throw new CopyMoveException(message)
         }
-        artifactory.repository(toRepo).file(toPath)
+        if (this.isFolder()) {
+            artifactory.repository(toRepo).folder(toPath)
+        } else {
+            artifactory.repository(toRepo).file(toPath)
+        }
     }
 }

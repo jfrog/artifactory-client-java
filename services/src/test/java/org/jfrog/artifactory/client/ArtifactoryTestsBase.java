@@ -6,6 +6,7 @@ import org.testng.annotations.BeforeClass;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Properties;
@@ -46,24 +47,24 @@ public abstract class ArtifactoryTestsBase {
             password = props.getProperty(CLIENTTESTS_ARTIFACTORY_PROPERTIES_PREFIX + "password");
         } else {
             url = System.getProperty(CLIENTTESTS_ARTIFACTORY_PROPERTIES_PREFIX + "url");
-            if(url == null) {
+            if (url == null) {
                 url = System.getenv(CLIENTTESTS_ARTIFACTORY_ENV_VAR_PREFIX + "URL");
             }
-            if(url == null){
+            if (url == null) {
                 failInit();
             }
             username = System.getProperty(CLIENTTESTS_ARTIFACTORY_PROPERTIES_PREFIX + "username");
-            if(username == null) {
+            if (username == null) {
                 username = System.getenv(CLIENTTESTS_ARTIFACTORY_ENV_VAR_PREFIX + "USERNAME");
             }
-            if(username == null){
+            if (username == null) {
                 failInit();
             }
             password = System.getProperty(CLIENTTESTS_ARTIFACTORY_PROPERTIES_PREFIX + "password");
-            if(password == null) {
+            if (password == null) {
                 password = System.getenv(CLIENTTESTS_ARTIFACTORY_ENV_VAR_PREFIX + "PASSWORD");
             }
-            if(password == null){
+            if (password == null) {
                 failInit();
             }
 
@@ -85,17 +86,28 @@ public abstract class ArtifactoryTestsBase {
         artifactory.close();
     }
 
-    protected String curl(String path) throws IOException {
+    protected String curl(String path, String method) throws IOException {
         String authStringEnc = new String(encodeBase64((username + ":" + password).getBytes()));
         URLConnection urlConnection = new URL(url + "/" + path).openConnection();
         urlConnection.setRequestProperty("Authorization", "Basic " + authStringEnc);
+        if (urlConnection instanceof HttpURLConnection) {
+            ((HttpURLConnection) urlConnection).setRequestMethod(method);
+        }
         try (InputStream is = urlConnection.getInputStream()) {
             return textFrom(is);
         }
     }
 
+    protected String curl(String path) throws IOException {
+        return curl(path, "GET");
+    }
+
     protected String curlAndStrip(String path) throws IOException {
-        String result = curl(path);
+        return curlAndStrip(path, "GET");
+    }
+
+    protected String curlAndStrip(String path, String method) throws IOException {
+        String result = curl(path, method);
         result = remove(result, ' ');
         result = remove(result, '\r');
         result = remove(result, '\n');
