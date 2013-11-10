@@ -14,6 +14,8 @@ import java.util.Properties;
 import static org.apache.commons.codec.binary.Base64.encodeBase64;
 import static org.apache.commons.lang.StringUtils.remove;
 import static org.jfrog.artifactory.client.ArtifactoryClient.create;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.fail;
 
 /**
@@ -27,6 +29,7 @@ public abstract class ArtifactoryTestsBase {
     protected static final String LIBS_RELEASE_VIRTUAL = "libs-release";
     protected static final String JCENTER = "jcenter";
     protected static final String JCENTER_CACHE = JCENTER + "-cache";
+    protected static final String LIST_PATH = "api/repositories";
     private static final String CLIENTTESTS_ARTIFACTORY_ENV_VAR_PREFIX = "CLIENTTESTS_ARTIFACTORY_";
     private static final String CLIENTTESTS_ARTIFACTORY_PROPERTIES_PREFIX = "clienttests.artifactory.";
     protected Artifactory artifactory;
@@ -123,6 +126,21 @@ public abstract class ArtifactoryTestsBase {
                 sb.append(charArray, 0, numCharsRead);
             }
             return sb.toString();
+        }
+    }
+
+    protected String deleteRepoIfExists(String repoName) throws IOException {
+        try {
+            String result = artifactory.repository(repoName).delete();
+            assertTrue(result.startsWith("Repository " + repoName + " and all its content have been removed successfully."));
+            assertFalse(curl(LIST_PATH).contains("\""+repoName+"\""));
+            return result;
+        } catch (Exception e) {
+            if (e.getMessage().equals("Not Found")) { //if repo wasn't found - that's ok.
+                return e.getMessage();
+            } else {
+                throw e;
+            }
         }
     }
 }
