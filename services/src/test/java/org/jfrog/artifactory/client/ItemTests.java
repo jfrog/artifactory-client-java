@@ -7,6 +7,7 @@ import org.jfrog.artifactory.client.model.Folder;
 import org.jfrog.artifactory.client.model.LocalRepository;
 import org.testng.annotations.Test;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
@@ -127,41 +128,55 @@ public class ItemTests extends ArtifactoryTestsBase {
     //this test move content of directory "x" to another repo into directory "abc", than both repo's will be removed after finish
     @Test
     public void testMoveDirectory() throws Exception {
-        prepareRepositoriesForMovingAndCoping();
-        ItemHandle itemHandle = artifactory.repository(NEW_LOCAL_FROM).folder("x");
-        ItemHandle newItemHandle = itemHandle.move(NEW_LOCAL_TO, "abc");
-        checkTheEqualityOfFolders(newItemHandle);
-        deleteAllRelatedRepos();
+        try {
+            prepareRepositoriesForMovingAndCoping();
+            ItemHandle itemHandle = artifactory.repository(NEW_LOCAL_FROM).folder("x");
+            String path = "abc";
+            checkTheEqualityOfFolders(itemHandle.move(NEW_LOCAL_TO, path), NEW_LOCAL_TO, path);
+        } finally {
+            deleteAllRelatedRepos();
+        }
     }
 
     //this test copy content of directory "x" to another repo into directory "abc", than both repo's will be removed after finish
     @Test
     public void testCopyDirectory() throws Exception {
-        prepareRepositoriesForMovingAndCoping();
-        ItemHandle itemHandle = artifactory.repository(NEW_LOCAL_FROM).folder("x");
-        ItemHandle newItemHandle = itemHandle.copy(NEW_LOCAL_TO, "abc");
-        checkTheEqualityOfFolders(newItemHandle);
-        deleteAllRelatedRepos();
+        try {
+            prepareRepositoriesForMovingAndCoping();
+            ItemHandle itemHandle = artifactory.repository(NEW_LOCAL_FROM).folder("x");
+            String path = "abc";
+            checkTheEqualityOfFolders(itemHandle.copy(NEW_LOCAL_TO, path), NEW_LOCAL_TO, path);
+        } finally {
+            deleteAllRelatedRepos();
+        }
     }
 
     //this test move file "z" to the root of another repo, than both repo's will be removed after finish
     @Test
     public void testMoveFile() throws Exception {
-        prepareRepositoriesForMovingAndCoping();
-        ItemHandle itemHandle = artifactory.repository(NEW_LOCAL_FROM).file("x/y/z");
-        ItemHandle newItemHandle = itemHandle.move(NEW_LOCAL_TO, "x/y/z");
-        checkTheEqualityOfFiles(newItemHandle);
-        deleteAllRelatedRepos();
+        try {
+            prepareRepositoriesForMovingAndCoping();
+            String path = "x/y/z";
+            ItemHandle itemHandle = artifactory.repository(NEW_LOCAL_FROM).file(path);
+            ItemHandle newItemHandle = itemHandle.move(NEW_LOCAL_TO, path);
+            checkTheEqualityOfFiles(newItemHandle, NEW_LOCAL_TO, path);
+        } finally {
+            deleteAllRelatedRepos();
+        }
     }
 
     //this test copy file "z" to the root of another repo, than both repo's will be removed after finish
     @Test
     public void testCopyFile() throws Exception {
-        prepareRepositoriesForMovingAndCoping();
-        ItemHandle itemHandle = artifactory.repository(NEW_LOCAL_FROM).file("x/y/z");
-        ItemHandle newItemHandle = itemHandle.copy(NEW_LOCAL_TO, "x/y/z");
-        checkTheEqualityOfFiles(newItemHandle);
-        deleteAllRelatedRepos();
+        try {
+            prepareRepositoriesForMovingAndCoping();
+            String path = "x/y/z";
+            ItemHandle itemHandle = artifactory.repository(NEW_LOCAL_FROM).file(path);
+            ItemHandle newItemHandle = itemHandle.copy(NEW_LOCAL_TO, path);
+            checkTheEqualityOfFiles(newItemHandle, NEW_LOCAL_TO, path);
+        } finally {
+            deleteAllRelatedRepos();
+        }
     }
 
     @Test
@@ -171,9 +186,10 @@ public class ItemTests extends ArtifactoryTestsBase {
         try {
             itemHandle.move(NEW_LOCAL_TO, "x/y/z");
         } catch (CopyMoveException e) {
-            assertEquals(curl("api/move/" + NEW_LOCAL_FROM + "/a/a?to=x/y/z", "POST").contains(e.getCopyMoveResultReport().getMessages().get(0).getMessage()), true);
+            assertTrue(curl("api/move/" + NEW_LOCAL_FROM + "/a/a?to=x/y/z", "POST").contains(e.getCopyMoveResultReport().getMessages().get(0).getMessage()));
+        } finally {
+            deleteAllRelatedRepos();
         }
-        deleteAllRelatedRepos();
     }
 
     @Test
@@ -183,23 +199,24 @@ public class ItemTests extends ArtifactoryTestsBase {
         try {
             itemHandle.copy(NEW_LOCAL_TO, "x/y/z");
         } catch (CopyMoveException e) {
-            assertEquals(curl("api/copy/" + NEW_LOCAL_FROM + "/a/a?to=x/y/z", "POST").contains(e.getCopyMoveResultReport().getMessages().get(0).getMessage()), true);
+            assertTrue(curl("api/copy/" + NEW_LOCAL_FROM + "/a/a?to=x/y/z", "POST").contains(e.getCopyMoveResultReport().getMessages().get(0).getMessage()));
+        } finally {
+            deleteAllRelatedRepos();
         }
-        deleteAllRelatedRepos();
     }
 
-    private void checkTheEqualityOfFolders(ItemHandle newItemHandle) {
-        ItemHandle itemHandle = artifactory.repository(NEW_LOCAL_TO).folder("abc");
-        assertEquals(itemHandle.info().equals(newItemHandle.info()), true);
+    private void checkTheEqualityOfFolders(ItemHandle newItemHandle, String expectedRepo, String expectedPath) {
+        ItemHandle itemHandle = artifactory.repository(expectedRepo).folder(expectedPath);
+        assertEquals(itemHandle.info(), (newItemHandle.info()));
     }
 
-    private void checkTheEqualityOfFiles(ItemHandle newItemHandle) {
-        ItemHandle itemHandle = artifactory.repository(NEW_LOCAL_TO).file("x/y/z");
-        assertEquals(itemHandle.info().equals(newItemHandle.info()), true);
+    private void checkTheEqualityOfFiles(ItemHandle newItemHandle, String expectedRepo, String expectedPath) {
+        ItemHandle itemHandle = artifactory.repository(expectedRepo).file(expectedPath);
+        assertEquals(itemHandle.info(), (newItemHandle.info()));
     }
 
 
-    private void prepareRepositoriesForMovingAndCoping() {
+    private void prepareRepositoriesForMovingAndCoping() throws IOException {
         deleteAllRelatedRepos();
         setupLocalRepo(NEW_LOCAL_FROM);
         setupLocalRepo(NEW_LOCAL_TO);
@@ -208,18 +225,8 @@ public class ItemTests extends ArtifactoryTestsBase {
         artifactory.repository(NEW_LOCAL_FROM).upload("x/y/z", content).doUpload();
     }
 
-    private void deleteAllRelatedRepos() {
+    private void deleteAllRelatedRepos() throws IOException {
         deleteRepoIfExists(NEW_LOCAL_FROM);
         deleteRepoIfExists(NEW_LOCAL_TO);
-    }
-
-    private void deleteRepoIfExists(String repoName) {
-        try {
-            artifactory.repository(repoName).delete();
-        } catch (Exception e) {
-            if (!e.getMessage().equals("Not Found")) { //if repo wasn't found - that's ok. It means testCreate didn't run.
-                throw e;
-            }
-        }
     }
 }

@@ -19,7 +19,6 @@ import static org.testng.Assert.*;
  */
 public class RepositoryTests extends ArtifactoryTestsBase {
 
-    private static final String LIST_PATH = "api/repositories";
     private LocalRepository localRepository;
 
     @BeforeMethod
@@ -50,16 +49,8 @@ public class RepositoryTests extends ArtifactoryTestsBase {
 
     @Test(groups = "repositoryBasics")
     public void testDelete() throws Exception {
-        try {
-            String result =  artifactory.repository(NEW_LOCAL).delete();
-            assertTrue(result
-                    .startsWith("Repository " + NEW_LOCAL + " and all its content have been removed successfully."));
-            assertFalse(curl(LIST_PATH).contains("\""+NEW_LOCAL+"\""));
-        } catch (HttpResponseException e) {
-            if (!e.getMessage().equals("Not Found")) { //if repo wasn't found - that's ok. It means testCreate didn't run.
-                throw e;
-            }
-        }
+        //all the assertions are taken care of in deleteRepoIfExists
+            deleteRepoIfExists(NEW_LOCAL);
     }
 
     @Test

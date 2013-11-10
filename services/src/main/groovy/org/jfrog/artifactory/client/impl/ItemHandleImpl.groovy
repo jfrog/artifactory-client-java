@@ -1,15 +1,12 @@
 package org.jfrog.artifactory.client.impl
 
-import groovyx.net.http.ContentType
 import groovyx.net.http.HttpResponseException
 import org.jfrog.artifactory.client.ItemHandle
 import org.jfrog.artifactory.client.PropertiesHandler
 import org.jfrog.artifactory.client.model.*
-import org.jfrog.artifactory.client.model.impl.GroupImpl
-import org.jfrog.artifactory.client.model.impl.ItemPermissionImpl
-import org.jfrog.artifactory.client.model.impl.RepoPathImpl
-import org.jfrog.artifactory.client.model.impl.UserImpl
+import org.jfrog.artifactory.client.model.impl.*
 
+import static groovyx.net.http.ContentType.JSON
 import static java.util.Collections.unmodifiableSet
 /**
  *
@@ -21,7 +18,7 @@ class ItemHandleImpl implements ItemHandle {
     private ArtifactoryImpl artifactory
     private String repo
     private String path
-    private Class itemType
+    private Class<? extends Item>  itemType
 
     ItemHandleImpl(ArtifactoryImpl artifactory, String repo, String path, Class itemType) {
         this.artifactory = artifactory
@@ -30,11 +27,11 @@ class ItemHandleImpl implements ItemHandle {
         this.itemType = itemType
     }
 
-    public <T> T info() {
+    public <T extends Item> T info() {
         assert artifactory
         assert repo
         assert path
-        artifactory.get("/api/storage/$repo/$path", ContentType.JSON, itemType)
+        artifactory.get("/api/storage/$repo/$path", JSON, itemType)
     }
 
     public Map<String, List<String>> getProperties(String... properties) {
@@ -42,7 +39,7 @@ class ItemHandleImpl implements ItemHandle {
         assert repo
         assert path
         try {
-            artifactory.get("/api/storage/$repo/$path", [properties: properties.join(',')], ContentType.JSON, Map.class)?.properties
+            artifactory.get("/api/storage/$repo/$path", [properties: properties.join(',')], JSON, Map.class)?.properties
         } catch (HttpResponseException e) {
             if (e.statusCode == 404) {
                 return [:]
@@ -81,7 +78,7 @@ class ItemHandleImpl implements ItemHandle {
 
     @Override
     Set<ItemPermission> effectivePermissions() {
-        Map json = artifactory.get("/api/storage/${repo}/${path}", ['permissions': null], ContentType.JSON, Map) as Map
+        Map json = artifactory.get("/api/storage/${repo}/${path}", ['permissions': null], JSON, Map) as Map
         unmodifiableSet(mapToItemPermissions(json.principals.users, User) + mapToItemPermissions(json.principals.groups, Group) as Set<? extends ItemPermission>) as Set<ItemPermission>
     }
 
@@ -110,24 +107,21 @@ class ItemHandleImpl implements ItemHandle {
         }
     }
 
+    @Override
     ItemHandle move(String toRepo, String toPath) {
-        moveOrCopy(toRepo, toPath, "move")
+        moveOrCopy(toRepo, toPath, 'move')
     }
 
+    @Override
     ItemHandle copy(String toRepo, String toPath) {
-        moveOrCopy(toRepo, toPath, "copy")
+        moveOrCopy(toRepo, toPath, 'copy')
     }
 
-    ItemHandle moveOrCopy(String toRepo, String toPath, String method) {
-        def query = ["to": toRepo + "/" + toPath]
-        CopyMoveResultReport message = artifactory.post("/api/$method/$repo/$path", query, ContentType.JSON, CopyMoveResultReportImpl)
-        if (!message.getMessages().get(0).getLevel().equals("INFO")) {
+    private ItemHandle moveOrCopy(String toRepo, String toPath, String operation) {
+        CopyMoveResultReport message = artifactory.post("/api/$operation/$repo/$path", [to: "$toRepo/$toPath"], JSON, CopyMoveResultReportImpl) as CopyMoveResultReport
+        if (!message.getMessages().get(0).getLevel().equals('INFO')) {
             throw new CopyMoveException(message)
         }
-        if (this.isFolder()) {
-            artifactory.repository(toRepo).folder(toPath)
-        } else {
-            artifactory.repository(toRepo).file(toPath)
-        }
+        new ItemHandleImpl(artifactory, toRepo, toPath, folder ? FolderImpl : FileImpl)
     }
 }

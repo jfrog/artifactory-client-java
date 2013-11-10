@@ -1,5 +1,6 @@
 package org.jfrog.artifactory.client;
 
+import org.jfrog.artifactory.client.model.Item;
 import org.jfrog.artifactory.client.model.ItemPermission;
 
 import java.util.List;
@@ -12,7 +13,7 @@ import java.util.Set;
  */
 public interface ItemHandle {
 
-    <T> T info();
+    <T extends Item> T info();
 
     boolean isFolder();
 
