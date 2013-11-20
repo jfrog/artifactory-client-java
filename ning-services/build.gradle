@@ -1,0 +1,23 @@
+apply plugin: 'groovy'
+apply plugin: 'fatjar'
+
+dependencies {
+    compile project(':api')
+    compile project(':services')
+    compile group: 'com.ning', name: 'async-http-client', version: '1.7.20'
+    testCompile group: 'org.testng', name: 'testng', version: '6.5.2'
+}
+
+configurations {
+    all*.exclude group: 'log4j', module: 'log4j'
+    all*.exclude group: 'commons-logging', module: 'commons-logging'
+}
+
+fatJar {
+    classifier = 'all'
+}
+
+artifacts {
+    archives sourceJar, fatJar, jar
+}
+
