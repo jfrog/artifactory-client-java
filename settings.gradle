@@ -1,2 +1,2 @@
-include 'api', 'services'
+include 'api', 'services', 'ning-services'
 rootProject.name = 'java-client'

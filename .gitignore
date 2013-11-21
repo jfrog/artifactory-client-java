@@ -14,3 +14,7 @@ out
 services/src/test/resources/artifactory-client.properties
 atlassian-*.xml
 .idea/
+.project
+.classpath
+.settings
+ning-services/src/test/resources/artifactory-client.properties
