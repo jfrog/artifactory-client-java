@@ -51,8 +51,9 @@ public class ArtifactoryClientTest {
     @BeforeClass
     public void init() throws Exception {
         Properties props = new Properties();
+      //this file is not in GitHub. Create your own in src/test/resources.
         InputStream inputStream = this.getClass().getResourceAsStream(
-                "/artifactory-client.properties");//this file is not in GitHub. Create your own in src/test/resources.
+                "/artifactory-client.properties");
         if (inputStream != null) {
             props.load(inputStream);
             url = props.getProperty(CLIENTTESTS_ARTIFACTORY_PROPERTIES_PREFIX + "url");
@@ -68,6 +69,22 @@ public class ArtifactoryClientTest {
                 url = System.getenv(CLIENTTESTS_ARTIFACTORY_ENV_VAR_PREFIX + "URL");
             }
             if (url == null) {
+                failInit();
+            }
+            //username
+            username = System.getProperty(CLIENTTESTS_ARTIFACTORY_PROPERTIES_PREFIX + "username");
+            if (username == null) {
+                username = System.getenv(CLIENTTESTS_ARTIFACTORY_ENV_VAR_PREFIX + "USERNAME");
+            }
+            if (username == null) {
+                failInit();
+            }
+            //password
+            password = System.getProperty(CLIENTTESTS_ARTIFACTORY_PROPERTIES_PREFIX + "password").toCharArray();
+            if (password == null) {
+                password = System.getenv(CLIENTTESTS_ARTIFACTORY_ENV_VAR_PREFIX + "PASSWORD").toCharArray();
+            }
+            if (password == null) {
                 failInit();
             }
             //repo
@@ -159,11 +176,23 @@ public class ArtifactoryClientTest {
     }
 
     private void failInit() {
-        Assert.fail(
-                "Failed to load test Artifactory instance credentials." +
-                        "Looking for System properties '" + CLIENTTESTS_ARTIFACTORY_PROPERTIES_PREFIX + "url', 'clienttests.artifactory.username' and 'clienttests.artifactory.password', " +
-                        "or properties file with those properties in classpath," +
-                        "or Environment variables '" + CLIENTTESTS_ARTIFACTORY_ENV_VAR_PREFIX + "URL', 'CLIENTTESTS_ARTIFACTORY_USERNAME' and 'CLIENTTESTS_ARTIFACTORY_PASSWORD'");
+        StringBuilder failMessage = new StringBuilder("Failed to load test Artifactory instance credentials.");
+        failMessage.append("Looking for System properties ")
+        .append(CLIENTTESTS_ARTIFACTORY_PROPERTIES_PREFIX).append("url ")
+        .append(CLIENTTESTS_ARTIFACTORY_PROPERTIES_PREFIX).append("username ")
+        .append(CLIENTTESTS_ARTIFACTORY_PROPERTIES_PREFIX).append("password ")
+        .append(CLIENTTESTS_ARTIFACTORY_PROPERTIES_PREFIX).append("repo ")
+        .append(CLIENTTESTS_ARTIFACTORY_PROPERTIES_PREFIX).append("filepath ")
+        .append(CLIENTTESTS_ARTIFACTORY_PROPERTIES_PREFIX).append("filename ")
+        .append("or properties file with those properties in classpath, ")
+        .append("or Environment variables ")
+        .append(CLIENTTESTS_ARTIFACTORY_ENV_VAR_PREFIX).append("URL ")
+        .append(CLIENTTESTS_ARTIFACTORY_ENV_VAR_PREFIX).append("USERNAME ")
+        .append(CLIENTTESTS_ARTIFACTORY_ENV_VAR_PREFIX).append("PASSWORD ")
+        .append(CLIENTTESTS_ARTIFACTORY_ENV_VAR_PREFIX).append("REPO ")
+        .append(CLIENTTESTS_ARTIFACTORY_ENV_VAR_PREFIX).append("FILEPATH ")
+        .append(CLIENTTESTS_ARTIFACTORY_ENV_VAR_PREFIX).append("FILENAME ");
+        Assert.fail(failMessage.toString());
     }
 
     class TestNingRequestImpl implements org.jfrog.artifactory.client.ning.NingRequest {
