@@ -34,7 +34,7 @@ public class DownloadUploadTests extends ArtifactoryTestsBase {
     public void testUploadWithSingleProperty() throws IOException {
         InputStream inputStream = this.getClass().getResourceAsStream("/sample.txt");
         assertNotNull(inputStream);
-        File deployed = artifactory.repository(NEW_LOCAL).upload(PATH, inputStream).withProperty("color", "red")
+        File deployed = artifactory.repository(NEW_LOCAL).upload(PATH, inputStream).withProperty("color", "blue")
                 .withProperty("color", "red").doUpload();
         assertNotNull(deployed);
         assertEquals(deployed.getRepo(), NEW_LOCAL);

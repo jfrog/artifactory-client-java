@@ -117,6 +117,14 @@ class ItemHandleImpl implements ItemHandle {
         moveOrCopy(toRepo, toPath, 'copy')
     }
 
+    @Override
+    Folder create() {
+        Folder folder = artifactory.put("/$repo/$path/", [:], JSON, FolderImpl)
+        folder.createdBy = artifactory.username
+        folder
+
+    }
+
     private ItemHandle moveOrCopy(String toRepo, String toPath, String operation) {
         CopyMoveResultReport message = artifactory.post("/api/$operation/$repo/$path", [to: "$toRepo/$toPath"], JSON, CopyMoveResultReportImpl) as CopyMoveResultReport
         if (!message.getMessages().get(0).getLevel().equals('INFO')) {

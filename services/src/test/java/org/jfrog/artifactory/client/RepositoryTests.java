@@ -1,10 +1,10 @@
 package org.jfrog.artifactory.client;
 
-import groovyx.net.http.HttpResponseException;
 import org.jfrog.artifactory.client.model.*;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import java.io.IOException;
 import java.util.List;
 
 import static java.util.Arrays.asList;
@@ -33,6 +33,33 @@ public class RepositoryTests extends ArtifactoryTestsBase {
         assertTrue(result.startsWith("Repository " + NEW_LOCAL + " created successfully."));
         assertTrue(curl(LIST_PATH).contains(NEW_LOCAL));
 
+    }
+
+    @Test(dependsOnMethods = "testCreate")
+    public void testCreateDirectory() throws IOException {
+        Folder folder = artifactory.repository(NEW_LOCAL).folder("myFolder").create();
+        assertEquals("/myFolder", folder.getPath());
+        assertNotNull(folder.getCreated());
+    }
+
+
+    @Test(dependsOnMethods = "testCreate")
+    public void testCreateDirectoryWithoutPermissions() throws IOException {
+        Artifactory anonymousArtifactory = ArtifactoryClient.create(url);
+        try {
+            anonymousArtifactory.repository(NEW_LOCAL).folder("myFolder").create();
+        } catch (Exception e) {
+            assertTrue(e.getMessage().contains("Unauthorized"));
+        }
+    }
+
+    @Test(dependsOnMethods = "testCreate")
+    public void testCreateDirectoryWithIllegalName() throws IOException {
+        try {
+            artifactory.repository(NEW_LOCAL).folder("myFolder?").create();
+        } catch (Exception e) {
+            assertTrue(e.getMessage().contains("Internal Server Error"));
+        }
     }
 
     @Test(dependsOnMethods = "testCreate")

@@ -10,6 +10,8 @@ public interface Artifactory {
 
     String getContextName();
 
+    String getUsername();
+
     Repositories repositories();
 
     RepositoryHandle repository(String repo);
