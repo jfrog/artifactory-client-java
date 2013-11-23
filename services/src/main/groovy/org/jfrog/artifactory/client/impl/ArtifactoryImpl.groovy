@@ -3,21 +3,9 @@ package org.jfrog.artifactory.client.impl
 import com.fasterxml.jackson.annotation.JsonAutoDetect
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat
-import groovyx.net.http.ContentType
-import groovyx.net.http.HttpResponseException
-import groovyx.net.http.Method
-import groovyx.net.http.RESTClient
-import groovyx.net.http.URIBuilder
+import groovyx.net.http.*
 import org.apache.http.HttpResponse
-import org.apache.http.protocol.HTTP
-import org.jfrog.artifactory.client.Artifactory
-import org.jfrog.artifactory.client.ArtifactorySystem
-import org.jfrog.artifactory.client.Plugins
-import org.jfrog.artifactory.client.Repositories
-import org.jfrog.artifactory.client.RepositoryHandle
-import org.jfrog.artifactory.client.Searches
-import org.jfrog.artifactory.client.Security
-import org.jfrog.artifactory.client.model.impl.PluginImpl
+import org.jfrog.artifactory.client.*
 
 import java.text.DateFormat
 
@@ -25,7 +13,6 @@ import static com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS
 import static com.fasterxml.jackson.databind.introspect.VisibilityChecker.Std.defaultInstance
 import static groovyx.net.http.ContentType.*
 import static groovyx.net.http.Method.*
-
 /**
  *
  * @author jbaruch
@@ -39,6 +26,7 @@ class ArtifactoryImpl implements Artifactory {
     def final originalJsonParser
     def final originalTextParser
     private final String contextName
+    private String username;
     private final ObjectMapper objectMapper
 
     ArtifactoryImpl(RESTClient client, String contextName) {
@@ -62,6 +50,11 @@ class ArtifactoryImpl implements Artifactory {
 
     String getContextName() {
         return contextName
+    }
+
+    @Override
+    String getUsername() {
+        return username
     }
 
     Repositories repositories() {

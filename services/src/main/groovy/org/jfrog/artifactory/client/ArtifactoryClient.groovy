@@ -12,10 +12,10 @@ import org.jfrog.artifactory.client.impl.ArtifactoryImpl
  */
 public class ArtifactoryClient {
 
-    static Artifactory create(String url, String username, String password) {
-        def matcher = url =~ /(https?:\/\/[^\/]+)\/+([^\/]*).*/
+    static Artifactory create(String url, String username = null, String password = null) {
+        def matcher = url=~/(https?:\/\/[^\/]+)\/+([^\/]*).*/
         if (!matcher) {
-            matcher = url =~ /(https?:\/\/[^\/]+)\/*()/
+            matcher = url=~/(https?:\/\/[^\/]+)\/*()/
             if (!matcher) {
                 throw new IllegalArgumentException("Invalid Artifactory URL: ${url}.")
             }
@@ -49,10 +49,14 @@ public class ArtifactoryClient {
         }
         client.encoders = er
 
-        client.auth.basic username, password
         client.headers.'User-Agent' = 'Artifactory-Client/1.0'
         //TODO (JB) remove preemptive auth once RTFACT-5119 is fixed
-        client.headers.Authorization = "Basic ${"$username:$password".toString().bytes.encodeBase64()}"
-        new ArtifactoryImpl(client, matcher[0][2])
+        if (username && password) {
+            client.auth.basic username, password
+            client.headers.Authorization = "Basic ${"$username:$password".toString().bytes.encodeBase64()}"
+        }
+        Artifactory artifactory = new ArtifactoryImpl(client, matcher[0][2])
+        artifactory.@username = username
+        artifactory
     }
 }
