@@ -69,6 +69,9 @@ class ArtifactoryImpl implements Artifactory {
     }
 
     RepositoryHandle repository(String repo) {
+        if(!repo){
+            throw new IllegalArgumentException('Repository name is required')
+        }
         new RepositoriesImpl(this).repository(repo)
     }
 

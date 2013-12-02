@@ -19,7 +19,7 @@ public interface NingRequest {
 
     /**
      * 
-     * @param BoundRequestBuilder
+     * @param boundRequestBuilder
      *            is a builder that has been created already to allow the implmentation class to build custom requests.
      * @return the {@link BoundRequestBuilder} to be added to the Http Client's request.
      */
