@@ -70,7 +70,7 @@ public class ArtifactoryNingClientTest {
             failInit();
         }
         //password
-        password = props.getProperty(CLIENTTESTS_ARTIFACTORY_PROPERTIES_PREFIX + "password").toCharArray();
+            password = System.getProperty(CLIENTTESTS_ARTIFACTORY_PROPERTIES_PREFIX + "password").toCharArray();
         if (password == null) {
             password = System.getenv(CLIENTTESTS_ARTIFACTORY_ENV_VAR_PREFIX + "PASSWORD").toCharArray();
         }
@@ -78,7 +78,7 @@ public class ArtifactoryNingClientTest {
             failInit();
         }
         //repo
-        repo = props.getProperty(CLIENTTESTS_ARTIFACTORY_PROPERTIES_PREFIX + "repo");
+            repo = System.getProperty(CLIENTTESTS_ARTIFACTORY_PROPERTIES_PREFIX + "repo");
         if (repo == null) {
             repo = System.getenv(CLIENTTESTS_ARTIFACTORY_ENV_VAR_PREFIX + "REPO");
         }
@@ -86,7 +86,7 @@ public class ArtifactoryNingClientTest {
             failInit();
         }
         //filepath
-        filePath = props.getProperty(CLIENTTESTS_ARTIFACTORY_PROPERTIES_PREFIX + "filepath");
+            filePath = System.getProperty(CLIENTTESTS_ARTIFACTORY_PROPERTIES_PREFIX + "filepath");
         if (filePath == null) {
             filePath = System.getenv(CLIENTTESTS_ARTIFACTORY_ENV_VAR_PREFIX + "FILEPATH");
         }
@@ -94,14 +94,14 @@ public class ArtifactoryNingClientTest {
             failInit();
         }
         //fileName
-        fileName = props.getProperty(CLIENTTESTS_ARTIFACTORY_PROPERTIES_PREFIX + "filename");
+            fileName = System.getProperty(CLIENTTESTS_ARTIFACTORY_PROPERTIES_PREFIX + "filename");
         if (fileName == null) {
             fileName = System.getenv(CLIENTTESTS_ARTIFACTORY_ENV_VAR_PREFIX + "FILENAME");
         }
         if (fileName == null) {
             failInit();
         }
-
+        }
         artifactory = org.jfrog.artifactory.client.ning.ArtifactoryClient.create(url, username, password, testNingRequestImpl);
         //Upload first.
         testUpload();
