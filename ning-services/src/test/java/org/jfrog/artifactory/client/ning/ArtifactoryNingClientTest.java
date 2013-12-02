@@ -30,7 +30,7 @@ public class ArtifactoryNingClientTest {
     private String url;
     private String repo;
     private String username = null;
-    private char[] password = null;
+    private String password = null;
     private String filePath;
     private String fileName;
     private TestNingRequestImpl testNingRequestImpl = new TestNingRequestImpl();
@@ -48,7 +48,7 @@ public class ArtifactoryNingClientTest {
             props.load(inputStream);
             url = props.getProperty(CLIENTTESTS_ARTIFACTORY_PROPERTIES_PREFIX + "url");
             username = props.getProperty(CLIENTTESTS_ARTIFACTORY_PROPERTIES_PREFIX + "username");
-            password = props.getProperty(CLIENTTESTS_ARTIFACTORY_PROPERTIES_PREFIX + "password").toCharArray();
+            password = props.getProperty(CLIENTTESTS_ARTIFACTORY_PROPERTIES_PREFIX + "password");
             repo = props.getProperty(CLIENTTESTS_ARTIFACTORY_PROPERTIES_PREFIX + "repo");
             filePath = props.getProperty(CLIENTTESTS_ARTIFACTORY_PROPERTIES_PREFIX + "filepath");
             fileName = props.getProperty(CLIENTTESTS_ARTIFACTORY_PROPERTIES_PREFIX + "filename");
@@ -70,9 +70,9 @@ public class ArtifactoryNingClientTest {
             failInit();
         }
         //password
-            password = System.getProperty(CLIENTTESTS_ARTIFACTORY_PROPERTIES_PREFIX + "password").toCharArray();
+            password = System.getProperty(CLIENTTESTS_ARTIFACTORY_PROPERTIES_PREFIX + "password");
         if (password == null) {
-            password = System.getenv(CLIENTTESTS_ARTIFACTORY_ENV_VAR_PREFIX + "PASSWORD").toCharArray();
+            password = System.getenv(CLIENTTESTS_ARTIFACTORY_ENV_VAR_PREFIX + "PASSWORD");
         }
         if (password == null) {
             failInit();
@@ -102,7 +102,7 @@ public class ArtifactoryNingClientTest {
             failInit();
         }
         }
-        artifactory = org.jfrog.artifactory.client.ning.ArtifactoryClient.create(url, username, password, testNingRequestImpl);
+        artifactory = org.jfrog.artifactory.client.ning.ArtifactoryClient.create(url, username, password.toCharArray(), testNingRequestImpl);
         //Upload first.
         testUpload();
     }
