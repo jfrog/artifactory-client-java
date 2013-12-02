@@ -46,12 +46,15 @@ public class ArtifactoryNingClientTest {
                 "/artifactory-ning-client.properties");
         if (inputStream != null) {
             props.load(inputStream);
-        }
+            url = props.getProperty(CLIENTTESTS_ARTIFACTORY_PROPERTIES_PREFIX + "url");
+            username = props.getProperty(CLIENTTESTS_ARTIFACTORY_PROPERTIES_PREFIX + "username");
+            password = props.getProperty(CLIENTTESTS_ARTIFACTORY_PROPERTIES_PREFIX + "password").toCharArray();
+            repo = props.getProperty(CLIENTTESTS_ARTIFACTORY_PROPERTIES_PREFIX + "repo");
+            filePath = props.getProperty(CLIENTTESTS_ARTIFACTORY_PROPERTIES_PREFIX + "filepath");
+            fileName = props.getProperty(CLIENTTESTS_ARTIFACTORY_PROPERTIES_PREFIX + "filename");
+        } else {
         //url
-        url = props.getProperty(CLIENTTESTS_ARTIFACTORY_PROPERTIES_PREFIX + "url");
-        if (url == null) {
             url = System.getProperty(CLIENTTESTS_ARTIFACTORY_PROPERTIES_PREFIX + "url");
-        }
         if (url == null) {
             url = System.getenv(CLIENTTESTS_ARTIFACTORY_ENV_VAR_PREFIX + "URL");
         }
@@ -59,10 +62,7 @@ public class ArtifactoryNingClientTest {
             failInit();
         }
         //username
-        username = props.getProperty(CLIENTTESTS_ARTIFACTORY_PROPERTIES_PREFIX + "username");
-        if (username == null) {
             username = System.getProperty(CLIENTTESTS_ARTIFACTORY_PROPERTIES_PREFIX + "username");
-        }
         if (username == null) {
             username = System.getenv(CLIENTTESTS_ARTIFACTORY_ENV_VAR_PREFIX + "USERNAME");
         }
@@ -72,8 +72,6 @@ public class ArtifactoryNingClientTest {
         //password
         password = props.getProperty(CLIENTTESTS_ARTIFACTORY_PROPERTIES_PREFIX + "password").toCharArray();
         if (password == null) {
-            password = System.getProperty(CLIENTTESTS_ARTIFACTORY_PROPERTIES_PREFIX + "password").toCharArray();
-        }        if (password == null) {
             password = System.getenv(CLIENTTESTS_ARTIFACTORY_ENV_VAR_PREFIX + "PASSWORD").toCharArray();
         }
         if (password == null) {
@@ -82,8 +80,6 @@ public class ArtifactoryNingClientTest {
         //repo
         repo = props.getProperty(CLIENTTESTS_ARTIFACTORY_PROPERTIES_PREFIX + "repo");
         if (repo == null) {
-            repo = System.getProperty(CLIENTTESTS_ARTIFACTORY_PROPERTIES_PREFIX + "repo");
-        }        if (repo == null) {
             repo = System.getenv(CLIENTTESTS_ARTIFACTORY_ENV_VAR_PREFIX + "REPO");
         }
         if (repo == null) {
@@ -92,8 +88,6 @@ public class ArtifactoryNingClientTest {
         //filepath
         filePath = props.getProperty(CLIENTTESTS_ARTIFACTORY_PROPERTIES_PREFIX + "filepath");
         if (filePath == null) {
-            filePath = System.getProperty(CLIENTTESTS_ARTIFACTORY_PROPERTIES_PREFIX + "filepath");
-        }        if (filePath == null) {
             filePath = System.getenv(CLIENTTESTS_ARTIFACTORY_ENV_VAR_PREFIX + "FILEPATH");
         }
         if (filePath == null) {
@@ -102,8 +96,6 @@ public class ArtifactoryNingClientTest {
         //fileName
         fileName = props.getProperty(CLIENTTESTS_ARTIFACTORY_PROPERTIES_PREFIX + "filename");
         if (fileName == null) {
-            fileName = System.getProperty(CLIENTTESTS_ARTIFACTORY_PROPERTIES_PREFIX + "filename");
-        }        if (fileName == null) {
             fileName = System.getenv(CLIENTTESTS_ARTIFACTORY_ENV_VAR_PREFIX + "FILENAME");
         }
         if (fileName == null) {
@@ -111,7 +103,6 @@ public class ArtifactoryNingClientTest {
         }
 
         artifactory = org.jfrog.artifactory.client.ning.ArtifactoryClient.create(url, username, password, testNingRequestImpl);
-
         //Upload first.
         testUpload();
     }
