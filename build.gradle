@@ -1,3 +1,5 @@
+import static java.lang.System.getenv
+
 buildscript {
     repositories {
         jcenter()
@@ -12,7 +14,7 @@ allprojects {
     apply plugin: 'idea'
     apply plugin: 'maven'
     apply plugin: 'artifactory'
-    final env = System.getenv()
+    final env = getenv()
 
     def artifactoryUrl = hasProperty('artifactoryUrl')?artifactoryUrl:env['ARTIFACTORY_URL']
     if (artifactoryUrl) {
