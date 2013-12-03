@@ -18,3 +18,4 @@ atlassian-*.xml
 .classpath
 .settings
 ning-services/src/test/resources/artifactory-client.properties
+ning-services/src/test/resources/artifactory-ning-client.properties
