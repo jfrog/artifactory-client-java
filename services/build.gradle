@@ -2,7 +2,7 @@ apply plugin: 'groovy'
 apply plugin: 'fatjar'
 
 dependencies {
-    compile project(':api')
+    compile project(':artifactory-java-client-api')
     compile addGroovy('groovy')
     compile addGroovy('groovy-json')
     compile addGroovy('groovy-xml')
