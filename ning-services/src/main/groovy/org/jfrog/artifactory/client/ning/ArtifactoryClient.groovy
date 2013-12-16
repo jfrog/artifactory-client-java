@@ -6,9 +6,15 @@
  * limitations under the License. See accompanying LICENSE file.  */
 package org.jfrog.artifactory.client.ning
 
-import java.util.concurrent.ExecutorService
+import java.util.concurrent.ThreadFactory
+
 import java.util.concurrent.Executors
 import java.util.concurrent.ThreadFactory
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.SynchronousQueue
+import java.util.concurrent.ThreadFactory
+import java.util.concurrent.ThreadPoolExecutor
+import java.util.concurrent.TimeUnit
 
 import org.jfrog.artifactory.client.Artifactory
 import org.slf4j.Logger
@@ -30,17 +36,8 @@ import com.ning.http.client.Realm.AuthScheme
 public class ArtifactoryClient {
 
     private static final Logger log = LoggerFactory.getLogger(ArtifactoryClient.class);
-    private static AsyncHttpClient ningHttpClient;
-    private static final NingRequest ningRequest;
 
     public static Artifactory create(final String url, final String username, final char[] password, final NingRequest ningRequest) {
-        def matcher = url =~ /(https?:\/\/[^\/]+)\/+([^\/]*).*/
-        if (!matcher) {
-            matcher = url =~ /(https?:\/\/[^\/]+)\/*()/
-            if (!matcher) {
-                throw new IllegalArgumentException("Invalid Artifactory URL: ${url}.")
-            }
-        }
         Realm realm=null;
         if (username!=null && !"".equals(username)){
             realm = new Realm.RealmBuilder()
@@ -50,19 +47,31 @@ public class ArtifactoryClient {
                     .setScheme(AuthScheme.BASIC)
                     .build();
         }
-        ExecutorService executorService =  Executors
-                        .newCachedThreadPool(new ThreadFactory() {
-                            public Thread newThread(Runnable r) {
-                                Thread t = new Thread(r,
-                                        "AsyncHttpClient-Callback");
-                                t.setDaemon(true);
-                                return t;
-                            }
-                        });
-        ningHttpClient = new AsyncHttpClient(new AsyncHttpClientConfig.Builder()
+        //Use bounded
+        ExecutorService executorService =  new ThreadPoolExecutor(20, 100, 60L, TimeUnit.SECONDS, new SynchronousQueue<Runnable>(),
+            new ThreadFactory() {
+                public Thread newThread(Runnable r) {
+                    Thread t = new Thread(r,
+                            "AsyncHttpClient-Callback");
+                    t.setDaemon(true);
+                    return t;
+                }
+            });
+        AsyncHttpClient ningHttpClient = new AsyncHttpClient(new AsyncHttpClientConfig.Builder()
             .setRealm(realm)
             .setExecutorService(executorService)
             .build());
+        return create(url, ningHttpClient, ningRequest);
+    }
+    
+    public static Artifactory create(final String url, final AsyncHttpClient ningHttpClient, final NingRequest ningRequest) {
+        def matcher = url =~ /(https?:\/\/[^\/]+)\/+([^\/]*).*/
+        if (!matcher) {
+            matcher = url =~ /(https?:\/\/[^\/]+)\/*()/
+            if (!matcher) {
+                throw new IllegalArgumentException("Invalid Artifactory URL: ${url}.")
+            }
+        }
         log.debug("Url: {}, Context: {}, Host: {}", url, matcher[0][2], matcher[0][1]);
         return new ArtifactoryNingClientImpl(ningHttpClient, matcher[0][2], matcher[0][1], ningRequest);
     }

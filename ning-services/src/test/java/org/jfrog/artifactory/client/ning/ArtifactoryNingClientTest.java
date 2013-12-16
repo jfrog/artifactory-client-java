@@ -9,6 +9,9 @@ package org.jfrog.artifactory.client.ning;
 
 import com.ning.http.client.AsyncHttpClient.BoundRequestBuilder;
 import com.ning.http.client.Cookie;
+import com.ning.http.client.AsyncHttpClient;
+import com.ning.http.client.AsyncHttpClientConfig;
+
 import org.apache.http.client.HttpResponseException;
 import org.jfrog.artifactory.client.*;
 import org.jfrog.artifactory.client.model.File;
@@ -21,6 +24,14 @@ import org.testng.annotations.Test;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.Properties;
+
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author charlesk
@@ -113,6 +124,29 @@ public class ArtifactoryNingClientTest {
     }
 
     @Test
+    public void testCreateArtifactoryClient() throws Exception {
+        ExecutorService executorService =  new ThreadPoolExecutor(20, 100, 60L, TimeUnit.SECONDS, new SynchronousQueue<Runnable>(), 
+                        new ThreadFactory() {
+                            public Thread newThread(Runnable r) {
+                                Thread t = new Thread(r,
+                                        "AsyncHttpClient-Callback");
+                                t.setDaemon(true);
+                                return t;
+                            }
+                        });
+        AsyncHttpClient ningHttpClient = new AsyncHttpClient(new AsyncHttpClientConfig.Builder()
+        .setExecutorService(executorService)
+        .build());
+        Artifactory artifactory = org.jfrog.artifactory.client.ning.ArtifactoryClient.create(url, ningHttpClient, testNingRequestImpl);
+        RepositoryHandle repositoryHandle = artifactory.repository(repo);
+        Assert.assertNotNull(repositoryHandle);
+        ItemHandle itemHandle = repositoryHandle.file(filePath + "/" + fileName);
+        Assert.assertNotNull(itemHandle);
+        Item item = itemHandle.info();
+        Assert.assertNotNull(item);
+    }
+
+    @Test
     public void testGetMetaData() throws Exception {
         // meta-data Get
         RepositoryHandle repositoryHandle = artifactory.repository(repo);
@@ -192,5 +226,4 @@ public class ArtifactoryNingClientTest {
 
         }
     }
-
 }
