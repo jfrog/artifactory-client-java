@@ -12,5 +12,6 @@ public interface PermissionTarget {
     String getIncludesPattern();
     String getExcludesPattern();
     List<String> getRepositories();
+
     List<ItemPermission> getItemPermissions();
 }

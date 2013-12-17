@@ -2,6 +2,7 @@ package org.jfrog.artifactory.client.model.builder.impl
 
 import org.jfrog.artifactory.client.model.PermissionTarget
 import org.jfrog.artifactory.client.model.User
+import org.jfrog.artifactory.client.model.builder.GroupBuilder
 import org.jfrog.artifactory.client.model.builder.PermissionTargetBuilder
 import org.jfrog.artifactory.client.model.builder.SecurityBuilders
 import org.jfrog.artifactory.client.model.builder.UserBuilder
@@ -23,7 +24,12 @@ class SecurityBuildersImpl implements SecurityBuilders {
 
     @Override
     UserBuilder userBuilder() {
-        return new UserBuilderImpl()
+        new UserBuilderImpl()
+    }
+
+    @Override
+    GroupBuilder groupBuilder() {
+        new GroupBuilderImpl()
     }
 
     @Override
