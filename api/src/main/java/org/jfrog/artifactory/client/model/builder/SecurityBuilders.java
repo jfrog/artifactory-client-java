@@ -12,6 +12,8 @@ import org.jfrog.artifactory.client.model.User;
 public interface SecurityBuilders {
     UserBuilder userBuilder();
 
+    GroupBuilder groupBuilder();
+
     UserBuilder builderFrom(User from);
 
     PermissionTargetBuilder permissionTargetBuilder();
