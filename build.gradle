@@ -11,36 +11,10 @@ buildscript {
 }
 
 allprojects {
-    apply plugin: 'idea'
-    apply plugin: 'maven'
-    apply plugin: 'artifactory'
-    final env = getenv()
 
-    def artifactoryUrl = hasProperty('artifactoryUrl')?artifactoryUrl:env['ARTIFACTORY_URL']
-    if (artifactoryUrl) {
-        artifactory {
-            contextUrl = artifactoryUrl
-            //The base Artifactory URL if not overridden by the publisher/resolver
-            resolve {
-                repository {
-                    repoKey = 'libs-release'
-                    maven = true
-                }
-            }
-            publish {
-                repository {
-                    repoKey = 'oss-snapshot-local'   //The Artifactory repository key to publish to
-                    username = hasProperty('artifactoryUsername')?artifactoryUsername:env['ARTIFACTORY_USERNAME'] //The publisher user name
-                    password = hasProperty('artifactoryPassword')?artifactoryPassword:env['ARTIFACTORY_PASSWORD'] //The publisher password
-                }
-            }
-        }
-    } else {
-        repositories {
-            jcenter()
-        }
-    }
-    
+    apply plugin: 'maven-publish'
+    apply plugin: 'artifactory-publish'
+
     group = 'org.jfrog.artifactory.client'
     version = currentVersion
     status = version.endsWith('-SNAPSHOT') ? 'integration' : 'release'
@@ -48,22 +22,55 @@ allprojects {
     project.tasks.withType(Jar).each {
         it.version = currentVersion
     }
+
+    artifactory {
+        contextUrl = 'https://oss.jfrog.org'
+    }
 }
 
 subprojects {
     apply plugin: 'java'
 
+
     sourceCompatibility = 1.7
     targetCompatibility = 1.7
 
-    task sourceJar(type: Jar) {
-        from sourceSets.main.allSource
-        classifier = 'sources'
-    }
-    jar.dependsOn sourceJar
+    final env = getenv()
 
+    artifactory {
+        contextUrl = 'https://oss.jfrog.org'
+        resolve {
+            repository {
+                repoKey = 'libs-release'
+            }
+        }
+        publish {
+            repository {
+                repoKey = 'oss-snapshot-local' //The Artifactory repository key to publish to
+                //when using oss.jfrog.org the credentials are from Bintray. For local build we expect them to be found in
+                //~/.gradle/gradle.properties, otherwise to be set in the build server
+                username = project.hasProperty('bintrayUser') ? project.bintrayUser : getenv()['BINTRAY_USER']
+                password = project.hasProperty('bintrayKey') ? project.bintrayKey : getenv()['BINTRAY_KEY']
+            }
+            defaults {
+                publications 'main'
+            }
+        }
+    }
+
+    task sourcesJar(type: Jar, dependsOn: classes) {
+        classifier = 'sources'
+        from sourceSets.main.allSource
+    }
+
+    task javadocJar(type: Jar, dependsOn: javadoc) {
+        classifier = 'javadoc'
+        from javadoc.destinationDir
+    }
+
+    // add javadoc/source jar tasks as artifacts
     artifacts {
-        archives sourceJar, jar
+        archives sourcesJar, javadocJar, jar
     }
 
     test {
@@ -74,24 +81,45 @@ subprojects {
             minGranularity 0
         }
     }
-}
 
-task wrapper(type: Wrapper) {
-    gradleVersion = '1.8'
-}
+    publishing {
+        publications {
+            main(MavenPublication) {
+                from components.java
+                artifact sourcesJar
+                artifact javadocJar
 
-idea {
-    project {
-        jdkName = '1.7'
-        languageLevel = '1.7'
-        wildcards += '?*.gradle'
-        ipr {
-            withXml { provider ->
-                def node = provider.asNode()
-                // Use git
-                def vcsConfig = node.component.find { it.'@name' == 'VcsDirectoryMappings' }
-                vcsConfig.mapping[0].'@vcs' = 'Git'
+                pom.withXml {
+                    asNode().with {
+                        appendNode('packaging', 'jar')
+                        appendNode('name', 'artifactory-java-client')
+                        appendNode('description', 'Java client for working with Artifactory')
+                        appendNode('url', 'https://github.com/JFrogDev/artifactory-client-java')
+                        appendNode('licenses').with {
+                            appendNode('license').with {
+                                appendNode('name', 'The Apache Software License, Version 2.0')
+                                appendNode('url', 'http://www.apache.org/licenses/LICENSE-2.0')
+                            }
+                        }
+                        appendNode('developers').with {
+                            appendNode('developer').with {
+                                appendNode('id', 'jbaruch')
+                                appendNode('name', 'Baruch Sadogursky')
+                                appendNode('email', 'jbaruch@jfrog.com')
+                            }
+                        }
+                        appendNode('scm').with {
+                            appendNode('connection', 'git@github.com:JFrogDev/artifactory-client-java.git')
+                            appendNode('developerConnection', 'git@github.com:JFrogDev/artifactory-client-java.git')
+                            appendNode('url', 'https://github.com/JFrogDev/artifactory-client-java')
+                        }
+                    }
+                }
             }
         }
     }
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '1.10'
 }
