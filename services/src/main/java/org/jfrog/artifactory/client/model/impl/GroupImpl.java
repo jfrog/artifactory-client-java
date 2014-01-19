@@ -14,7 +14,11 @@ public class GroupImpl extends SubjectImpl implements Group {
         super(name);
     }
 
-    public GroupImpl(String name, boolean autoJoin, String description) {
+    private GroupImpl() {
+        super(null);
+    }
+
+    private GroupImpl(String name, boolean autoJoin, String description) {
         super(name);
         this.autoJoin = autoJoin;
         this.description = description;

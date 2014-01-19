@@ -35,6 +35,11 @@ class UserImpl extends SubjectImpl implements User {
         super(name);
     }
 
+    private UserImpl() {
+        super(null);
+    }
+
+
     public String getEmail() {
         return email;
     }

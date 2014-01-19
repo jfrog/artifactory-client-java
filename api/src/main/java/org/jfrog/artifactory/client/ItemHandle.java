@@ -1,5 +1,6 @@
 package org.jfrog.artifactory.client;
 
+import org.jfrog.artifactory.client.model.Folder;
 import org.jfrog.artifactory.client.model.Item;
 import org.jfrog.artifactory.client.model.ItemPermission;
 
@@ -32,4 +33,6 @@ public interface ItemHandle {
     ItemHandle move(String toRepo, String toPath);
 
     ItemHandle copy(String toRepo, String toPath);
+
+    Folder create();
 }
