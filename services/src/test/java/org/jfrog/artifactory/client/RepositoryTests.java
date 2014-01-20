@@ -38,7 +38,7 @@ public class RepositoryTests extends ArtifactoryTestsBase {
     @Test(dependsOnMethods = "testCreate")
     public void testCreateDirectory() throws IOException {
         Folder folder = artifactory.repository(NEW_LOCAL).folder("myFolder").create();
-        assertEquals("/myFolder", folder.getPath());
+        assertEquals("/myFolder/", folder.getPath());
         assertNotNull(folder.getCreated());
     }
 

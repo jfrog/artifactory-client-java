@@ -28,6 +28,8 @@ allprojects {
     }
 }
 
+artifactoryPublish.skip = true
+
 subprojects {
     apply plugin: 'java'
 

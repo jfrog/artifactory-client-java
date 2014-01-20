@@ -19,6 +19,7 @@ import static org.testng.Assert.*;
  * @author jbaruch
  * @since 03/08/12
  */
+@SuppressWarnings("FeatureEnvy")
 public class ItemTests extends ArtifactoryTestsBase {
 
     protected static final String NEW_LOCAL_FROM = "new-local-from";
@@ -99,7 +100,7 @@ public class ItemTests extends ArtifactoryTestsBase {
             artifactory.repositories().create(2, localRepository);
         } catch (Exception e) {
             //noinspection ConstantConditions
-            if (!(e instanceof HttpResponseException) || !(((HttpResponseException) e).getStatusCode() == 404 || ((HttpResponseException) e).getStatusCode() == 405)) {
+            if (!(e instanceof HttpResponseException) || !(((org.apache.http.client.HttpResponseException) e).getStatusCode() == 404 || ((org.apache.http.client.HttpResponseException) e).getStatusCode() == 405)) {
                 throw e;
             }
         }
@@ -114,7 +115,7 @@ public class ItemTests extends ArtifactoryTestsBase {
             //should fail
         } catch (Exception e) {
             //noinspection ConstantConditions
-            if (!(e instanceof HttpResponseException) || !(((HttpResponseException) e).getStatusCode() == 404 || ((HttpResponseException) e).getStatusCode() == 405)) {
+            if (!(e instanceof HttpResponseException) || !(((org.apache.http.client.HttpResponseException) e).getStatusCode() == 404 || ((org.apache.http.client.HttpResponseException) e).getStatusCode() == 405)) {
                 throw e;
             }
         }
