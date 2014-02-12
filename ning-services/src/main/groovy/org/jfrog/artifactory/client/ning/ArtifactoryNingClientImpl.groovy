@@ -89,6 +89,9 @@ public class ArtifactoryNingClientImpl extends ArtifactoryImpl {
     private def <T> T rest(Method method, String path, Map query = null, responseType = ANY,
                            def responseClass, ContentType requestContentType = JSON, requestBody = null, Map addlHeaders = null, long contentLength = -1) {
         log.debug("Method: {}, Path: {}", method, path);
+        log.debug("ResponseType: {}, ResponseClass: {}", responseType, responseClass);
+        log.debug("RequestContentType: {}", requestContentType);
+        log.debug("Headers: {}", addlHeaders);
         String finalUrl = this.url + path;
         log.debug("finalUrl: {}", finalUrl);
         BoundRequestBuilder requestBuilder;
@@ -110,7 +113,10 @@ public class ArtifactoryNingClientImpl extends ArtifactoryImpl {
         if (inputStream != null) {
             try {
                 //This may puke on IOException, JsonParseException, JsonMappingException but we will let the caller deal with it.
-                return (T) objectMapper.readValue(inputStream, responseClass);
+                if (responseType == ContentType.JSON && inputStream.available() > 0) {
+                    return (T) objectMapper.readValue(inputStream, responseClass);
+                }
+                //TODO: Handle other cases.
             } finally {
                 inputStream.close();
             }
