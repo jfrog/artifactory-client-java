@@ -7,13 +7,21 @@
 
 package org.jfrog.artifactory.client.ning;
 
-import com.ning.http.client.AsyncHttpClient.BoundRequestBuilder;
-import com.ning.http.client.Cookie;
-import com.ning.http.client.AsyncHttpClient;
-import com.ning.http.client.AsyncHttpClientConfig;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.util.Properties;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.http.client.HttpResponseException;
-import org.jfrog.artifactory.client.*;
+import org.jfrog.artifactory.client.Artifactory;
+import org.jfrog.artifactory.client.DownloadableArtifact;
+import org.jfrog.artifactory.client.ItemHandle;
+import org.jfrog.artifactory.client.RepositoryHandle;
+import org.jfrog.artifactory.client.UploadableArtifact;
 import org.jfrog.artifactory.client.model.File;
 import org.jfrog.artifactory.client.model.Item;
 import org.testng.Assert;
@@ -21,17 +29,10 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.util.Properties;
-
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.SynchronousQueue;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import com.ning.http.client.AsyncHttpClient;
+import com.ning.http.client.AsyncHttpClient.BoundRequestBuilder;
+import com.ning.http.client.AsyncHttpClientConfig;
+import com.ning.http.client.Cookie;
 
 /**
  * @author charlesk
@@ -115,7 +116,7 @@ public class ArtifactoryNingClientTest {
         }
         artifactory = org.jfrog.artifactory.client.ning.ArtifactoryClient.create(url, username, password.toCharArray(), testNingRequestImpl);
         //Upload first.
-        testUpload();
+        testUpload(filePath + "/" + fileName, "Test upload".getBytes("UTF-8"));
     }
 
     @AfterClass
@@ -188,17 +189,45 @@ public class ArtifactoryNingClientTest {
         }
     }
 
-    private void testUpload() throws Exception {
+    private void testUpload(String fileName, byte[] contentByte) throws Exception {
         // upload
-        InputStream content = new ByteArrayInputStream("I want to test my upload!".getBytes());
+        InputStream content = new ByteArrayInputStream(contentByte);
         RepositoryHandle repositoryHandle = artifactory.repository(repo);
         Assert.assertNotNull(repositoryHandle);
-        UploadableArtifact uploadableArtifact = repositoryHandle.upload(filePath + "/" + fileName, content);
+        UploadableArtifact uploadableArtifact = repositoryHandle.upload(fileName, content);
         Assert.assertNotNull(uploadableArtifact);
         File file = uploadableArtifact.doUpload();
         Assert.assertNotNull(file);
+        //md5
+        uploadableArtifact = repositoryHandle.upload(fileName+".md5", new ByteArrayInputStream(MD5(contentByte).getBytes()));
+        Assert.assertNotNull(uploadableArtifact);
+        file = uploadableArtifact.doUpload();
+        //sha1
+        uploadableArtifact = repositoryHandle.upload(fileName+".sha1", new ByteArrayInputStream(Sha1(contentByte).getBytes()));
+        Assert.assertNotNull(uploadableArtifact);
+        file = uploadableArtifact.doUpload();
     }
 
+    private String MD5(byte[] md5) throws Exception {
+        java.security.MessageDigest md = java.security.MessageDigest.getInstance("MD5");
+        byte[] array = md.digest(md5);
+        return byteArrayToHexString(array);
+    }
+    
+    private String Sha1(byte[] sha1) throws Exception {
+        java.security.MessageDigest md = java.security.MessageDigest.getInstance("SHA1");
+        byte[] array = md.digest(sha1);
+        return byteArrayToHexString(array);
+    }
+    
+    private static final String byteArrayToHexString(byte[] byteArray){
+        StringBuffer sb = new StringBuffer();
+        for (int i = 0; i < byteArray.length; ++i) {
+            sb.append(Integer.toHexString((byteArray[i] & 0xFF) | 0x100).substring(1,3));
+        }
+        return sb.toString();
+    }
+    
     private void failInit() {
         StringBuilder failMessage = new StringBuilder("Failed to load test Artifactory instance credentials.");
         failMessage.append("Looking for System properties ")
