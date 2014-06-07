@@ -17,11 +17,13 @@ public abstract class RepositoryBase implements Repository {
     protected String repoLayoutRef;
     protected boolean enableNuGetSupport;
     protected boolean enableGemsSupport;
+    protected boolean enableNpmSupport;
+
 
     protected RepositoryBase() {
     }
 
-    protected RepositoryBase(String description, String excludesPattern, String includesPattern, String key, String notes, String repoLayoutRef, boolean enableNuGetSupport, boolean enableGemsSupport) {
+    protected RepositoryBase(String description, String excludesPattern, String includesPattern, String key, String notes, String repoLayoutRef, boolean enableNuGetSupport, boolean enableGemsSupport, boolean enableNpmSupport) {
         this.description = description;
         this.excludesPattern = excludesPattern;
         this.includesPattern = includesPattern;
@@ -30,6 +32,7 @@ public abstract class RepositoryBase implements Repository {
         this.repoLayoutRef = repoLayoutRef;
         this.enableNuGetSupport = enableNuGetSupport;
         this.enableGemsSupport = enableGemsSupport;
+        this.enableNpmSupport = enableNpmSupport;
     }
 
     @Override
@@ -149,4 +152,9 @@ public abstract class RepositoryBase implements Repository {
     private void setEnableGemsSupport(boolean enableGemsSupport) {
         this.enableGemsSupport = enableGemsSupport;
     }
+
+    @Override
+    public boolean isEnableNpmSupport() { return enableNpmSupport; }
+
+    public void setEnableNpmSupport(boolean enableNpmSupport) { this.enableNpmSupport = enableNpmSupport; }
 }

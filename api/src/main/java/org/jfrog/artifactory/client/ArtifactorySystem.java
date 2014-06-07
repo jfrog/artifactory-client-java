@@ -4,7 +4,7 @@ import org.jfrog.artifactory.client.model.Version;
 
 /**
  * System Level Configuration.
- * <p/>
+ *
  * (Class can not be named System because of conflict with java.lang.System.)
  *
  * @author quidryan
