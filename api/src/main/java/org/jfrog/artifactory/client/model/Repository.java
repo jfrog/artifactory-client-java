@@ -24,4 +24,6 @@ public interface Repository {
     boolean isEnableNuGetSupport();
 
     boolean isEnableGemsSupport();
+
+    boolean isEnableNpmSupport();
 }

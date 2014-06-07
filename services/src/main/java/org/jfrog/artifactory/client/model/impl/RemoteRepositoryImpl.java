@@ -48,9 +48,9 @@ public class RemoteRepositoryImpl extends NonVirtualRepositoryBase implements Re
                          int missedRetrievalCachePeriodSecs, boolean offline, String password, String proxy, RemoteRepoChecksumPolicyType remoteRepoChecksumPolicyType,
                          int retrievalCachePeriodSecs, boolean shareConfiguration, int socketTimeoutMillis, boolean storeArtifactsLocally, boolean synchronizeProperties,
                          boolean unusedArtifactsCleanupEnabled, int unusedArtifactsCleanupPeriodHours, String url, String username, String repoLayoutRef, boolean enableNuGetSupport,
-                         long assumedOfflinePeriodSecs, boolean archiveBrowsingEnabled, boolean listRemoteFolderItems, boolean rejectInvalidJars, boolean p2Support, boolean enableGemsSupport) {
+                         long assumedOfflinePeriodSecs, boolean archiveBrowsingEnabled, boolean listRemoteFolderItems, boolean rejectInvalidJars, boolean p2Support, boolean enableGemsSupport, boolean enableNpmSupport) {
         super(description, excludesPattern, includesPattern, key, notes, blackedOut, handleReleases, handleSnapshots, maxUniqueSnapshots, propertySets, snapshotVersionBehavior,
-                suppressPomConsistencyChecks, repoLayoutRef, enableNuGetSupport, archiveBrowsingEnabled, enableGemsSupport);
+                suppressPomConsistencyChecks, repoLayoutRef, enableNuGetSupport, archiveBrowsingEnabled, enableGemsSupport, enableNpmSupport);
         this.failedRetrievalCachePeriodSecs = failedRetrievalCachePeriodSecs;
         this.fetchJarsEagerly = fetchJarsEagerly;
         this.fetchSourcesEagerly = fetchSourcesEagerly;

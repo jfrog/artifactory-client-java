@@ -53,8 +53,8 @@ public class ItemTests extends ArtifactoryTestsBase {
         //Upload a clean file
         InputStream content = this.getClass().getResourceAsStream("/sample.txt");
         assertNotNull(content);
-        artifactory.repository(NEW_LOCAL).upload("x/y/z", content).doUpload();
-        ItemHandle file = artifactory.repository(NEW_LOCAL).file("x/y/z");
+        artifactory.repository(NEW_LOCAL).upload(PATH, content).doUpload();
+        ItemHandle file = artifactory.repository(NEW_LOCAL).file(PATH);
         Map<String, ?> resProps = file.getProperties();
         assertTrue(resProps.isEmpty());
         Map<String, String> props = new HashMap<>();
@@ -126,12 +126,12 @@ public class ItemTests extends ArtifactoryTestsBase {
         assertTrue(folder.getPropertyValues("v1").contains("b2"));
     }
 
-    //this test move content of directory "x" to another repo into directory "abc", than both repo's will be removed after finish
+    //this test move content of directory "m" to another repo into directory "abc", than both repo's will be removed after finish
     @Test
     public void testMoveDirectory() throws Exception {
         try {
             prepareRepositoriesForMovingAndCoping();
-            ItemHandle itemHandle = artifactory.repository(NEW_LOCAL_FROM).folder("x");
+            ItemHandle itemHandle = artifactory.repository(NEW_LOCAL_FROM).folder("m");
             String path = "abc";
             checkTheEqualityOfFolders(itemHandle.move(NEW_LOCAL_TO, path), NEW_LOCAL_TO, path);
         } finally {
@@ -139,12 +139,12 @@ public class ItemTests extends ArtifactoryTestsBase {
         }
     }
 
-    //this test copy content of directory "x" to another repo into directory "abc", than both repo's will be removed after finish
+    //this test copy content of directory "m" to another repo into directory "abc", than both repo's will be removed after finish
     @Test
     public void testCopyDirectory() throws Exception {
         try {
             prepareRepositoriesForMovingAndCoping();
-            ItemHandle itemHandle = artifactory.repository(NEW_LOCAL_FROM).folder("x");
+            ItemHandle itemHandle = artifactory.repository(NEW_LOCAL_FROM).folder("m");
             String path = "abc";
             checkTheEqualityOfFolders(itemHandle.copy(NEW_LOCAL_TO, path), NEW_LOCAL_TO, path);
         } finally {
@@ -152,15 +152,14 @@ public class ItemTests extends ArtifactoryTestsBase {
         }
     }
 
-    //this test move file "z" to the root of another repo, than both repo's will be removed after finish
+    //this test move file "sample.txt" to the root of another repo, than both repo's will be removed after finish
     @Test
     public void testMoveFile() throws Exception {
         try {
             prepareRepositoriesForMovingAndCoping();
-            String path = "x/y/z";
-            ItemHandle itemHandle = artifactory.repository(NEW_LOCAL_FROM).file(path);
-            ItemHandle newItemHandle = itemHandle.move(NEW_LOCAL_TO, path);
-            checkTheEqualityOfFiles(newItemHandle, NEW_LOCAL_TO, path);
+            ItemHandle itemHandle = artifactory.repository(NEW_LOCAL_FROM).file(PATH);
+            ItemHandle newItemHandle = itemHandle.move(NEW_LOCAL_TO, PATH);
+            checkTheEqualityOfFiles(newItemHandle, NEW_LOCAL_TO, PATH);
         } finally {
             deleteAllRelatedRepos();
         }
@@ -171,10 +170,9 @@ public class ItemTests extends ArtifactoryTestsBase {
     public void testCopyFile() throws Exception {
         try {
             prepareRepositoriesForMovingAndCoping();
-            String path = "x/y/z";
-            ItemHandle itemHandle = artifactory.repository(NEW_LOCAL_FROM).file(path);
-            ItemHandle newItemHandle = itemHandle.copy(NEW_LOCAL_TO, path);
-            checkTheEqualityOfFiles(newItemHandle, NEW_LOCAL_TO, path);
+            ItemHandle itemHandle = artifactory.repository(NEW_LOCAL_FROM).file(PATH);
+            ItemHandle newItemHandle = itemHandle.copy(NEW_LOCAL_TO, PATH);
+            checkTheEqualityOfFiles(newItemHandle, NEW_LOCAL_TO, PATH);
         } finally {
             deleteAllRelatedRepos();
         }
@@ -185,9 +183,9 @@ public class ItemTests extends ArtifactoryTestsBase {
         prepareRepositoriesForMovingAndCoping();
         ItemHandle itemHandle = artifactory.repository(NEW_LOCAL_FROM).file("a/a");
         try {
-            itemHandle.move(NEW_LOCAL_TO, "x/y/z");
+            itemHandle.move(NEW_LOCAL_TO, PATH);
         } catch (CopyMoveException e) {
-            assertTrue(curl("api/move/" + NEW_LOCAL_FROM + "/a/a?to=x/y/z", "POST").contains(e.getCopyMoveResultReport().getMessages().get(0).getMessage()));
+            assertTrue(curl("api/move/" + NEW_LOCAL_FROM + "/a/a?to="+PATH, "POST").contains(e.getCopyMoveResultReport().getMessages().get(0).getMessage()));
         } finally {
             deleteAllRelatedRepos();
         }
@@ -198,9 +196,9 @@ public class ItemTests extends ArtifactoryTestsBase {
         prepareRepositoriesForMovingAndCoping();
         ItemHandle itemHandle = artifactory.repository(NEW_LOCAL_FROM).file("a/a");
         try {
-            itemHandle.copy(NEW_LOCAL_TO, "x/y/z");
+            itemHandle.copy(NEW_LOCAL_TO, PATH);
         } catch (CopyMoveException e) {
-            assertTrue(curl("api/copy/" + NEW_LOCAL_FROM + "/a/a?to=x/y/z", "POST").contains(e.getCopyMoveResultReport().getMessages().get(0).getMessage()));
+            assertTrue(curl("api/copy/" + NEW_LOCAL_FROM + "/a/a?to="+PATH, "POST").contains(e.getCopyMoveResultReport().getMessages().get(0).getMessage()));
         } finally {
             deleteAllRelatedRepos();
         }
@@ -223,7 +221,7 @@ public class ItemTests extends ArtifactoryTestsBase {
         setupLocalRepo(NEW_LOCAL_TO);
         InputStream content = this.getClass().getResourceAsStream("/sample.txt");
         assertNotNull(content);
-        artifactory.repository(NEW_LOCAL_FROM).upload("x/y/z", content).doUpload();
+        artifactory.repository(NEW_LOCAL_FROM).upload(PATH, content).doUpload();
     }
 
     private void deleteAllRelatedRepos() throws IOException {
