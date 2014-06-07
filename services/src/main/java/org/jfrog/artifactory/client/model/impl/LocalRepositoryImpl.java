@@ -22,8 +22,8 @@ public class LocalRepositoryImpl extends NonVirtualRepositoryBase implements Loc
         repoLayoutRef = MAVEN_2_REPO_LAYOUT;
     }
 
-    private LocalRepositoryImpl(String description, String excludesPattern, String includesPattern, String key, String notes, boolean blackedOut, boolean handleReleases, boolean handleSnapshots, int maxUniqueSnapshots, List<String> propertySets, SnapshotVersionBehavior snapshotVersionBehavior, boolean suppressPomConsistencyChecks, ChecksumPolicyType checksumPolicyType, String repoLayoutRef, boolean enableNuGetSupport, boolean archiveBrowsingEnabled, boolean calculateYumMetadata, int yumRootDepth, boolean enableGemsSupport) {
-        super(description, excludesPattern, includesPattern, key, notes, blackedOut, handleReleases, handleSnapshots, maxUniqueSnapshots, propertySets, snapshotVersionBehavior, suppressPomConsistencyChecks, repoLayoutRef, enableNuGetSupport, archiveBrowsingEnabled, enableGemsSupport);
+    private LocalRepositoryImpl(String description, String excludesPattern, String includesPattern, String key, String notes, boolean blackedOut, boolean handleReleases, boolean handleSnapshots, int maxUniqueSnapshots, List<String> propertySets, SnapshotVersionBehavior snapshotVersionBehavior, boolean suppressPomConsistencyChecks, ChecksumPolicyType checksumPolicyType, String repoLayoutRef, boolean enableNuGetSupport, boolean archiveBrowsingEnabled, boolean calculateYumMetadata, int yumRootDepth, boolean enableGemsSupport, boolean enableNpmSupport) {
+        super(description, excludesPattern, includesPattern, key, notes, blackedOut, handleReleases, handleSnapshots, maxUniqueSnapshots, propertySets, snapshotVersionBehavior, suppressPomConsistencyChecks, repoLayoutRef, enableNuGetSupport, archiveBrowsingEnabled, enableGemsSupport, enableNpmSupport);
         this.checksumPolicyType = checksumPolicyType;
         this.calculateYumMetadata = calculateYumMetadata;
         this.yumRootDepth = yumRootDepth;

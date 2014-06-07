@@ -41,7 +41,7 @@ class LocalRepositoryBuilderImpl extends NonVirtualRepositoryBuilderBase<LocalRe
     }
 
     LocalRepository build() {
-        return new LocalRepositoryImpl(description, excludesPattern, includesPattern, key, notes, blackedOut, handleReleases, handleSnapshots, maxUniqueSnapshots, propertySets, snapshotVersionBehavior, suppressPomConsistencyChecks, checksumPolicyType, repoLayoutRef, enableNuGetSupport, archiveBrowsingEnabled, calculateYumMetadata, yumRootDepth, enableGemsSupport)
+        return new LocalRepositoryImpl(description, excludesPattern, includesPattern, key, notes, blackedOut, handleReleases, handleSnapshots, maxUniqueSnapshots, propertySets, snapshotVersionBehavior, suppressPomConsistencyChecks, checksumPolicyType, repoLayoutRef, enableNuGetSupport, archiveBrowsingEnabled, calculateYumMetadata, yumRootDepth, enableGemsSupport, enableNpmSupport)
     }
 
 }

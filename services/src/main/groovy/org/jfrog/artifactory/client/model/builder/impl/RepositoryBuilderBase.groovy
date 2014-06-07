@@ -17,6 +17,7 @@ abstract class RepositoryBuilderBase<B extends RepositoryBuilder, R extends Repo
     protected String repoLayoutRef
     protected boolean enableNuGetSupport = false
     protected boolean enableGemsSupport = false
+    protected boolean enableNpmSupport = false
 
     @Override
     B description(String description) {
