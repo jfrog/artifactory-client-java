@@ -9,6 +9,7 @@ package org.jfrog.artifactory.client.ning
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.ning.http.client.AsyncHttpClient
 import com.ning.http.client.AsyncHttpClient.BoundRequestBuilder
+import com.ning.http.client.generators.InputStreamBodyGenerator
 import com.ning.http.client.Request
 import com.ning.http.client.Response
 import groovyx.net.http.ContentType
@@ -97,10 +98,10 @@ public class ArtifactoryNingClientImpl extends ArtifactoryImpl {
         BoundRequestBuilder requestBuilder;
         switch (method) {
             case POST:
-                requestBuilder = ningHttpClient.preparePost(finalUrl).setBody(requestBody);
+                requestBuilder = ningHttpClient.preparePost(finalUrl).setBody(createInputStreamBodyGenerator(requestBody));
                 break;
             case PUT:
-                requestBuilder = ningHttpClient.preparePut(finalUrl).setBody(requestBody);
+                requestBuilder = ningHttpClient.preparePut(finalUrl).setBody(createInputStreamBodyGenerator(requestBody));
                 break;
             case DELETE:
                 requestBuilder = ningHttpClient.prepareDelete(finalUrl);
@@ -165,5 +166,13 @@ public class ArtifactoryNingClientImpl extends ArtifactoryImpl {
                 throw new IOException("Response was " + statusCode
                         + " message '" + response.getStatusText() + "'");
         }
+    }
+    
+    private Object createInputStreamBodyGenerator(Object requestBody){
+        if (requestBody instanceof InputStream){
+            //wrap it with InputStreamBodyGenerator.  See https://github.com/AsyncHttpClient/async-http-client/issues/576
+            return new InputStreamBodyGenerator(requestBody);
+        }
+        return requestBody;
     }
 }
