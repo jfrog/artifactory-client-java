@@ -18,6 +18,8 @@ abstract class RepositoryBuilderBase<B extends RepositoryBuilder, R extends Repo
     protected boolean enableNuGetSupport = false
     protected boolean enableGemsSupport = false
     protected boolean enableNpmSupport = false
+    protected boolean enableDebianSupport = false
+    protected boolean debianTrivialLayout = false
 
     @Override
     B description(String description) {
@@ -64,6 +66,18 @@ abstract class RepositoryBuilderBase<B extends RepositoryBuilder, R extends Repo
     @Override
     B enableGemsSupport(boolean enableGemsSupport) {
         this.enableGemsSupport = enableGemsSupport
+        this as B
+    }
+
+    @Override
+    B enableDebianSupport(boolean enableDebianSupport) {
+        this.enableDebianSupport = enableDebianSupport
+        this as B
+    }
+
+    @Override
+    B debianTrivialLayout(boolean debianTrivialLayout) {
+        this.debianTrivialLayout = debianTrivialLayout
         this as B
     }
 }

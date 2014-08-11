@@ -1,5 +1,5 @@
 apply plugin: 'groovy'
-apply plugin: 'fatjar'
+apply plugin: 'eu.appsatori.fatjar'
 
 dependencies {
     compile project(':artifactory-java-client-services')

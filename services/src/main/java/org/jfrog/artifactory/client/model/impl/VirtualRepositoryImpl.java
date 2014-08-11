@@ -19,8 +19,11 @@ public class VirtualRepositoryImpl extends RepositoryBase implements VirtualRepo
     private VirtualRepositoryImpl() {
     }
 
-    private VirtualRepositoryImpl(String description, String excludesPattern, String includesPattern, String key, String notes, boolean artifactoryRequestsCanRetrieveRemoteArtifacts, String keyPair, PomRepositoryReferencesCleanupPolicy pomRepositoryReferencesCleanupPolicy, List<String> repositories, String repoLayoutRef, boolean enableNuGetSupport, boolean enableGemsSupport, boolean enableNpmSupport) {
-        super(description, excludesPattern, includesPattern, key, notes, repoLayoutRef, enableNuGetSupport, enableGemsSupport, enableNpmSupport);
+    private VirtualRepositoryImpl(String description, String excludesPattern, String includesPattern, String key, String notes,
+                                  boolean artifactoryRequestsCanRetrieveRemoteArtifacts, String keyPair,
+                                  PomRepositoryReferencesCleanupPolicy pomRepositoryReferencesCleanupPolicy, List<String> repositories, String repoLayoutRef,
+                                  boolean enableNuGetSupport, boolean enableGemsSupport, boolean enableNpmSupport, boolean enableDebianSupport, boolean debianTrivialLayout) {
+        super(description, excludesPattern, includesPattern, key, notes, repoLayoutRef, enableNuGetSupport, enableGemsSupport, enableNpmSupport, enableDebianSupport, debianTrivialLayout);
         this.artifactoryRequestsCanRetrieveRemoteArtifacts = artifactoryRequestsCanRetrieveRemoteArtifacts;
         this.keyPair = keyPair;
         this.pomRepositoryReferencesCleanupPolicy = pomRepositoryReferencesCleanupPolicy;

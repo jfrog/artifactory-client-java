@@ -18,12 +18,15 @@ public abstract class RepositoryBase implements Repository {
     protected boolean enableNuGetSupport;
     protected boolean enableGemsSupport;
     protected boolean enableNpmSupport;
+    protected boolean enableDebianSupport;
+    protected boolean debianTrivialLayout;
 
 
     protected RepositoryBase() {
     }
 
-    protected RepositoryBase(String description, String excludesPattern, String includesPattern, String key, String notes, String repoLayoutRef, boolean enableNuGetSupport, boolean enableGemsSupport, boolean enableNpmSupport) {
+    protected RepositoryBase(String description, String excludesPattern, String includesPattern, String key, String notes, String repoLayoutRef,
+                             boolean enableNuGetSupport, boolean enableGemsSupport, boolean enableNpmSupport, boolean enableDebianSupport, boolean debianTrivialLayout) {
         this.description = description;
         this.excludesPattern = excludesPattern;
         this.includesPattern = includesPattern;
@@ -33,6 +36,7 @@ public abstract class RepositoryBase implements Repository {
         this.enableNuGetSupport = enableNuGetSupport;
         this.enableGemsSupport = enableGemsSupport;
         this.enableNpmSupport = enableNpmSupport;
+        this.enableDebianSupport = enableDebianSupport;
     }
 
     @Override
@@ -154,7 +158,28 @@ public abstract class RepositoryBase implements Repository {
     }
 
     @Override
-    public boolean isEnableNpmSupport() { return enableNpmSupport; }
+    public boolean isEnableNpmSupport() {
+        return enableNpmSupport;
+    }
 
-    public void setEnableNpmSupport(boolean enableNpmSupport) { this.enableNpmSupport = enableNpmSupport; }
+    @Override
+    public boolean isEnableDebianSupport() {
+        return enableDebianSupport;
+    }
+
+    @Override
+    public boolean isDebianTrivialLayout() {
+        return debianTrivialLayout;
+    }
+
+    public void setEnableNpmSupport(boolean enableNpmSupport) {
+        this.enableNpmSupport = enableNpmSupport;
+    }
+
+    public void setEnableDebianSupport(boolean enableDebianSupport) {
+        this.enableDebianSupport = enableDebianSupport;
+    }
+    public void setDebianTrivialLayout(boolean debianTrivialLayout) {
+        this.debianTrivialLayout = debianTrivialLayout;
+    }
 }

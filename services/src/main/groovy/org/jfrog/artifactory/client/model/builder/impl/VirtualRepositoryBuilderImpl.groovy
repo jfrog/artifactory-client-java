@@ -41,6 +41,6 @@ class VirtualRepositoryBuilderImpl extends RepositoryBuilderBase<VirtualReposito
     }
 
     VirtualRepository build() {
-        new VirtualRepositoryImpl(description, excludesPattern, includesPattern, key, notes, artifactoryRequestsCanRetrieveRemoteArtifacts, keyPair, pomRepositoryReferencesCleanupPolicy, repositories, repoLayoutRef, enableNuGetSupport, enableGemsSupport, enableNpmSupport)
+        new VirtualRepositoryImpl(description, excludesPattern, includesPattern, key, notes, artifactoryRequestsCanRetrieveRemoteArtifacts, keyPair, pomRepositoryReferencesCleanupPolicy, repositories, repoLayoutRef, enableNuGetSupport, enableGemsSupport, enableNpmSupport, enableDebianSupport, debianTrivialLayout)
     }
 }
