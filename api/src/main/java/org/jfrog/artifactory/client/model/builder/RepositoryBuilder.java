@@ -8,6 +8,8 @@ import org.jfrog.artifactory.client.model.Repository;
  */
 public interface RepositoryBuilder<B extends RepositoryBuilder, R extends Repository> {
 
+    B enableDebianSupport(boolean enableDebianSupport);
+
     B description(String description);
 
     B excludesPattern(String excludesPattern);
@@ -25,4 +27,6 @@ public interface RepositoryBuilder<B extends RepositoryBuilder, R extends Reposi
     B enableNuGetSupport(boolean enableNuGetSupport);
 
     B enableGemsSupport(boolean enableGemsSupport);
+
+    B debianTrivialLayout(boolean debianTrivialLayout);
 }

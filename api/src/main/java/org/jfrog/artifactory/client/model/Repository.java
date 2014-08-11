@@ -26,4 +26,8 @@ public interface Repository {
     boolean isEnableGemsSupport();
 
     boolean isEnableNpmSupport();
+
+    boolean isEnableDebianSupport();
+
+    boolean isDebianTrivialLayout();
 }
