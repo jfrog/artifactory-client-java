@@ -72,7 +72,9 @@ subprojects {
 
     // add javadoc/source jar tasks as artifacts
     artifacts {
-        archives sourcesJar, javadocJar, jar
+        archives sourcesJar, 
+			//javadocJar, 
+			jar
     }
 
     test {
