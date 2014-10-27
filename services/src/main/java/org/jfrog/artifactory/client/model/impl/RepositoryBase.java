@@ -20,7 +20,8 @@ public abstract class RepositoryBase implements Repository {
     protected boolean enableNpmSupport;
     protected boolean enableDebianSupport;
     protected boolean debianTrivialLayout;
-
+    protected boolean enablePypiSupport;
+    protected boolean enableDockerSupport;
 
     protected RepositoryBase() {
     }
@@ -168,6 +169,16 @@ public abstract class RepositoryBase implements Repository {
     }
 
     @Override
+    public boolean isEnablePypiSupport() {
+        return enablePypiSupport;
+    }
+
+    @Override
+    public boolean isEnableDockerSupport() {
+        return enableDockerSupport;
+    }
+
+    @Override
     public boolean isDebianTrivialLayout() {
         return debianTrivialLayout;
     }
@@ -179,7 +190,16 @@ public abstract class RepositoryBase implements Repository {
     public void setEnableDebianSupport(boolean enableDebianSupport) {
         this.enableDebianSupport = enableDebianSupport;
     }
+
     public void setDebianTrivialLayout(boolean debianTrivialLayout) {
         this.debianTrivialLayout = debianTrivialLayout;
+    }
+
+    public void setEnablePypiSupport(boolean enablePypiSupport) {
+        this.enablePypiSupport = enablePypiSupport;
+    }
+
+    public void setEnableDockerSupport(boolean enableDockerSupport) {
+        this.enableDockerSupport = enableDockerSupport;
     }
 }

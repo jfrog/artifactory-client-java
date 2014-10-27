@@ -27,6 +27,10 @@ public interface Repository {
 
     boolean isEnableNpmSupport();
 
+    boolean isEnablePypiSupport();
+
+    boolean isEnableDockerSupport();
+
     boolean isEnableDebianSupport();
 
     boolean isDebianTrivialLayout();

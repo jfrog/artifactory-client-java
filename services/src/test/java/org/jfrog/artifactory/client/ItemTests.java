@@ -5,6 +5,7 @@ import org.jfrog.artifactory.client.impl.CopyMoveException;
 import org.jfrog.artifactory.client.model.File;
 import org.jfrog.artifactory.client.model.Folder;
 import org.jfrog.artifactory.client.model.LocalRepository;
+import org.jfrog.artifactory.client.model.Repository;
 import org.testng.annotations.Test;
 
 import java.io.IOException;

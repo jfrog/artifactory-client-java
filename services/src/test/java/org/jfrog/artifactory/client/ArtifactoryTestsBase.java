@@ -36,44 +36,44 @@ public abstract class ArtifactoryTestsBase {
     protected String username;
     private String password;
     protected String url;
+    protected String filePath;
+    protected long fileSize;
+    protected String fileMd5;
+    protected String fileSha1;
 
     @BeforeClass
     public void init() throws IOException {
 
         Properties props = new Properties();
-        InputStream inputStream = this.getClass().getResourceAsStream(
-                "/artifactory-client.properties");//this file is not in GitHub. Create your own in src/test/resources.
+        // This file is not in GitHub. Create your own in src/test/resources.
+        InputStream inputStream = this.getClass().getResourceAsStream("/artifactory-client.properties");
         if (inputStream != null) {
             props.load(inputStream);
-            url = props.getProperty(CLIENTTESTS_ARTIFACTORY_PROPERTIES_PREFIX + "url");
-            username = props.getProperty(CLIENTTESTS_ARTIFACTORY_PROPERTIES_PREFIX + "username");
-            password = props.getProperty(CLIENTTESTS_ARTIFACTORY_PROPERTIES_PREFIX + "password");
-        } else {
-            url = System.getProperty(CLIENTTESTS_ARTIFACTORY_PROPERTIES_PREFIX + "url");
-            if (url == null) {
-                url = System.getenv(CLIENTTESTS_ARTIFACTORY_ENV_VAR_PREFIX + "URL");
-            }
-            if (url == null) {
-                failInit();
-            }
-            username = System.getProperty(CLIENTTESTS_ARTIFACTORY_PROPERTIES_PREFIX + "username");
-            if (username == null) {
-                username = System.getenv(CLIENTTESTS_ARTIFACTORY_ENV_VAR_PREFIX + "USERNAME");
-            }
-            if (username == null) {
-                failInit();
-            }
-            password = System.getProperty(CLIENTTESTS_ARTIFACTORY_PROPERTIES_PREFIX + "password");
-            if (password == null) {
-                password = System.getenv(CLIENTTESTS_ARTIFACTORY_ENV_VAR_PREFIX + "PASSWORD");
-            }
-            if (password == null) {
-                failInit();
-            }
-
-
         }
+
+        url = readParam(props, "url");
+        username = readParam(props, "username");
+        password = readParam(props, "password");
+        filePath = readParam(props, "filePath");
+        fileSize = Long.valueOf(readParam(props, "fileSize"));
+        fileMd5 = readParam(props, "fileMd5");
+        fileSha1 = readParam(props, "fileSha1");
+
         artifactory = create(url, username, password);
+    }
+
+    private String readParam(Properties props, String paramName) {
+        if (props.size() > 0) {
+            return props.getProperty(CLIENTTESTS_ARTIFACTORY_PROPERTIES_PREFIX + paramName);
+        }
+        String paramValue = System.getProperty(CLIENTTESTS_ARTIFACTORY_PROPERTIES_PREFIX + paramName);
+        if (paramValue == null) {
+            paramValue = System.getenv(CLIENTTESTS_ARTIFACTORY_ENV_VAR_PREFIX + paramName.toUpperCase());
+        }
+        if (paramValue == null) {
+            failInit();
+        }
+        return paramValue;
     }
 
     private void failInit() {

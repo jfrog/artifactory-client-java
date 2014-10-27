@@ -1,6 +1,7 @@
 package org.jfrog.artifactory.client.impl
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect
+import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat
 import groovyx.net.http.*
@@ -38,6 +39,7 @@ class ArtifactoryImpl implements Artifactory {
         objectMapper.configure WRITE_DATES_AS_TIMESTAMPS, false
         objectMapper.dateFormat = ISO8601_DATE_FORMAT
         objectMapper.visibilityChecker = defaultInstance().withFieldVisibility(JsonAutoDetect.Visibility.ANY)
+        objectMapper.configure DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false
     }
 
     void close() {
