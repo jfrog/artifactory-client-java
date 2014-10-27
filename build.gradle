@@ -91,7 +91,7 @@ subprojects {
             main(MavenPublication) {
                 from components.java
                 artifact sourcesJar
-                artifact javadocJar
+                //artifact javadocJar
 
                 pom.withXml {
                     asNode().with {
