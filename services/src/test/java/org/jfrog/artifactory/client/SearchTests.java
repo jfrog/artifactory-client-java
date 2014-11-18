@@ -10,11 +10,11 @@ import java.util.Map;
 
 import static java.util.Arrays.asList;
 import static org.apache.commons.lang.StringUtils.countMatches;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.*;
 
 /**
  * @author jbaruch
+ * @author rnaegele
  * @since 03/08/12
  */
 public class SearchTests extends ArtifactoryTestsBase {
@@ -49,6 +49,21 @@ public class SearchTests extends ArtifactoryTestsBase {
                         .doSearch();
         assertEquals(results.size(),
                 countMatches(curl("api/search/artifact?name=junit&repos="+ LIBS_RELEASE_LOCAL +","+JCENTER_CACHE), "{") - 1);
+    }
+
+    @Test
+    public void testArtifactsCreatedSinceSearch() throws IOException {
+        long aWeekAgo = System.currentTimeMillis() - 86400000L * 7;
+        List<RepoPath> results = artifactory.searches().artifactsCreatedSince(aWeekAgo).doSearch();
+        assertFalse(results.isEmpty());
+    }
+
+    @Test
+    public void testArtifactsCreatedInDateRangeSearch() throws IOException {
+        long aWeekAgo = System.currentTimeMillis() - 86400000L * 7;
+        long now = System.currentTimeMillis();
+        List<RepoPath> results = artifactory.searches().artifactsCreatedInDateRange(aWeekAgo, now).doSearch();
+        assertFalse(results.isEmpty());
     }
 
     @Test(dependsOnGroups = "uploadBasics")
