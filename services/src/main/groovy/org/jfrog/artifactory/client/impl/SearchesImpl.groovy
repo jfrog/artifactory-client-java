@@ -11,6 +11,7 @@ import org.jfrog.artifactory.client.model.impl.RepoPathImpl
 /**
  *
  * @author jbaruch
+ * @author rnaegele
  * @since 03/08/12
  */
 class SearchesImpl implements Searches {
@@ -18,7 +19,8 @@ class SearchesImpl implements Searches {
     private String SEARCHES_API = "/api/search/"
     private ArtifactoryImpl artifactory
     private List<String> reposFilter = []
-    private String quickSearchTerm
+    private String searchUrl
+    private Map searchQuery
 
     SearchesImpl(Artifactory artifactory) {
         this.artifactory = artifactory as ArtifactoryImpl
@@ -30,15 +32,29 @@ class SearchesImpl implements Searches {
     }
 
     Searches artifactsByName(String name) {
-        this.quickSearchTerm = name
+        this.searchUrl = 'artifact'
+        this.searchQuery = [name: name]
+        this
+    }
+
+    Searches artifactsCreatedSince(final long sinceMillis) {
+        artifactsCreatedInDateRange(sinceMillis, -1L)
+    }
+
+    Searches artifactsCreatedInDateRange(final long fromMillis, final long toMillis) {
+        this.searchUrl = 'creation'
+        this.searchQuery = [from: fromMillis as String]
+        if (toMillis >= 0) {
+            this.searchQuery << ['to': toMillis as String]
+        }
         this
     }
 
     List<RepoPath> doSearch() {
-        if (!quickSearchTerm) {
-            throw new IllegalArgumentException("Search term wasn't set. Please call 'artifactsByName(name to search)' before calling 'search()'")
+        if (!searchUrl) {
+            throw new IllegalArgumentException("Search url wasn't set. Please call one of the 'artifacts...' methods before calling 'search()'")
         }
-        search('artifact', [name: quickSearchTerm])
+        search(searchUrl, searchQuery)
     }
 
     private List<RepoPath> search(String url, Map query) {
