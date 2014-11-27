@@ -9,6 +9,7 @@ package org.jfrog.artifactory.client.ning
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.ning.http.client.AsyncHttpClient
 import com.ning.http.client.AsyncHttpClient.BoundRequestBuilder
+import com.ning.http.client.generators.InputStreamBodyGenerator
 import com.ning.http.client.Request
 import com.ning.http.client.Response
 import groovyx.net.http.ContentType
@@ -89,15 +90,18 @@ public class ArtifactoryNingClientImpl extends ArtifactoryImpl {
     private def <T> T rest(Method method, String path, Map query = null, responseType = ANY,
                            def responseClass, ContentType requestContentType = JSON, requestBody = null, Map addlHeaders = null, long contentLength = -1) {
         log.debug("Method: {}, Path: {}", method, path);
+        log.debug("ResponseType: {}, ResponseClass: {}", responseType, responseClass);
+        log.debug("RequestContentType: {}", requestContentType);
+        log.debug("Headers: {}", addlHeaders);
         String finalUrl = this.url + path;
         log.debug("finalUrl: {}", finalUrl);
         BoundRequestBuilder requestBuilder;
         switch (method) {
             case POST:
-                requestBuilder = ningHttpClient.preparePost(finalUrl).setBody(requestBody);
+                requestBuilder = ningHttpClient.preparePost(finalUrl).setBody(createInputStreamBodyGenerator(requestBody));
                 break;
             case PUT:
-                requestBuilder = ningHttpClient.preparePut(finalUrl).setBody(requestBody);
+                requestBuilder = ningHttpClient.preparePut(finalUrl).setBody(createInputStreamBodyGenerator(requestBody));
                 break;
             case DELETE:
                 requestBuilder = ningHttpClient.prepareDelete(finalUrl);
@@ -110,7 +114,10 @@ public class ArtifactoryNingClientImpl extends ArtifactoryImpl {
         if (inputStream != null) {
             try {
                 //This may puke on IOException, JsonParseException, JsonMappingException but we will let the caller deal with it.
-                return (T) objectMapper.readValue(inputStream, responseClass);
+                if (responseType == ContentType.JSON && inputStream.available() > 0) {
+                    return (T) objectMapper.readValue(inputStream, responseClass);
+                }
+                //TODO: Handle other cases.
             } finally {
                 inputStream.close();
             }
@@ -159,5 +166,13 @@ public class ArtifactoryNingClientImpl extends ArtifactoryImpl {
                 throw new IOException("Response was " + statusCode
                         + " message '" + response.getStatusText() + "'");
         }
+    }
+    
+    private Object createInputStreamBodyGenerator(Object requestBody){
+        if (requestBody instanceof InputStream){
+            //wrap it with InputStreamBodyGenerator.  See https://github.com/AsyncHttpClient/async-http-client/issues/576
+            return new InputStreamBodyGenerator(requestBody);
+        }
+        return requestBody;
     }
 }
