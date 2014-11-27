@@ -39,9 +39,11 @@ class UploadableArtifactImpl extends ArtifactBase<UploadableArtifact> implements
         if (sha1) {
             def headers = ['X-Checksum-Deploy': true, 'X-Checksum-Sha1': sha1]
             try {
-                artifactory.put("/$repo/$path${params}", [:], ContentType.JSON, FileImpl, ContentType.BINARY, null, headers, file ? file.length() : -1)
+                artifactory.put("/$repo/$path${params}", [:], ContentType.JSON, FileImpl, ContentType.BINARY, null,
+                                    headers, file ? file.length() : -1)
             } catch (HttpResponseException e) {
                 if (e.statusCode == 404) {
+                    headers = ['X-Checksum-Sha1': sha1]
                     uploadContent(params, headers)
                 } else {
                     throw e
