@@ -6,7 +6,7 @@ dependencies {
     compile addGroovy('groovy')
     compile addGroovy('groovy-json')
     compile addGroovy('groovy-xml')
-    compile group: 'org.codehaus.groovy.modules.http-builder', name: 'http-builder', version: '0.6'
+    compile group: 'org.codehaus.groovy.modules.http-builder', name: 'http-builder', version: '0.7.1'
     compile group: 'net.sourceforge.nekohtml', name: 'nekohtml', version: '1.9.17'
     compile addSlf4J('slf4j-api')
     compile addSlf4J('log4j-over-slf4j')
