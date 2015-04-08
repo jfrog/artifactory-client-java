@@ -41,7 +41,7 @@ fatJar {
 
 artifacts {
     archives sourcesJar, 
-		//javadocJar, 
+		javadocJar,
 		jar, fatJar
 }
 
