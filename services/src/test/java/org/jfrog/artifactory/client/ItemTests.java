@@ -5,7 +5,6 @@ import org.jfrog.artifactory.client.impl.CopyMoveException;
 import org.jfrog.artifactory.client.model.File;
 import org.jfrog.artifactory.client.model.Folder;
 import org.jfrog.artifactory.client.model.LocalRepository;
-import org.jfrog.artifactory.client.model.Repository;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
@@ -186,7 +185,7 @@ public class ItemTests extends ArtifactoryTestsBase {
         try {
             itemHandle.move(NEW_LOCAL_TO, PATH);
         } catch (CopyMoveException e) {
-            assertTrue(curl("api/move/" + NEW_LOCAL_FROM + "/a/a?to="+PATH, "POST").contains(e.getCopyMoveResultReport().getMessages().get(0).getMessage()));
+            assertTrue(curl("api/move/" + NEW_LOCAL_FROM + "/a/a?to=" + NEW_LOCAL_TO + "/" + PATH, "POST").contains(e.getCopyMoveResultReport().getMessages().get(0).getMessage()));
         } finally {
             deleteAllRelatedRepos();
         }
@@ -199,7 +198,7 @@ public class ItemTests extends ArtifactoryTestsBase {
         try {
             itemHandle.copy(NEW_LOCAL_TO, PATH);
         } catch (CopyMoveException e) {
-            assertTrue(curl("api/copy/" + NEW_LOCAL_FROM + "/a/a?to="+PATH, "POST").contains(e.getCopyMoveResultReport().getMessages().get(0).getMessage()));
+            assertTrue(curl("api/copy/" + NEW_LOCAL_FROM + "/a/a?to=" +  NEW_LOCAL_TO + "/" + PATH, "POST").contains(e.getCopyMoveResultReport().getMessages().get(0).getMessage()));
         } finally {
             deleteAllRelatedRepos();
         }

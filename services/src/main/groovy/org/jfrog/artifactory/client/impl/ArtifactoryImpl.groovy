@@ -201,6 +201,15 @@ class ArtifactoryImpl implements Artifactory {
             response.'404' = { resp ->
                 throw new HttpResponseException(resp)
             }
+
+            response.'409' = { resp, slurped ->
+                if (responseClass==String || responseType == TEXT) {
+                    // we overrode the parser to be just text, but oddly it returns an InputStreamReader instead of a String
+                    ret = slurped?.text
+                } else {
+                    ret = slurped // Will be type according to responseType
+                }
+            }
         }
         ret
     }
