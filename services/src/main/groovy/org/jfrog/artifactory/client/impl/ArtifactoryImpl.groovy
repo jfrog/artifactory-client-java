@@ -87,6 +87,34 @@ class ArtifactoryImpl implements Artifactory {
         new ArtifactorySystemImpl(this)
     }
 
+    @Override
+    def <T> T restCall(ArtifactoryRequest request) {
+
+        def responseType = Enum.valueOf(ContentType.class, request.getResponseType().getText())
+        def requestPath  = "/api/" + request.getApiUrl()
+
+        switch (request.getMethod()) {
+            case (ArtifactoryRequest.Method.GET):
+                get(requestPath, request.getQueryParams(), responseType, null, request.getHeaders())
+                break
+            case (ArtifactoryRequest.Method.POST):
+                def requestType  = Enum.valueOf(ContentType.class, request.getRequestType().getText())
+                post(requestPath, request.getQueryParams(), responseType, null, requestType, request.getBody(),
+                        request.getHeaders())
+                break
+            case (ArtifactoryRequest.Method.PUT):
+                def requestType  = Enum.valueOf(ContentType.class, request.getRequestType().getText())
+                put(requestPath, request.getQueryParams(), responseType, null, requestType, request.getBody(),
+                        request.getHeaders())
+                break
+            case (ArtifactoryRequest.Method.DELETE):
+                delete(requestPath, request.getQueryParams(), responseType, null, request.getHeaders())
+                break
+            default:
+                throw new IllegalArgumentException("HTTP method invalid.")
+        }
+    }
+
     protected InputStream getInputStream(String path, Map query = [:]) {
         // Otherwise when we leave the response.success block, ensureConsumed will be called to close the stream
         def ret = client.get([path: cleanPath(path), query: query, contentType: BINARY])
@@ -97,19 +125,23 @@ class ArtifactoryImpl implements Artifactory {
         get(path, [:], responseContentType, responseClass, headers)
     }
 
-    def <T> T get(String path, Map query, ContentType responseContentType = ANY, def responseClass = null, Map headers = null) {
+    def <T> T get(String path, Map query, ContentType responseContentType = ANY,
+                  def responseClass = null, Map headers = null) {
         rest(GET, path, query, responseContentType, responseClass, ANY, null, headers)
     }
 
-    def <T> T delete(String path, Map query = null, ContentType responseContentType = ANY, def responseClass = null, Map addlHeaders = null) {
+    def <T> T delete(String path, Map query = null, ContentType responseContentType = ANY,
+                     def responseClass = null, Map addlHeaders = null) {
         rest(DELETE, path, query, responseContentType, responseClass, TEXT, null, addlHeaders)
     }
 
-    def <T> T post(String path, Map query = null, ContentType responseContentType = ANY, def responseClass = null, ContentType requestContentType = JSON, requestBody = null, Map addlHeaders = null, long contentLength = -1) {
+    def <T> T post(String path, Map query = null, ContentType responseContentType = ANY,
+                   def responseClass = null, ContentType requestContentType = JSON, requestBody = null, Map addlHeaders = null, long contentLength = -1) {
         rest(POST, path, query, responseContentType, responseClass, requestContentType, requestBody, addlHeaders, contentLength)
     }
 
-    def <T> T put(String path, Map query = null, ContentType responseContentType = ANY, def responseClass = null, ContentType requestContentType = JSON, requestBody = null, Map addlHeaders = null, long contentLength = -1) {
+    def <T> T put(String path, Map query = null, ContentType responseContentType = ANY,
+                  def responseClass = null, ContentType requestContentType = JSON, requestBody = null, Map addlHeaders = null, long contentLength = -1) {
         rest(PUT, path, query, responseContentType, responseClass, requestContentType, requestBody, addlHeaders, contentLength)
     }
 
@@ -125,11 +157,12 @@ class ArtifactoryImpl implements Artifactory {
      * @param addlHeaders
      * @return
      */
-    private def <T> T rest(Method method, String path, Map query = null, responseType = ANY, def responseClass, ContentType requestContentType = JSON, requestBody = null, Map addlHeaders = null, long contentLength = -1 ) {
+    private def <T> T rest(Method method, String path, Map query = null, responseType = ANY,
+                           def responseClass, ContentType requestContentType = JSON, requestBody = null, Map addlHeaders = null, long contentLength = -1) {
         def originalParser
         try {
             // Let us send one thing to the server and parse it differently. But we have to careful to restore it.
-                originalParser = client.parser.getAt(responseType)
+            originalParser = client.parser.getAt(responseType)
 
             // Change the JSON parser on the fly, not thread safe since the responseClass we're using is locked to this call's argument
             if (responseClass == String) {
@@ -157,11 +190,12 @@ class ArtifactoryImpl implements Artifactory {
         return fullpath
     }
 
-    private def <T> T restWrapped(Method method, String path, Map query = null, responseType = ANY, def responseClass, ContentType requestContentType = JSON, requestBody = null, Map addlHeaders = null, long contentLength = -1 ) {
+    private def <T> T restWrapped(Method method, String path, Map query = null, responseType = ANY,
+                                  def responseClass, ContentType requestContentType = JSON, requestBody = null, Map addlHeaders = null, long contentLength = -1) {
         def ret
 
         //TODO Ensure requestContentType is not null
-        def allHeaders = addlHeaders?addlHeaders.clone():[:]
+        def allHeaders = addlHeaders ? addlHeaders.clone() : [:]
 //        if (contentLength >= 0) {
 //            allHeaders << [(HTTP.CONTENT_LEN): contentLength]
 //        }
@@ -178,7 +212,7 @@ class ArtifactoryImpl implements Artifactory {
             }
             headers.putAll(allHeaders)
 
-            if(requestBody) {
+            if (requestBody) {
                 if (requestContentType == JSON) {
                     // Override JSON
                     send JSON, objectMapper.writeValueAsString(requestBody)
@@ -190,7 +224,7 @@ class ArtifactoryImpl implements Artifactory {
             }
 
             response.success = { HttpResponse resp, slurped ->
-                if ( responseClass==String || responseType == TEXT) {
+                if (responseClass == String || responseType == TEXT) {
                     // we overrode the parser to be just text, but oddly it returns an InputStreamReader instead of a String
                     ret = slurped?.text
                 } else {
@@ -203,7 +237,7 @@ class ArtifactoryImpl implements Artifactory {
             }
 
             response.'409' = { resp, slurped ->
-                if (responseClass==String || responseType == TEXT) {
+                if (responseClass == String || responseType == TEXT) {
                     // we overrode the parser to be just text, but oddly it returns an InputStreamReader instead of a String
                     ret = slurped?.text
                 } else {

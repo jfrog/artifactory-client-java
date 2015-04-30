@@ -24,5 +24,7 @@ public interface Artifactory {
 
     ArtifactorySystem system();
 
+    <T> T restCall(ArtifactoryRequest request);
+
     void close();
 }
