@@ -5,12 +5,13 @@ import org.jfrog.artifactory.client.ArtifactoryRequest.ContentType
 import org.jfrog.artifactory.client.ArtifactoryRequest.Method
 
 /**
+ * 
  * @author Aviad Shikloshi
  */
-class ArtifactoryRequestImpl implements ArtifactoryRequest{
+class ArtifactoryRequestImpl implements ArtifactoryRequest {
 
     private def method
-    private def url
+    private def apiUrl
     private def queryParams
     private def headers
     private def body
@@ -18,13 +19,15 @@ class ArtifactoryRequestImpl implements ArtifactoryRequest{
     private def requestType
 
     ArtifactoryRequestImpl(){
-        queryParams = new HashMap<>()
-        headers = new HashMap<>()
-        body = new HashMap<>()
+        requestType = ContentType.ANY
+        responseType = ContentType.ANY
+        queryParams = new HashMap<String, String>()
+        headers = new HashMap<String, String>()
+        body = new HashMap<String, String>()
     }
 
     ArtifactoryRequestImpl apiUrl(String url){
-        this.url = url
+        this.apiUrl = url
         this
     }
 
@@ -72,10 +75,6 @@ class ArtifactoryRequestImpl implements ArtifactoryRequest{
         this.method
     }
 
-    String getUrl() {
-        this.url
-    }
-
     Map<String, String> getQueryParams() {
         this.queryParams
     }
@@ -93,7 +92,7 @@ class ArtifactoryRequestImpl implements ArtifactoryRequest{
     }
 
     String getApiUrl() {
-        url
+        apiUrl
     }
 
     ContentType getRequestType() {

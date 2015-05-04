@@ -27,7 +27,8 @@ public interface ArtifactoryRequest {
 
     enum ContentType {
         JSON("JSON"),
-        TEXT("TEXT") ;
+        TEXT("TEXT"),
+        ANY("ANY");
         private String text;
         ContentType(String text){
             this.text = text;

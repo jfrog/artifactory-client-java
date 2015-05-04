@@ -91,19 +91,18 @@ class ArtifactoryImpl implements Artifactory {
     def <T> T restCall(ArtifactoryRequest request) {
 
         def responseType = Enum.valueOf(ContentType.class, request.getResponseType().getText())
-        def requestPath  = "/api/" + request.getApiUrl()
+        def requestType  = Enum.valueOf(ContentType.class, request.getRequestType().getText())
+        def requestPath  = "/${request.getApiUrl()}"
 
         switch (request.getMethod()) {
             case (ArtifactoryRequest.Method.GET):
                 get(requestPath, request.getQueryParams(), responseType, null, request.getHeaders())
                 break
             case (ArtifactoryRequest.Method.POST):
-                def requestType  = Enum.valueOf(ContentType.class, request.getRequestType().getText())
                 post(requestPath, request.getQueryParams(), responseType, null, requestType, request.getBody(),
                         request.getHeaders())
                 break
             case (ArtifactoryRequest.Method.PUT):
-                def requestType  = Enum.valueOf(ContentType.class, request.getRequestType().getText())
                 put(requestPath, request.getQueryParams(), responseType, null, requestType, request.getBody(),
                         request.getHeaders())
                 break
@@ -183,7 +182,7 @@ class ArtifactoryImpl implements Artifactory {
 
     def cleanPath(path) {
         def fullpath = "${contextName}${path}"
-        // URIBuilder will try to "simplify" the url, so if there's double slashes it'll remove the first part of the uri purposefully
+        // URIBuilder will try to "simplify" the apiUrl, so if there's double slashes it'll remove the first part of the uri purposefully
         if (!fullpath.startsWith('/')) {
             fullpath = "/${fullpath}"
         }

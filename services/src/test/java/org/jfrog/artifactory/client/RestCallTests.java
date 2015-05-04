@@ -2,6 +2,7 @@ package org.jfrog.artifactory.client;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.jfrog.artifactory.client.impl.ArtifactoryRequestImpl;
+import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
@@ -17,23 +18,18 @@ import static org.testng.Assert.assertTrue;
  */
 public class RestCallTests extends ArtifactoryTestsBase {
 
-    private Map<String, Object> buildInfo;
     private Map<String, Object> buildBody;
 
     @BeforeTest
     public void setUp() throws IOException {
         buildBody = createBuildBody();
-        try {
-            deleteBuild((String) buildBody.get("name"));
-        } catch (Exception e) {
-        }
     }
 
     @Test
     public void testRequestWithTextResponse() {
         ArtifactoryRequest systemInfo = new ArtifactoryRequestImpl()
                 .method(ArtifactoryRequest.Method.GET)
-                .apiUrl("system/ping")
+                .apiUrl("api/system/ping")
                 .responseType(ArtifactoryRequest.ContentType.TEXT);
         String response = artifactory.restCall(systemInfo);
         assertTrue(response.equals("OK"));
@@ -42,7 +38,7 @@ public class RestCallTests extends ArtifactoryTestsBase {
     @Test
     public void testRequestWithJsonResponse() {
         ArtifactoryRequest versionRequest = new ArtifactoryRequestImpl()
-                .apiUrl("system/version")
+                .apiUrl("api/system/version")
                 .responseType(ArtifactoryRequest.ContentType.JSON)
                 .method(ArtifactoryRequest.Method.GET);
         Map<String, Object> versionRequestResponse = artifactory.restCall(versionRequest);
@@ -54,11 +50,27 @@ public class RestCallTests extends ArtifactoryTestsBase {
     @Test
     public void testRequestWithJsonArrayResponse() {
         ArtifactoryRequest repositoryRequest = new ArtifactoryRequestImpl()
-                .apiUrl("repositories")
+                .apiUrl("api/repositories")
                 .method(ArtifactoryRequest.Method.GET)
                 .responseType(ArtifactoryRequest.ContentType.JSON);
         List<String> response = artifactory.restCall(repositoryRequest);
         assertNotNull(response);
+    }
+
+    @Test(dependsOnMethods = {"testGetBuildInfo"})
+    public void testPostRequestNoBody(){
+        String name = (String) buildBody.get("name");
+        String response = renameBuild(name, "new-name");
+        assertTrue(response.contains("Build renaming of '" + name + "' to 'new-name' was successfully started."));
+    }
+
+    private String renameBuild(String oldName, String newName) {
+        ArtifactoryRequest renameRequest = new ArtifactoryRequestImpl()
+                .method(ArtifactoryRequest.Method.POST)
+                .apiUrl("api/build/rename/" + oldName)
+                .responseType(ArtifactoryRequest.ContentType.TEXT)
+                .addQueryParam("to", newName);
+        return artifactory.restCall(renameRequest);
     }
 
     private void uploadBuild() {
@@ -66,7 +78,7 @@ public class RestCallTests extends ArtifactoryTestsBase {
                 .method(ArtifactoryRequest.Method.PUT)
                 .requestType(ArtifactoryRequest.ContentType.JSON)
                 .responseType(ArtifactoryRequest.ContentType.JSON)
-                .apiUrl("build")
+                .apiUrl("api/build")
                 .requestBody(buildBody);
         artifactory.restCall(buildRequest);
     }
@@ -77,11 +89,11 @@ public class RestCallTests extends ArtifactoryTestsBase {
             uploadBuild();
             ArtifactoryRequest buildInfoRequest = new ArtifactoryRequestImpl()
                     .method(ArtifactoryRequest.Method.GET)
-                    .apiUrl("build/" + buildBody.get("name") + "/" + buildBody.get("number"))
+                    .apiUrl("api/build/" + buildBody.get("name") + "/" + buildBody.get("number"))
                     .responseType(ArtifactoryRequest.ContentType.JSON);
             Map<String, Object> buildInfoResponse = artifactory.restCall(buildInfoRequest);
             assertNotNull(buildInfoResponse);
-            buildInfo = (Map<String, Object>) buildInfoResponse.get("buildInfo");
+            Map<String, Object> buildInfo = (Map<String, Object>) buildInfoResponse.get("buildInfo");
             assertTrue(buildInfo.containsKey("version"));
             assertTrue(buildInfo.containsKey("name"));
             assertTrue(buildInfo.containsKey("number"));
@@ -90,16 +102,15 @@ public class RestCallTests extends ArtifactoryTestsBase {
         }
     }
 
-    @Test(dependsOnMethods = {"testGetBuildInfo"})
+    @Test(dependsOnMethods = {"testPostRequestNoBody"})
     public void testDeleteBuild() {
-        String name = (String) buildBody.get("name");
-        String deleteResponse = deleteBuild(name);
-        assertTrue(deleteResponse.contains("All '" + name + "' builds have been deleted successfully"));
+        String deleteResponse = deleteBuild("new-name");
+        assertTrue(deleteResponse.contains("All 'new-name' builds have been deleted successfully"));
     }
 
     private String deleteBuild(String name) {
         ArtifactoryRequest deleteBuild = new ArtifactoryRequestImpl()
-                .apiUrl("build/" + name)
+                .apiUrl("api/build/" + name)
                 .method(ArtifactoryRequest.Method.DELETE)
                 .responseType(ArtifactoryRequest.ContentType.TEXT)
                 .addQueryParam("buildNumbers", (String) buildBody.get("number"))
