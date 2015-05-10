@@ -87,6 +87,11 @@ class ArtifactoryImpl implements Artifactory {
         new ArtifactorySystemImpl(this)
     }
 
+    /**
+     * Create a REST call to artifactory with a generic request
+     * @param request that should be sent to artifactory
+     * @return artifactory response as per to the request sent
+     */
     @Override
     def <T> T restCall(ArtifactoryRequest request) {
 

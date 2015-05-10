@@ -5,7 +5,6 @@ import org.jfrog.artifactory.client.ArtifactoryRequest.ContentType
 import org.jfrog.artifactory.client.ArtifactoryRequest.Method
 
 /**
- * 
  * @author Aviad Shikloshi
  */
 class ArtifactoryRequestImpl implements ArtifactoryRequest {

@@ -3,6 +3,8 @@ package org.jfrog.artifactory.client;
 import java.util.Map;
 
 /**
+ * ArtifactoryRequest object that can handle all types of APIs in artifactory
+ *
  * @author Aviad Shikloshi
  */
 public interface ArtifactoryRequest {
@@ -23,7 +25,6 @@ public interface ArtifactoryRequest {
     ContentType getRequestType();
     ContentType getResponseType();
     String getApiUrl();
-
 
     enum ContentType {
         JSON("JSON"),

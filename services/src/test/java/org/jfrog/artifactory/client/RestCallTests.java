@@ -2,7 +2,6 @@ package org.jfrog.artifactory.client;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.jfrog.artifactory.client.impl.ArtifactoryRequestImpl;
-import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
@@ -58,7 +57,7 @@ public class RestCallTests extends ArtifactoryTestsBase {
     }
 
     @Test(dependsOnMethods = {"testGetBuildInfo"})
-    public void testPostRequestNoBody(){
+    public void testPostRequestNoBody() {
         String name = (String) buildBody.get("name");
         String response = renameBuild(name, "new-name");
         assertTrue(response.contains("Build renaming of '" + name + "' to 'new-name' was successfully started."));
@@ -85,21 +84,17 @@ public class RestCallTests extends ArtifactoryTestsBase {
 
     @Test
     public void testGetBuildInfo() {
-        try {
-            uploadBuild();
-            ArtifactoryRequest buildInfoRequest = new ArtifactoryRequestImpl()
-                    .method(ArtifactoryRequest.Method.GET)
-                    .apiUrl("api/build/" + buildBody.get("name") + "/" + buildBody.get("number"))
-                    .responseType(ArtifactoryRequest.ContentType.JSON);
-            Map<String, Object> buildInfoResponse = artifactory.restCall(buildInfoRequest);
-            assertNotNull(buildInfoResponse);
-            Map<String, Object> buildInfo = (Map<String, Object>) buildInfoResponse.get("buildInfo");
-            assertTrue(buildInfo.containsKey("version"));
-            assertTrue(buildInfo.containsKey("name"));
-            assertTrue(buildInfo.containsKey("number"));
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
+        uploadBuild();
+        ArtifactoryRequest buildInfoRequest = new ArtifactoryRequestImpl()
+                .method(ArtifactoryRequest.Method.GET)
+                .apiUrl("api/build/" + buildBody.get("name") + "/" + buildBody.get("number"))
+                .responseType(ArtifactoryRequest.ContentType.JSON);
+        Map<String, Object> buildInfoResponse = artifactory.restCall(buildInfoRequest);
+        assertNotNull(buildInfoResponse);
+        Map<String, Object> buildInfo = (Map<String, Object>) buildInfoResponse.get("buildInfo");
+        assertTrue(buildInfo.containsKey("version"));
+        assertTrue(buildInfo.containsKey("name"));
+        assertTrue(buildInfo.containsKey("number"));
     }
 
     @Test(dependsOnMethods = {"testPostRequestNoBody"})
