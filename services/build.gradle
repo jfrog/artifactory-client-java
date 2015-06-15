@@ -12,7 +12,7 @@ dependencies {
     compile addSlf4J('log4j-over-slf4j')
     compile addSlf4J('jcl-over-slf4j')
     compile 'org.apache.httpcomponents:httpclient:4.4.1'
-    compile 'org.apache.commons:commons-io:1.3.2'
+    compile 'commons-io:commons-io:2.4'
     compile group: 'ch.qos.logback', name: 'logback-classic', version: '1.0.9'
     compile addJackson('jackson-core')
     compile addJackson('jackson-annotations')
