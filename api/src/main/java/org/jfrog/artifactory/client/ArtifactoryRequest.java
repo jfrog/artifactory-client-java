@@ -16,7 +16,7 @@ public interface ArtifactoryRequest {
     ArtifactoryRequest apiUrl(String apiUrl);
     ArtifactoryRequest addHeader(String key, String value);
     ArtifactoryRequest addQueryParam(String key, String value);
-    ArtifactoryRequest requestBody(Map<String, Object> body);
+    <T> ArtifactoryRequest requestBody(T body);
     ArtifactoryRequest responseType(ContentType responseType);
     ArtifactoryRequest requestType(ContentType requestType);
 

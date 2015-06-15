@@ -1,6 +1,7 @@
 package org.jfrog.artifactory.client;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.io.IOUtils;
 import org.jfrog.artifactory.client.impl.ArtifactoryRequestImpl;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
@@ -44,6 +45,18 @@ public class RestCallTests extends ArtifactoryTestsBase {
         assertTrue(versionRequestResponse.containsKey("version"));
         assertTrue(versionRequestResponse.containsKey("revision"));
         assertTrue(versionRequestResponse.containsKey("addons"));
+    }
+
+    @Test
+    public void testRequestWithTextBody() throws Exception {
+        ArtifactoryRequest gpgRequest = new ArtifactoryRequestImpl()
+                .method(ArtifactoryRequest.Method.PUT)
+                .apiUrl("api/gpg/key/public")
+                .requestType(ArtifactoryRequest.ContentType.TEXT)
+                .requestBody(IOUtils.toString(this.getClass().getResourceAsStream("/public.key"), "UTF-8"))
+                .responseType(ArtifactoryRequest.ContentType.TEXT);
+        String gpgResponse = artifactory.restCall(gpgRequest);
+        assertTrue(gpgResponse.contains("Successfully configured the gpg public key"));
     }
 
     @Test

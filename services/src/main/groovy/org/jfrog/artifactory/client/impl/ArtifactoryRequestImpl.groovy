@@ -22,7 +22,6 @@ class ArtifactoryRequestImpl implements ArtifactoryRequest {
         responseType = ContentType.ANY
         queryParams = new HashMap<String, String>()
         headers = new HashMap<String, String>()
-        body = new HashMap<String, String>()
     }
 
     ArtifactoryRequestImpl apiUrl(String url){
@@ -55,7 +54,7 @@ class ArtifactoryRequestImpl implements ArtifactoryRequest {
         this
     }
 
-    ArtifactoryRequestImpl requestBody(Map<String, Object> body) {
+    def <T> ArtifactoryRequestImpl requestBody(T body) {
         this.body = body
         this
     }
@@ -82,7 +81,7 @@ class ArtifactoryRequestImpl implements ArtifactoryRequest {
         this.headers
     }
 
-    Map<String, Object> getBody() {
+    def <T> T getBody() {
         this.body
     }
 
