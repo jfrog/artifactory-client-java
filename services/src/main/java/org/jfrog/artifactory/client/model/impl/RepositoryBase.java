@@ -18,6 +18,9 @@ public abstract class RepositoryBase implements Repository {
     protected boolean enableNuGetSupport;
     protected boolean enableGemsSupport;
     protected boolean enableNpmSupport;
+    protected boolean enableVagrantSupport;
+    protected boolean enableBowerSupport;
+    protected boolean enableGitLfsSupport;
     protected boolean enableDebianSupport;
     protected boolean debianTrivialLayout;
     protected boolean enablePypiSupport;
@@ -27,7 +30,7 @@ public abstract class RepositoryBase implements Repository {
     }
 
     protected RepositoryBase(String description, String excludesPattern, String includesPattern, String key, String notes, String repoLayoutRef,
-                             boolean enableNuGetSupport, boolean enableGemsSupport, boolean enableNpmSupport, boolean enableDebianSupport, boolean debianTrivialLayout) {
+                             boolean enableNuGetSupport, boolean enableGemsSupport, boolean enableNpmSupport, boolean enableVagrantSupport, boolean enableBowerSupport, boolean enableGitLfsSupport, boolean enableDebianSupport, boolean debianTrivialLayout) {
         this.description = description;
         this.excludesPattern = excludesPattern;
         this.includesPattern = includesPattern;
@@ -37,6 +40,9 @@ public abstract class RepositoryBase implements Repository {
         this.enableNuGetSupport = enableNuGetSupport;
         this.enableGemsSupport = enableGemsSupport;
         this.enableNpmSupport = enableNpmSupport;
+        this.enableVagrantSupport = enableVagrantSupport;
+        this.enableBowerSupport = enableBowerSupport;
+        this.enableGitLfsSupport = enableGitLfsSupport;
         this.enableDebianSupport = enableDebianSupport;
     }
 
@@ -164,6 +170,21 @@ public abstract class RepositoryBase implements Repository {
     }
 
     @Override
+    public boolean isEnableVagrantSupport() {
+        return enableVagrantSupport;
+    }
+
+    @Override
+    public boolean isEnableBowerSupport() {
+        return enableBowerSupport;
+    }
+
+    @Override
+    public boolean isEnableGitLfsSupport() {
+        return enableGitLfsSupport;
+    }
+
+    @Override
     public boolean isEnableDebianSupport() {
         return enableDebianSupport;
     }
@@ -185,6 +206,18 @@ public abstract class RepositoryBase implements Repository {
 
     public void setEnableNpmSupport(boolean enableNpmSupport) {
         this.enableNpmSupport = enableNpmSupport;
+    }
+
+    public void setEnableVagrantSupport(boolean enableVagrantSupport) {
+        this.enableVagrantSupport = enableVagrantSupport;
+    }
+
+    public void setEnableBowerSupport(boolean enableBowerSupport) {
+        this.enableBowerSupport = enableBowerSupport;
+    }
+
+    public void setEnableGitLfsSupport(boolean enableGitLfsSupport) {
+        this.enableGitLfsSupport = enableGitLfsSupport;
     }
 
     public void setEnableDebianSupport(boolean enableDebianSupport) {

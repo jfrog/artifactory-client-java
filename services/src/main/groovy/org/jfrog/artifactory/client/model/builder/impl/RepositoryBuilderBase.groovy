@@ -18,6 +18,9 @@ abstract class RepositoryBuilderBase<B extends RepositoryBuilder, R extends Repo
     protected boolean enableNuGetSupport = false
     protected boolean enableGemsSupport = false
     protected boolean enableNpmSupport = false
+    protected boolean enableVagrantSupport = false
+    protected boolean enableBowerSupport = false
+    protected boolean enableGitLfsSupport = false
     protected boolean enableDebianSupport = false
     protected boolean debianTrivialLayout = false
 

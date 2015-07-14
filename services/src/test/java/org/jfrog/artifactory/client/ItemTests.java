@@ -49,7 +49,6 @@ public class ItemTests extends ArtifactoryTestsBase {
 
     @Test(groups = "items", dependsOnGroups = "repositoryBasics")
     public void testSetItemProperties() throws Exception {
-        setupLocalRepo(NEW_LOCAL);
         //Upload a clean file
         InputStream content = this.getClass().getResourceAsStream("/sample.txt");
         assertNotNull(content);
@@ -106,9 +105,8 @@ public class ItemTests extends ArtifactoryTestsBase {
         }
     }
 
-    @Test//(groups = "items", dependsOnGroups = "repositoryBasics")
+    @Test(groups = "items", dependsOnGroups = "repositoryBasics")
     public void testSetItemPropertiesOnNonExistingDirectory() throws Exception {
-        setupLocalRepo(NEW_LOCAL);
         ItemHandle folder = artifactory.repository(NEW_LOCAL).folder("x/y/z");
         try {
             folder.info();

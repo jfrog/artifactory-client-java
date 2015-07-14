@@ -27,6 +27,12 @@ public interface Repository {
 
     boolean isEnableNpmSupport();
 
+    boolean isEnableVagrantSupport();
+
+    boolean isEnableBowerSupport();
+
+    boolean isEnableGitLfsSupport();
+
     boolean isEnablePypiSupport();
 
     boolean isEnableDockerSupport();
