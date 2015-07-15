@@ -126,7 +126,7 @@ class RemoteRepositoryBuilderImpl extends NonVirtualRepositoryBuilderBase<Remote
     }
 
     RemoteRepositoryBuilder fetchSourcesEagerly(boolean fetchSourcesEagerly) {
-        this.fetchJarsEagerly = fetchSourcesEagerly
+        this.fetchSourcesEagerly = fetchSourcesEagerly
         this
     }
 
