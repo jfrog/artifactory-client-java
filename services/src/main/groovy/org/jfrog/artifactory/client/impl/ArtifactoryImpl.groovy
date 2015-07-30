@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.util.ISO8601DateFormat
 import groovyx.net.http.*
 import org.apache.http.HttpResponse
 import org.jfrog.artifactory.client.*
+import org.jfrog.artifactory.client.model.MissionControl
 
 import java.text.DateFormat
 
@@ -117,6 +118,11 @@ class ArtifactoryImpl implements Artifactory {
             default:
                 throw new IllegalArgumentException("HTTP method invalid.")
         }
+    }
+
+    @Override
+    MissionControl missionControl() {
+        new MissionControlImpl(this)
     }
 
     protected InputStream getInputStream(String path, Map query = [:]) {
