@@ -32,5 +32,9 @@ public interface Artifactory {
 
     MissionControl missionControl();
 
+    MissionControl missionControl(String missionControlAuthToken);
+
+    String getMissionControlAuthToken();
+
     void close();
 }

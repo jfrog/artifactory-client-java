@@ -32,7 +32,6 @@ public class SecurityTests extends ArtifactoryTestsBase {
         }
     }
 
-
     @Test
     public void testListUserNames() throws Exception {
         Collection<String> userNames = artifactory.security().userNames();
@@ -93,7 +92,6 @@ public class SecurityTests extends ArtifactoryTestsBase {
         }
     }
 
-
     @Test
     public void testCreateGroup() {
         GroupBuilder groupBuilder = artifactory.security().builders().groupBuilder();
@@ -147,7 +145,6 @@ public class SecurityTests extends ArtifactoryTestsBase {
         Set<ItemPermission> itemPermissions = artifactory.repository(NEW_LOCAL).effectivePermissions();
         assertItemPermissions(itemPermissions);
     }
-
 
     private void assertPermissions(ItemPermission itemPermission, boolean isGroup, Privilege[] allowedPrivileges,
                                    Privilege[] notAllowedPrivileges) {

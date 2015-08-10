@@ -1,7 +1,8 @@
 package org.jfrog.artifactory.client;
 
+import org.jfrog.artifactory.client.model.MissionControl;
 import org.testng.annotations.Test;
-
+import static org.testng.Assert.*;
 import java.io.IOException;
 import groovyx.net.http.HttpResponseException;
 
@@ -36,8 +37,10 @@ public class MissionControlTests extends ArtifactoryTestsBase {
             }
         }
 
-        artifactory.missionControl().updateConnection(missionControlExternalUrl, TOKEN1, TOKEN2);
-        artifactory.missionControl().updateConnection(missionControlExternalUrl, TOKEN2, TOKEN1);
+        assertEquals(NEW_LOCAL, artifactory.missionControl(TOKEN1).repository(NEW_LOCAL).get().getKey());
+        artifactory.missionControl(TOKEN1).updateConnection(missionControlExternalUrl, TOKEN2);
+        assertEquals(NEW_LOCAL, artifactory.missionControl(TOKEN2).repository(NEW_LOCAL).get().getKey());
+        artifactory.missionControl(TOKEN2).updateConnection(missionControlExternalUrl, TOKEN1);
         */
     }
 }

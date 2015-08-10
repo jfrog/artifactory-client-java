@@ -15,7 +15,6 @@ import org.jfrog.artifactory.client.model.MissionControl;
 public class MissionControlImpl implements MissionControl {
 
     private ArtifactoryImpl artifactory
-    private String authToken
 
     MissionControlImpl(ArtifactoryImpl artifactory) {
         this.artifactory = artifactory
@@ -27,32 +26,19 @@ public class MissionControlImpl implements MissionControl {
     }
 
     @Override
-    public void updateConnection(String missionControlExtUrl, String oldToken, String newToken) {
-        createOrUpdateConnection(missionControlExtUrl, oldToken, newToken)
+    public void updateConnection(String missionControlExtUrl, String newToken) {
+        createOrUpdateConnection(missionControlExtUrl, artifactory.getMissionControlAuthToken(), newToken)
     }
 
     private void createOrUpdateConnection(String missionControlExtUrl, String oldToken, String newToken) {
-        Map headers = [:]
-        if (oldToken) {
-            headers = getHeaders(oldToken)
-        }
-
         Map body = ["url": missionControlExtUrl, "token": newToken]
 
-        artifactory.post("${MISSION_CONTROL_API}setupmc",
-                [:], ContentType.JSON, null, ContentType.JSON, body, headers)
-
-        authToken = newToken
+        artifactory.post("${MC_API_BASE}/setupmc",
+                [:], ContentType.JSON, null, ContentType.JSON, body)
     }
 
-    @Override
-    public Map<String, String> getRequestHeaders() {
-        return getHeaders(null)
-    }
-
-    private Map<String, String> getHeaders(String token) {
-        String t = token ? token : authToken
-        return ['Authorization-token': t]
+    public static Map<String, String> createRequestHeaders(String token) {
+        return ['Authorization-token': token]
     }
 
     @Override

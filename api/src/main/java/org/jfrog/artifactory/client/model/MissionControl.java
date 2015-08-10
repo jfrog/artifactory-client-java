@@ -9,23 +9,21 @@ import java.util.Map;
  */
 public interface MissionControl {
 
-    public static final String MC_API_BASE = "/mc/";
+    public static final String MC_API_BASE = "/mc";
 
     public void createConnection(String missionControlExtUrl, String token);
 
-    public void updateConnection(String missionControlExtUrl, String oldToken, String newToken);
+    public void updateConnection(String missionControlExtUrl, String newToken);
 
-    public Map<String, String> getRequestHeaders();
+    public Repositories repositories();
 
-    Repositories repositories();
+    public RepositoryHandle repository(String repo);
 
-    RepositoryHandle repository(String repo);
+    public Searches searches();
 
-    Searches searches();
+    public Security security();
 
-    Security security();
+    public Plugins plugins();
 
-    Plugins plugins();
-
-    ArtifactorySystem system();
+    public ArtifactorySystem system();
 }

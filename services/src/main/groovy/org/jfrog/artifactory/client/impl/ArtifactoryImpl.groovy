@@ -30,6 +30,7 @@ class ArtifactoryImpl implements Artifactory {
     private final String contextName
     private String username;
     private final ObjectMapper objectMapper
+    private String missionControlAuthToken
 
     ArtifactoryImpl(RESTClient client, String contextName) {
         this.client = client
@@ -125,6 +126,17 @@ class ArtifactoryImpl implements Artifactory {
         new MissionControlImpl(this)
     }
 
+    @Override
+    MissionControl missionControl(String missionControlAuthToken) {
+        this.missionControlAuthToken = missionControlAuthToken
+        new MissionControlImpl(this)
+    }
+
+    @Override
+    String getMissionControlAuthToken() {
+        return missionControlAuthToken
+    }
+
     protected InputStream getInputStream(String path, Map query = [:]) {
         // Otherwise when we leave the response.success block, ensureConsumed will be called to close the stream
         def ret = client.get([path: cleanPath(path), query: query, contentType: BINARY])
@@ -208,7 +220,7 @@ class ArtifactoryImpl implements Artifactory {
 
         Map<String, String> allHeaders = addlHeaders ? addlHeaders.clone() : [:]
         if (path.startsWith(MissionControl.MC_API_BASE)) {
-            allHeaders.putAll(missionControl().getRequestHeaders())
+            allHeaders.putAll(MissionControlImpl.createRequestHeaders(missionControlAuthToken))
         }
 
         // responseType will be used as the type to parse (XML, JSON, or Reader), it'll also create a header for Accept
