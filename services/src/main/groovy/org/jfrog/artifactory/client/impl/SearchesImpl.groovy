@@ -16,14 +16,15 @@ import org.jfrog.artifactory.client.model.impl.RepoPathImpl
  */
 class SearchesImpl implements Searches {
 
-    private String SEARCHES_API = "/api/search/"
+    private String baseApiPath
     private ArtifactoryImpl artifactory
     private List<String> reposFilter = []
     private String searchUrl
     private Map searchQuery
 
-    SearchesImpl(Artifactory artifactory) {
+    SearchesImpl(Artifactory artifactory, String baseApiPath) {
         this.artifactory = artifactory as ArtifactoryImpl
+        this.baseApiPath = baseApiPath
     }
 
     Searches repositories(String... repositories) {
@@ -62,9 +63,9 @@ class SearchesImpl implements Searches {
             query.repos = reposFilter.join(',')
         }
         try {
-            def result = artifactory.get("${SEARCHES_API}$url", query, ContentType.JSON)
+            def result = artifactory.get("${getSearcherApi()}$url", query, ContentType.JSON)
             result.results.collect {
-                String path = it.uri.split('/api/storage/')[1]
+                String path = it.uri.split(baseApiPath + '/storage/')[1]
                 String repo = path.split('/')[0]
                 new RepoPathImpl(repo, path - (repo + '/'))
             }
@@ -77,4 +78,7 @@ class SearchesImpl implements Searches {
         new PropertyFiltersImpl(this)
     }
 
+    String getSearcherApi() {
+        return baseApiPath + "/search/";
+    }
 }

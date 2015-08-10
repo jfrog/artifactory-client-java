@@ -8,6 +8,8 @@ import org.jfrog.artifactory.client.model.MissionControl;
  */
 public interface Artifactory {
 
+    static final String API_BASE = "/api";
+
     String getUri();
 
     String getContextName();

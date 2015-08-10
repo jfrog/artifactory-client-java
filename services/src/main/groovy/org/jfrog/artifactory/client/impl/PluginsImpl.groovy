@@ -17,26 +17,32 @@ import static groovyx.net.http.ContentType.*
  */
 public class PluginsImpl implements Plugins {
 
-    static String PLUGINS_API = "/api/plugins"
+    private String baseApiPath
     private ArtifactoryImpl artifactory
 
-    PluginsImpl(ArtifactoryImpl artifactory) {
+    PluginsImpl(ArtifactoryImpl artifactory, String baseApiPath) {
         this.artifactory = artifactory
+        this.baseApiPath = baseApiPath
     }
 
     @Override
     Map<PluginType, List<Plugin>> list() {
-        artifactory.get(PLUGINS_API, ContentType.JSON, new TypeReference<Map<PluginType, List<PluginImpl>>>() {})
+        artifactory.get(getPluginsApi(), ContentType.JSON, new TypeReference<Map<PluginType, List<PluginImpl>>>() {})
     }
 
     @Override
     List<Plugin> list(PluginType type) {
-        def pluginsMap = artifactory.get("$PLUGINS_API/$type", ContentType.JSON, new TypeReference<Map<PluginType, List<PluginImpl>>>() {})
+        def pluginsMap = artifactory.get("${getPluginsApi()}/$type", ContentType.JSON, new TypeReference<Map<PluginType, List<PluginImpl>>>() {})
         pluginsMap[type] as List<Plugin>
     }
 
     @Override
     PluginHandle execute(String name) {
-        new PluginHandleImpl(artifactory, name);
+        new PluginHandleImpl(artifactory, this, name);
+    }
+
+    @Override
+    String getPluginsApi() {
+        return baseApiPath + "/plugins";
     }
 }

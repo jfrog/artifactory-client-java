@@ -61,31 +61,31 @@ class ArtifactoryImpl implements Artifactory {
     }
 
     Repositories repositories() {
-        new RepositoriesImpl(this)
+        new RepositoriesImpl(this, API_BASE)
     }
 
     RepositoryHandle repository(String repo) {
         if(!repo){
             throw new IllegalArgumentException('Repository name is required')
         }
-        new RepositoriesImpl(this).repository(repo)
+        new RepositoriesImpl(this, API_BASE).repository(repo)
     }
 
     Searches searches() {
-        return new SearchesImpl(this)
+        return new SearchesImpl(this, API_BASE)
     }
 
     Security security() {
-        new SecurityImpl(this)
+        new SecurityImpl(this, API_BASE)
     }
 
     Plugins plugins() {
-        new PluginsImpl(this)
+        new PluginsImpl(this, API_BASE)
     }
 
     @Override
     ArtifactorySystem system() {
-        new ArtifactorySystemImpl(this)
+        new ArtifactorySystemImpl(this, API_BASE)
     }
 
     /**
@@ -201,14 +201,15 @@ class ArtifactoryImpl implements Artifactory {
     }
 
     private def <T> T restWrapped(Method method, String path, Map query = null, responseType = ANY,
-                                  def responseClass, ContentType requestContentType = JSON, requestBody = null, Map addlHeaders = null, long contentLength = -1) {
+        def responseClass, ContentType requestContentType = JSON, requestBody = null,
+        Map<String, String> addlHeaders = null, long contentLength = -1) {
+
         def ret
 
-        //TODO Ensure requestContentType is not null
-        def allHeaders = addlHeaders ? addlHeaders.clone() : [:]
-//        if (contentLength >= 0) {
-//            allHeaders << [(HTTP.CONTENT_LEN): contentLength]
-//        }
+        Map<String, String> allHeaders = addlHeaders ? addlHeaders.clone() : [:]
+        if (path.startsWith(MissionControl.MC_API_BASE)) {
+            allHeaders.putAll(missionControl().getRequestHeaders())
+        }
 
         // responseType will be used as the type to parse (XML, JSON, or Reader), it'll also create a header for Accept
         // Artifactory typically only returns one type, so let's ANY align those two. The caller can then do the appropriate thing.

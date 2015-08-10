@@ -16,11 +16,6 @@ import java.util.List;
  */
 public interface Security {
 
-    final static String SECURITY_API = "/api/security/";
-    final static String SECURITY_USERS_API = SECURITY_API + "users";
-    final static String SECURITY_PERMISSIONS = SECURITY_API + "permissions";
-    final static String SECURITY_USER_GROUPS_API = SECURITY_API + "groups";
-
     SecurityBuilders builders();
 
     Collection<String> userNames();
@@ -42,4 +37,12 @@ public interface Security {
     String deleteUser(String name);
 
     String deleteGroup(String name);
+
+    String getSecurityApi();
+
+    String getSecurityUsersApi();
+
+    String getSecurityPermissionsApi();
+
+    String getSecurityUserGroupsApi();
 }

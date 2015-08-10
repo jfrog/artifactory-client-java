@@ -7,7 +7,7 @@ import groovyx.net.http.HttpResponseException;
 
 
 /**
- * Created by user on 30/07/2015.
+ * Created by Eyal BM on 30/07/2015.
  */
 public class MissionControlTests extends ArtifactoryTestsBase {
 
@@ -20,8 +20,9 @@ public class MissionControlTests extends ArtifactoryTestsBase {
      */
     public void testCreateAndUpdateConnection() throws IOException {
         /*
+        String missionControlExternalUrl = "http://mc-java-client-test";
         try {
-            artifactory.missionControl().createConnection(TOKEN1);
+            artifactory.missionControl().createConnection(missionControlExternalUrl, TOKEN1);
         } catch (Exception e) {
             // In case the connection has already been initialized, we should get
             // HTTP 403 Forbidden here.
@@ -35,8 +36,8 @@ public class MissionControlTests extends ArtifactoryTestsBase {
             }
         }
 
-        artifactory.missionControl().updateConnection(TOKEN1, TOKEN2);
-        artifactory.missionControl().updateConnection(TOKEN2, TOKEN1);
+        artifactory.missionControl().updateConnection(missionControlExternalUrl, TOKEN1, TOKEN2);
+        artifactory.missionControl().updateConnection(missionControlExternalUrl, TOKEN2, TOKEN1);
         */
     }
 }

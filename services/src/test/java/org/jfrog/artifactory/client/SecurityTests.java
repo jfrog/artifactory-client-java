@@ -113,7 +113,7 @@ public class SecurityTests extends ArtifactoryTestsBase {
                 .password("test")
                 .build();
         artifactory.security().createOrUpdate(user);
-        String resp = curl(Security.SECURITY_USERS_API.substring(1));
+        String resp = curl(artifactory.security().getSecurityUsersApi().substring(1));
         System.out.println(resp);
         assertTrue(resp.contains(USER_NAME));
     }
