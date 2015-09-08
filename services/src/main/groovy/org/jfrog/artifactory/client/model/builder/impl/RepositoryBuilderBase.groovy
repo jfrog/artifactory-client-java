@@ -15,6 +15,7 @@ abstract class RepositoryBuilderBase<B extends RepositoryBuilder, R extends Repo
     protected String key
     protected String notes
     protected String repoLayoutRef
+    protected String packageType
     protected boolean enableNuGetSupport = false
     protected boolean enableGemsSupport = false
     protected boolean enableNpmSupport = false
@@ -57,6 +58,12 @@ abstract class RepositoryBuilderBase<B extends RepositoryBuilder, R extends Repo
     @Override
     B repoLayoutRef(String repoLayoutRef) {
         this.repoLayoutRef = repoLayoutRef
+        this as B
+    }
+
+    @Override
+    B packageType(String packageType) {
+        this.packageType = packageType
         this as B
     }
 

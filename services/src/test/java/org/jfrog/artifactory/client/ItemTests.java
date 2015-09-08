@@ -95,7 +95,7 @@ public class ItemTests extends ArtifactoryTestsBase {
             // Make sure the local repo exists
             LocalRepository localRepository = artifactory.repositories().builders().localRepositoryBuilder().key(
                     repoName)
-                    .description("new local repository").build();
+                    .description("new local repository").packageType("maven").build();
             artifactory.repositories().create(2, localRepository);
         } catch (Exception e) {
             //noinspection ConstantConditions

@@ -25,7 +25,7 @@ import static org.testng.Assert.*;
  * @since 30/07/12
  */
 public abstract class ArtifactoryTestsBase {
-    protected static final String NEW_LOCAL = "new-local";
+    protected static final String NEW_LOCAL = "ext-release-local";
     protected static final String PATH = "m/a/b/c.txt";
     protected static final String LIBS_RELEASE_LOCAL = "libs-release-local";
     protected static final String LIBS_RELEASE_VIRTUAL = "libs-release";

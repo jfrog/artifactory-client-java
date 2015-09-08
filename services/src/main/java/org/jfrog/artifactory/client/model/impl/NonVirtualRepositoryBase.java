@@ -23,8 +23,8 @@ public abstract class NonVirtualRepositoryBase extends RepositoryBase implements
     protected NonVirtualRepositoryBase() {
     }
 
-    protected NonVirtualRepositoryBase(String description, String excludesPattern, String includesPattern, String key, String notes, boolean blackedOut, boolean handleReleases, boolean handleSnapshots, int maxUniqueSnapshots, List<String> propertySets, SnapshotVersionBehavior snapshotVersionBehavior, boolean suppressPomConsistencyChecks, String repoLayoutRef, boolean enableNuGetSupport, boolean archiveBrowsingEnabled, boolean enableGemsSupport, boolean enableNpmSupport, boolean enableVagrantSupport, boolean enableBowerSupport, boolean enableGitLfsSupport, boolean enableDebianSupport, boolean debianTrivialLayout) {
-        super(description, excludesPattern, includesPattern, key, notes, repoLayoutRef, enableNuGetSupport, enableGemsSupport, enableNpmSupport, enableVagrantSupport, enableBowerSupport, enableGitLfsSupport, enableDebianSupport, debianTrivialLayout);
+    protected NonVirtualRepositoryBase(String description, String excludesPattern, String includesPattern, String key, String notes, boolean blackedOut, boolean handleReleases, boolean handleSnapshots, int maxUniqueSnapshots, List<String> propertySets, SnapshotVersionBehavior snapshotVersionBehavior, boolean suppressPomConsistencyChecks, String repoLayoutRef, String packageType, boolean enableNuGetSupport, boolean archiveBrowsingEnabled, boolean enableGemsSupport, boolean enableNpmSupport, boolean enableVagrantSupport, boolean enableBowerSupport, boolean enableGitLfsSupport, boolean enableDebianSupport, boolean debianTrivialLayout) {
+        super(description, excludesPattern, includesPattern, key, notes, repoLayoutRef, packageType, enableNuGetSupport, enableGemsSupport, enableNpmSupport, enableVagrantSupport, enableBowerSupport, enableGitLfsSupport, enableDebianSupport, debianTrivialLayout);
         this.blackedOut = blackedOut;
         this.handleReleases = handleReleases;
         this.handleSnapshots = handleSnapshots;

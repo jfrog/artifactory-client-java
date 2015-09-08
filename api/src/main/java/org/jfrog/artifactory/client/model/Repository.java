@@ -21,6 +21,8 @@ public interface Repository {
 
     String getRepoLayoutRef();
 
+    String getPackageType();
+
     boolean isEnableNuGetSupport();
 
     boolean isEnableGemsSupport();

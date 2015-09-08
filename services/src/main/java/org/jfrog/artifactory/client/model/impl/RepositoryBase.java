@@ -15,6 +15,7 @@ public abstract class RepositoryBase implements Repository {
     private String includesPattern;
     private String excludesPattern;
     protected String repoLayoutRef;
+    protected String packageType;
     protected boolean enableNuGetSupport;
     protected boolean enableGemsSupport;
     protected boolean enableNpmSupport;
@@ -30,13 +31,14 @@ public abstract class RepositoryBase implements Repository {
     }
 
     protected RepositoryBase(String description, String excludesPattern, String includesPattern, String key, String notes, String repoLayoutRef,
-                             boolean enableNuGetSupport, boolean enableGemsSupport, boolean enableNpmSupport, boolean enableVagrantSupport, boolean enableBowerSupport, boolean enableGitLfsSupport, boolean enableDebianSupport, boolean debianTrivialLayout) {
+            String packageType, boolean enableNuGetSupport, boolean enableGemsSupport, boolean enableNpmSupport, boolean enableVagrantSupport, boolean enableBowerSupport, boolean enableGitLfsSupport, boolean enableDebianSupport, boolean debianTrivialLayout) {
         this.description = description;
         this.excludesPattern = excludesPattern;
         this.includesPattern = includesPattern;
         this.key = key;
         this.notes = notes;
         this.repoLayoutRef = repoLayoutRef;
+        this.packageType = packageType;
         this.enableNuGetSupport = enableNuGetSupport;
         this.enableGemsSupport = enableGemsSupport;
         this.enableNpmSupport = enableNpmSupport;
@@ -144,6 +146,15 @@ public abstract class RepositoryBase implements Repository {
 
     private void setRepoLayoutRef(String repoLayoutRef) {
         this.repoLayoutRef = repoLayoutRef;
+    }
+
+    @Override
+    public String getPackageType() {
+        return packageType;
+    }
+
+    public void setPackageType(String packageType) {
+        this.packageType = packageType;
     }
 
     @Override

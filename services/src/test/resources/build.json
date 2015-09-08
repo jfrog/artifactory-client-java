@@ -1,5 +1,5 @@
 {
-  "version": "1.0.1",
+  "version": "1.0.2",
   "name": "TestBuild",
   "number": "13",
   "type": "MAVEN",
@@ -11,7 +11,7 @@
     "name": "Jenkins",
     "version": "1.565.2"
   },
-  "started": "2015-03-20T11:01:38.445+0200",
+  "started": "{build.start.time}",
   "durationMillis": 8926,
   "artifactoryPrincipal": "admin",
   "url": "http://localhost:8080/job/Maven2-3/9/",

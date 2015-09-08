@@ -2,11 +2,12 @@ package org.jfrog.artifactory.client;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.jfrog.artifactory.client.impl.ArtifactoryRequestImpl;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
-
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Map;
 
@@ -128,9 +129,10 @@ public class RestCallTests extends ArtifactoryTestsBase {
     }
 
     private Map<String, Object> createBuildBody() throws IOException {
+        String buildStarted = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(System.currentTimeMillis());
+        String buildInfoJson = IOUtils.toString(this.getClass().getResourceAsStream("/build.json"), "UTF-8");
+        buildInfoJson = StringUtils.replace(buildInfoJson, "{build.start.time}", buildStarted);
         ObjectMapper mapper = new ObjectMapper();
-        Map<String, Object> buildBody = mapper.readValue(this.getClass().getResourceAsStream("/build.json"), Map.class);
-        return buildBody;
+        return mapper.readValue(buildInfoJson, Map.class);
     }
-
 }
