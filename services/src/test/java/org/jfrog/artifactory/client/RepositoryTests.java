@@ -30,9 +30,8 @@ public class RepositoryTests extends ArtifactoryTestsBase {
     @Test(groups = "repositoryBasics", dependsOnMethods = "testDelete")
     public void testCreate() throws Exception {
         String result = artifactory.repositories().create(2, localRepository);
-        assertTrue(result.startsWith("Repository " + NEW_LOCAL + " created successfully."));
+        assertTrue(result.startsWith("Successfully created repository"));
         assertTrue(curl(LIST_PATH).contains(NEW_LOCAL));
-
     }
 
     @Test(dependsOnMethods = "testCreate")
@@ -41,7 +40,6 @@ public class RepositoryTests extends ArtifactoryTestsBase {
         assertEquals("/myFolder/", folder.getPath());
         assertNotNull(folder.getCreated());
     }
-
 
     @Test(dependsOnMethods = "testCreate")
     public void testCreateDirectoryWithoutPermissions() throws IOException {
