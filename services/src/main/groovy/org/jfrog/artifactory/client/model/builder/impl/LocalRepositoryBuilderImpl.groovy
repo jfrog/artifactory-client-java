@@ -46,7 +46,7 @@ class LocalRepositoryBuilderImpl extends NonVirtualRepositoryBuilderBase<LocalRe
             suppressPomConsistencyChecks, checksumPolicyType, repoLayoutRef, packageType, enableNuGetSupport,
             archiveBrowsingEnabled, calculateYumMetadata, yumRootDepth, enableGemsSupport, enableNpmSupport,
             enableVagrantSupport, enableBowerSupport, enableGitLfsSupport, enableDebianSupport,
-            enablePypiSupport, enableDockerSupport, debianTrivialLayout)
+            enableDockerSupport, enablePypiSupport, debianTrivialLayout)
     }
 
 }
