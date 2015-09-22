@@ -6,7 +6,7 @@ import org.jfrog.artifactory.client.model.MissionControl;
  * @author jbaruch
  * @since 25/07/12
  */
-public interface Artifactory {
+public interface Artifactory extends ApiInterface {
 
     static final String API_BASE = "/api";
 

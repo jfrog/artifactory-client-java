@@ -23,15 +23,17 @@ public abstract class RepositoryBase implements Repository {
     protected boolean enableBowerSupport;
     protected boolean enableGitLfsSupport;
     protected boolean enableDebianSupport;
-    protected boolean debianTrivialLayout;
     protected boolean enablePypiSupport;
     protected boolean enableDockerSupport;
+    protected boolean debianTrivialLayout;
 
     protected RepositoryBase() {
     }
 
     protected RepositoryBase(String description, String excludesPattern, String includesPattern, String key, String notes, String repoLayoutRef,
-            String packageType, boolean enableNuGetSupport, boolean enableGemsSupport, boolean enableNpmSupport, boolean enableVagrantSupport, boolean enableBowerSupport, boolean enableGitLfsSupport, boolean enableDebianSupport, boolean debianTrivialLayout) {
+            String packageType, boolean enableNuGetSupport, boolean enableGemsSupport, boolean enableNpmSupport,
+            boolean enableVagrantSupport, boolean enableBowerSupport, boolean enableGitLfsSupport,
+            boolean enableDebianSupport, boolean enableDockerSupport, boolean enablePypiSupport, boolean debianTrivialLayout) {
         this.description = description;
         this.excludesPattern = excludesPattern;
         this.includesPattern = includesPattern;
@@ -46,6 +48,8 @@ public abstract class RepositoryBase implements Repository {
         this.enableBowerSupport = enableBowerSupport;
         this.enableGitLfsSupport = enableGitLfsSupport;
         this.enableDebianSupport = enableDebianSupport;
+        this.enableDockerSupport = enableDockerSupport;
+        this.enablePypiSupport = enablePypiSupport;
     }
 
     @Override

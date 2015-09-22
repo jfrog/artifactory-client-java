@@ -50,9 +50,13 @@ public class RemoteRepositoryImpl extends NonVirtualRepositoryBase implements Re
                          boolean unusedArtifactsCleanupEnabled, int unusedArtifactsCleanupPeriodHours, String url, String username, String repoLayoutRef, boolean enableNuGetSupport,
                          long assumedOfflinePeriodSecs, boolean archiveBrowsingEnabled, boolean listRemoteFolderItems, boolean rejectInvalidJars, boolean p2Support,
                          String packageType,
-                         boolean enableGemsSupport, boolean enableNpmSupport, boolean enableVagrantSupport, boolean enableBowerSupport, boolean enableGitLfsSupport, boolean enableDebianSupport, boolean debianTrivialLayout) {
+                         boolean enableGemsSupport, boolean enableNpmSupport, boolean enableVagrantSupport, boolean enableBowerSupport, boolean enableGitLfsSupport, boolean enableDebianSupport,
+                         boolean enableDockerSupport, boolean enablePypiSupport, boolean debianTrivialLayout) {
+
         super(description, excludesPattern, includesPattern, key, notes, blackedOut, handleReleases, handleSnapshots, maxUniqueSnapshots, propertySets, snapshotVersionBehavior,
-                suppressPomConsistencyChecks, repoLayoutRef, packageType, enableNuGetSupport, archiveBrowsingEnabled, enableGemsSupport, enableNpmSupport, enableVagrantSupport, enableBowerSupport, enableGitLfsSupport, enableDebianSupport, debianTrivialLayout);
+                suppressPomConsistencyChecks, repoLayoutRef, packageType, enableNuGetSupport, archiveBrowsingEnabled, enableGemsSupport, enableNpmSupport, enableVagrantSupport,
+                enableBowerSupport, enableGitLfsSupport, enableDebianSupport, enableDockerSupport, enablePypiSupport, debianTrivialLayout);
+
         this.failedRetrievalCachePeriodSecs = failedRetrievalCachePeriodSecs;
         this.fetchJarsEagerly = fetchJarsEagerly;
         this.fetchSourcesEagerly = fetchSourcesEagerly;

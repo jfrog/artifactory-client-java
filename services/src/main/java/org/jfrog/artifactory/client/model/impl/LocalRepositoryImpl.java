@@ -22,8 +22,18 @@ public class LocalRepositoryImpl extends NonVirtualRepositoryBase implements Loc
         repoLayoutRef = MAVEN_2_REPO_LAYOUT;
     }
 
-    private LocalRepositoryImpl(String description, String excludesPattern, String includesPattern, String key, String notes, boolean blackedOut, boolean handleReleases, boolean handleSnapshots, int maxUniqueSnapshots, List<String> propertySets, SnapshotVersionBehavior snapshotVersionBehavior, boolean suppressPomConsistencyChecks, ChecksumPolicyType checksumPolicyType, String repoLayoutRef, String packageType, boolean enableNuGetSupport, boolean archiveBrowsingEnabled, boolean calculateYumMetadata, int yumRootDepth, boolean enableGemsSupport, boolean enableNpmSupport, boolean enableVagrantSupport, boolean enableBowerSupport, boolean enableGitLfsSupport, boolean enableDebianSupport, boolean debianTrivialLayout) {
-        super(description, excludesPattern, includesPattern, key, notes, blackedOut, handleReleases, handleSnapshots, maxUniqueSnapshots, propertySets, snapshotVersionBehavior, suppressPomConsistencyChecks, repoLayoutRef, packageType, enableNuGetSupport, archiveBrowsingEnabled, enableGemsSupport, enableNpmSupport, enableVagrantSupport, enableBowerSupport, enableGitLfsSupport, enableDebianSupport, debianTrivialLayout);
+    public LocalRepositoryImpl(String description, String excludesPattern, String includesPattern, String key, String notes,
+        boolean blackedOut, boolean handleReleases, boolean handleSnapshots, int maxUniqueSnapshots,
+        List<String> propertySets, SnapshotVersionBehavior snapshotVersionBehavior, boolean suppressPomConsistencyChecks, ChecksumPolicyType checksumPolicyType, String repoLayoutRef, String packageType, boolean enableNuGetSupport, boolean archiveBrowsingEnabled, boolean calculateYumMetadata, int yumRootDepth, boolean enableGemsSupport, boolean enableNpmSupport, boolean enableVagrantSupport,
+        boolean enableBowerSupport, boolean enableGitLfsSupport, boolean enableDebianSupport,
+        boolean enableDockerSupport, boolean enablePypiSupport, boolean debianTrivialLayout) {
+
+        super(description, excludesPattern, includesPattern, key, notes, blackedOut, handleReleases,
+            handleSnapshots, maxUniqueSnapshots, propertySets, snapshotVersionBehavior, suppressPomConsistencyChecks,
+            repoLayoutRef, packageType, enableNuGetSupport, archiveBrowsingEnabled, enableGemsSupport, enableNpmSupport,
+            enableVagrantSupport, enableBowerSupport, enableGitLfsSupport, enableDebianSupport,
+            enableDockerSupport, enablePypiSupport, debianTrivialLayout);
+
         this.checksumPolicyType = checksumPolicyType;
         this.calculateYumMetadata = calculateYumMetadata;
         this.yumRootDepth = yumRootDepth;

@@ -30,5 +30,17 @@ public interface RepositoryBuilder<B extends RepositoryBuilder, R extends Reposi
 
     B enableGemsSupport(boolean enableGemsSupport);
 
+    B enablePypiSupport(boolean enablePypiSupport);
+
+    B enableDockerSupport(boolean enableDockerSupport);
+
+    B enableGitLfsSupport(boolean enableGitLfsSupport);
+
+    B enableBowerSupport(boolean enableBowerSupport);
+
+    B enableVagrantSupport(boolean enableVagrantSupport);
+
+    B enableNpmSupport(boolean enableNpmSupport);
+
     B debianTrivialLayout(boolean debianTrivialLayout);
 }

@@ -7,7 +7,7 @@ import java.util.Map;
 /**
  * Created by Eyal BM on 30/07/2015.
  */
-public interface MissionControl {
+public interface MissionControl extends ApiInterface {
 
     public static final String MC_API_BASE = "/mc";
 

@@ -23,6 +23,8 @@ abstract class RepositoryBuilderBase<B extends RepositoryBuilder, R extends Repo
     protected boolean enableBowerSupport = false
     protected boolean enableGitLfsSupport = false
     protected boolean enableDebianSupport = false
+    protected boolean enableDockerSupport = false
+    protected boolean enablePypiSupport = false
     protected boolean debianTrivialLayout = false
 
     @Override
@@ -80,8 +82,44 @@ abstract class RepositoryBuilderBase<B extends RepositoryBuilder, R extends Repo
     }
 
     @Override
+    B enableNpmSupport(boolean enableNpmSupport) {
+        this.enableNpmSupport = enableNpmSupport
+        this as B
+    }
+
+    @Override
+    B enableVagrantSupport(boolean enableVagrantSupport) {
+        this.enableVagrantSupport = enableVagrantSupport
+        this as B
+    }
+
+    @Override
+    B enableBowerSupport(boolean enableBowerSupport) {
+        this.enableBowerSupport = enableBowerSupport
+        this as B
+    }
+
+    @Override
+    B enableGitLfsSupport(boolean enableGitLfsSupport) {
+        this.enableGitLfsSupport = enableGitLfsSupport
+        this as B
+    }
+
+    @Override
     B enableDebianSupport(boolean enableDebianSupport) {
         this.enableDebianSupport = enableDebianSupport
+        this as B
+    }
+
+    @Override
+    B enablePypiSupport(boolean enablePypiSupport) {
+        this.enablePypiSupport = enablePypiSupport
+        this as B
+    }
+
+    @Override
+    B enableDockerSupport(boolean enableDockerSupport) {
+        this.enableDockerSupport = enableDockerSupport
         this as B
     }
 
