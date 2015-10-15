@@ -85,6 +85,12 @@ class ArtifactoryImpl implements Artifactory {
     }
 
     @Override
+    void setConnectionTimeout(int seconds) {
+        client.getClient().getParams().setParameter("http.connection.timeout", new Integer(seconds))
+        client.getClient().getParams().setParameter("http.socket.timeout", new Integer(seconds))
+    }
+
+    @Override
     ArtifactorySystem system() {
         new ArtifactorySystemImpl(this, API_BASE)
     }
