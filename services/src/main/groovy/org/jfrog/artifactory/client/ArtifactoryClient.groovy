@@ -12,7 +12,13 @@ import org.jfrog.artifactory.client.impl.ArtifactoryImpl
  */
 public class ArtifactoryClient {
 
-    static Artifactory create(String url, String username = null, String password = null) {
+    static Artifactory create(
+        String url,
+        String username = null,
+        String password = null,
+        Integer connectionTimeoutSecs = null,
+        ProxyConfig proxy = null ) {
+
         def matcher = url=~/(https?:\/\/[^\/]+)\/+([^\/]*).*/
         if (!matcher) {
             matcher = url=~/(https?:\/\/[^\/]+)\/*()/
@@ -55,8 +61,48 @@ public class ArtifactoryClient {
             client.auth.basic username, password
             client.headers.Authorization = "Basic ${"$username:$password".toString().bytes.encodeBase64()}"
         }
+        if (connectionTimeoutSecs) {
+            client.client.params.setParameter("http.connection.timeout", new Integer(connectionTimeoutSecs))
+            client.client.params.setParameter("http.socket.timeout", new Integer(connectionTimeoutSecs))
+        }
+        if (proxy) {
+            client.setProxy(proxy.host, proxy.port, proxy.scheme)
+        }
         Artifactory artifactory = new ArtifactoryImpl(client, matcher[0][2])
         artifactory.@username = username
         artifactory
+    }
+
+    public class ProxyConfig {
+        /**
+         * Host name or IP
+         */
+        private String host
+        /**
+         * Pport, or -1 for the default port
+         */
+        private int port
+        /**
+         * Usually "http" or "https," or <code>null</code> for the default
+        */
+        private String scheme
+
+        ProxyConfig(String host, int port, String scheme) {
+            this.host = host
+            this.port = port
+            this.scheme = scheme
+        }
+
+        String getHost() {
+            return host
+        }
+
+        int getPort() {
+            return port
+        }
+
+        String getScheme() {
+            return scheme
+        }
     }
 }

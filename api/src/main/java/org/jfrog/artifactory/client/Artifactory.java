@@ -24,8 +24,6 @@ public interface Artifactory extends ApiInterface {
 
     Security security();
 
-    void setConnectionTimeout(int seconds);
-
     Plugins plugins();
 
     ArtifactorySystem system();
