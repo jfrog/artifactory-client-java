@@ -67,6 +67,10 @@ public class ArtifactoryClient {
         }
         if (proxy) {
             client.setProxy(proxy.host, proxy.port, proxy.scheme)
+            if (proxy.getUser() && proxy.getPassword()) {
+                client.client.params.setParameter("http.proxyUser", proxy.getUser())
+                client.client.params.setParameter("http.proxyPassword", proxy.getPassword())
+            }
         }
         Artifactory artifactory = new ArtifactoryImpl(client, matcher[0][2])
         artifactory.@username = username
@@ -86,11 +90,21 @@ public class ArtifactoryClient {
          * Usually "http" or "https," or <code>null</code> for the default
         */
         private String scheme
+        /**
+         * Proxy user.
+         */
+        private String user
+        /**
+         * Proxy password
+         */
+        private String password
 
-        ProxyConfig(String host, int port, String scheme) {
+        ProxyConfig(String host, int port, String scheme, String user, String password) {
             this.host = host
             this.port = port
             this.scheme = scheme
+            this.user = user
+            this.password = password
         }
 
         String getHost() {
@@ -103,6 +117,14 @@ public class ArtifactoryClient {
 
         String getScheme() {
             return scheme
+        }
+
+        String getUser() {
+            return user
+        }
+
+        String getPassword() {
+            return password
         }
     }
 }
