@@ -73,13 +73,13 @@ public class ArtifactoryClient {
         artifactory
     }
 
-    public class ProxyConfig {
+    public static class ProxyConfig {
         /**
          * Host name or IP
          */
         private String host
         /**
-         * Pport, or -1 for the default port
+         * Port, or -1 for the default port
          */
         private int port
         /**
