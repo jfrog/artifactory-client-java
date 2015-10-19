@@ -168,7 +168,7 @@ public class RemoteRepositoryImpl extends NonVirtualRepositoryBase implements Re
     }
 
     @Override
-    public boolean isCookieManagementEnabled() {
+    public boolean isEnableCookieManagement() {
         return cookieManagementEnabled;
     }
 
@@ -177,7 +177,7 @@ public class RemoteRepositoryImpl extends NonVirtualRepositoryBase implements Re
     }
 
     @Override
-    public boolean isAllowLenientHostAuthentication() {
+    public boolean isAllowAnyHostAuth() {
         return allowLenientHostAuthentication;
     }
 
@@ -380,8 +380,8 @@ public class RemoteRepositoryImpl extends NonVirtualRepositoryBase implements Re
                 ", offline=" + offline +
                 ", storeArtifactsLocally=" + storeArtifactsLocally +
                 ", socketTimeoutMillis=" + socketTimeoutMillis +
-                ", allowLenientHostAuthentication=" + allowLenientHostAuthentication +
-                ", cookieManagementEnabled=" + cookieManagementEnabled +
+                ", allowAnyHostAuth=" + allowLenientHostAuthentication +
+                ", enableCookieManagement=" + cookieManagementEnabled +
                 ", localAddress='" + localAddress + '\'' +
                 ", retrievalCachePeriodSecs=" + retrievalCachePeriodSecs +
                 ", missedRetrievalCachePeriodSecs=" + missedRetrievalCachePeriodSecs +

@@ -27,9 +27,9 @@ public interface RemoteRepositoryBuilder extends NonVirtualRepositoryBuilder<Rem
 
     RemoteRepositoryBuilder socketTimeoutMillis(int socketTimeoutMillis);
 
-    RemoteRepositoryBuilder cookieManagementEnabled(boolean cookieManagementEnabled);
+    RemoteRepositoryBuilder enableCookieManagement(boolean cookieManagementEnabled);
 
-    RemoteRepositoryBuilder allowLenientHostAuthentication(boolean allowLenientHostAuthentication);
+    RemoteRepositoryBuilder allowAnyHostAuth(boolean allowAnyHostAuth);
 
     RemoteRepositoryBuilder localAddress(String localAddress);
 

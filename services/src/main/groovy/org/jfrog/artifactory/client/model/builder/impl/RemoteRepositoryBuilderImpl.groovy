@@ -30,8 +30,8 @@ class RemoteRepositoryBuilderImpl extends NonVirtualRepositoryBuilderBase<Remote
     private boolean offline
     private boolean storeArtifactsLocally = true
     private int socketTimeoutMillis = 15000
-    private boolean cookieManagementEnabled = false
-    private boolean allowLenientHostAuthentication = false
+    private boolean enableCookieManagement = false
+    private boolean allowAnyHostAuth = false
     private String localAddress
     private int retrievalCachePeriodSecs = 43200
     private int missedRetrievalCachePeriodSecs = 7200
@@ -92,13 +92,13 @@ class RemoteRepositoryBuilderImpl extends NonVirtualRepositoryBuilderBase<Remote
         this
     }
 
-    RemoteRepositoryBuilder allowLenientHostAuthentication(boolean allowLenientHostAuthentication) {
-        this.allowLenientHostAuthentication = allowLenientHostAuthentication;
+    RemoteRepositoryBuilder allowAnyHostAuth(boolean allowAnyHostAuth) {
+        this.allowAnyHostAuth = allowAnyHostAuth;
         this
     }
 
-    RemoteRepositoryBuilder cookieManagementEnabled(boolean cookieManagementEnabled){
-        this.cookieManagementEnabled = cookieManagementEnabled;
+    RemoteRepositoryBuilder enableCookieManagement(boolean cookieManagementEnabled){
+        this.enableCookieManagement = cookieManagementEnabled;
         this
     }
 
@@ -176,7 +176,7 @@ class RemoteRepositoryBuilderImpl extends NonVirtualRepositoryBuilderBase<Remote
     RemoteRepository build() {
         new RemoteRepositoryImpl(description, excludesPattern, includesPattern, key, notes, blackedOut, handleReleases, handleSnapshots, maxUniqueSnapshots, propertySets,
                 snapshotVersionBehavior, suppressPomConsistencyChecks, failedRetrievalCachePeriodSecs, fetchJarsEagerly, fetchSourcesEagerly, hardFail, localAddress, missedRetrievalCachePeriodSecs,
-                offline, password, proxy, remoteRepoChecksumPolicyType, retrievalCachePeriodSecs, shareConfiguration, socketTimeoutMillis, cookieManagementEnabled, allowLenientHostAuthentication,
+                offline, password, proxy, remoteRepoChecksumPolicyType, retrievalCachePeriodSecs, shareConfiguration, socketTimeoutMillis, enableCookieManagement, allowAnyHostAuth,
                 storeArtifactsLocally, synchronizeProperties, unusedArtifactsCleanupEnabled, unusedArtifactsCleanupPeriodHours, url, username, repoLayoutRef, enableNuGetSupport, assumedOfflinePeriodSecs, archiveBrowsingEnabled,
                 listRemoteFolderItems, rejectInvalidJars, p2Support, packageType, enableGemsSupport, enableNpmSupport, enableVagrantSupport, enableBowerSupport, enableGitLfsSupport, enableDebianSupport, enableDockerSupport, enablePypiSupport, debianTrivialLayout)
     }

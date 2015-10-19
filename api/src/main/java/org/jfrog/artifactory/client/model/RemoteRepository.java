@@ -23,9 +23,9 @@ public interface RemoteRepository extends Repository, NonVirtualRepository {
 
     int getSocketTimeoutMillis();
 
-    boolean isCookieManagementEnabled();
+    boolean isEnableCookieManagement();
 
-    boolean isAllowLenientHostAuthentication();
+    boolean isAllowAnyHostAuth();
 
     String getLocalAddress();
 
