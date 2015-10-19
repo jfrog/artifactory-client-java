@@ -16,7 +16,8 @@ public class ArtifactoryClient {
         String url,
         String username = null,
         String password = null,
-        Integer connectionTimeoutSecs = null,
+        Integer connectionTimeout = null,
+        Integer socketTimeout = null,
         ProxyConfig proxy = null ) {
 
         def matcher = url=~/(https?:\/\/[^\/]+)\/+([^\/]*).*/
@@ -61,9 +62,11 @@ public class ArtifactoryClient {
             client.auth.basic username, password
             client.headers.Authorization = "Basic ${"$username:$password".toString().bytes.encodeBase64()}"
         }
-        if (connectionTimeoutSecs) {
-            client.client.params.setParameter("http.connection.timeout", new Integer(connectionTimeoutSecs))
-            client.client.params.setParameter("http.socket.timeout", new Integer(connectionTimeoutSecs))
+        if (connectionTimeout) {
+            client.client.params.setParameter("http.connection.timeout", connectionTimeout)
+        }
+        if (socketTimeout) {
+            client.client.params.setParameter("http.socket.timeout", socketTimeout)
         }
         if (proxy) {
             client.setProxy(proxy.host, proxy.port, proxy.scheme)
