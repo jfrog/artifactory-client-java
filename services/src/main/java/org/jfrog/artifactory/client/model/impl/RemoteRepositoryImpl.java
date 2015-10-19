@@ -22,8 +22,8 @@ public class RemoteRepositoryImpl extends NonVirtualRepositoryBase implements Re
     private boolean offline;
     private boolean storeArtifactsLocally;
     private int socketTimeoutMillis;
-    private boolean cookieManagementEnabled;
-    private boolean allowLenientHostAuthentication;
+    private boolean enableCookieManagement;
+    private boolean allowAnyHostAuth;
     private String localAddress;
     private int retrievalCachePeriodSecs;
     private int missedRetrievalCachePeriodSecs;
@@ -48,7 +48,7 @@ public class RemoteRepositoryImpl extends NonVirtualRepositoryBase implements Re
                          int maxUniqueSnapshots, List<String> propertySets, SnapshotVersionBehavior snapshotVersionBehavior, boolean suppressPomConsistencyChecks,
                          int failedRetrievalCachePeriodSecs, boolean fetchJarsEagerly, boolean fetchSourcesEagerly, boolean hardFail, String localAddress,
                          int missedRetrievalCachePeriodSecs, boolean offline, String password, String proxy, RemoteRepoChecksumPolicyType remoteRepoChecksumPolicyType,
-                         int retrievalCachePeriodSecs, boolean shareConfiguration, int socketTimeoutMillis, boolean cookieManagementEnabled, boolean allowLenientHostAuthentication, boolean storeArtifactsLocally, boolean synchronizeProperties,
+                         int retrievalCachePeriodSecs, boolean shareConfiguration, int socketTimeoutMillis, boolean cookieManagementEnabled, boolean allowAnyHostAuth, boolean storeArtifactsLocally, boolean synchronizeProperties,
                          boolean unusedArtifactsCleanupEnabled, int unusedArtifactsCleanupPeriodHours, String url, String username, String repoLayoutRef, boolean enableNuGetSupport,
                          long assumedOfflinePeriodSecs, boolean archiveBrowsingEnabled, boolean listRemoteFolderItems, boolean rejectInvalidJars, boolean p2Support,
                          String packageType,
@@ -72,8 +72,8 @@ public class RemoteRepositoryImpl extends NonVirtualRepositoryBase implements Re
         this.retrievalCachePeriodSecs = retrievalCachePeriodSecs;
         this.shareConfiguration = shareConfiguration;
         this.socketTimeoutMillis = socketTimeoutMillis;
-        this.cookieManagementEnabled = cookieManagementEnabled;
-        this.allowLenientHostAuthentication = allowLenientHostAuthentication;
+        this.enableCookieManagement = cookieManagementEnabled;
+        this.allowAnyHostAuth = allowAnyHostAuth;
         this.storeArtifactsLocally = storeArtifactsLocally;
         this.synchronizeProperties = synchronizeProperties;
         this.unusedArtifactsCleanupEnabled = unusedArtifactsCleanupEnabled;
@@ -169,20 +169,20 @@ public class RemoteRepositoryImpl extends NonVirtualRepositoryBase implements Re
 
     @Override
     public boolean isEnableCookieManagement() {
-        return cookieManagementEnabled;
+        return enableCookieManagement;
     }
 
-    public void setCookieManagementEnabled(boolean cookieManagementEnbaled) {
-        this.cookieManagementEnabled = cookieManagementEnbaled;
+    public void setEnableCookieManagement(boolean cookieManagementEnbaled) {
+        this.enableCookieManagement = cookieManagementEnbaled;
     }
 
     @Override
     public boolean isAllowAnyHostAuth() {
-        return allowLenientHostAuthentication;
+        return allowAnyHostAuth;
     }
 
-    public void setAllowLenientHostAuthentication(boolean allowLenientHostAuthentication) {
-        this.allowLenientHostAuthentication = allowLenientHostAuthentication;
+    public void setAllowAnyHostAuth(boolean allowAnyHostAuth) {
+        this.allowAnyHostAuth = allowAnyHostAuth;
     }
 
     @Override
@@ -324,8 +324,8 @@ public class RemoteRepositoryImpl extends NonVirtualRepositoryBase implements Re
         if (retrievalCachePeriodSecs != that.retrievalCachePeriodSecs) return false;
         if (shareConfiguration != that.shareConfiguration) return false;
         if (socketTimeoutMillis != that.socketTimeoutMillis) return false;
-        if (allowLenientHostAuthentication != that.allowLenientHostAuthentication) return false;
-        if (cookieManagementEnabled != that.allowLenientHostAuthentication) return false;
+        if (allowAnyHostAuth != that.allowAnyHostAuth) return false;
+        if (enableCookieManagement != that.allowAnyHostAuth) return false;
         if (storeArtifactsLocally != that.storeArtifactsLocally) return false;
         if (synchronizeProperties != that.synchronizeProperties) return false;
         if (unusedArtifactsCleanupEnabled != that.unusedArtifactsCleanupEnabled) return false;
@@ -352,8 +352,8 @@ public class RemoteRepositoryImpl extends NonVirtualRepositoryBase implements Re
         result = 31 * result + (offline ? 1 : 0);
         result = 31 * result + (storeArtifactsLocally ? 1 : 0);
         result = 31 * result + socketTimeoutMillis;
-        result = 31 * result + (allowLenientHostAuthentication ? 1 : 0);
-        result = 31 * result + (cookieManagementEnabled ? 1 : 0);
+        result = 31 * result + (allowAnyHostAuth ? 1 : 0);
+        result = 31 * result + (enableCookieManagement ? 1 : 0);
         result = 31 * result + (localAddress != null ? localAddress.hashCode() : 0);
         result = 31 * result + retrievalCachePeriodSecs;
         result = 31 * result + missedRetrievalCachePeriodSecs;
@@ -380,8 +380,8 @@ public class RemoteRepositoryImpl extends NonVirtualRepositoryBase implements Re
                 ", offline=" + offline +
                 ", storeArtifactsLocally=" + storeArtifactsLocally +
                 ", socketTimeoutMillis=" + socketTimeoutMillis +
-                ", allowAnyHostAuth=" + allowLenientHostAuthentication +
-                ", enableCookieManagement=" + cookieManagementEnabled +
+                ", allowAnyHostAuth=" + allowAnyHostAuth +
+                ", enableCookieManagement=" + enableCookieManagement +
                 ", localAddress='" + localAddress + '\'' +
                 ", retrievalCachePeriodSecs=" + retrievalCachePeriodSecs +
                 ", missedRetrievalCachePeriodSecs=" + missedRetrievalCachePeriodSecs +
