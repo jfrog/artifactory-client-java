@@ -24,6 +24,8 @@ public interface RepositoryBuilder<B extends RepositoryBuilder, R extends Reposi
 
     R build();
 
+    void validate();
+
     B packageType(String packageType);
 
     B enableNuGetSupport(boolean enableNuGetSupport);

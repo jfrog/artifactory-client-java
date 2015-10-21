@@ -12,7 +12,6 @@ import static SnapshotVersionBehaviorImpl.non_unique
  * @since 31/07/12
  */
 abstract class NonVirtualRepositoryBuilderBase<B extends NonVirtualRepositoryBuilder, R extends NonVirtualRepository> extends RepositoryBuilderBase<B, R> implements NonVirtualRepositoryBuilder<B, R> {
-
     protected boolean blackedOut = false
     protected boolean handleReleases = true
     protected boolean handleSnapshots = true
@@ -21,7 +20,6 @@ abstract class NonVirtualRepositoryBuilderBase<B extends NonVirtualRepositoryBui
     protected boolean suppressPomConsistencyChecks = false
     protected SnapshotVersionBehavior snapshotVersionBehavior = non_unique
     protected boolean archiveBrowsingEnabled = false
-
 
     @Override
     B blackedOut(boolean blackedOut) {
@@ -69,5 +67,4 @@ abstract class NonVirtualRepositoryBuilderBase<B extends NonVirtualRepositoryBui
         this.archiveBrowsingEnabled = archiveBrowsingEnabled
         this as B
     }
-
 }

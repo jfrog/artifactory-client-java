@@ -41,6 +41,7 @@ class VirtualRepositoryBuilderImpl extends RepositoryBuilderBase<VirtualReposito
     }
 
     VirtualRepository build() {
+        validate()
         new VirtualRepositoryImpl(description, excludesPattern, includesPattern, key, notes, artifactoryRequestsCanRetrieveRemoteArtifacts, keyPair, pomRepositoryReferencesCleanupPolicy, repositories, repoLayoutRef, packageType, enableNuGetSupport, enableGemsSupport, enableNpmSupport, enableVagrantSupport, enableBowerSupport, enableGitLfsSupport, enableDebianSupport, enableDockerSupport, enablePypiSupport, debianTrivialLayout)
     }
 }

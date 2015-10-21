@@ -68,9 +68,17 @@ class UserBuilderImpl implements UserBuilder {
         return this
     }
 
+    @Override
+    void validate() {
+        if ("anonymous".equals(name)) {
+            throw new IllegalArgumentException("Cannot create or update user with name 'anonymous'.")
+        }
+    }
+
     @SuppressWarnings("GroovyAccessibility")
     @Override
     User build() {
+        validate()
         new UserImpl(name, email, password, admin, profileUpdatable, internalPasswordDisabled,
                 lastLoggedIn, groups)
     }

@@ -8,7 +8,6 @@ import org.jfrog.artifactory.client.model.builder.RepositoryBuilder;
  * @since 31/07/12
  */
 abstract class RepositoryBuilderBase<B extends RepositoryBuilder, R extends Repository> implements RepositoryBuilder<B, R> {
-
     protected String description
     protected String excludesPattern
     protected String includesPattern = '**/*'
@@ -127,5 +126,15 @@ abstract class RepositoryBuilderBase<B extends RepositoryBuilder, R extends Repo
     B debianTrivialLayout(boolean debianTrivialLayout) {
         this.debianTrivialLayout = debianTrivialLayout
         this as B
+    }
+
+    @Override
+    void validate() {
+        if (!key) {
+            throw new IllegalArgumentException("The 'key' property is mandatory.")
+        }
+        if (key.length() > 64) {
+            throw new IllegalArgumentException("The 'key' value is limitted to 64 characters.")
+        }
     }
 }

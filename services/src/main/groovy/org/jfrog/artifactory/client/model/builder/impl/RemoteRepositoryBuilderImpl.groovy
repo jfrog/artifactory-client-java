@@ -174,6 +174,7 @@ class RemoteRepositoryBuilderImpl extends NonVirtualRepositoryBuilderBase<Remote
 
     @SuppressWarnings("GroovyAccessibility")
     RemoteRepository build() {
+        validate()
         new RemoteRepositoryImpl(description, excludesPattern, includesPattern, key, notes, blackedOut, handleReleases, handleSnapshots, maxUniqueSnapshots, propertySets,
                 snapshotVersionBehavior, suppressPomConsistencyChecks, failedRetrievalCachePeriodSecs, fetchJarsEagerly, fetchSourcesEagerly, hardFail, localAddress, missedRetrievalCachePeriodSecs,
                 offline, password, proxy, remoteRepoChecksumPolicyType, retrievalCachePeriodSecs, shareConfiguration, socketTimeoutMillis, enableCookieManagement, allowAnyHostAuth,
