@@ -38,7 +38,6 @@ import com.ning.http.client.cookie.Cookie;
  * @author charlesk
  */
 public class ArtifactoryNingClientTest {
-
 	private String url;
 	private String repo;
 	private String username = null;
