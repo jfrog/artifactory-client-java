@@ -14,7 +14,7 @@ class PropertiesTest {
 
     @Test
     public void testPropertiesEscaping() {
-        def impl = new PropertiesHandlerImpl(null, null, null)
+        def impl = new PropertiesHandlerImpl(null, Artifactory.API_BASE, null, null)
         def v1 = 'a dir|ty,va=l\\ue'
         def v2 = "a dir|ty,GString $v1 va=l\\ue"
         assert 'a dir\\|ty\\,va\\=l\\\\ue' == QueryUtil.escape(v1)

@@ -21,9 +21,25 @@ public interface Repository {
 
     String getRepoLayoutRef();
 
+    String getPackageType();
+
     boolean isEnableNuGetSupport();
 
     boolean isEnableGemsSupport();
 
     boolean isEnableNpmSupport();
+
+    boolean isEnableVagrantSupport();
+
+    boolean isEnableBowerSupport();
+
+    boolean isEnableGitLfsSupport();
+
+    boolean isEnablePypiSupport();
+
+    boolean isEnableDockerSupport();
+
+    boolean isEnableDebianSupport();
+
+    boolean isDebianTrivialLayout();
 }

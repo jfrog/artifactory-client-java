@@ -8,16 +8,23 @@ import org.jfrog.artifactory.client.model.builder.RepositoryBuilder;
  * @since 31/07/12
  */
 abstract class RepositoryBuilderBase<B extends RepositoryBuilder, R extends Repository> implements RepositoryBuilder<B, R> {
-
     protected String description
     protected String excludesPattern
     protected String includesPattern = '**/*'
     protected String key
     protected String notes
     protected String repoLayoutRef
+    protected String packageType
     protected boolean enableNuGetSupport = false
     protected boolean enableGemsSupport = false
     protected boolean enableNpmSupport = false
+    protected boolean enableVagrantSupport = false
+    protected boolean enableBowerSupport = false
+    protected boolean enableGitLfsSupport = false
+    protected boolean enableDebianSupport = false
+    protected boolean enableDockerSupport = false
+    protected boolean enablePypiSupport = false
+    protected boolean debianTrivialLayout = false
 
     @Override
     B description(String description) {
@@ -56,6 +63,12 @@ abstract class RepositoryBuilderBase<B extends RepositoryBuilder, R extends Repo
     }
 
     @Override
+    B packageType(String packageType) {
+        this.packageType = packageType
+        this as B
+    }
+
+    @Override
     B enableNuGetSupport(boolean enableNuGetSupport) {
         this.enableNuGetSupport = enableNuGetSupport
         this as B
@@ -65,5 +78,63 @@ abstract class RepositoryBuilderBase<B extends RepositoryBuilder, R extends Repo
     B enableGemsSupport(boolean enableGemsSupport) {
         this.enableGemsSupport = enableGemsSupport
         this as B
+    }
+
+    @Override
+    B enableNpmSupport(boolean enableNpmSupport) {
+        this.enableNpmSupport = enableNpmSupport
+        this as B
+    }
+
+    @Override
+    B enableVagrantSupport(boolean enableVagrantSupport) {
+        this.enableVagrantSupport = enableVagrantSupport
+        this as B
+    }
+
+    @Override
+    B enableBowerSupport(boolean enableBowerSupport) {
+        this.enableBowerSupport = enableBowerSupport
+        this as B
+    }
+
+    @Override
+    B enableGitLfsSupport(boolean enableGitLfsSupport) {
+        this.enableGitLfsSupport = enableGitLfsSupport
+        this as B
+    }
+
+    @Override
+    B enableDebianSupport(boolean enableDebianSupport) {
+        this.enableDebianSupport = enableDebianSupport
+        this as B
+    }
+
+    @Override
+    B enablePypiSupport(boolean enablePypiSupport) {
+        this.enablePypiSupport = enablePypiSupport
+        this as B
+    }
+
+    @Override
+    B enableDockerSupport(boolean enableDockerSupport) {
+        this.enableDockerSupport = enableDockerSupport
+        this as B
+    }
+
+    @Override
+    B debianTrivialLayout(boolean debianTrivialLayout) {
+        this.debianTrivialLayout = debianTrivialLayout
+        this as B
+    }
+
+    @Override
+    void validate() {
+        if (!key) {
+            throw new IllegalArgumentException("The 'key' property is mandatory.")
+        }
+        if (key.length() > 64) {
+            throw new IllegalArgumentException("The 'key' value is limitted to 64 characters.")
+        }
     }
 }

@@ -49,7 +49,6 @@ public class ItemTests extends ArtifactoryTestsBase {
 
     @Test(groups = "items", dependsOnGroups = "repositoryBasics")
     public void testSetItemProperties() throws Exception {
-        setupLocalRepo(NEW_LOCAL);
         //Upload a clean file
         InputStream content = this.getClass().getResourceAsStream("/sample.txt");
         assertNotNull(content);
@@ -96,7 +95,7 @@ public class ItemTests extends ArtifactoryTestsBase {
             // Make sure the local repo exists
             LocalRepository localRepository = artifactory.repositories().builders().localRepositoryBuilder().key(
                     repoName)
-                    .description("new local repository").build();
+                    .description("new local repository").packageType("maven").build();
             artifactory.repositories().create(2, localRepository);
         } catch (Exception e) {
             //noinspection ConstantConditions
@@ -106,9 +105,8 @@ public class ItemTests extends ArtifactoryTestsBase {
         }
     }
 
-    @Test//(groups = "items", dependsOnGroups = "repositoryBasics")
+    @Test(groups = "items", dependsOnGroups = "repositoryBasics")
     public void testSetItemPropertiesOnNonExistingDirectory() throws Exception {
-        setupLocalRepo(NEW_LOCAL);
         ItemHandle folder = artifactory.repository(NEW_LOCAL).folder("x/y/z");
         try {
             folder.info();
@@ -185,7 +183,7 @@ public class ItemTests extends ArtifactoryTestsBase {
         try {
             itemHandle.move(NEW_LOCAL_TO, PATH);
         } catch (CopyMoveException e) {
-            assertTrue(curl("api/move/" + NEW_LOCAL_FROM + "/a/a?to="+PATH, "POST").contains(e.getCopyMoveResultReport().getMessages().get(0).getMessage()));
+            assertTrue(curl("api/move/" + NEW_LOCAL_FROM + "/a/a?to=" + NEW_LOCAL_TO + "/" + PATH, "POST").contains(e.getCopyMoveResultReport().getMessages().get(0).getMessage()));
         } finally {
             deleteAllRelatedRepos();
         }
@@ -198,7 +196,7 @@ public class ItemTests extends ArtifactoryTestsBase {
         try {
             itemHandle.copy(NEW_LOCAL_TO, PATH);
         } catch (CopyMoveException e) {
-            assertTrue(curl("api/copy/" + NEW_LOCAL_FROM + "/a/a?to="+PATH, "POST").contains(e.getCopyMoveResultReport().getMessages().get(0).getMessage()));
+            assertTrue(curl("api/copy/" + NEW_LOCAL_FROM + "/a/a?to=" +  NEW_LOCAL_TO + "/" + PATH, "POST").contains(e.getCopyMoveResultReport().getMessages().get(0).getMessage()));
         } finally {
             deleteAllRelatedRepos();
         }

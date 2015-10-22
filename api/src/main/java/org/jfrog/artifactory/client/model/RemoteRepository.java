@@ -23,6 +23,10 @@ public interface RemoteRepository extends Repository, NonVirtualRepository {
 
     int getSocketTimeoutMillis();
 
+    boolean isEnableCookieManagement();
+
+    boolean isAllowAnyHostAuth();
+
     String getLocalAddress();
 
     int getRetrievalCachePeriodSecs();

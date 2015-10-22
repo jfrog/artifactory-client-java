@@ -2,6 +2,7 @@ package org.jfrog.artifactory.client.impl
 
 import groovyx.net.http.ContentType
 import org.jfrog.artifactory.client.PluginHandle
+import org.jfrog.artifactory.client.Plugins
 import org.jfrog.artifactory.client.impl.util.QueryUtil
 
 /**
@@ -12,11 +13,13 @@ import org.jfrog.artifactory.client.impl.util.QueryUtil
 class PluginHandleImpl implements PluginHandle {
 
     private ArtifactoryImpl artifactory
+    private Plugins plugins
     private String name
     private params = [:]
 
-    PluginHandleImpl(ArtifactoryImpl artifactory, String name) {
+    PluginHandleImpl(ArtifactoryImpl artifactory, Plugins plugins, String name) {
         this.artifactory = artifactory
+        this.plugins = plugins
         this.name = name;
     }
 
@@ -48,7 +51,7 @@ class PluginHandleImpl implements PluginHandle {
             query.params = QueryUtil.getQueryList(params)
         }
         query.async = async ? 1 : 0
-        artifactory.post("$PluginsImpl.PLUGINS_API/execute/$name", query, ContentType.TEXT, Class)
+        artifactory.post("${plugins.getPluginsApi()}/execute/$name", query, ContentType.TEXT, Class)
     }
 
 }

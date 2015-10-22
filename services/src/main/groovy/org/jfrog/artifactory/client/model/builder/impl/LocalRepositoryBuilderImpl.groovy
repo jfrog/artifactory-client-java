@@ -14,11 +14,9 @@ import static ChecksumPolicyTypeImpl.client_checksums
  * @since 31/07/12
  */
 class LocalRepositoryBuilderImpl extends NonVirtualRepositoryBuilderBase<LocalRepositoryBuilder, LocalRepository> implements LocalRepositoryBuilder {
-
     private LocalRepositoryBuilderImpl() {
         this.repoLayoutRef = Repository.MAVEN_2_REPO_LAYOUT
         this.checksumPolicyType = client_checksums
-
     }
 
     private ChecksumPolicyType checksumPolicyType
@@ -41,7 +39,12 @@ class LocalRepositoryBuilderImpl extends NonVirtualRepositoryBuilderBase<LocalRe
     }
 
     LocalRepository build() {
-        return new LocalRepositoryImpl(description, excludesPattern, includesPattern, key, notes, blackedOut, handleReleases, handleSnapshots, maxUniqueSnapshots, propertySets, snapshotVersionBehavior, suppressPomConsistencyChecks, checksumPolicyType, repoLayoutRef, enableNuGetSupport, archiveBrowsingEnabled, calculateYumMetadata, yumRootDepth, enableGemsSupport, enableNpmSupport)
+        validate()
+        return new LocalRepositoryImpl(description, excludesPattern, includesPattern, key, notes, blackedOut,
+            handleReleases, handleSnapshots, maxUniqueSnapshots, propertySets, snapshotVersionBehavior,
+            suppressPomConsistencyChecks, checksumPolicyType, repoLayoutRef, packageType, enableNuGetSupport,
+            archiveBrowsingEnabled, calculateYumMetadata, yumRootDepth, enableGemsSupport, enableNpmSupport,
+            enableVagrantSupport, enableBowerSupport, enableGitLfsSupport, enableDebianSupport,
+            enableDockerSupport, enablePypiSupport, debianTrivialLayout)
     }
-
 }

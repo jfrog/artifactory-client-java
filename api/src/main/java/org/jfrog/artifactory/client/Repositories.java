@@ -13,9 +13,6 @@ import java.util.List;
  */
 public interface Repositories {
 
-    final static String REPOSITORIES_API = "/api/repositories/";
-    final static String REPLICATION_API = "/api/replication/";
-
     String create(int position, Repository configuration);
 
     String update(Repository configuration);
@@ -25,4 +22,8 @@ public interface Repositories {
     RepositoryBuilders builders();
 
     List<LightweightRepository> list(RepositoryType repositoryType);
+
+    String getRepositoriesApi();
+
+    String getReplicationApi();
 }

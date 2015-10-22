@@ -1,29 +1,31 @@
 package org.jfrog.artifactory.client;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.Properties;
 
 import static org.apache.commons.codec.binary.Base64.encodeBase64;
 import static org.apache.commons.lang.StringUtils.remove;
 import static org.jfrog.artifactory.client.ArtifactoryClient.create;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.fail;
+import static org.testng.Assert.*;
 
 /**
  * @author jbaruch
  * @since 30/07/12
  */
 public abstract class ArtifactoryTestsBase {
-    protected static final String NEW_LOCAL = "new-local";
+    protected static final String NEW_LOCAL = "ext-release-local";
     protected static final String PATH = "m/a/b/c.txt";
     protected static final String LIBS_RELEASE_LOCAL = "libs-release-local";
     protected static final String LIBS_RELEASE_VIRTUAL = "libs-release";
@@ -36,44 +38,44 @@ public abstract class ArtifactoryTestsBase {
     protected String username;
     private String password;
     protected String url;
+    protected String filePath;
+    protected long fileSize;
+    protected String fileMd5;
+    protected String fileSha1;
 
     @BeforeClass
     public void init() throws IOException {
 
         Properties props = new Properties();
-        InputStream inputStream = this.getClass().getResourceAsStream(
-                "/artifactory-client.properties");//this file is not in GitHub. Create your own in src/test/resources.
+        // This file is not in GitHub. Create your own in src/test/resources.
+        InputStream inputStream = this.getClass().getResourceAsStream("/artifactory-client.properties");
         if (inputStream != null) {
             props.load(inputStream);
-            url = props.getProperty(CLIENTTESTS_ARTIFACTORY_PROPERTIES_PREFIX + "url");
-            username = props.getProperty(CLIENTTESTS_ARTIFACTORY_PROPERTIES_PREFIX + "username");
-            password = props.getProperty(CLIENTTESTS_ARTIFACTORY_PROPERTIES_PREFIX + "password");
-        } else {
-            url = System.getProperty(CLIENTTESTS_ARTIFACTORY_PROPERTIES_PREFIX + "url");
-            if (url == null) {
-                url = System.getenv(CLIENTTESTS_ARTIFACTORY_ENV_VAR_PREFIX + "URL");
-            }
-            if (url == null) {
-                failInit();
-            }
-            username = System.getProperty(CLIENTTESTS_ARTIFACTORY_PROPERTIES_PREFIX + "username");
-            if (username == null) {
-                username = System.getenv(CLIENTTESTS_ARTIFACTORY_ENV_VAR_PREFIX + "USERNAME");
-            }
-            if (username == null) {
-                failInit();
-            }
-            password = System.getProperty(CLIENTTESTS_ARTIFACTORY_PROPERTIES_PREFIX + "password");
-            if (password == null) {
-                password = System.getenv(CLIENTTESTS_ARTIFACTORY_ENV_VAR_PREFIX + "PASSWORD");
-            }
-            if (password == null) {
-                failInit();
-            }
-
-
         }
+
+        url = readParam(props, "url");
+        username = readParam(props, "username");
+        password = readParam(props, "password");
+        filePath = readParam(props, "filePath");
+        fileSize = Long.valueOf(readParam(props, "fileSize"));
+        fileMd5 = readParam(props, "fileMd5");
+        fileSha1 = readParam(props, "fileSha1");
+
         artifactory = create(url, username, password);
+    }
+
+    private String readParam(Properties props, String paramName) {
+        if (props.size() > 0) {
+            return props.getProperty(CLIENTTESTS_ARTIFACTORY_PROPERTIES_PREFIX + paramName);
+        }
+        String paramValue = System.getProperty(CLIENTTESTS_ARTIFACTORY_PROPERTIES_PREFIX + paramName);
+        if (paramValue == null) {
+            paramValue = System.getenv(CLIENTTESTS_ARTIFACTORY_ENV_VAR_PREFIX + paramName.toUpperCase());
+        }
+        if (paramValue == null) {
+            failInit();
+        }
+        return paramValue;
     }
 
     private void failInit() {
@@ -85,20 +87,41 @@ public abstract class ArtifactoryTestsBase {
     }
 
     @AfterClass
-    public void clean() {
+    public void clean() throws IOException {
         artifactory.close();
     }
 
     protected String curl(String path, String method) throws IOException {
         String authStringEnc = new String(encodeBase64((username + ":" + password).getBytes()));
-        URLConnection urlConnection = new URL(url + "/" + path).openConnection();
-        urlConnection.setRequestProperty("Authorization", "Basic " + authStringEnc);
-        if (urlConnection instanceof HttpURLConnection) {
-            ((HttpURLConnection) urlConnection).setRequestMethod(method);
+        CloseableHttpResponse response = null;
+        String responseString = null;
+        try (CloseableHttpClient  httpClient = HttpClients.createDefault()) {
+            HttpUriRequest request = createRequest(path, method);
+            request.addHeader("Authorization", "Basic " + authStringEnc);
+            response = httpClient.execute(request);
+            HttpEntity entity = response.getEntity();
+            responseString = textFrom(entity.getContent());
+        } finally {
+            if (response != null) {
+                response.close();
+            }
         }
-        try (InputStream is = urlConnection.getInputStream()) {
-            return textFrom(is);
+        return responseString;
+    }
+
+    private HttpUriRequest createRequest(String path, String method) {
+        HttpUriRequest request;
+        switch (method.toLowerCase()){
+            case "get":
+                request = new HttpGet(url + "/" + path);
+                break;
+            case "post":
+                request = new HttpPost(url + "/" + path);
+                break;
+            default:
+                throw new IllegalArgumentException("Http Method " + method + " is invalid");
         }
+        return request;
     }
 
     protected String curl(String path) throws IOException {

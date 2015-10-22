@@ -48,7 +48,7 @@ class PropertyFiltersImpl implements PropertyFilters {
         def propertiesQuery = (filters as List).collectEntries {filter ->
             [filter.name, filter.values.join(',')]
         }
-        searches.search('prop', propertiesQuery) as List<String>
+        searches.search('prop', propertiesQuery) as List<RepoPath>
 
     }
 }

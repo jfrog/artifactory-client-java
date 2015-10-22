@@ -11,17 +11,20 @@ import org.jfrog.artifactory.client.model.impl.RepoPathImpl
 /**
  *
  * @author jbaruch
+ * @author rnaegele
  * @since 03/08/12
  */
 class SearchesImpl implements Searches {
 
-    private String SEARCHES_API = "/api/search/"
+    private String baseApiPath
     private ArtifactoryImpl artifactory
     private List<String> reposFilter = []
-    private String quickSearchTerm
+    private String searchUrl
+    private Map searchQuery
 
-    SearchesImpl(Artifactory artifactory) {
+    SearchesImpl(Artifactory artifactory, String baseApiPath) {
         this.artifactory = artifactory as ArtifactoryImpl
+        this.baseApiPath = baseApiPath
     }
 
     Searches repositories(String... repositories) {
@@ -30,15 +33,29 @@ class SearchesImpl implements Searches {
     }
 
     Searches artifactsByName(String name) {
-        this.quickSearchTerm = name
+        this.searchUrl = 'artifact'
+        this.searchQuery = [name: name]
+        this
+    }
+
+    Searches artifactsCreatedSince(final long sinceMillis) {
+        artifactsCreatedInDateRange(sinceMillis, -1L)
+    }
+
+    Searches artifactsCreatedInDateRange(final long fromMillis, final long toMillis) {
+        this.searchUrl = 'creation'
+        this.searchQuery = [from: fromMillis as String]
+        if (toMillis >= 0) {
+            this.searchQuery << ['to': toMillis as String]
+        }
         this
     }
 
     List<RepoPath> doSearch() {
-        if (!quickSearchTerm) {
-            throw new IllegalArgumentException("Search term wasn't set. Please call 'artifactsByName(name to search)' before calling 'search()'")
+        if (!searchUrl) {
+            throw new IllegalArgumentException("Search url wasn't set. Please call one of the 'artifacts...' methods before calling 'search()'")
         }
-        search('artifact', [name: quickSearchTerm])
+        search(searchUrl, searchQuery)
     }
 
     private List<RepoPath> search(String url, Map query) {
@@ -46,9 +63,9 @@ class SearchesImpl implements Searches {
             query.repos = reposFilter.join(',')
         }
         try {
-            def result = artifactory.get("${SEARCHES_API}$url", query, ContentType.JSON)
+            def result = artifactory.get("${getSearcherApi()}$url", query, ContentType.JSON)
             result.results.collect {
-                String path = it.uri.split('/api/storage/')[1]
+                String path = it.uri.split(baseApiPath + '/storage/')[1]
                 String repo = path.split('/')[0]
                 new RepoPathImpl(repo, path - (repo + '/'))
             }
@@ -61,4 +78,7 @@ class SearchesImpl implements Searches {
         new PropertyFiltersImpl(this)
     }
 
+    String getSearcherApi() {
+        return baseApiPath + "/search/";
+    }
 }

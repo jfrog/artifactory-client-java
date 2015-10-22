@@ -8,6 +8,8 @@ import org.jfrog.artifactory.client.model.Repository;
  */
 public interface RepositoryBuilder<B extends RepositoryBuilder, R extends Repository> {
 
+    B enableDebianSupport(boolean enableDebianSupport);
+
     B description(String description);
 
     B excludesPattern(String excludesPattern);
@@ -22,7 +24,25 @@ public interface RepositoryBuilder<B extends RepositoryBuilder, R extends Reposi
 
     R build();
 
+    void validate();
+
+    B packageType(String packageType);
+
     B enableNuGetSupport(boolean enableNuGetSupport);
 
     B enableGemsSupport(boolean enableGemsSupport);
+
+    B enablePypiSupport(boolean enablePypiSupport);
+
+    B enableDockerSupport(boolean enableDockerSupport);
+
+    B enableGitLfsSupport(boolean enableGitLfsSupport);
+
+    B enableBowerSupport(boolean enableBowerSupport);
+
+    B enableVagrantSupport(boolean enableVagrantSupport);
+
+    B enableNpmSupport(boolean enableNpmSupport);
+
+    B debianTrivialLayout(boolean debianTrivialLayout);
 }
