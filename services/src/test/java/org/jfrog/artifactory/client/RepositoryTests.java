@@ -195,4 +195,13 @@ public class RepositoryTests extends ArtifactoryTestsBase {
         assertTrue(libsReleases.getKeyPair() == null || libsReleases.getKeyPair().isEmpty());
         assertTrue(libsReleases.getRepoLayoutRef() == null || libsReleases.getRepoLayoutRef().isEmpty());
     }
+    
+    @Test(dependsOnMethods = "testCreate")
+    public void testRepositoryIsFolder() throws IOException {
+        try {
+            assertTrue(artifactory.repository(NEW_LOCAL).isFolder("myFolder"));
+        } catch (Exception e) {
+            assertTrue(e.getMessage().contains("Internal Server Error"));
+        }
+    }
 }

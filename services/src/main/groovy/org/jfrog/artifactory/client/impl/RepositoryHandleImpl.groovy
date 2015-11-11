@@ -80,4 +80,12 @@ class RepositoryHandleImpl implements RepositoryHandle {
     Set<ItemPermission> effectivePermissions() {
         this.folder('').effectivePermissions()
     }
+    
+    boolean isFolder(String path) {
+        String itemInfoJson = artifactory.get("/api/storage/${repoKey}/${path}", ContentType.JSON, String)
+        JsonSlurper slurper = new JsonSlurper()
+        def itemInfo = slurper.parseText(itemInfoJson)
+        return itemInfo.children != null;
+    }
+
 }

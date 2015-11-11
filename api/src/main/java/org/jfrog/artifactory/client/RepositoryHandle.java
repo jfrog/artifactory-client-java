@@ -33,4 +33,7 @@ public interface RepositoryHandle {
     DownloadableArtifact download(String path);
 
     Set<ItemPermission> effectivePermissions();
+
+    boolean isFolder(String path);
 }
+
