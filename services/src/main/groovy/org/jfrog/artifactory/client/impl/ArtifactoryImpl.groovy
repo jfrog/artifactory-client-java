@@ -80,6 +80,10 @@ class ArtifactoryImpl implements Artifactory {
         new SecurityImpl(this, API_BASE)
     }
 
+    Storage storage() {
+        new StorageImpl(this)
+    }
+
     Plugins plugins() {
         new PluginsImpl(this, API_BASE)
     }

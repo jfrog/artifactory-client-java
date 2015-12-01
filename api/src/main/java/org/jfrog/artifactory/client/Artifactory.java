@@ -24,6 +24,8 @@ public interface Artifactory extends ApiInterface {
 
     Security security();
 
+    Storage storage();
+
     Plugins plugins();
 
     ArtifactorySystem system();
