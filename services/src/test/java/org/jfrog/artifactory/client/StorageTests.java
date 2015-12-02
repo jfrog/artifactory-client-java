@@ -1,7 +1,7 @@
 package org.jfrog.artifactory.client;
 
-import org.testng.annotations.Test;
 import org.jfrog.artifactory.client.model.Storageinfo;
+import org.testng.annotations.Test;
 
 import static junit.framework.Assert.assertNotNull;
 
@@ -14,7 +14,7 @@ public class StorageTests extends ArtifactoryTestsBase {
     void testStorageSummaryInfo() {
         Storageinfo info = artifactory.storage().getStorageinfo();
         assertNotNull(info);
-        assertNotNull(info.getFileStorageSummary());
+        assertNotNull(info.getFileStoreSummary());
         assertNotNull(info.getBinariesSummary());
         assertNotNull(info.getRepositoriesSummaryList());
     }

@@ -7,7 +7,7 @@ import java.util.List;
  */
 public interface Storageinfo {
 
-    FileStorageSummary getFileStorageSummary();
+    FileStorageSummary getFileStoreSummary();
 
     BinariesSummary getBinariesSummary();
 

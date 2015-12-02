@@ -17,7 +17,7 @@ import java.util.List;
 public class StorageInfoImpl implements Storageinfo {
 
     private BinariesSummary binariesSummary;
-    private FileStorageSummary fileStorageSummary;
+    private FileStorageSummary fileStoreSummary;
     private List<RepositorySummary> repositoriesSummaryList;
 
     public BinariesSummary getBinariesSummary() {
@@ -29,13 +29,13 @@ public class StorageInfoImpl implements Storageinfo {
         this.binariesSummary = binariesSummary;
     }
 
-    public FileStorageSummary getFileStorageSummary() {
-        return fileStorageSummary;
+    public FileStorageSummary getFileStoreSummary() {
+        return fileStoreSummary;
     }
 
     @JsonDeserialize(as = FileStorageSummaryImpl.class)
-    public void setFileStorageSummary(FileStorageSummary fileStorageSummary) {
-        this.fileStorageSummary = fileStorageSummary;
+    public void setFileStoreSummary(FileStorageSummary fileStoreSummary) {
+        this.fileStoreSummary = fileStoreSummary;
     }
 
     public List<RepositorySummary> getRepositoriesSummaryList() {

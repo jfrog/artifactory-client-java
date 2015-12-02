@@ -20,9 +20,7 @@ public class RepositorySummaryDeserialize extends JsonDeserializer<List<Reposito
     public List<RepositorySummary> deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException, JsonProcessingException {
 
         ObjectMapper mapper = new ObjectMapper();
-        List<RepositorySummary> repositorySummary = mapper.readValue(jp, new TypeReference<List<RepositorySummaryImpl>>() {});
-
-        return repositorySummary;
+        return mapper.readValue(jp, new TypeReference<List<RepositorySummaryImpl>>() {});
 
     }
 }
