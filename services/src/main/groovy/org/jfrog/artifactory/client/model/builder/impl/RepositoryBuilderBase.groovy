@@ -1,6 +1,7 @@
 package org.jfrog.artifactory.client.model.builder.impl
 
 import org.jfrog.artifactory.client.model.Repository
+import org.jfrog.artifactory.client.model.RepositoryType
 import org.jfrog.artifactory.client.model.builder.RepositoryBuilder;
 
 /**
@@ -128,6 +129,10 @@ abstract class RepositoryBuilderBase<B extends RepositoryBuilder, R extends Repo
         this as B
     }
 
+    abstract RepositoryType getRclass()
+
+    abstract Set<String> supportedTypes()
+
     @Override
     void validate() {
         if (!key) {
@@ -135,6 +140,9 @@ abstract class RepositoryBuilderBase<B extends RepositoryBuilder, R extends Repo
         }
         if (key.length() > 64) {
             throw new IllegalArgumentException("The 'key' value is limitted to 64 characters.")
+        }
+        if (this.packageType != null && !supportedTypes().contains(this.packageType)) {
+            throw new IllegalArgumentException("Package type '${packageType}' is not supported in $rclass repositories");
         }
     }
 }

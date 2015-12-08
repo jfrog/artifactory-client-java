@@ -1,7 +1,9 @@
 package org.jfrog.artifactory.client.model.builder.impl
 
+import org.jfrog.artifactory.client.model.RepositoryType
 import org.jfrog.artifactory.client.model.VirtualRepository
 import org.jfrog.artifactory.client.model.builder.VirtualRepositoryBuilder
+import org.jfrog.artifactory.client.model.impl.RepositoryTypeImpl
 import org.jfrog.artifactory.client.model.impl.VirtualRepositoryImpl
 
 import static org.jfrog.artifactory.client.model.VirtualRepository.PomRepositoryReferencesCleanupPolicy.discard_active_reference
@@ -43,5 +45,14 @@ class VirtualRepositoryBuilderImpl extends RepositoryBuilderBase<VirtualReposito
     VirtualRepository build() {
         validate()
         new VirtualRepositoryImpl(description, excludesPattern, includesPattern, key, notes, artifactoryRequestsCanRetrieveRemoteArtifacts, keyPair, pomRepositoryReferencesCleanupPolicy, repositories, repoLayoutRef, packageType, enableNuGetSupport, enableGemsSupport, enableNpmSupport, enableVagrantSupport, enableBowerSupport, enableGitLfsSupport, enableDebianSupport, enableDockerSupport, enablePypiSupport, debianTrivialLayout)
+    }
+
+    Set<String> supportedTypes() {
+        return ["maven", "gradle", "ivy", "sbt", "nuget", "gems", "npm", "bower", "pypi", "p2", "generic"]
+    }
+
+    @Override
+    RepositoryType getRclass() {
+        return RepositoryTypeImpl.VIRTUAL
     }
 }

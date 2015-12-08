@@ -1,11 +1,13 @@
 package org.jfrog.artifactory.client.model.builder.impl
 
 import org.jfrog.artifactory.client.model.ChecksumPolicyType
+import org.jfrog.artifactory.client.model.RepositoryType
 import org.jfrog.artifactory.client.model.impl.ChecksumPolicyTypeImpl
 import org.jfrog.artifactory.client.model.LocalRepository
 import org.jfrog.artifactory.client.model.Repository
 import org.jfrog.artifactory.client.model.builder.LocalRepositoryBuilder
 import org.jfrog.artifactory.client.model.impl.LocalRepositoryImpl
+import org.jfrog.artifactory.client.model.impl.RepositoryTypeImpl
 
 import static ChecksumPolicyTypeImpl.client_checksums
 /**
@@ -46,5 +48,15 @@ class LocalRepositoryBuilderImpl extends NonVirtualRepositoryBuilderBase<LocalRe
             archiveBrowsingEnabled, calculateYumMetadata, yumRootDepth, enableGemsSupport, enableNpmSupport,
             enableVagrantSupport, enableBowerSupport, enableGitLfsSupport, enableDebianSupport,
             enableDockerSupport, enablePypiSupport, debianTrivialLayout)
+    }
+
+    @Override
+    RepositoryType getRclass() {
+        return RepositoryTypeImpl.LOCAL
+    }
+
+    @Override
+    Set<String> supportedTypes() {
+        return ["maven", "gradle", "ivy", "sbt", "nuget", "gems", "npm", "bower", "debian", "pypi", "docker", "vagrant", "gitlfs", "yum", "generic"]
     }
 }

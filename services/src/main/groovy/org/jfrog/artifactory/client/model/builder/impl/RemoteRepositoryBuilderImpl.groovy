@@ -2,9 +2,11 @@ package org.jfrog.artifactory.client.model.builder.impl
 
 import org.jfrog.artifactory.client.model.RemoteRepoChecksumPolicyType
 import org.jfrog.artifactory.client.model.RemoteRepository
+import org.jfrog.artifactory.client.model.RepositoryType
 import org.jfrog.artifactory.client.model.builder.RemoteRepositoryBuilder
 import org.jfrog.artifactory.client.model.impl.RemoteRepoChecksumPolicyTypeImpl
 import org.jfrog.artifactory.client.model.impl.RemoteRepositoryImpl
+import org.jfrog.artifactory.client.model.impl.RepositoryTypeImpl
 
 import static RemoteRepoChecksumPolicyTypeImpl.generate_if_absent
 import static org.jfrog.artifactory.client.model.Repository.MAVEN_2_REPO_LAYOUT
@@ -180,5 +182,15 @@ class RemoteRepositoryBuilderImpl extends NonVirtualRepositoryBuilderBase<Remote
                 offline, password, proxy, remoteRepoChecksumPolicyType, retrievalCachePeriodSecs, shareConfiguration, socketTimeoutMillis, enableCookieManagement, allowAnyHostAuth,
                 storeArtifactsLocally, synchronizeProperties, unusedArtifactsCleanupEnabled, unusedArtifactsCleanupPeriodHours, url, username, repoLayoutRef, enableNuGetSupport, assumedOfflinePeriodSecs, archiveBrowsingEnabled,
                 listRemoteFolderItems, rejectInvalidJars, p2Support, packageType, enableGemsSupport, enableNpmSupport, enableVagrantSupport, enableBowerSupport, enableGitLfsSupport, enableDebianSupport, enableDockerSupport, enablePypiSupport, debianTrivialLayout)
+    }
+
+    @Override
+    RepositoryType getRclass() {
+        return RepositoryTypeImpl.REMOTE
+    }
+
+    @Override
+    Set<String> supportedTypes() {
+        return ["maven", "gradle", "ivy", "sbt", "nuget", "gems", "npm", "bower", "debian", "pypi", "docker", "yum"]
     }
 }
