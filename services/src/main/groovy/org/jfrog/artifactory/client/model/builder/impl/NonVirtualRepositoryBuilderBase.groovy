@@ -21,6 +21,10 @@ abstract class NonVirtualRepositoryBuilderBase<B extends NonVirtualRepositoryBui
     protected SnapshotVersionBehavior snapshotVersionBehavior = non_unique
     protected boolean archiveBrowsingEnabled = false
 
+    NonVirtualRepositoryBuilderBase(Set<String> supportedTypes) {
+        super(supportedTypes)
+    }
+
     @Override
     B blackedOut(boolean blackedOut) {
         this.blackedOut = blackedOut

@@ -27,6 +27,12 @@ abstract class RepositoryBuilderBase<B extends RepositoryBuilder, R extends Repo
     protected boolean enablePypiSupport = false
     protected boolean debianTrivialLayout = false
 
+    public final Set<String> supportedTypes
+
+    RepositoryBuilderBase(Set<String> supportedTypes) {
+        this.supportedTypes = supportedTypes
+    }
+
     @Override
     B description(String description) {
         this.description = description
@@ -129,9 +135,7 @@ abstract class RepositoryBuilderBase<B extends RepositoryBuilder, R extends Repo
         this as B
     }
 
-    abstract RepositoryType getRclass()
-
-    abstract Set<String> supportedTypes()
+    abstract RepositoryType getRepositoryType()
 
     @Override
     void validate() {
@@ -141,8 +145,8 @@ abstract class RepositoryBuilderBase<B extends RepositoryBuilder, R extends Repo
         if (key.length() > 64) {
             throw new IllegalArgumentException("The 'key' value is limitted to 64 characters.")
         }
-        if (this.packageType != null && !supportedTypes().contains(this.packageType)) {
-            throw new IllegalArgumentException("Package type '${packageType}' is not supported in $rclass repositories");
+        if (this.packageType != null && !supportedTypes.contains(this.packageType)) {
+            throw new IllegalArgumentException("Package type '${packageType}' is not supported in $repositoryType repositories");
         }
     }
 }

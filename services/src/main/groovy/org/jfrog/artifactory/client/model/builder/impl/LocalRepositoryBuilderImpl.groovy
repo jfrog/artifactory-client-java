@@ -16,7 +16,9 @@ import static ChecksumPolicyTypeImpl.client_checksums
  * @since 31/07/12
  */
 class LocalRepositoryBuilderImpl extends NonVirtualRepositoryBuilderBase<LocalRepositoryBuilder, LocalRepository> implements LocalRepositoryBuilder {
+
     private LocalRepositoryBuilderImpl() {
+        super(["maven", "gradle", "ivy", "sbt", "nuget", "gems", "npm", "bower", "debian", "pypi", "docker", "vagrant", "gitlfs", "yum", "generic"])
         this.repoLayoutRef = Repository.MAVEN_2_REPO_LAYOUT
         this.checksumPolicyType = client_checksums
     }
@@ -51,12 +53,8 @@ class LocalRepositoryBuilderImpl extends NonVirtualRepositoryBuilderBase<LocalRe
     }
 
     @Override
-    RepositoryType getRclass() {
+    RepositoryType getRepositoryType() {
         return RepositoryTypeImpl.LOCAL
     }
 
-    @Override
-    Set<String> supportedTypes() {
-        return ["maven", "gradle", "ivy", "sbt", "nuget", "gems", "npm", "bower", "debian", "pypi", "docker", "vagrant", "gitlfs", "yum", "generic"]
-    }
 }
