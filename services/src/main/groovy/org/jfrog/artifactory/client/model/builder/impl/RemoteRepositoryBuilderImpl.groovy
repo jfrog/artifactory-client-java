@@ -10,6 +10,7 @@ import org.jfrog.artifactory.client.model.impl.RepositoryTypeImpl
 
 import static RemoteRepoChecksumPolicyTypeImpl.generate_if_absent
 import static org.jfrog.artifactory.client.model.Repository.MAVEN_2_REPO_LAYOUT
+import static org.jfrog.artifactory.client.model.PackageType.*
 
 /**
  *
@@ -19,7 +20,7 @@ import static org.jfrog.artifactory.client.model.Repository.MAVEN_2_REPO_LAYOUT
 class RemoteRepositoryBuilderImpl extends NonVirtualRepositoryBuilderBase<RemoteRepositoryBuilder, RemoteRepository> implements RemoteRepositoryBuilder {
 
     RemoteRepositoryBuilderImpl() {
-        super(["maven", "gradle", "ivy", "sbt", "nuget", "gems", "npm", "bower", "debian", "pypi", "docker", "yum", "vcs", "p2", "generic"])
+        super([maven, gradle, ivy, sbt, nuget, gems, npm, bower, debian, pypi, docker, yum, vcs, p2, generic])
         remoteRepoChecksumPolicyType = generate_if_absent
         repoLayoutRef = MAVEN_2_REPO_LAYOUT
     }

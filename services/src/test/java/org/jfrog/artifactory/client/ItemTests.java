@@ -5,6 +5,7 @@ import org.jfrog.artifactory.client.impl.CopyMoveException;
 import org.jfrog.artifactory.client.model.File;
 import org.jfrog.artifactory.client.model.Folder;
 import org.jfrog.artifactory.client.model.LocalRepository;
+import org.jfrog.artifactory.client.model.PackageType;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
@@ -95,7 +96,7 @@ public class ItemTests extends ArtifactoryTestsBase {
             // Make sure the local repo exists
             LocalRepository localRepository = artifactory.repositories().builders().localRepositoryBuilder().key(
                     repoName)
-                    .description("new local repository").packageType("maven").build();
+                    .description("new local repository").packageType(PackageType.maven).build();
             artifactory.repositories().create(2, localRepository);
         } catch (Exception e) {
             //noinspection ConstantConditions

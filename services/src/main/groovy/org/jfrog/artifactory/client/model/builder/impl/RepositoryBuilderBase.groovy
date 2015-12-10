@@ -1,5 +1,6 @@
 package org.jfrog.artifactory.client.model.builder.impl
 
+import org.jfrog.artifactory.client.model.PackageType
 import org.jfrog.artifactory.client.model.Repository
 import org.jfrog.artifactory.client.model.RepositoryType
 import org.jfrog.artifactory.client.model.builder.RepositoryBuilder;
@@ -15,7 +16,7 @@ abstract class RepositoryBuilderBase<B extends RepositoryBuilder, R extends Repo
     protected String key
     protected String notes
     protected String repoLayoutRef
-    protected String packageType
+    protected PackageType packageType
     protected boolean enableNuGetSupport = false
     protected boolean enableGemsSupport = false
     protected boolean enableNpmSupport = false
@@ -27,9 +28,9 @@ abstract class RepositoryBuilderBase<B extends RepositoryBuilder, R extends Repo
     protected boolean enablePypiSupport = false
     protected boolean debianTrivialLayout = false
 
-    public final Set<String> supportedTypes
+    public final Set<PackageType> supportedTypes
 
-    RepositoryBuilderBase(Set<String> supportedTypes) {
+    RepositoryBuilderBase(Set<PackageType> supportedTypes) {
         this.supportedTypes = supportedTypes
     }
 
@@ -70,7 +71,7 @@ abstract class RepositoryBuilderBase<B extends RepositoryBuilder, R extends Repo
     }
 
     @Override
-    B packageType(String packageType) {
+    B packageType(PackageType packageType) {
         this.packageType = packageType
         this as B
     }

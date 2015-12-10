@@ -1,5 +1,6 @@
 package org.jfrog.artifactory.client.model.impl;
 
+import org.jfrog.artifactory.client.model.PackageType;
 import org.jfrog.artifactory.client.model.Repository;
 
 /**
@@ -15,7 +16,7 @@ public abstract class RepositoryBase implements Repository {
     private String includesPattern;
     private String excludesPattern;
     protected String repoLayoutRef;
-    protected String packageType;
+    protected PackageType packageType;
     protected boolean enableNuGetSupport;
     protected boolean enableGemsSupport;
     protected boolean enableNpmSupport;
@@ -31,7 +32,7 @@ public abstract class RepositoryBase implements Repository {
     }
 
     protected RepositoryBase(String description, String excludesPattern, String includesPattern, String key, String notes, String repoLayoutRef,
-            String packageType, boolean enableNuGetSupport, boolean enableGemsSupport, boolean enableNpmSupport,
+                             PackageType packageType, boolean enableNuGetSupport, boolean enableGemsSupport, boolean enableNpmSupport,
             boolean enableVagrantSupport, boolean enableBowerSupport, boolean enableGitLfsSupport,
             boolean enableDebianSupport, boolean enableDockerSupport, boolean enablePypiSupport, boolean debianTrivialLayout) {
         this.description = description;
@@ -50,6 +51,7 @@ public abstract class RepositoryBase implements Repository {
         this.enableDebianSupport = enableDebianSupport;
         this.enableDockerSupport = enableDockerSupport;
         this.enablePypiSupport = enablePypiSupport;
+        this.debianTrivialLayout = debianTrivialLayout;
     }
 
     @Override
@@ -153,11 +155,11 @@ public abstract class RepositoryBase implements Repository {
     }
 
     @Override
-    public String getPackageType() {
+    public PackageType getPackageType() {
         return packageType;
     }
 
-    public void setPackageType(String packageType) {
+    public void setPackageType(PackageType packageType) {
         this.packageType = packageType;
     }
 

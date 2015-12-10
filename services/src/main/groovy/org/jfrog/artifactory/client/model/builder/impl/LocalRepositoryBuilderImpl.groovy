@@ -9,6 +9,7 @@ import org.jfrog.artifactory.client.model.builder.LocalRepositoryBuilder
 import org.jfrog.artifactory.client.model.impl.LocalRepositoryImpl
 import org.jfrog.artifactory.client.model.impl.RepositoryTypeImpl
 
+import static org.jfrog.artifactory.client.model.PackageType.*
 import static ChecksumPolicyTypeImpl.client_checksums
 /**
  *
@@ -18,7 +19,7 @@ import static ChecksumPolicyTypeImpl.client_checksums
 class LocalRepositoryBuilderImpl extends NonVirtualRepositoryBuilderBase<LocalRepositoryBuilder, LocalRepository> implements LocalRepositoryBuilder {
 
     private LocalRepositoryBuilderImpl() {
-        super(["maven", "gradle", "ivy", "sbt", "nuget", "gems", "npm", "bower", "debian", "pypi", "docker", "vagrant", "gitlfs", "yum", "generic"])
+        super([maven, gradle, ivy, sbt, nuget, gems, npm, bower, debian, pypi, docker, vagrant, gitlfs, yum, generic])
         this.repoLayoutRef = Repository.MAVEN_2_REPO_LAYOUT
         this.checksumPolicyType = client_checksums
     }

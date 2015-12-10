@@ -1,5 +1,6 @@
 package org.jfrog.artifactory.client.model.impl;
 
+import org.jfrog.artifactory.client.model.PackageType;
 import org.jfrog.artifactory.client.model.RemoteRepoChecksumPolicyType;
 import org.jfrog.artifactory.client.model.RemoteRepository;
 import org.jfrog.artifactory.client.model.RepositoryType;
@@ -51,7 +52,7 @@ public class RemoteRepositoryImpl extends NonVirtualRepositoryBase implements Re
                          int retrievalCachePeriodSecs, boolean shareConfiguration, int socketTimeoutMillis, boolean cookieManagementEnabled, boolean allowAnyHostAuth, boolean storeArtifactsLocally, boolean synchronizeProperties,
                          boolean unusedArtifactsCleanupEnabled, int unusedArtifactsCleanupPeriodHours, String url, String username, String repoLayoutRef, boolean enableNuGetSupport,
                          long assumedOfflinePeriodSecs, boolean archiveBrowsingEnabled, boolean listRemoteFolderItems, boolean rejectInvalidJars, boolean p2Support,
-                         String packageType,
+                         PackageType packageType,
                          boolean enableGemsSupport, boolean enableNpmSupport, boolean enableVagrantSupport, boolean enableBowerSupport, boolean enableGitLfsSupport, boolean enableDebianSupport,
                          boolean enableDockerSupport, boolean enablePypiSupport, boolean debianTrivialLayout) {
 

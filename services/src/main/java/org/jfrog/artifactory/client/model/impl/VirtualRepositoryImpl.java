@@ -1,5 +1,6 @@
 package org.jfrog.artifactory.client.model.impl;
 
+import org.jfrog.artifactory.client.model.PackageType;
 import org.jfrog.artifactory.client.model.VirtualRepository;
 
 import java.util.ArrayList;
@@ -22,7 +23,7 @@ public class VirtualRepositoryImpl extends RepositoryBase implements VirtualRepo
     private VirtualRepositoryImpl(String description, String excludesPattern, String includesPattern, String key, String notes,
         boolean artifactoryRequestsCanRetrieveRemoteArtifacts, String keyPair,
         PomRepositoryReferencesCleanupPolicy pomRepositoryReferencesCleanupPolicy, List<String> repositories, String repoLayoutRef,
-        String packageType,
+        PackageType packageType,
         boolean enableNuGetSupport, boolean enableGemsSupport, boolean enableNpmSupport, boolean enableVagrantSupport,
         boolean enableBowerSupport, boolean enableGitLfsSupport, boolean enableDebianSupport,
         boolean enableDockerSupport, boolean enablePypiSupport, boolean debianTrivialLayout) {
