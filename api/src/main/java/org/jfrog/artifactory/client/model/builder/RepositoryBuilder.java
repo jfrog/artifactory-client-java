@@ -1,5 +1,6 @@
 package org.jfrog.artifactory.client.model.builder;
 
+import org.jfrog.artifactory.client.model.PackageType;
 import org.jfrog.artifactory.client.model.Repository;
 
 /**
@@ -26,7 +27,7 @@ public interface RepositoryBuilder<B extends RepositoryBuilder, R extends Reposi
 
     void validate();
 
-    B packageType(String packageType);
+    B packageType(PackageType packageType);
 
     B enableNuGetSupport(boolean enableNuGetSupport);
 

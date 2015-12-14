@@ -21,7 +21,7 @@ public interface Repository {
 
     String getRepoLayoutRef();
 
-    String getPackageType();
+    PackageType getPackageType();
 
     boolean isEnableNuGetSupport();
 

@@ -2,6 +2,7 @@ package org.jfrog.artifactory.client.model.impl;
 
 import org.jfrog.artifactory.client.model.ChecksumPolicyType;
 import org.jfrog.artifactory.client.model.LocalRepository;
+import org.jfrog.artifactory.client.model.PackageType;
 import org.jfrog.artifactory.client.model.SnapshotVersionBehavior;
 
 import java.util.List;
@@ -23,10 +24,10 @@ public class LocalRepositoryImpl extends NonVirtualRepositoryBase implements Loc
     }
 
     public LocalRepositoryImpl(String description, String excludesPattern, String includesPattern, String key, String notes,
-        boolean blackedOut, boolean handleReleases, boolean handleSnapshots, int maxUniqueSnapshots,
-        List<String> propertySets, SnapshotVersionBehavior snapshotVersionBehavior, boolean suppressPomConsistencyChecks, ChecksumPolicyType checksumPolicyType, String repoLayoutRef, String packageType, boolean enableNuGetSupport, boolean archiveBrowsingEnabled, boolean calculateYumMetadata, int yumRootDepth, boolean enableGemsSupport, boolean enableNpmSupport, boolean enableVagrantSupport,
-        boolean enableBowerSupport, boolean enableGitLfsSupport, boolean enableDebianSupport,
-        boolean enableDockerSupport, boolean enablePypiSupport, boolean debianTrivialLayout) {
+                               boolean blackedOut, boolean handleReleases, boolean handleSnapshots, int maxUniqueSnapshots,
+                               List<String> propertySets, SnapshotVersionBehavior snapshotVersionBehavior, boolean suppressPomConsistencyChecks, ChecksumPolicyType checksumPolicyType, String repoLayoutRef, PackageType packageType, boolean enableNuGetSupport, boolean archiveBrowsingEnabled, boolean calculateYumMetadata, int yumRootDepth, boolean enableGemsSupport, boolean enableNpmSupport, boolean enableVagrantSupport,
+                               boolean enableBowerSupport, boolean enableGitLfsSupport, boolean enableDebianSupport,
+                               boolean enableDockerSupport, boolean enablePypiSupport, boolean debianTrivialLayout) {
 
         super(description, excludesPattern, includesPattern, key, notes, blackedOut, handleReleases,
             handleSnapshots, maxUniqueSnapshots, propertySets, snapshotVersionBehavior, suppressPomConsistencyChecks,

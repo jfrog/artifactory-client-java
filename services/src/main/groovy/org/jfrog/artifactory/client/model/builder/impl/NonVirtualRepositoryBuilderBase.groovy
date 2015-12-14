@@ -1,6 +1,7 @@
 package org.jfrog.artifactory.client.model.builder.impl
 
 import org.jfrog.artifactory.client.model.NonVirtualRepository
+import org.jfrog.artifactory.client.model.PackageType
 import org.jfrog.artifactory.client.model.SnapshotVersionBehavior
 import org.jfrog.artifactory.client.model.builder.NonVirtualRepositoryBuilder
 import org.jfrog.artifactory.client.model.impl.SnapshotVersionBehaviorImpl
@@ -20,6 +21,10 @@ abstract class NonVirtualRepositoryBuilderBase<B extends NonVirtualRepositoryBui
     protected boolean suppressPomConsistencyChecks = false
     protected SnapshotVersionBehavior snapshotVersionBehavior = non_unique
     protected boolean archiveBrowsingEnabled = false
+
+    NonVirtualRepositoryBuilderBase(Set<PackageType> supportedTypes) {
+        super(supportedTypes)
+    }
 
     @Override
     B blackedOut(boolean blackedOut) {

@@ -1,10 +1,13 @@
 package org.jfrog.artifactory.client.model.builder.impl
 
+import org.jfrog.artifactory.client.model.RepositoryType
 import org.jfrog.artifactory.client.model.VirtualRepository
 import org.jfrog.artifactory.client.model.builder.VirtualRepositoryBuilder
+import org.jfrog.artifactory.client.model.impl.RepositoryTypeImpl
 import org.jfrog.artifactory.client.model.impl.VirtualRepositoryImpl
 
 import static org.jfrog.artifactory.client.model.VirtualRepository.PomRepositoryReferencesCleanupPolicy.discard_active_reference
+import static org.jfrog.artifactory.client.model.PackageType.*
 
 /**
  *
@@ -13,7 +16,9 @@ import static org.jfrog.artifactory.client.model.VirtualRepository.PomRepository
  */
 class VirtualRepositoryBuilderImpl extends RepositoryBuilderBase<VirtualRepositoryBuilder, VirtualRepository> implements VirtualRepositoryBuilder {
 
-    private VirtualRepositoryBuilderImpl() { }
+    private VirtualRepositoryBuilderImpl() {
+        super([maven, gradle, ivy, sbt, nuget, gems, npm, bower, pypi, p2, generic])
+    }
 
     private List<String> repositories = new ArrayList<String>()
     private boolean artifactoryRequestsCanRetrieveRemoteArtifacts
@@ -43,5 +48,10 @@ class VirtualRepositoryBuilderImpl extends RepositoryBuilderBase<VirtualReposito
     VirtualRepository build() {
         validate()
         new VirtualRepositoryImpl(description, excludesPattern, includesPattern, key, notes, artifactoryRequestsCanRetrieveRemoteArtifacts, keyPair, pomRepositoryReferencesCleanupPolicy, repositories, repoLayoutRef, packageType, enableNuGetSupport, enableGemsSupport, enableNpmSupport, enableVagrantSupport, enableBowerSupport, enableGitLfsSupport, enableDebianSupport, enableDockerSupport, enablePypiSupport, debianTrivialLayout)
+    }
+
+    @Override
+    RepositoryType getRepositoryType() {
+        return RepositoryTypeImpl.VIRTUAL
     }
 }

@@ -24,7 +24,7 @@ public class RepositoryTests extends ArtifactoryTestsBase {
     @BeforeMethod
     protected void setUp() throws Exception {
         localRepository = artifactory.repositories().builders().localRepositoryBuilder().key(NEW_LOCAL)
-                .description("new local repository").packageType("maven").build();
+                .description("new local repository").packageType(PackageType.maven).build();
     }
 
     @Test(groups = "repositoryBasics", dependsOnMethods = "testDelete")
@@ -62,7 +62,7 @@ public class RepositoryTests extends ArtifactoryTestsBase {
 
     @Test(dependsOnMethods = "testCreate")
     public void testUpdate() throws Exception {
-        LocalRepository changedRepository = artifactory.repositories().builders().builderFrom(localRepository).description("new_description").packageType("maven").build();
+        LocalRepository changedRepository = artifactory.repositories().builders().builderFrom(localRepository).description("new_description").packageType(PackageType.maven).build();
         artifactory.repositories().update(changedRepository);
         assertTrue(curlAndStrip("api/repositories/" + NEW_LOCAL).contains("\"description\":\"new_description\""));
     }
@@ -195,7 +195,7 @@ public class RepositoryTests extends ArtifactoryTestsBase {
         assertTrue(libsReleases.getKeyPair() == null || libsReleases.getKeyPair().isEmpty());
         assertTrue(libsReleases.getRepoLayoutRef() == null || libsReleases.getRepoLayoutRef().isEmpty());
     }
-    
+
     @Test(dependsOnMethods = "testCreate")
     public void testRepositoryIsFolder() throws IOException {
         try {
