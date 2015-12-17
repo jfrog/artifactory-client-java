@@ -11,6 +11,8 @@ public interface BinariesSummary {
 
     String getArtifactsSize();
 
+    String getArtifactsCount();
+
     String getOptimization();
 
     String getItemsCount();

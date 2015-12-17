@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.jfrog.artifactory.client.model.BinariesSummary;
 import org.jfrog.artifactory.client.model.FileStorageSummary;
 import org.jfrog.artifactory.client.model.RepositorySummary;
-import org.jfrog.artifactory.client.model.Storageinfo;
+import org.jfrog.artifactory.client.model.StorageInfo;
 import org.jfrog.artifactory.client.model.impl.storageinfo.BinariesSummaryImpl;
 import org.jfrog.artifactory.client.model.impl.storageinfo.FileStorageSummaryImpl;
 import org.jfrog.artifactory.client.model.impl.storageinfo.RepositorySummaryDeserialize;
@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * @author Aviad Shikloshi
  */
-public class StorageInfoImpl implements Storageinfo {
+public class StorageInfoImpl implements StorageInfo {
 
     private BinariesSummary binariesSummary;
     private FileStorageSummary fileStoreSummary;
