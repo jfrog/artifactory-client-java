@@ -10,6 +10,7 @@ public class BinariesSummaryImpl implements BinariesSummary {
     private String binariesCount;
     private String binariesSize;
     private String artifactsSize;
+    private String artifactsCount;
     private String optimization;
     private String itemsCount;
 
@@ -35,6 +36,14 @@ public class BinariesSummaryImpl implements BinariesSummary {
 
     public void setArtifactsSize(String artifactsSize) {
         this.artifactsSize = artifactsSize;
+    }
+
+    public String getArtifactsCount() {
+        return artifactsCount;
+    }
+
+    public void setArtifactsCount(String artifactsCount) {
+        this.artifactsCount = artifactsCount;
     }
 
     public String getOptimization() {
