@@ -115,6 +115,11 @@ public class ArtifactoryNingClientImpl extends ArtifactoryImpl {
             try {
                 //This may puke on IOException, JsonParseException, JsonMappingException but we will let the caller deal with it.
                 if (responseType == ContentType.JSON && inputStream.available() > 0) {
+
+                    if (responseClass == String) {
+                        return (T) inputStream.text;
+                    }
+
                     return (T) objectMapper.readValue(inputStream, responseClass);
                 }
                 //TODO: Handle other cases.
