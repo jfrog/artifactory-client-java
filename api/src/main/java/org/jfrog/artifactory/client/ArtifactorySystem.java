@@ -1,5 +1,6 @@
 package org.jfrog.artifactory.client;
 
+import org.jfrog.artifactory.client.model.SystemInfo;
 import org.jfrog.artifactory.client.model.Version;
 
 /**
@@ -18,5 +19,7 @@ public interface ArtifactorySystem {
     void configuration(String xml);
 
     Version version();
+
+    SystemInfo info();
 
 }

@@ -2,6 +2,8 @@ package org.jfrog.artifactory.client.impl
 
 import com.fasterxml.jackson.core.type.TypeReference
 import groovyx.net.http.ContentType
+import org.jfrog.artifactory.client.model.SystemInfo
+import org.jfrog.artifactory.client.model.impl.SystemInfoImpl
 
 import static groovyx.net.http.ContentType.*
 import org.jfrog.artifactory.client.ArtifactorySystem
@@ -49,6 +51,11 @@ class ArtifactorySystemImpl implements ArtifactorySystem {
         artifactory.get(getSystemVersionApi(), JSON, new TypeReference<VersionImpl>() {})
     }
 
+    @Override
+    SystemInfo info() {
+        artifactory.get(getSystemInfoApi(), JSON, new TypeReference<SystemInfoImpl>() {})
+    }
+
     private String getSystemVersionApi() {
         return getSystemApi() + "version";
     }
@@ -63,5 +70,9 @@ class ArtifactorySystemImpl implements ArtifactorySystem {
 
     private String getSystemApi() {
         return baseApiPath + "/system/";
+    }
+
+    private String getSystemInfoApi() {
+        return getSystemApi() + "info";
     }
 }
