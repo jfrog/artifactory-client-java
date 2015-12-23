@@ -1,5 +1,7 @@
 package org.jfrog.artifactory.client;
 
+import junit.framework.Assert;
+import org.jfrog.artifactory.client.model.SystemInfo;
 import org.jfrog.artifactory.client.model.Version;
 import org.testng.annotations.Test;
 
@@ -55,5 +57,32 @@ public class SystemTests extends ArtifactoryTestsBase {
         // Restore
         String restoredXml = updatedXml.replace("<excludeBuilds>true</excludeBuilds>", "<excludeBuilds>false</excludeBuilds>");
         artifactory.system().configuration(restoredXml);
+    }
+
+    @Test
+    public void testSystemInfo() {
+        // This test code should uncommented once the new /api/system/info Artifactory API is
+        // is released.
+
+        /*
+        SystemInfo info = artifactory.system().info();
+        Assert.assertNotNull(info);
+        Assert.assertTrue(info.getCommittedVirtualMemorySize() > 0);
+        Assert.assertTrue(info.getTotalSwapSpaceSize() > 0);
+        Assert.assertTrue(info.getFreeSwapSpaceSize() > 0);
+        Assert.assertTrue(info.getProcessCpuTime() > 0);
+        Assert.assertTrue(info.getTotalPhysicalMemorySize() > 0);
+        Assert.assertTrue(info.getOpenFileDescriptorCount() > 0);
+        Assert.assertTrue(info.getMaxFileDescriptorCount() > 0);
+        Assert.assertTrue(info.getProcessCpuLoad() > 0);
+        Assert.assertTrue(info.getSystemCpuLoad() > 0);
+        Assert.assertTrue(info.getFreePhysicalMemorySize() > 0);
+        Assert.assertTrue(info.getNumberOfCores() > 0);
+        Assert.assertTrue(info.getHeapMemoryUsage() > 0);
+        Assert.assertTrue(info.getNoneHeapMemoryUsage() > 0);
+        Assert.assertTrue(info.getThreadCount() > 0);
+        Assert.assertTrue(info.getNoneHeapMemoryMax() > 0);
+        Assert.assertTrue(info.getHeapMemoryMax() > 0);
+        */
     }
 }
