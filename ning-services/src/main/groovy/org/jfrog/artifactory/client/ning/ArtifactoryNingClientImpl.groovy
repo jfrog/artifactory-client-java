@@ -113,13 +113,11 @@ public class ArtifactoryNingClientImpl extends ArtifactoryImpl {
         InputStream inputStream = handleResponse(ningHttpClient.executeRequest(request).get(), finalUrl, false);
         if (inputStream != null) {
             try {
-                //This may puke on IOException, JsonParseException, JsonMappingException but we will let the caller deal with it.
+                // This may puke on IOException, JsonParseException, JsonMappingException but we will let the caller deal with it.
                 if (responseType == ContentType.JSON && inputStream.available() > 0) {
-
                     if (responseClass == String) {
                         return (T) inputStream.text;
                     }
-
                     return (T) objectMapper.readValue(inputStream, responseClass);
                 }
                 //TODO: Handle other cases.
