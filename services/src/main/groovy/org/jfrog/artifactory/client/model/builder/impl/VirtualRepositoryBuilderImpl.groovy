@@ -17,7 +17,7 @@ import static org.jfrog.artifactory.client.model.PackageType.*
 class VirtualRepositoryBuilderImpl extends RepositoryBuilderBase<VirtualRepositoryBuilder, VirtualRepository> implements VirtualRepositoryBuilder {
 
     private VirtualRepositoryBuilderImpl() {
-        super([maven, gradle, ivy, sbt, nuget, gems, npm, bower, pypi, p2, generic])
+        super([maven, gradle, ivy, sbt, nuget, gems, npm, bower, pypi, p2, generic, docker])
     }
 
     private List<String> repositories = new ArrayList<String>()
