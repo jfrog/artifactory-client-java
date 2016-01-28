@@ -16,9 +16,6 @@ public class MissionControlTests extends ArtifactoryTestsBase {
     public static final String TOKEN2 = "1234";
 
     @Test
-    /**
-     * The test should be uncommented when the tests Artifactory server is upgraded to version 4.0.
-     */
     public void testCreateAndUpdateConnection() throws IOException {
         /*
         String missionControlExternalUrl = "http://mc-java-client-test";
