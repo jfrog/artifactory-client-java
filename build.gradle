@@ -133,5 +133,4 @@ subprojects {
 
 task wrapper(type: Wrapper) {
     gradleVersion = '2.9'
-    distributionUrl = 'https://services.gradle.org/distributions/gradle-2.9-all.zip'
 }
