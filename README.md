@@ -6,9 +6,19 @@ Artifactory REST Client Java API bindings
 [ ![Download](https://api.bintray.com/packages/jfrog/artifactory-tools/artifactory-client-java/images/download.png) ](https://bintray.com/jfrog/artifactory-tools/artifactory-client-java/_latestVersion)
 
 # Getting Started
+### Add the artifactory-java-client-services as a dependency to your build script.
+#### Maven
+Add the following dependency to your `pom.xml` file:
 
-### Add Artifactory Java latest client to your gradle build script:
-
+```maven
+<dependency>
+  <groupId>org.jfrog.artifactory.client</groupId>
+  <artifactId>artifactory-java-client-api</artifactId>
+  <version>LATEST</version>
+  <type>pom</type>
+</dependency>
+```
+#### Gradle
 Add the following snippets to your `build.gradle` file:
 
 ```groovy
@@ -16,10 +26,11 @@ repositories {
     jcenter()
 }
 dependencies {
-    compile 'org.jfrog.artifactory.client:artifactory-java-client-api:+'
+    compile 'org.jfrog.artifactory.client:artifactory-java-client-services:+'
 }
 ```
 ### Examples:
+This section includes a few examples for using the Artifactory Java client APIs for your application code.
 
 #### Setting up Artifactory
 ```
@@ -37,32 +48,32 @@ File result = artifactory.repository("RepoName").upload("path/to/newName.txt", f
 ```
 File file = new File("fileToUpload.txt");
 File deployed = artifactory.repository("RepoName")
-                    .upload("path/to/newName.txt", file)
-                    .withProperty("color", "blue")
-                    .withProperty("color", "red")
-                    .doUpload();
+        .upload("path/to/newName.txt", file)
+        .withProperty("color", "blue")
+        .withProperty("color", "red")
+        .doUpload();
 ```
 
 ##### Download artifact
 ```
 InputStream iStream = artifactory.repository("RepoName")
-                        .download("path/to/fileToDownload.txt")
-                        .doDownload();
+        .download("path/to/fileToDownload.txt")
+        .doDownload();
 ```
 ##### Downloading artifact with property
 ```
 InputStream iStream = artifactory.repository("RepoName")
-                        .download("path/to/fileToDownload.txt")
-                        .withProperty("colors", "red")
-                        .doDownload();
+        .download("path/to/fileToDownload.txt")
+        .withProperty("colors", "red")
+        .doDownload();
 ```
 
 ##### Downloading artifact with mandatory property
 ```
 InputStream iStream = artifactory.repository("RepoName")
-                        .download("path/to/fileToDownload.txt")
-                        .withMandatoryProperty("colors", "red")
-                        .doDownload();
+        .download("path/to/fileToDownload.txt")
+        .withMandatoryProperty("colors", "red")
+        .doDownload();
 ```
 
 #### File, folder, repo information
@@ -131,12 +142,12 @@ List<LightweightRepository> repoList = artifactory.repositories().list(LOCAL);
 ##### Create repository
 ```
 Repository repository = artifactory.repositories()
-                            .builders()
-                            .localRepositoryBuilder()
-                            .key("NewRepoName")
-                            .description("new local repository")
-                            .packageType(PackageType.maven)
-                            .build();
+        .builders()
+        .localRepositoryBuilder()
+        .key("NewRepoName")
+        .description("new local repository")
+        .packageType(PackageType.maven)
+        .build();
 
 String result = artifactory.repositories().create(2, repository);
 ```
@@ -145,11 +156,11 @@ String result = artifactory.repositories().create(2, repository);
 ```
 Repository repository = artifactory.repository("RepoName").get();
 Repository updatedRepository = artifactory.repositories()
-                                    .builders()
-                                    .builderFrom(repository)            
-                                    .description("new_description")
-                                    .packageType(PackageType.maven)
-                                    .build();
+        .builders()
+        .builderFrom(repository)            
+        .description("new_description")
+        .packageType(PackageType.maven)
+        .build();
                 
 String result = artifactory.repositories().update(updatedRepository);
 ```
@@ -172,9 +183,9 @@ Searches artifactsCreatedInDateRange(long fromMillis, long toMillis);
 ##### Search file in repository
 ```
 List<RepoPath> searchItems = artifactory.searches()
-                                .repositories("RepoName", "RepoName2")
-                                .artifactsByName("prefixedWith*.txt")
-                                .doSearch();
+        .repositories("RepoName", "RepoName2")
+        .artifactsByName("prefixedWith*.txt")
+        .doSearch();
                     
 for (RepoPath searchItem : searchItems) {
     String repoKey  = searchItem.getRepoKey();
@@ -185,11 +196,11 @@ for (RepoPath searchItem : searchItems) {
 ##### Search by property
 ```
 List<RepoPath> searchItems = artifactory.searches()
-                                .repositories("RepoName", "RepoName2")
-                                .itemsByProperty()
-                                .property("released")
-                                .property("colors", "r*?")
-                                .doSearch();
+        .repositories("RepoName", "RepoName2")
+        .itemsByProperty()
+        .property("released")
+        .property("colors", "r*?")
+        .doSearch();
                     
 for (RepoPath searchItem : searchItems) {
     String repoKey  = searchItem.getRepoKey();
@@ -225,11 +236,11 @@ for (String userName : userNames) {
 ```
 UserBuilder userBuilder = artifactory.security().builders().userBuilder();
 User user = userBuilder.name("userName)
-                .email("user@mail.com")
-                .admin(false)
-                .profileUpdatable(true)
-                .password("password")
-                .build();
+        .email("user@mail.com")
+        .admin(false)
+        .profileUpdatable(true)
+        .password("password")
+        .build();
 
 artifactory.security().createOrUpdate(user);
 ```
@@ -272,8 +283,8 @@ artifactory.security().deleteGroup("groupName");
 ##### Get item permissions
 ```
 Set<ItemPermission> itemPermissions = artifactory.repository("RepoName")
-                                        .file("path/to/file.txt")
-                                        .effectivePermissions();
+        .file("path/to/file.txt")
+        .effectivePermissions();
                                         
 for (ItemPermission itemPermission : itemPermissions) {
     RepoPath repoPath          = itemPermissions.getRepoPath();
@@ -326,16 +337,10 @@ artifactory.system().configuration(xml);
 #### Rest API
 ```
 ArtifactoryRequest repositoryRequest = new ArtifactoryRequestImpl().apiUrl("api/repositories")
-                                                .method(ArtifactoryRequest.Method.GET)
-                                                .responseType(ArtifactoryRequest.ContentType.JSON);
+        .method(ArtifactoryRequest.Method.GET)
+        .responseType(ArtifactoryRequest.ContentType.JSON);
 List<String> response = artifactory.restCall(repositoryRequest);
 ```
-
-# Examples
-For more example please see project's tests. 
-
-# Running The Tests
-TBD
 
 # License
 This client is available under the [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0).
