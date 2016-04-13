@@ -6,16 +6,22 @@ Artifactory REST Client Java API bindings
 [ ![Download](https://api.bintray.com/packages/jfrog/artifactory-tools/artifactory-client-java/images/download.png) ](https://bintray.com/jfrog/artifactory-tools/artifactory-client-java/_latestVersion)
 
 # Getting Started
+Artifactory Java client hosted at JCenter repository.
+
+For quick setup click `SET ME UP!` at 
+[JCenter](https://bintray.com/bintray/jcenter).
+
 ### Add the artifactory-java-client-services as a dependency to your build script.
 #### Maven
 Add the following dependency to your `pom.xml` file:
 
+
+
 ```maven
 <dependency>
-  <groupId>org.jfrog.artifactory.client</groupId>
-  <artifactId>artifactory-java-client-api</artifactId>
-  <version>LATEST</version>
-  <type>pom</type>
+    <groupId>org.jfrog.artifactory.client</groupId>
+    <artifactId>artifactory-java-client-services</artifactId>
+    <version>LATEST</version>
 </dependency>
 ```
 #### Gradle
@@ -335,6 +341,7 @@ artifactory.system().configuration(xml);
 ```
 
 #### Rest API
+Use Rest API for yet implemented capabilities of Artifactory Java client.
 ```
 ArtifactoryRequest repositoryRequest = new ArtifactoryRequestImpl().apiUrl("api/repositories")
         .method(ArtifactoryRequest.Method.GET)
