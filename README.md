@@ -1,15 +1,21 @@
 artifactory-client-java
 =======================
 
-Artifactory REST Client Java API bindings
+Artifactory Java client provides simple yet powerful Artifactory connection and management within your Java code.
+
+Among the features: 
+
+Search, resolve and publish artifacts to or from Artifactory.
+
+Manage your repositories, users, groups, permissions and system configuration.
 
 [ ![Download](https://api.bintray.com/packages/jfrog/artifactory-tools/artifactory-client-java/images/download.png) ](https://bintray.com/jfrog/artifactory-tools/artifactory-client-java/_latestVersion)
 
 # Getting Started
 Artifactory Java client hosted at JCenter repository.
 
-For quick setup click `SET ME UP!` at 
-[JCenter](https://bintray.com/bintray/jcenter).
+For quick setup click `SET ME UP!` 
+[here](https://bintray.com/jfrog/artifactory-tools/artifactory-client-java/1.2.2/view).
 
 ### Add the artifactory-java-client-services as a dependency to your build script.
 #### Maven
@@ -341,7 +347,7 @@ artifactory.system().configuration(xml);
 ```
 
 #### Rest API
-Use Rest API for yet implemented capabilities of Artifactory Java client.
+Use Rest API for not yet implemented capabilities of Artifactory Java client.
 ```
 ArtifactoryRequest repositoryRequest = new ArtifactoryRequestImpl().apiUrl("api/repositories")
         .method(ArtifactoryRequest.Method.GET)
