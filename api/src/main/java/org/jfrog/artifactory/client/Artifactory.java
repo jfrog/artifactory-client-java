@@ -14,6 +14,8 @@ public interface Artifactory extends ApiInterface {
 
     String getUsername();
 
+    String getUserAgent();
+
     Repositories repositories();
 
     RepositoryHandle repository(String repo);

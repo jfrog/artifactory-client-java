@@ -12,6 +12,7 @@ buildscript {
 
 allprojects {
 
+    apply plugin: 'maven'
     apply plugin: 'maven-publish'
     apply plugin: 'com.jfrog.artifactory'
 

@@ -59,6 +59,11 @@ class ArtifactoryImpl implements Artifactory {
         return username
     }
 
+    @Override
+    String getUserAgent() {
+        return client.headers.'User-Agent'
+    }
+
     Repositories repositories() {
         new RepositoriesImpl(this, API_BASE)
     }

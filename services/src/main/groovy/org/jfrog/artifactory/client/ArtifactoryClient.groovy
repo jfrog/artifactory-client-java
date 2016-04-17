@@ -22,7 +22,8 @@ public class ArtifactoryClient {
         String password = null,
         Integer connectionTimeout = null,
         Integer socketTimeout = null,
-        ProxyConfig proxy = null ) {
+        ProxyConfig proxy = null,
+        userAgent = null) {
 
         def matcher = url=~/(https?:\/\/[^\/]+)\/+([^\/]*).*/
         if (!matcher) {
@@ -47,7 +48,7 @@ public class ArtifactoryClient {
                     return entity
                 } else if (data instanceof InputStream) {
                     final InputStream stream = (InputStream) data
-                    InputStreamEntity entity = new InputStreamEntity(stream, stream.available());
+                    InputStreamEntity entity = new InputStreamEntity(stream, null);
                     if (contentType == null) {
                         contentType = ContentType.BINARY
                     };
@@ -60,7 +61,15 @@ public class ArtifactoryClient {
         }
         client.encoders = er
 
-        client.headers.'User-Agent' = 'Artifactory-Client/1.0'
+        if(!userAgent) {
+            Properties prop = new Properties()
+            InputStream propStream = ArtifactoryClient.class.classLoader
+                    .getResource("artifactory.client.release.properties").openStream();
+            prop.load(propStream)
+            userAgent = "Artifactory-Client/" + prop.getProperty("version")
+        }
+
+        client.headers.'User-Agent' = userAgent
         //TODO (JB) remove preemptive auth once RTFACT-5119 is fixed
         if (username && password) {
             client.auth.basic username, password
