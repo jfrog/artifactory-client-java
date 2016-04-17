@@ -15,8 +15,7 @@ import org.jfrog.artifactory.client.impl.ArtifactoryImpl
  * @since 12/08/12
  */
 public class ArtifactoryClient {
-
-    static Artifactory create(
+    public static Artifactory create(
         String url,
         String username = null,
         String password = null,
@@ -61,14 +60,9 @@ public class ArtifactoryClient {
         }
         client.encoders = er
 
-        if(!userAgent) {
-            Properties prop = new Properties()
-            InputStream propStream = ArtifactoryClient.class.classLoader
-                    .getResource("artifactory.client.release.properties").openStream();
-            prop.load(propStream)
-            userAgent = "Artifactory-Client/" + prop.getProperty("version")
+        if (!userAgent) {
+            userAgent = getUserAgent()
         }
-
         client.headers.'User-Agent' = userAgent
         //TODO (JB) remove preemptive auth once RTFACT-5119 is fixed
         if (username && password) {
@@ -93,6 +87,14 @@ public class ArtifactoryClient {
         Artifactory artifactory = new ArtifactoryImpl(client, matcher[0][2])
         artifactory.@username = username
         artifactory
+    }
+
+    private static String getUserAgent() {
+        Properties prop = new Properties()
+        InputStream propStream = ArtifactoryClient.class.classLoader
+            .getResource("artifactory.client.release.properties").openStream();
+        prop.load(propStream)
+        return "artifactory-client-java/" + prop.getProperty("version")
     }
 
     public static class ProxyConfig {
