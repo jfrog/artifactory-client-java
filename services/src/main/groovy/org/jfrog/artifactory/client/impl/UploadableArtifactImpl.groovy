@@ -54,10 +54,19 @@ class UploadableArtifactImpl extends ArtifactBase<UploadableArtifact> implements
         }
     }
 
+    @Override
+    String doUploadAndExplode() {
+        def params = parseParams(props, "=")
+        def headers = ['X-Explode-Archive': true]
+
+        artifactory.put("/$repo/$path${params}", [:], ContentType.TEXT, FileImpl, ContentType.BINARY, null,
+                headers, file ? file.length() : -1)
+    }
+
     private uploadContent(params) {
         uploadContent(params, null)
     }
-    
+
     private uploadContent(params, headers) {
         if (listener) {
             content = new ProgressInputStream(content, file.size(), listener)
