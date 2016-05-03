@@ -3,6 +3,8 @@ package org.jfrog.artifactory.client;
 import groovyx.net.http.HttpResponseException;
 import junit.framework.Assert;
 import org.jfrog.artifactory.client.model.File;
+import org.jfrog.artifactory.client.model.Item;
+import org.jfrog.artifactory.client.model.impl.FolderImpl;
 import org.testng.annotations.Test;
 
 import java.io.FileInputStream;
@@ -18,6 +20,7 @@ import java.nio.file.StandardOpenOption;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Arrays;
+import java.util.List;
 
 import static org.testng.Assert.*;
 
@@ -148,6 +151,16 @@ public class DownloadUploadTests extends ArtifactoryTestsBase {
         assertEquals(deployed.getCreatedBy(), username);
         assertEquals(deployed.getDownloadUri(), url + "/" + NEW_LOCAL + "/" + PATH);
         assertEquals(deployed.getSize(), temp.length());
+    }
+
+    @Test(groups = "uploadBasics", dependsOnMethods = "testUploadWithSingleProperty")
+    public void testUploadExplodeArchive() throws IOException {
+        artifactory.repository(NEW_LOCAL).upload(PATH, this.getClass().getResourceAsStream("/sample.zip"))
+                .doUploadAndExplode();
+        List<Item> items = ((FolderImpl) artifactory.repository(NEW_LOCAL).file(PATH).info()).getChildren();
+        assertEquals(items.get(0).getUri(), "/a.txt");
+        assertEquals(items.get(1).getUri(), "/b.txt");
+        assertEquals(items.get(2).getUri(), "/c.txt");
     }
 
     @Test(groups = "uploadBasics", dependsOnMethods = "testUploadWithSingleProperty")//to spare all the checks
