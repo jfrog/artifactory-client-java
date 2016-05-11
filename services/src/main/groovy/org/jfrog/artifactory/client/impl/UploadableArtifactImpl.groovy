@@ -59,7 +59,7 @@ class UploadableArtifactImpl extends ArtifactBase<UploadableArtifact> implements
         def params = parseParams(props, "=")
         def headers = ['X-Explode-Archive': true]
 
-        artifactory.put("/$repo/$path${params}", [:], ContentType.TEXT, FileImpl, ContentType.BINARY, null,
+        artifactory.put("/$repo/$path${params}", [:], ContentType.TEXT, FileImpl, ContentType.BINARY, content,
                 headers, file ? file.length() : -1)
     }
 
