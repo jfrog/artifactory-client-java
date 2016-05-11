@@ -153,11 +153,11 @@ public class DownloadUploadTests extends ArtifactoryTestsBase {
         assertEquals(deployed.getSize(), temp.length());
     }
 
-    @Test(groups = "uploadBasics", dependsOnMethods = "testUploadWithSingleProperty")
+    @Test/*(groups = "uploadBasics", dependsOnMethods = "testUploadWithSingleProperty")*/
     public void testUploadExplodeArchive() throws IOException {
-        artifactory.repository(NEW_LOCAL).upload("sample/", this.getClass().getResourceAsStream("/sample.zip"))
+        artifactory.repository(NEW_LOCAL).upload("sample/sample.zip", this.getClass().getResourceAsStream("/sample.zip"))
                 .doUploadAndExplode();
-        List<Item> items = ((FolderImpl) artifactory.repository(NEW_LOCAL).folder("sample/").info()).getChildren();
+        List<Item> items = ((FolderImpl) artifactory.repository(NEW_LOCAL).folder("sample").info()).getChildren();
         assertEquals(items.get(0).getUri(), "/a.txt");
         assertEquals(items.get(1).getUri(), "/b.txt");
         assertEquals(items.get(2).getUri(), "/c.txt");
