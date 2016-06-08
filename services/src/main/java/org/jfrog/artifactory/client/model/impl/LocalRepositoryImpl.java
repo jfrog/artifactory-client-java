@@ -23,17 +23,18 @@ public class LocalRepositoryImpl extends NonVirtualRepositoryBase implements Loc
         repoLayoutRef = MAVEN_2_REPO_LAYOUT;
     }
 
-    public LocalRepositoryImpl(String description, String excludesPattern, String includesPattern, String key, String notes,
-                               boolean blackedOut, boolean handleReleases, boolean handleSnapshots, int maxUniqueSnapshots,
-                               List<String> propertySets, SnapshotVersionBehavior snapshotVersionBehavior, boolean suppressPomConsistencyChecks, ChecksumPolicyType checksumPolicyType, String repoLayoutRef, PackageType packageType, boolean enableNuGetSupport, boolean archiveBrowsingEnabled, boolean calculateYumMetadata, int yumRootDepth, boolean enableGemsSupport, boolean enableNpmSupport, boolean enableVagrantSupport,
-                               boolean enableBowerSupport, boolean enableGitLfsSupport, boolean enableDebianSupport,
-                               boolean enableDockerSupport, boolean enablePypiSupport, boolean debianTrivialLayout) {
+    public LocalRepositoryImpl(String key, PackageType packageType,
+        String description, String excludesPattern, String includesPattern, String notes,
+        boolean blackedOut, boolean handleReleases, boolean handleSnapshots,
+        int maxUniqueSnapshots, List<String> propertySets,
+        SnapshotVersionBehavior snapshotVersionBehavior, boolean suppressPomConsistencyChecks,
+        ChecksumPolicyType checksumPolicyType, String repoLayoutRef,
+        boolean archiveBrowsingEnabled, boolean calculateYumMetadata, int yumRootDepth,
+        boolean debianTrivialLayout) {
 
-        super(description, excludesPattern, includesPattern, key, notes, blackedOut, handleReleases,
+        super(key, packageType, description, excludesPattern, includesPattern, notes, blackedOut, handleReleases,
             handleSnapshots, maxUniqueSnapshots, propertySets, snapshotVersionBehavior, suppressPomConsistencyChecks,
-            repoLayoutRef, packageType, enableNuGetSupport, archiveBrowsingEnabled, enableGemsSupport, enableNpmSupport,
-            enableVagrantSupport, enableBowerSupport, enableGitLfsSupport, enableDebianSupport,
-            enableDockerSupport, enablePypiSupport, debianTrivialLayout);
+            repoLayoutRef, archiveBrowsingEnabled, debianTrivialLayout);
 
         this.checksumPolicyType = checksumPolicyType;
         this.calculateYumMetadata = calculateYumMetadata;

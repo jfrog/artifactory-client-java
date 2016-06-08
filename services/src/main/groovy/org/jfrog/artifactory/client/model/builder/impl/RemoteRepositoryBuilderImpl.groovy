@@ -49,7 +49,6 @@ class RemoteRepositoryBuilderImpl extends NonVirtualRepositoryBuilderBase<Remote
     private long assumedOfflinePeriodSecs = 300
     private boolean listRemoteFolderItems = true
     private boolean rejectInvalidJars = false
-    private boolean p2Support = false
 
     RemoteRepositoryBuilder url(String url) {
         this.url = url
@@ -171,19 +170,22 @@ class RemoteRepositoryBuilderImpl extends NonVirtualRepositoryBuilderBase<Remote
         this
     }
 
-    RemoteRepositoryBuilder p2Support(boolean p2Support) {
-        this.p2Support = p2Support
-        this
-    }
-
     @SuppressWarnings("GroovyAccessibility")
     RemoteRepository build() {
         validate()
-        new RemoteRepositoryImpl(description, excludesPattern, includesPattern, key, notes, blackedOut, handleReleases, handleSnapshots, maxUniqueSnapshots, propertySets,
-                snapshotVersionBehavior, suppressPomConsistencyChecks, failedRetrievalCachePeriodSecs, fetchJarsEagerly, fetchSourcesEagerly, hardFail, localAddress, missedRetrievalCachePeriodSecs,
-                offline, password, proxy, remoteRepoChecksumPolicyType, retrievalCachePeriodSecs, shareConfiguration, socketTimeoutMillis, enableCookieManagement, allowAnyHostAuth,
-                storeArtifactsLocally, synchronizeProperties, unusedArtifactsCleanupEnabled, unusedArtifactsCleanupPeriodHours, url, username, repoLayoutRef, enableNuGetSupport, assumedOfflinePeriodSecs, archiveBrowsingEnabled,
-                listRemoteFolderItems, rejectInvalidJars, p2Support, packageType, enableGemsSupport, enableNpmSupport, enableVagrantSupport, enableBowerSupport, enableGitLfsSupport, enableDebianSupport, enableDockerSupport, enablePypiSupport, debianTrivialLayout)
+
+        new RemoteRepositoryImpl(key, packageType, description, excludesPattern,
+                includesPattern, notes, blackedOut, handleReleases, handleSnapshots,
+                maxUniqueSnapshots, propertySets,
+                snapshotVersionBehavior, suppressPomConsistencyChecks,
+                failedRetrievalCachePeriodSecs, fetchJarsEagerly, fetchSourcesEagerly,
+                hardFail, localAddress, missedRetrievalCachePeriodSecs,
+                offline, password, proxy, remoteRepoChecksumPolicyType, retrievalCachePeriodSecs,
+                shareConfiguration, socketTimeoutMillis, enableCookieManagement, allowAnyHostAuth,
+                storeArtifactsLocally, synchronizeProperties, unusedArtifactsCleanupEnabled,
+                unusedArtifactsCleanupPeriodHours, url, username, repoLayoutRef,
+                assumedOfflinePeriodSecs, archiveBrowsingEnabled,
+                listRemoteFolderItems, rejectInvalidJars, debianTrivialLayout)
     }
 
     @Override

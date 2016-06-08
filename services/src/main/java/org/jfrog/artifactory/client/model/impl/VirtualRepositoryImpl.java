@@ -20,18 +20,14 @@ public class VirtualRepositoryImpl extends RepositoryBase implements VirtualRepo
     private VirtualRepositoryImpl() {
     }
 
-    private VirtualRepositoryImpl(String description, String excludesPattern, String includesPattern, String key, String notes,
+    private VirtualRepositoryImpl(String key, PackageType packageType,
+        String description, String excludesPattern, String includesPattern, String notes,
         boolean artifactoryRequestsCanRetrieveRemoteArtifacts, String keyPair,
-        PomRepositoryReferencesCleanupPolicy pomRepositoryReferencesCleanupPolicy, List<String> repositories, String repoLayoutRef,
-        PackageType packageType,
-        boolean enableNuGetSupport, boolean enableGemsSupport, boolean enableNpmSupport, boolean enableVagrantSupport,
-        boolean enableBowerSupport, boolean enableGitLfsSupport, boolean enableDebianSupport,
-        boolean enableDockerSupport, boolean enablePypiSupport, boolean debianTrivialLayout) {
+        PomRepositoryReferencesCleanupPolicy pomRepositoryReferencesCleanupPolicy,
+        List<String> repositories, String repoLayoutRef,
+        boolean debianTrivialLayout) {
 
-        super(description, excludesPattern, includesPattern, key, notes, repoLayoutRef, packageType,
-            enableNuGetSupport, enableGemsSupport, enableNpmSupport, enableVagrantSupport,
-            enableBowerSupport, enableGitLfsSupport, enableDebianSupport,
-            enableDockerSupport, enablePypiSupport, debianTrivialLayout);
+        super(key, packageType, description, excludesPattern, includesPattern, notes, repoLayoutRef, debianTrivialLayout);
 
         this.artifactoryRequestsCanRetrieveRemoteArtifacts = artifactoryRequestsCanRetrieveRemoteArtifacts;
         this.keyPair = keyPair;

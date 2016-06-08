@@ -23,8 +23,9 @@ public class RepositoryTests extends ArtifactoryTestsBase {
 
     @BeforeMethod
     protected void setUp() throws Exception {
-        localRepository = artifactory.repositories().builders().localRepositoryBuilder().key(NEW_LOCAL)
-                .description("new local repository").packageType(PackageType.maven).build();
+        localRepository = artifactory.repositories().builders().localRepositoryBuilder()
+            .key(NEW_LOCAL)
+            .description("new local repository").packageType(PackageType.maven).build();
     }
 
     @Test(groups = "repositoryBasics", dependsOnMethods = "testDelete")

@@ -56,8 +56,4 @@ public interface RemoteRepositoryBuilder extends NonVirtualRepositoryBuilder<Rem
     RemoteRepositoryBuilder listRemoteFolderItems(boolean listRemoteFolderItems);
 
     RemoteRepositoryBuilder rejectInvalidJars(boolean rejectInvalidJars);
-
-    RemoteRepositoryBuilder p2Support(boolean p2Support);
-
-
 }

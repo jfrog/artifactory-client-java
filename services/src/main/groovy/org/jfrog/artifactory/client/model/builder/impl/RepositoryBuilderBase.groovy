@@ -17,15 +17,6 @@ abstract class RepositoryBuilderBase<B extends RepositoryBuilder, R extends Repo
     protected String notes
     protected String repoLayoutRef
     protected PackageType packageType
-    protected boolean enableNuGetSupport = false
-    protected boolean enableGemsSupport = false
-    protected boolean enableNpmSupport = false
-    protected boolean enableVagrantSupport = false
-    protected boolean enableBowerSupport = false
-    protected boolean enableGitLfsSupport = false
-    protected boolean enableDebianSupport = false
-    protected boolean enableDockerSupport = false
-    protected boolean enablePypiSupport = false
     protected boolean debianTrivialLayout = false
 
     public final Set<PackageType> supportedTypes
@@ -73,60 +64,6 @@ abstract class RepositoryBuilderBase<B extends RepositoryBuilder, R extends Repo
     @Override
     B packageType(PackageType packageType) {
         this.packageType = packageType
-        this as B
-    }
-
-    @Override
-    B enableNuGetSupport(boolean enableNuGetSupport) {
-        this.enableNuGetSupport = enableNuGetSupport
-        this as B
-    }
-
-    @Override
-    B enableGemsSupport(boolean enableGemsSupport) {
-        this.enableGemsSupport = enableGemsSupport
-        this as B
-    }
-
-    @Override
-    B enableNpmSupport(boolean enableNpmSupport) {
-        this.enableNpmSupport = enableNpmSupport
-        this as B
-    }
-
-    @Override
-    B enableVagrantSupport(boolean enableVagrantSupport) {
-        this.enableVagrantSupport = enableVagrantSupport
-        this as B
-    }
-
-    @Override
-    B enableBowerSupport(boolean enableBowerSupport) {
-        this.enableBowerSupport = enableBowerSupport
-        this as B
-    }
-
-    @Override
-    B enableGitLfsSupport(boolean enableGitLfsSupport) {
-        this.enableGitLfsSupport = enableGitLfsSupport
-        this as B
-    }
-
-    @Override
-    B enableDebianSupport(boolean enableDebianSupport) {
-        this.enableDebianSupport = enableDebianSupport
-        this as B
-    }
-
-    @Override
-    B enablePypiSupport(boolean enablePypiSupport) {
-        this.enablePypiSupport = enablePypiSupport
-        this as B
-    }
-
-    @Override
-    B enableDockerSupport(boolean enableDockerSupport) {
-        this.enableDockerSupport = enableDockerSupport
         this as B
     }
 

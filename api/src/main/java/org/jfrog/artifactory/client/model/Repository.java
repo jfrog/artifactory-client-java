@@ -23,23 +23,5 @@ public interface Repository {
 
     PackageType getPackageType();
 
-    boolean isEnableNuGetSupport();
-
-    boolean isEnableGemsSupport();
-
-    boolean isEnableNpmSupport();
-
-    boolean isEnableVagrantSupport();
-
-    boolean isEnableBowerSupport();
-
-    boolean isEnableGitLfsSupport();
-
-    boolean isEnablePypiSupport();
-
-    boolean isEnableDockerSupport();
-
-    boolean isEnableDebianSupport();
-
     boolean isDebianTrivialLayout();
 }

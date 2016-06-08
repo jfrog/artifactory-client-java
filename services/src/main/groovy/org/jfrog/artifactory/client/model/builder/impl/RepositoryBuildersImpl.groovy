@@ -35,9 +35,9 @@ class RepositoryBuildersImpl implements RepositoryBuilders {
                 .retrievalCachePeriodSecs(from.retrievalCachePeriodSecs).missedRetrievalCachePeriodSecs(from.missedRetrievalCachePeriodSecs)
                 .failedRetrievalCachePeriodSecs(from.failedRetrievalCachePeriodSecs).unusedArtifactsCleanupEnabled(from.unusedArtifactsCleanupEnabled)
                 .unusedArtifactsCleanupPeriodHours(from.unusedArtifactsCleanupPeriodHours).fetchJarsEagerly(from.fetchJarsEagerly).fetchSourcesEagerly(from.fetchSourcesEagerly)
-                .shareConfiguration(from.shareConfiguration).synchronizeProperties(from.synchronizeProperties).repoLayoutRef(from.repoLayoutRef).enableNuGetSupport(from.enableNuGetSupport)
+                .shareConfiguration(from.shareConfiguration).synchronizeProperties(from.synchronizeProperties).repoLayoutRef(from.repoLayoutRef)
                 .assumedOfflinePeriodSecs(from.assumedOfflinePeriodSecs).archiveBrowsingEnabled(from.archiveBrowsingEnabled).listRemoteFolderItems(from.listRemoteFolderItems)
-                .rejectInvalidJars(from.rejectInvalidJars).p2Support(from.p2Support)
+                .rejectInvalidJars(from.rejectInvalidJars)
     }
 
     LocalRepositoryBuilder localRepositoryBuilder() {
@@ -49,7 +49,7 @@ class RepositoryBuildersImpl implements RepositoryBuilders {
                 .excludesPattern(from.excludesPattern).handleReleases(from.handleReleases).handleSnapshots(from.handleSnapshots).includesPattern(from.includesPattern)
                 .key(from.key).maxUniqueSnapshots(from.maxUniqueSnapshots).notes(from.notes).propertySets(from.propertySets).snapshotVersionBehavior(from.snapshotVersionBehavior)
                 .suppressPomConsistencyChecks(from.suppressPomConsistencyChecks).repoLayoutRef(from.repoLayoutRef).archiveBrowsingEnabled(from.archiveBrowsingEnabled)
-                .enableNuGetSupport(from.enableNuGetSupport).calculateYumMetadata(from.calculateYumMetadata).yumRootDepth(from.yumRootDepth)
+                .calculateYumMetadata(from.calculateYumMetadata).yumRootDepth(from.yumRootDepth)
     }
 
     VirtualRepositoryBuilder virtualRepositoryBuilder() {

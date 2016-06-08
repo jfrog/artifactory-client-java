@@ -45,12 +45,13 @@ class LocalRepositoryBuilderImpl extends NonVirtualRepositoryBuilderBase<LocalRe
 
     LocalRepository build() {
         validate()
-        return new LocalRepositoryImpl(description, excludesPattern, includesPattern, key, notes, blackedOut,
-            handleReleases, handleSnapshots, maxUniqueSnapshots, propertySets, snapshotVersionBehavior,
-            suppressPomConsistencyChecks, checksumPolicyType, repoLayoutRef, packageType, enableNuGetSupport,
-            archiveBrowsingEnabled, calculateYumMetadata, yumRootDepth, enableGemsSupport, enableNpmSupport,
-            enableVagrantSupport, enableBowerSupport, enableGitLfsSupport, enableDebianSupport,
-            enableDockerSupport, enablePypiSupport, debianTrivialLayout)
+        return new LocalRepositoryImpl(key, packageType, description, excludesPattern,
+            includesPattern, notes, blackedOut,
+            handleReleases, handleSnapshots, maxUniqueSnapshots, propertySets,
+            snapshotVersionBehavior,
+            suppressPomConsistencyChecks, checksumPolicyType, repoLayoutRef,
+            archiveBrowsingEnabled, calculateYumMetadata, yumRootDepth,
+            debianTrivialLayout)
     }
 
     @Override

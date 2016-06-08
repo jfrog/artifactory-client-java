@@ -38,7 +38,6 @@ public class RemoteRepositoryImpl extends NonVirtualRepositoryBase implements Re
     private long assumedOfflinePeriodSecs;
     private boolean listRemoteFolderItems;
     private boolean rejectInvalidJars;
-    private boolean p2Support;
 
     private RemoteRepositoryImpl() {
         remoteRepoChecksumPolicyType = RemoteRepoChecksumPolicyTypeImpl.generate_if_absent;
@@ -50,15 +49,15 @@ public class RemoteRepositoryImpl extends NonVirtualRepositoryBase implements Re
                          int failedRetrievalCachePeriodSecs, boolean fetchJarsEagerly, boolean fetchSourcesEagerly, boolean hardFail, String localAddress,
                          int missedRetrievalCachePeriodSecs, boolean offline, String password, String proxy, RemoteRepoChecksumPolicyType remoteRepoChecksumPolicyType,
                          int retrievalCachePeriodSecs, boolean shareConfiguration, int socketTimeoutMillis, boolean cookieManagementEnabled, boolean allowAnyHostAuth, boolean storeArtifactsLocally, boolean synchronizeProperties,
-                         boolean unusedArtifactsCleanupEnabled, int unusedArtifactsCleanupPeriodHours, String url, String username, String repoLayoutRef, boolean enableNuGetSupport,
-                         long assumedOfflinePeriodSecs, boolean archiveBrowsingEnabled, boolean listRemoteFolderItems, boolean rejectInvalidJars, boolean p2Support,
-                         PackageType packageType,
-                         boolean enableGemsSupport, boolean enableNpmSupport, boolean enableVagrantSupport, boolean enableBowerSupport, boolean enableGitLfsSupport, boolean enableDebianSupport,
-                         boolean enableDockerSupport, boolean enablePypiSupport, boolean debianTrivialLayout) {
+                         boolean unusedArtifactsCleanupEnabled, int unusedArtifactsCleanupPeriodHours, String url, String username, String repoLayoutRef,
+                         long assumedOfflinePeriodSecs, boolean archiveBrowsingEnabled, boolean listRemoteFolderItems, boolean rejectInvalidJars,
+                         PackageType packageType, boolean debianTrivialLayout) {
 
-        super(description, excludesPattern, includesPattern, key, notes, blackedOut, handleReleases, handleSnapshots, maxUniqueSnapshots, propertySets, snapshotVersionBehavior,
-                suppressPomConsistencyChecks, repoLayoutRef, packageType, enableNuGetSupport, archiveBrowsingEnabled, enableGemsSupport, enableNpmSupport, enableVagrantSupport,
-                enableBowerSupport, enableGitLfsSupport, enableDebianSupport, enableDockerSupport, enablePypiSupport, debianTrivialLayout);
+        super(key, packageType, description, excludesPattern, includesPattern,
+            notes, blackedOut, handleReleases, handleSnapshots, maxUniqueSnapshots,
+            propertySets, snapshotVersionBehavior,
+            suppressPomConsistencyChecks, repoLayoutRef, archiveBrowsingEnabled,
+            debianTrivialLayout);
 
         this.failedRetrievalCachePeriodSecs = failedRetrievalCachePeriodSecs;
         this.fetchJarsEagerly = fetchJarsEagerly;
@@ -84,7 +83,6 @@ public class RemoteRepositoryImpl extends NonVirtualRepositoryBase implements Re
         this.assumedOfflinePeriodSecs = assumedOfflinePeriodSecs;
         this.listRemoteFolderItems = listRemoteFolderItems;
         this.rejectInvalidJars = rejectInvalidJars;
-        this.p2Support = p2Support;
     }
 
     @Override
@@ -393,14 +391,5 @@ public class RemoteRepositoryImpl extends NonVirtualRepositoryBase implements Re
                 ", shareConfiguration=" + shareConfiguration +
                 ", synchronizeProperties=" + synchronizeProperties +
                 '}';
-    }
-
-    @Override
-    public boolean isP2Support() {
-        return p2Support;
-    }
-
-    private void setP2Support(boolean p2Support) {
-        this.p2Support = p2Support;
     }
 }

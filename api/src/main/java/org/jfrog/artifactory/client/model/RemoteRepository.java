@@ -52,6 +52,4 @@ public interface RemoteRepository extends Repository, NonVirtualRepository {
     boolean isListRemoteFolderItems();
 
     boolean isRejectInvalidJars();
-
-    boolean isP2Support();
 }

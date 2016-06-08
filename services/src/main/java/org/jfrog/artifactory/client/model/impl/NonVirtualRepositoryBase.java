@@ -24,17 +24,16 @@ public abstract class NonVirtualRepositoryBase extends RepositoryBase implements
     protected NonVirtualRepositoryBase() {
     }
 
-    protected NonVirtualRepositoryBase(String description, String excludesPattern, String includesPattern,
-                                       String key, String notes, boolean blackedOut, boolean handleReleases, boolean handleSnapshots,
-                                       int maxUniqueSnapshots, List<String> propertySets, SnapshotVersionBehavior snapshotVersionBehavior,
-                                       boolean suppressPomConsistencyChecks, String repoLayoutRef, PackageType packageType, boolean enableNuGetSupport,
-                                       boolean archiveBrowsingEnabled, boolean enableGemsSupport, boolean enableNpmSupport, boolean enableVagrantSupport,
-                                       boolean enableBowerSupport, boolean enableGitLfsSupport, boolean enableDebianSupport,
-                                       boolean enableDockerSupport, boolean enablePypiSupport, boolean debianTrivialLayout) {
+    protected NonVirtualRepositoryBase(String key, PackageType packageType,
+        String description, String excludesPattern, String includesPattern,
+        String notes, boolean blackedOut, boolean handleReleases, boolean handleSnapshots,
+        int maxUniqueSnapshots, List<String> propertySets,
+        SnapshotVersionBehavior snapshotVersionBehavior,
+        boolean suppressPomConsistencyChecks, String repoLayoutRef,
+        boolean archiveBrowsingEnabled, boolean debianTrivialLayout) {
 
-        super(description, excludesPattern, includesPattern, key, notes, repoLayoutRef, packageType,
-            enableNuGetSupport, enableGemsSupport, enableNpmSupport, enableVagrantSupport, enableBowerSupport,
-            enableGitLfsSupport, enableDebianSupport, enableDockerSupport, enablePypiSupport, debianTrivialLayout);
+        super(key, packageType, description, excludesPattern, includesPattern, notes,
+            repoLayoutRef, debianTrivialLayout);
 
         this.blackedOut = blackedOut;
         this.handleReleases = handleReleases;

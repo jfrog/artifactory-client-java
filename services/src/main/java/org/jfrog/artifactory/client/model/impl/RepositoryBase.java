@@ -17,40 +17,23 @@ public abstract class RepositoryBase implements Repository {
     private String excludesPattern;
     protected String repoLayoutRef;
     protected PackageType packageType;
-    protected boolean enableNuGetSupport;
-    protected boolean enableGemsSupport;
-    protected boolean enableNpmSupport;
-    protected boolean enableVagrantSupport;
-    protected boolean enableBowerSupport;
-    protected boolean enableGitLfsSupport;
-    protected boolean enableDebianSupport;
-    protected boolean enablePypiSupport;
-    protected boolean enableDockerSupport;
     protected boolean debianTrivialLayout;
 
     protected RepositoryBase() {
     }
 
-    protected RepositoryBase(String description, String excludesPattern, String includesPattern, String key, String notes, String repoLayoutRef,
-                             PackageType packageType, boolean enableNuGetSupport, boolean enableGemsSupport, boolean enableNpmSupport,
-            boolean enableVagrantSupport, boolean enableBowerSupport, boolean enableGitLfsSupport,
-            boolean enableDebianSupport, boolean enableDockerSupport, boolean enablePypiSupport, boolean debianTrivialLayout) {
+    protected RepositoryBase(String key, PackageType packageType,
+        String description, String excludesPattern, String includesPattern,
+        String notes, String repoLayoutRef,
+        boolean debianTrivialLayout) {
+
+        this.key = key;
+        this.packageType = packageType;
         this.description = description;
         this.excludesPattern = excludesPattern;
         this.includesPattern = includesPattern;
-        this.key = key;
         this.notes = notes;
         this.repoLayoutRef = repoLayoutRef;
-        this.packageType = packageType;
-        this.enableNuGetSupport = enableNuGetSupport;
-        this.enableGemsSupport = enableGemsSupport;
-        this.enableNpmSupport = enableNpmSupport;
-        this.enableVagrantSupport = enableVagrantSupport;
-        this.enableBowerSupport = enableBowerSupport;
-        this.enableGitLfsSupport = enableGitLfsSupport;
-        this.enableDebianSupport = enableDebianSupport;
-        this.enableDockerSupport = enableDockerSupport;
-        this.enablePypiSupport = enablePypiSupport;
         this.debianTrivialLayout = debianTrivialLayout;
     }
 
@@ -164,92 +147,7 @@ public abstract class RepositoryBase implements Repository {
     }
 
     @Override
-    public boolean isEnableNuGetSupport() {
-        return enableNuGetSupport;
-    }
-
-    private void setEnableNuGetSupport(boolean enableNuGetSupport) {
-        this.enableNuGetSupport = enableNuGetSupport;
-    }
-
-    @Override
-    public boolean isEnableGemsSupport() {
-        return enableGemsSupport;
-    }
-
-    private void setEnableGemsSupport(boolean enableGemsSupport) {
-        this.enableGemsSupport = enableGemsSupport;
-    }
-
-    @Override
-    public boolean isEnableNpmSupport() {
-        return enableNpmSupport;
-    }
-
-    @Override
-    public boolean isEnableVagrantSupport() {
-        return enableVagrantSupport;
-    }
-
-    @Override
-    public boolean isEnableBowerSupport() {
-        return enableBowerSupport;
-    }
-
-    @Override
-    public boolean isEnableGitLfsSupport() {
-        return enableGitLfsSupport;
-    }
-
-    @Override
-    public boolean isEnableDebianSupport() {
-        return enableDebianSupport;
-    }
-
-    @Override
-    public boolean isEnablePypiSupport() {
-        return enablePypiSupport;
-    }
-
-    @Override
-    public boolean isEnableDockerSupport() {
-        return enableDockerSupport;
-    }
-
-    @Override
     public boolean isDebianTrivialLayout() {
         return debianTrivialLayout;
-    }
-
-    public void setEnableNpmSupport(boolean enableNpmSupport) {
-        this.enableNpmSupport = enableNpmSupport;
-    }
-
-    public void setEnableVagrantSupport(boolean enableVagrantSupport) {
-        this.enableVagrantSupport = enableVagrantSupport;
-    }
-
-    public void setEnableBowerSupport(boolean enableBowerSupport) {
-        this.enableBowerSupport = enableBowerSupport;
-    }
-
-    public void setEnableGitLfsSupport(boolean enableGitLfsSupport) {
-        this.enableGitLfsSupport = enableGitLfsSupport;
-    }
-
-    public void setEnableDebianSupport(boolean enableDebianSupport) {
-        this.enableDebianSupport = enableDebianSupport;
-    }
-
-    public void setDebianTrivialLayout(boolean debianTrivialLayout) {
-        this.debianTrivialLayout = debianTrivialLayout;
-    }
-
-    public void setEnablePypiSupport(boolean enablePypiSupport) {
-        this.enablePypiSupport = enablePypiSupport;
-    }
-
-    public void setEnableDockerSupport(boolean enableDockerSupport) {
-        this.enableDockerSupport = enableDockerSupport;
     }
 }
