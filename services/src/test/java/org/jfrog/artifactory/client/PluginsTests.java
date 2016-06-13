@@ -10,6 +10,7 @@ import java.util.Map;
 import static org.jfrog.artifactory.client.model.PluginType.executions;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.assertNotNull;
 
 /**
  * @author jbaruch
@@ -22,15 +23,22 @@ public class PluginsTests extends ArtifactoryTestsBase {
     @Test
     public void testPluginsList() {
         Map<PluginType, List<Plugin>> plugins = artifactory.plugins().list();
-        assertEquals(plugins.size(), 1);
         assertTrue(plugins.containsKey(executions));
         List<Plugin> executionPlugins = plugins.get(executions);
         verifyExecutionPlugins(executionPlugins);
     }
 
     private void verifyExecutionPlugins(List<Plugin> executionPlugins) {
-        assertEquals(executionPlugins.size(), 1);
-        Plugin helloWorldPlugin = executionPlugins.get(0);
+        Plugin helloWorldPlugin = null;
+
+        for(Plugin pl : executionPlugins) {
+            if (pl.getName().equals(PLUGIN_NAME)) {
+                helloWorldPlugin = pl;
+                break;
+            }
+        }
+
+        assertNotNull(helloWorldPlugin, PLUGIN_NAME+" Plugin not Found!");
         assertEquals("helloWorld", helloWorldPlugin.getName());
         Map<String, String> params = helloWorldPlugin.getParams();
         String httpMethod = helloWorldPlugin.getHttpMethod();

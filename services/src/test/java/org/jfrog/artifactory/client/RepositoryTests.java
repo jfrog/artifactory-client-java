@@ -134,15 +134,15 @@ public class RepositoryTests extends ArtifactoryTestsBase {
         assertTrue(jcenter.isHandleReleases());
         assertFalse(jcenter.isHandleSnapshots());
         assertEquals(jcenter.getMaxUniqueSnapshots(), 0);
-        assertFalse(jcenter.isSuppressPomConsistencyChecks());
+        assertTrue(jcenter.isSuppressPomConsistencyChecks());
         assertFalse(jcenter.isHardFail());
         assertFalse(jcenter.isOffline());
         assertFalse(jcenter.isBlackedOut());
         assertTrue(jcenter.isStoreArtifactsLocally());
         assertEquals(jcenter.getSocketTimeoutMillis(), 15000);
         assertEquals(jcenter.getLocalAddress(), "");
-        assertEquals(jcenter.getRetrievalCachePeriodSecs(), 43200);
-        assertEquals(jcenter.getMissedRetrievalCachePeriodSecs(), 7200);
+        assertEquals(jcenter.getRetrievalCachePeriodSecs(), 600);
+        assertEquals(jcenter.getMissedRetrievalCachePeriodSecs(), 1800);
         assertEquals(jcenter.getUnusedArtifactsCleanupPeriodHours(), 0);
         assertFalse(jcenter.isFetchJarsEagerly());
         assertFalse(jcenter.isFetchSourcesEagerly());
