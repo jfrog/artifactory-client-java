@@ -1,12 +1,18 @@
 package org.jfrog.artifactory.client.impl
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect
+import com.fasterxml.jackson.annotation.JsonInclude.Include
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat
 import groovyx.net.http.*
 import org.apache.http.HttpResponse
 import org.jfrog.artifactory.client.*
+import org.jfrog.artifactory.client.impl.jackson.RepositoryMixIn
+import org.jfrog.artifactory.client.impl.jackson.RepositorySettingsMixIn
+import org.jfrog.artifactory.client.model.Repository
+import org.jfrog.artifactory.client.model.repository.settings.RepositorySettings
 
 import java.text.DateFormat
 
@@ -36,10 +42,17 @@ class ArtifactoryImpl implements Artifactory {
         originalTextParser = client.parser.getAt(TEXT)
         this.contextName = contextName
         objectMapper = new ObjectMapper()
+
+        objectMapper.addMixIn Repository, RepositoryMixIn
+        objectMapper.addMixIn RepositorySettings, RepositorySettingsMixIn
+
         objectMapper.configure WRITE_DATES_AS_TIMESTAMPS, false
         objectMapper.dateFormat = ISO8601_DATE_FORMAT
         objectMapper.visibilityChecker = defaultInstance().withFieldVisibility(JsonAutoDetect.Visibility.ANY)
+
         objectMapper.configure DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false
+        objectMapper.configure SerializationFeature.FAIL_ON_UNWRAPPED_TYPE_IDENTIFIERS, false
+        objectMapper.setSerializationInclusion(Include.NON_NULL)
     }
 
     void close() {

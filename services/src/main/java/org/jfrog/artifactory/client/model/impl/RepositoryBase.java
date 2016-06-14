@@ -1,7 +1,8 @@
 package org.jfrog.artifactory.client.model.impl;
 
-import org.jfrog.artifactory.client.model.PackageType;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.jfrog.artifactory.client.model.Repository;
+import org.jfrog.artifactory.client.model.repository.settings.RepositorySettings;
 
 /**
  * @author jbaruch
@@ -10,31 +11,28 @@ import org.jfrog.artifactory.client.model.Repository;
 public abstract class RepositoryBase implements Repository {
 
     private String key;
-    private RepositoryTypeImpl rclass;
     private String description;
     private String notes;
     private String includesPattern;
     private String excludesPattern;
     protected String repoLayoutRef;
-    protected PackageType packageType;
-    protected boolean debianTrivialLayout;
+    @JsonIgnore
+    protected RepositorySettings settings;
 
     protected RepositoryBase() {
     }
 
-    protected RepositoryBase(String key, PackageType packageType,
+    protected RepositoryBase(String key, RepositorySettings settings,
         String description, String excludesPattern, String includesPattern,
-        String notes, String repoLayoutRef,
-        boolean debianTrivialLayout) {
+        String notes, String repoLayoutRef) {
 
         this.key = key;
-        this.packageType = packageType;
+        this.settings = settings;
         this.description = description;
         this.excludesPattern = excludesPattern;
         this.includesPattern = includesPattern;
         this.notes = notes;
         this.repoLayoutRef = repoLayoutRef;
-        this.debianTrivialLayout = debianTrivialLayout;
     }
 
     @Override
@@ -44,10 +42,6 @@ public abstract class RepositoryBase implements Repository {
 
     private void setKey(String key) {
         this.key = key;
-    }
-
-    private void setRclass(RepositoryTypeImpl rclass) {
-        this.rclass = rclass;
     }
 
     @Override
@@ -100,7 +94,7 @@ public abstract class RepositoryBase implements Repository {
             return false;
         if (key != null ? !key.equals(that.key) : that.key != null) return false;
         if (notes != null ? !notes.equals(that.notes) : that.notes != null) return false;
-        if (rclass != that.rclass) return false;
+        if (getRclass() != that.getRclass()) return false;
 
         return true;
     }
@@ -108,7 +102,7 @@ public abstract class RepositoryBase implements Repository {
     @Override
     public int hashCode() {
         int result = key != null ? key.hashCode() : 0;
-        result = 31 * result + (rclass != null ? rclass.hashCode() : 0);
+        result = 31 * result + (getRclass() != null ? getRclass().hashCode() : 0);
         result = 31 * result + (description != null ? description.hashCode() : 0);
         result = 31 * result + (notes != null ? notes.hashCode() : 0);
         result = 31 * result + (includesPattern != null ? includesPattern.hashCode() : 0);
@@ -121,7 +115,7 @@ public abstract class RepositoryBase implements Repository {
         return "Repository{" +
                 "description='" + description + '\'' +
                 ", key='" + key + '\'' +
-                ", rclass=" + rclass +
+                ", rclass=" + getRclass() +
                 ", notes='" + notes + '\'' +
                 ", includesPattern='" + includesPattern + '\'' +
                 ", excludesPattern='" + excludesPattern + '\'' +
@@ -137,17 +131,12 @@ public abstract class RepositoryBase implements Repository {
         this.repoLayoutRef = repoLayoutRef;
     }
 
-    @Override
-    public PackageType getPackageType() {
-        return packageType;
+    public RepositorySettings getRepositorySettings() {
+        return settings;
     }
 
-    public void setPackageType(PackageType packageType) {
-        this.packageType = packageType;
+    public void setRepositorySettings(RepositorySettings settings) {
+        this.settings = settings;
     }
 
-    @Override
-    public boolean isDebianTrivialLayout() {
-        return debianTrivialLayout;
-    }
 }

@@ -1,5 +1,7 @@
 package org.jfrog.artifactory.client.model;
 
+import org.jfrog.artifactory.client.model.repository.settings.RepositorySettings;
+
 /**
  * @author jbaruch
  * @since 30/07/12
@@ -21,7 +23,6 @@ public interface Repository {
 
     String getRepoLayoutRef();
 
-    PackageType getPackageType();
+    RepositorySettings getRepositorySettings();
 
-    boolean isDebianTrivialLayout();
 }
