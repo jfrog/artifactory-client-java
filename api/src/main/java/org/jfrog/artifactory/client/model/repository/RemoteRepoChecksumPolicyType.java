@@ -1,4 +1,4 @@
-package org.jfrog.artifactory.client.model;
+package org.jfrog.artifactory.client.model.repository;
 
 
 /**

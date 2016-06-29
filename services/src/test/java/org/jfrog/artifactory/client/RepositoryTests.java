@@ -1,6 +1,8 @@
 package org.jfrog.artifactory.client;
 
 import org.jfrog.artifactory.client.model.*;
+import org.jfrog.artifactory.client.model.repository.settings.RepositorySettings;
+import org.jfrog.artifactory.client.model.repository.settings.impl.GenericRepositorySettingsImpl;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -12,7 +14,6 @@ import static org.apache.commons.lang.StringUtils.countMatches;
 import static org.jfrog.artifactory.client.model.impl.RepositoryTypeImpl.*;
 import static org.testng.Assert.*;
 
-
 /**
  * @author jbaruch
  * @since 30/07/12
@@ -23,9 +24,13 @@ public class RepositoryTests extends ArtifactoryTestsBase {
 
     @BeforeMethod
     protected void setUp() throws Exception {
+        RepositorySettings genericRepo = new GenericRepositorySettingsImpl();
+
         localRepository = artifactory.repositories().builders().localRepositoryBuilder()
             .key(NEW_LOCAL)
-            .description("new local repository").packageType(PackageType.maven).build();
+            .description("new local repository")
+            .repositorySettings(genericRepo)
+            .build();
     }
 
     @Test(groups = "repositoryBasics", dependsOnMethods = "testDelete")
@@ -63,7 +68,13 @@ public class RepositoryTests extends ArtifactoryTestsBase {
 
     @Test(dependsOnMethods = "testCreate")
     public void testUpdate() throws Exception {
-        LocalRepository changedRepository = artifactory.repositories().builders().builderFrom(localRepository).description("new_description").packageType(PackageType.maven).build();
+        RepositorySettings genericRepo = new GenericRepositorySettingsImpl();
+
+        LocalRepository changedRepository = artifactory.repositories().builders().builderFrom(localRepository)
+                .description("new_description")
+                .repositorySettings(genericRepo)
+                .build();
+
         artifactory.repositories().update(changedRepository);
         assertTrue(curlAndStrip("api/repositories/" + NEW_LOCAL).contains("\"description\":\"new_description\""));
     }
@@ -130,11 +141,6 @@ public class RepositoryTests extends ArtifactoryTestsBase {
         assertEquals(jcenter.getNotes(), "");
         assertEquals(jcenter.getIncludesPattern(), "**/*");
         assertEquals(jcenter.getExcludesPattern(), "");
-        assertEquals(jcenter.getRemoteRepoChecksumPolicyType().toString(), "generate-if-absent");
-        assertTrue(jcenter.isHandleReleases());
-        assertFalse(jcenter.isHandleSnapshots());
-        assertEquals(jcenter.getMaxUniqueSnapshots(), 0);
-        assertFalse(jcenter.isSuppressPomConsistencyChecks());
         assertFalse(jcenter.isHardFail());
         assertFalse(jcenter.isOffline());
         assertFalse(jcenter.isBlackedOut());
@@ -144,8 +150,6 @@ public class RepositoryTests extends ArtifactoryTestsBase {
         assertEquals(jcenter.getRetrievalCachePeriodSecs(), 43200);
         assertEquals(jcenter.getMissedRetrievalCachePeriodSecs(), 7200);
         assertEquals(jcenter.getUnusedArtifactsCleanupPeriodHours(), 0);
-        assertFalse(jcenter.isFetchJarsEagerly());
-        assertFalse(jcenter.isFetchSourcesEagerly());
         assertFalse(jcenter.isShareConfiguration());
         assertFalse(jcenter.isSynchronizeProperties());
         List<String> propertySets = jcenter.getPropertySets();
@@ -166,17 +170,11 @@ public class RepositoryTests extends ArtifactoryTestsBase {
         assertEquals(libsReleasesLocal.getNotes(), "");
         assertEquals(libsReleasesLocal.getIncludesPattern(), "**/*");
         assertEquals(libsReleasesLocal.getExcludesPattern(), "");
-        assertTrue(libsReleasesLocal.isHandleReleases());
-        assertFalse(libsReleasesLocal.isHandleSnapshots());
-        assertEquals(libsReleasesLocal.getMaxUniqueSnapshots(), 0);
-        assertFalse(libsReleasesLocal.isSuppressPomConsistencyChecks());
         assertFalse(libsReleasesLocal.isBlackedOut());
         List<String> propertySets = libsReleasesLocal.getPropertySets();
         assertEquals(propertySets.size(), 1);
         assertEquals(propertySets.get(0), ("artifactory"));
         assertEquals(libsReleasesLocal.getRepoLayoutRef(), "maven-2-default");
-        assertEquals(libsReleasesLocal.getSnapshotVersionBehavior().toString(), "unique");
-        assertEquals(libsReleasesLocal.getChecksumPolicyType().toString(), "client-checksums");
     }
 
     @Test
@@ -191,9 +189,7 @@ public class RepositoryTests extends ArtifactoryTestsBase {
         assertEquals(libsReleases.getIncludesPattern(), "**/*");
         assertEquals(libsReleases.getExcludesPattern(), "");
         assertEquals(libsReleases.getRepositories(), asList("libs-release-local", "remote-repos"));
-        assertEquals(libsReleases.getPomRepositoryReferencesCleanupPolicy().toString(), "discard_active_reference");
         assertFalse(libsReleases.isArtifactoryRequestsCanRetrieveRemoteArtifacts());
-        assertTrue(libsReleases.getKeyPair() == null || libsReleases.getKeyPair().isEmpty());
         assertTrue(libsReleases.getRepoLayoutRef() == null || libsReleases.getRepoLayoutRef().isEmpty());
     }
 

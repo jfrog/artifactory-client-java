@@ -5,6 +5,7 @@ package org.jfrog.artifactory.client.model;
  * @since 30/07/12
  */
 public interface RemoteRepository extends Repository, NonVirtualRepository {
+
     String getUrl();
 
     String getUsername();
@@ -12,8 +13,6 @@ public interface RemoteRepository extends Repository, NonVirtualRepository {
     String getPassword();
 
     String getProxy();
-
-    RemoteRepoChecksumPolicyType getRemoteRepoChecksumPolicyType();
 
     boolean isHardFail();
 
@@ -39,17 +38,10 @@ public interface RemoteRepository extends Repository, NonVirtualRepository {
 
     int getUnusedArtifactsCleanupPeriodHours();
 
-    boolean isFetchJarsEagerly();
-
-    boolean isFetchSourcesEagerly();
-
     boolean isShareConfiguration();
 
     boolean isSynchronizeProperties();
 
     long getAssumedOfflinePeriodSecs();
 
-    boolean isListRemoteFolderItems();
-
-    boolean isRejectInvalidJars();
 }

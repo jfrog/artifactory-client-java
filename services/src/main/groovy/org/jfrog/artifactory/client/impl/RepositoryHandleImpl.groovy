@@ -2,19 +2,17 @@ package org.jfrog.artifactory.client.impl
 
 import groovy.json.JsonSlurper
 import groovyx.net.http.ContentType
-import org.jfrog.artifactory.client.DownloadableArtifact
-import org.jfrog.artifactory.client.ItemHandle
-import org.jfrog.artifactory.client.Repositories
-import org.jfrog.artifactory.client.RepositoryHandle
-import org.jfrog.artifactory.client.UploadableArtifact
+import org.jfrog.artifactory.client.*
 import org.jfrog.artifactory.client.model.ItemPermission
 import org.jfrog.artifactory.client.model.ReplicationStatus
 import org.jfrog.artifactory.client.model.Repository
 import org.jfrog.artifactory.client.model.impl.FileImpl
 import org.jfrog.artifactory.client.model.impl.FolderImpl
 import org.jfrog.artifactory.client.model.impl.ReplicationStatusImpl
+import org.jfrog.artifactory.client.model.repository.settings.RepositorySettings
 
 import static org.jfrog.artifactory.client.model.impl.RepositoryTypeImpl.parseString
+
 /**
  *
  * @author jbaruch
@@ -55,11 +53,17 @@ class RepositoryHandleImpl implements RepositoryHandle {
     }
 
     Repository get() {
-        // Use response to deserialize against proper type.
-        String repoJson = artifactory.get("${repository.getRepositoriesApi()}${repoKey}", ContentType.JSON, String)
-        JsonSlurper slurper = new JsonSlurper()
-        def repo = slurper.parseText(repoJson)
-        artifactory.parseText(repoJson, parseString(repo.rclass).typeClass)
+        String json = artifactory.get("${repository.getRepositoriesApi()}${repoKey}", ContentType.JSON, String)
+        parseJsonAsRepository(json)
+    }
+
+    private Repository parseJsonAsRepository(String json) {
+        def settings = artifactory.parseText(json, RepositorySettings)
+        def repo = artifactory.parseText(json, Repository)
+
+        repo.setRepositorySettings settings
+
+        repo
     }
 
     UploadableArtifact upload(String targetPath, InputStream content) {

@@ -6,7 +6,6 @@ import org.jfrog.artifactory.client.model.builder.VirtualRepositoryBuilder
 import org.jfrog.artifactory.client.model.impl.RepositoryTypeImpl
 import org.jfrog.artifactory.client.model.impl.VirtualRepositoryImpl
 
-import static org.jfrog.artifactory.client.model.VirtualRepository.PomRepositoryReferencesCleanupPolicy.discard_active_reference
 import static org.jfrog.artifactory.client.model.PackageType.*
 
 /**
@@ -17,15 +16,14 @@ import static org.jfrog.artifactory.client.model.PackageType.*
 class VirtualRepositoryBuilderImpl extends RepositoryBuilderBase<VirtualRepositoryBuilder, VirtualRepository> implements VirtualRepositoryBuilder {
 
     private VirtualRepositoryBuilderImpl() {
-        super([maven, gradle, ivy, sbt, nuget, gems, npm, bower, pypi, p2, generic, docker])
+        super([bower, docker, gems, generic, gitlfs, gradle, ivy, maven, npm, nuget, p2, pypi, sbt])
     }
 
-    private List<String> repositories = new ArrayList<String>()
+    private Collection<String> repositories = Collections.emptyList();
     private boolean artifactoryRequestsCanRetrieveRemoteArtifacts
-    private String keyPair
-    private VirtualRepository.PomRepositoryReferencesCleanupPolicy pomRepositoryReferencesCleanupPolicy = discard_active_reference
+    private String defaultDeploymentRepo;
 
-    VirtualRepositoryBuilder repositories(List<String> repositories) {
+    VirtualRepositoryBuilder repositories(Collection<String> repositories) {
         this.repositories = repositories
         this
     }
@@ -35,22 +33,16 @@ class VirtualRepositoryBuilderImpl extends RepositoryBuilderBase<VirtualReposito
         this
     }
 
-    VirtualRepositoryBuilder keyPair(String keyPair) {
-        this.keyPair = keyPair
-        this
-    }
-
-    VirtualRepositoryBuilder pomRepositoryReferencesCleanupPolicy(VirtualRepository.PomRepositoryReferencesCleanupPolicy pomRepositoryReferencesCleanupPolicy) {
-        this.pomRepositoryReferencesCleanupPolicy = pomRepositoryReferencesCleanupPolicy
+    VirtualRepositoryBuilder defaultDeploymentRepo(String deploymentRepo) {
+        this.defaultDeploymentRepo = deploymentRepo
         this
     }
 
     VirtualRepository build() {
         validate()
-        new VirtualRepositoryImpl(key, packageType, description, excludesPattern,
+        new VirtualRepositoryImpl(key, settings, description, excludesPattern,
             includesPattern, notes, artifactoryRequestsCanRetrieveRemoteArtifacts,
-            keyPair, pomRepositoryReferencesCleanupPolicy, repositories,
-            repoLayoutRef, debianTrivialLayout)
+            repositories, repoLayoutRef, defaultDeploymentRepo)
     }
 
     @Override

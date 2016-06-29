@@ -1,16 +1,14 @@
 package org.jfrog.artifactory.client.model.builder.impl
 
-import org.jfrog.artifactory.client.model.RemoteRepoChecksumPolicyType
 import org.jfrog.artifactory.client.model.RemoteRepository
 import org.jfrog.artifactory.client.model.RepositoryType
 import org.jfrog.artifactory.client.model.builder.RemoteRepositoryBuilder
-import org.jfrog.artifactory.client.model.impl.RemoteRepoChecksumPolicyTypeImpl
 import org.jfrog.artifactory.client.model.impl.RemoteRepositoryImpl
 import org.jfrog.artifactory.client.model.impl.RepositoryTypeImpl
 
-import static RemoteRepoChecksumPolicyTypeImpl.generate_if_absent
-import static org.jfrog.artifactory.client.model.Repository.MAVEN_2_REPO_LAYOUT
 import static org.jfrog.artifactory.client.model.PackageType.*
+import static org.jfrog.artifactory.client.model.Repository.MAVEN_2_REPO_LAYOUT
+import static org.jfrog.artifactory.client.model.impl.RemoteRepoChecksumPolicyTypeImpl.generate_if_absent
 
 /**
  *
@@ -20,8 +18,7 @@ import static org.jfrog.artifactory.client.model.PackageType.*
 class RemoteRepositoryBuilderImpl extends NonVirtualRepositoryBuilderBase<RemoteRepositoryBuilder, RemoteRepository> implements RemoteRepositoryBuilder {
 
     RemoteRepositoryBuilderImpl() {
-        super([maven, gradle, ivy, sbt, nuget, gems, npm, bower, debian, pypi, docker, yum, vcs, p2, generic])
-        remoteRepoChecksumPolicyType = generate_if_absent
+        super([bower, cocoapods, debian, docker, gems, generic, gitlfs, gradle, ivy, maven, npm, nuget, opkg, p2, pypi, sbt, vcs, yum])
         repoLayoutRef = MAVEN_2_REPO_LAYOUT
     }
 
@@ -29,7 +26,6 @@ class RemoteRepositoryBuilderImpl extends NonVirtualRepositoryBuilderBase<Remote
     private String username
     private String password
     private String proxy
-    private RemoteRepoChecksumPolicyType remoteRepoChecksumPolicyType
     private boolean hardFail
     private boolean offline
     private boolean storeArtifactsLocally = true
@@ -42,13 +38,9 @@ class RemoteRepositoryBuilderImpl extends NonVirtualRepositoryBuilderBase<Remote
     private int failedRetrievalCachePeriodSecs = 30
     private boolean unusedArtifactsCleanupEnabled
     private int unusedArtifactsCleanupPeriodHours
-    private boolean fetchJarsEagerly
-    private boolean fetchSourcesEagerly
     private boolean shareConfiguration
     private boolean synchronizeProperties
     private long assumedOfflinePeriodSecs = 300
-    private boolean listRemoteFolderItems = true
-    private boolean rejectInvalidJars = false
 
     RemoteRepositoryBuilder url(String url) {
         this.url = url
@@ -67,11 +59,6 @@ class RemoteRepositoryBuilderImpl extends NonVirtualRepositoryBuilderBase<Remote
 
     RemoteRepositoryBuilder proxy(String proxy) {
         this.proxy = proxy
-        this
-    }
-
-    RemoteRepositoryBuilder remoteRepoChecksumPolicyType(RemoteRepoChecksumPolicyType remoteRepoChecksumPolicyType) {
-        this.remoteRepoChecksumPolicyType = remoteRepoChecksumPolicyType
         this
     }
 
@@ -135,16 +122,6 @@ class RemoteRepositoryBuilderImpl extends NonVirtualRepositoryBuilderBase<Remote
         this
     }
 
-    RemoteRepositoryBuilder fetchJarsEagerly(boolean fetchJarsEagerly) {
-        this.fetchJarsEagerly = fetchJarsEagerly
-        this
-    }
-
-    RemoteRepositoryBuilder fetchSourcesEagerly(boolean fetchSourcesEagerly) {
-        this.fetchSourcesEagerly = fetchSourcesEagerly
-        this
-    }
-
     RemoteRepositoryBuilder shareConfiguration(boolean shareConfiguration) {
         this.shareConfiguration = shareConfiguration
         this
@@ -160,32 +137,20 @@ class RemoteRepositoryBuilderImpl extends NonVirtualRepositoryBuilderBase<Remote
         this
     }
 
-    RemoteRepositoryBuilder listRemoteFolderItems(boolean listRemoteFolderItems) {
-        this.listRemoteFolderItems = listRemoteFolderItems
-        this
-    }
-
-    RemoteRepositoryBuilder rejectInvalidJars(boolean rejectInvalidJars) {
-        this.rejectInvalidJars = rejectInvalidJars
-        this
-    }
-
     @SuppressWarnings("GroovyAccessibility")
     RemoteRepository build() {
         validate()
 
-        new RemoteRepositoryImpl(key, packageType, description, excludesPattern,
-                includesPattern, notes, blackedOut, handleReleases, handleSnapshots,
-                maxUniqueSnapshots, propertySets,
-                snapshotVersionBehavior, suppressPomConsistencyChecks,
-                failedRetrievalCachePeriodSecs, fetchJarsEagerly, fetchSourcesEagerly,
+        new RemoteRepositoryImpl(key, settings, description, excludesPattern,
+                includesPattern, notes, blackedOut,
+                propertySets,
+                failedRetrievalCachePeriodSecs,
                 hardFail, localAddress, missedRetrievalCachePeriodSecs,
-                offline, password, proxy, remoteRepoChecksumPolicyType, retrievalCachePeriodSecs,
+                offline, password, proxy, retrievalCachePeriodSecs,
                 shareConfiguration, socketTimeoutMillis, enableCookieManagement, allowAnyHostAuth,
                 storeArtifactsLocally, synchronizeProperties, unusedArtifactsCleanupEnabled,
                 unusedArtifactsCleanupPeriodHours, url, username, repoLayoutRef,
-                assumedOfflinePeriodSecs, archiveBrowsingEnabled,
-                listRemoteFolderItems, rejectInvalidJars, debianTrivialLayout)
+                assumedOfflinePeriodSecs, archiveBrowsingEnabled)
     }
 
     @Override

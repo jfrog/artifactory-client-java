@@ -1,10 +1,8 @@
 package org.jfrog.artifactory.client.model.impl;
 
-import org.jfrog.artifactory.client.model.PackageType;
-import org.jfrog.artifactory.client.model.RemoteRepoChecksumPolicyType;
 import org.jfrog.artifactory.client.model.RemoteRepository;
 import org.jfrog.artifactory.client.model.RepositoryType;
-import org.jfrog.artifactory.client.model.SnapshotVersionBehavior;
+import org.jfrog.artifactory.client.model.repository.settings.RepositorySettings;
 
 import java.util.List;
 
@@ -18,7 +16,6 @@ public class RemoteRepositoryImpl extends NonVirtualRepositoryBase implements Re
     private String username;
     private String password;
     private String proxy;
-    private RemoteRepoChecksumPolicyType remoteRepoChecksumPolicyType;
     private boolean hardFail;
     private boolean offline;
     private boolean storeArtifactsLocally;
@@ -31,44 +28,34 @@ public class RemoteRepositoryImpl extends NonVirtualRepositoryBase implements Re
     private int failedRetrievalCachePeriodSecs;
     private boolean unusedArtifactsCleanupEnabled;
     private int unusedArtifactsCleanupPeriodHours;
-    private boolean fetchJarsEagerly;
-    private boolean fetchSourcesEagerly;
     private boolean shareConfiguration;
     private boolean synchronizeProperties;
     private long assumedOfflinePeriodSecs;
-    private boolean listRemoteFolderItems;
-    private boolean rejectInvalidJars;
 
     private RemoteRepositoryImpl() {
-        remoteRepoChecksumPolicyType = RemoteRepoChecksumPolicyTypeImpl.generate_if_absent;
         repoLayoutRef = MAVEN_2_REPO_LAYOUT;
     }
 
-    RemoteRepositoryImpl(String description, String excludesPattern, String includesPattern, String key, String notes, boolean blackedOut, boolean handleReleases, boolean handleSnapshots,
-                         int maxUniqueSnapshots, List<String> propertySets, SnapshotVersionBehavior snapshotVersionBehavior, boolean suppressPomConsistencyChecks,
-                         int failedRetrievalCachePeriodSecs, boolean fetchJarsEagerly, boolean fetchSourcesEagerly, boolean hardFail, String localAddress,
-                         int missedRetrievalCachePeriodSecs, boolean offline, String password, String proxy, RemoteRepoChecksumPolicyType remoteRepoChecksumPolicyType,
+    RemoteRepositoryImpl(String key, RepositorySettings settings, String description, String excludesPattern, String includesPattern, String notes, boolean blackedOut,
+                         List<String> propertySets,
+                         int failedRetrievalCachePeriodSecs, boolean hardFail, String localAddress,
+                         int missedRetrievalCachePeriodSecs, boolean offline, String password, String proxy,
                          int retrievalCachePeriodSecs, boolean shareConfiguration, int socketTimeoutMillis, boolean cookieManagementEnabled, boolean allowAnyHostAuth, boolean storeArtifactsLocally, boolean synchronizeProperties,
                          boolean unusedArtifactsCleanupEnabled, int unusedArtifactsCleanupPeriodHours, String url, String username, String repoLayoutRef,
-                         long assumedOfflinePeriodSecs, boolean archiveBrowsingEnabled, boolean listRemoteFolderItems, boolean rejectInvalidJars,
-                         PackageType packageType, boolean debianTrivialLayout) {
+                         long assumedOfflinePeriodSecs, boolean archiveBrowsingEnabled) {
 
-        super(key, packageType, description, excludesPattern, includesPattern,
-            notes, blackedOut, handleReleases, handleSnapshots, maxUniqueSnapshots,
-            propertySets, snapshotVersionBehavior,
-            suppressPomConsistencyChecks, repoLayoutRef, archiveBrowsingEnabled,
-            debianTrivialLayout);
+        super(key, settings, description, excludesPattern, includesPattern,
+            notes, blackedOut,
+            propertySets,
+            repoLayoutRef, archiveBrowsingEnabled);
 
         this.failedRetrievalCachePeriodSecs = failedRetrievalCachePeriodSecs;
-        this.fetchJarsEagerly = fetchJarsEagerly;
-        this.fetchSourcesEagerly = fetchSourcesEagerly;
         this.hardFail = hardFail;
         this.localAddress = localAddress;
         this.missedRetrievalCachePeriodSecs = missedRetrievalCachePeriodSecs;
         this.offline = offline;
         this.password = password;
         this.proxy = proxy;
-        this.remoteRepoChecksumPolicyType = remoteRepoChecksumPolicyType;
         this.retrievalCachePeriodSecs = retrievalCachePeriodSecs;
         this.shareConfiguration = shareConfiguration;
         this.socketTimeoutMillis = socketTimeoutMillis;
@@ -81,8 +68,6 @@ public class RemoteRepositoryImpl extends NonVirtualRepositoryBase implements Re
         this.url = url;
         this.username = username;
         this.assumedOfflinePeriodSecs = assumedOfflinePeriodSecs;
-        this.listRemoteFolderItems = listRemoteFolderItems;
-        this.rejectInvalidJars = rejectInvalidJars;
     }
 
     @Override
@@ -119,15 +104,6 @@ public class RemoteRepositoryImpl extends NonVirtualRepositoryBase implements Re
 
     private void setProxy(String proxy) {
         this.proxy = proxy;
-    }
-
-    @Override
-    public RemoteRepoChecksumPolicyType getRemoteRepoChecksumPolicyType() {
-        return remoteRepoChecksumPolicyType;
-    }
-
-    private void setRemoteRepoChecksumPolicyType(RemoteRepoChecksumPolicyTypeImpl remoteRepoChecksumPolicyType) {
-        this.remoteRepoChecksumPolicyType = remoteRepoChecksumPolicyType;
     }
 
     @Override
@@ -239,24 +215,6 @@ public class RemoteRepositoryImpl extends NonVirtualRepositoryBase implements Re
     }
 
     @Override
-    public boolean isFetchJarsEagerly() {
-        return fetchJarsEagerly;
-    }
-
-    private void setFetchJarsEagerly(boolean fetchJarsEagerly) {
-        this.fetchJarsEagerly = fetchJarsEagerly;
-    }
-
-    @Override
-    public boolean isFetchSourcesEagerly() {
-        return fetchSourcesEagerly;
-    }
-
-    private void setFetchSourcesEagerly(boolean fetchSourcesEagerly) {
-        this.fetchSourcesEagerly = fetchSourcesEagerly;
-    }
-
-    @Override
     public boolean isShareConfiguration() {
         return shareConfiguration;
     }
@@ -289,24 +247,6 @@ public class RemoteRepositoryImpl extends NonVirtualRepositoryBase implements Re
     }
 
     @Override
-    public boolean isListRemoteFolderItems() {
-        return listRemoteFolderItems;
-    }
-
-    private void setListRemoteFolderItems(boolean listRemoteFolderItems) {
-        this.listRemoteFolderItems = listRemoteFolderItems;
-    }
-
-    @Override
-    public boolean isRejectInvalidJars() {
-        return rejectInvalidJars;
-    }
-
-    private void setRejectInvalidJars(boolean rejectInvalidJars) {
-        this.rejectInvalidJars = rejectInvalidJars;
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -315,8 +255,6 @@ public class RemoteRepositoryImpl extends NonVirtualRepositoryBase implements Re
         RemoteRepositoryImpl that = (RemoteRepositoryImpl) o;
 
         if (failedRetrievalCachePeriodSecs != that.failedRetrievalCachePeriodSecs) return false;
-        if (fetchJarsEagerly != that.fetchJarsEagerly) return false;
-        if (fetchSourcesEagerly != that.fetchSourcesEagerly) return false;
         if (hardFail != that.hardFail) return false;
         if (missedRetrievalCachePeriodSecs != that.missedRetrievalCachePeriodSecs) return false;
         if (offline != that.offline) return false;
@@ -332,7 +270,6 @@ public class RemoteRepositoryImpl extends NonVirtualRepositoryBase implements Re
         if (localAddress != null ? !localAddress.equals(that.localAddress) : that.localAddress != null) return false;
         if (password != null ? !password.equals(that.password) : that.password != null) return false;
         if (proxy != null ? !proxy.equals(that.proxy) : that.proxy != null) return false;
-        if (remoteRepoChecksumPolicyType != that.remoteRepoChecksumPolicyType) return false;
         if (url != null ? !url.equals(that.url) : that.url != null) return false;
         if (username != null ? !username.equals(that.username) : that.username != null) return false;
 
@@ -346,7 +283,6 @@ public class RemoteRepositoryImpl extends NonVirtualRepositoryBase implements Re
         result = 31 * result + (username != null ? username.hashCode() : 0);
         result = 31 * result + (password != null ? password.hashCode() : 0);
         result = 31 * result + (proxy != null ? proxy.hashCode() : 0);
-        result = 31 * result + (remoteRepoChecksumPolicyType != null ? remoteRepoChecksumPolicyType.hashCode() : 0);
         result = 31 * result + (hardFail ? 1 : 0);
         result = 31 * result + (offline ? 1 : 0);
         result = 31 * result + (storeArtifactsLocally ? 1 : 0);
@@ -359,8 +295,6 @@ public class RemoteRepositoryImpl extends NonVirtualRepositoryBase implements Re
         result = 31 * result + failedRetrievalCachePeriodSecs;
         result = 31 * result + (unusedArtifactsCleanupEnabled ? 1 : 0);
         result = 31 * result + unusedArtifactsCleanupPeriodHours;
-        result = 31 * result + (fetchJarsEagerly ? 1 : 0);
-        result = 31 * result + (fetchSourcesEagerly ? 1 : 0);
         result = 31 * result + (shareConfiguration ? 1 : 0);
         result = 31 * result + (synchronizeProperties ? 1 : 0);
         return result;
@@ -374,7 +308,6 @@ public class RemoteRepositoryImpl extends NonVirtualRepositoryBase implements Re
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 ", proxy='" + proxy + '\'' +
-                ", remoteRepoChecksumPolicyType=" + remoteRepoChecksumPolicyType +
                 ", hardFail=" + hardFail +
                 ", offline=" + offline +
                 ", storeArtifactsLocally=" + storeArtifactsLocally +
@@ -386,8 +319,6 @@ public class RemoteRepositoryImpl extends NonVirtualRepositoryBase implements Re
                 ", missedRetrievalCachePeriodSecs=" + missedRetrievalCachePeriodSecs +
                 ", unusedArtifactsCleanupEnabled=" + unusedArtifactsCleanupEnabled +
                 ", unusedArtifactsCleanupPeriodHours=" + unusedArtifactsCleanupPeriodHours +
-                ", fetchJarsEagerly=" + fetchJarsEagerly +
-                ", fetchSourcesEagerly=" + fetchSourcesEagerly +
                 ", shareConfiguration=" + shareConfiguration +
                 ", synchronizeProperties=" + synchronizeProperties +
                 '}';

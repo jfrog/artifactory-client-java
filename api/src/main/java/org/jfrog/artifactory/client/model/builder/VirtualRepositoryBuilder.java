@@ -2,7 +2,7 @@ package org.jfrog.artifactory.client.model.builder;
 
 import org.jfrog.artifactory.client.model.VirtualRepository;
 
-import java.util.List;
+import java.util.Collection;
 
 /**
  * @author jbaruch
@@ -10,11 +10,10 @@ import java.util.List;
  */
 public interface VirtualRepositoryBuilder extends RepositoryBuilder<VirtualRepositoryBuilder, VirtualRepository> {
 
-    VirtualRepositoryBuilder repositories(List<String> repositories);
+    VirtualRepositoryBuilder repositories(Collection<String> repositories);
 
     VirtualRepositoryBuilder artifactoryRequestsCanRetrieveRemoteArtifacts(boolean artifactoryRequestsCanRetrieveRemoteArtifacts);
 
-    VirtualRepositoryBuilder keyPair(String keyPair);
+    VirtualRepositoryBuilder defaultDeploymentRepo(String deploymentRepo);
 
-    VirtualRepositoryBuilder pomRepositoryReferencesCleanupPolicy(VirtualRepository.PomRepositoryReferencesCleanupPolicy pomRepositoryReferencesCleanupPolicy);
 }
