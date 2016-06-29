@@ -116,8 +116,16 @@ Repository repo = artifactory.repository("RepoName").get();
 String repoKey           = repo.getKey();           //RepoName
 String desc              = repo.getDescription();
 String layout            = repo.getRepoLayoutRef(); //maven-2-default
-PackageType packageType  = repo.getPackageType();   //maven
 RepositoryType repoClass = repo.getRclass();        //local
+
+RepositorySettings settings = repo.getRepositorySettings();
+PackageType packageType  = settings.getPackageType();
+
+if (PackageType.bower == packageType) {
+    BowerRepositorySettings settingsForBower = (BowerRepositorySettings) settings;
+
+    String bowerRegistryUrl = settingsForBower.getBowerRegistryUrl();
+}
 ```
 
 #### Managing items
@@ -153,12 +161,15 @@ List<LightweightRepository> repoList = artifactory.repositories().list(LOCAL);
 
 ##### Create repository
 ```
+DebianRepositorySettingsImpl settings = new DebianRepositorySettingsImpl();
+settings.setDebianTrivialLayout(true);
+
 Repository repository = artifactory.repositories()
         .builders()
         .localRepositoryBuilder()
         .key("NewRepoName")
         .description("new local repository")
-        .packageType(PackageType.maven)
+        .repositorySettings(settings)
         .build();
 
 String result = artifactory.repositories().create(2, repository);
@@ -167,13 +178,20 @@ String result = artifactory.repositories().create(2, repository);
 ##### Update repository
 ```
 Repository repository = artifactory.repository("RepoName").get();
+RepositorySettings settings = repository.getRepositorySettings();
+
+if (PackageType.debian == settings.getPackageType()) {
+    DebianRepositorySettingsImpl settingsForDebian = (DebianRepositorySettingsImpl) settings;
+
+    settingsForDebian.setDebianTrivialLayout(false);
+}
+
 Repository updatedRepository = artifactory.repositories()
         .builders()
-        .builderFrom(repository)            
+        .builderFrom(repository)
         .description("new_description")
-        .packageType(PackageType.maven)
         .build();
-                
+
 String result = artifactory.repositories().update(updatedRepository);
 ```
 

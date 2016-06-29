@@ -35,7 +35,7 @@ public enum RepositoryTypeImpl implements RepositoryType {
         return typeReference;
     }
 
-    @JsonCreator
+    @JsonCreator // used by LightweightRepository
     public static RepositoryTypeImpl parseString(String typeName) {
         return valueOf(typeName.toUpperCase());
     }

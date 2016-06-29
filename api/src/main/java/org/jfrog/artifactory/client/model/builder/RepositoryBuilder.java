@@ -1,7 +1,7 @@
 package org.jfrog.artifactory.client.model.builder;
 
-import org.jfrog.artifactory.client.model.PackageType;
 import org.jfrog.artifactory.client.model.Repository;
+import org.jfrog.artifactory.client.model.repository.settings.RepositorySettings;
 
 /**
  * @author jbaruch
@@ -25,7 +25,6 @@ public interface RepositoryBuilder<B extends RepositoryBuilder, R extends Reposi
 
     void validate();
 
-    B packageType(PackageType packageType);
+    B repositorySettings(RepositorySettings settings);
 
-    B debianTrivialLayout(boolean debianTrivialLayout);
 }

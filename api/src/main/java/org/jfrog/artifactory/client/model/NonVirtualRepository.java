@@ -7,19 +7,11 @@ import java.util.List;
  * @since 30/07/12
  */
 public interface NonVirtualRepository extends Repository {
-    boolean isHandleReleases();
-
-    boolean isHandleSnapshots();
-
-    int getMaxUniqueSnapshots();
-
-    SnapshotVersionBehavior getSnapshotVersionBehavior();
-
-    boolean isSuppressPomConsistencyChecks();
 
     boolean isBlackedOut();
 
     List<String> getPropertySets();
 
     boolean isArchiveBrowsingEnabled();
+
 }

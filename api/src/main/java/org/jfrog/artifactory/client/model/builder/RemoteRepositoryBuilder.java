@@ -1,6 +1,5 @@
 package org.jfrog.artifactory.client.model.builder;
 
-import org.jfrog.artifactory.client.model.RemoteRepoChecksumPolicyType;
 import org.jfrog.artifactory.client.model.RemoteRepository;
 
 /**
@@ -16,8 +15,6 @@ public interface RemoteRepositoryBuilder extends NonVirtualRepositoryBuilder<Rem
     RemoteRepositoryBuilder password(String password);
 
     RemoteRepositoryBuilder proxy(String proxy);
-
-    RemoteRepositoryBuilder remoteRepoChecksumPolicyType(RemoteRepoChecksumPolicyType remoteRepoChecksumPolicyType);
 
     RemoteRepositoryBuilder hardFail(boolean hardFail);
 
@@ -43,17 +40,10 @@ public interface RemoteRepositoryBuilder extends NonVirtualRepositoryBuilder<Rem
 
     RemoteRepositoryBuilder unusedArtifactsCleanupPeriodHours(int unusedArtifactsCleanupPeriodHours);
 
-    RemoteRepositoryBuilder fetchJarsEagerly(boolean fetchJarsEagerly);
-
-    RemoteRepositoryBuilder fetchSourcesEagerly(boolean fetchSourcesEagerly);
-
     RemoteRepositoryBuilder shareConfiguration(boolean shareConfiguration);
 
     RemoteRepositoryBuilder synchronizeProperties(boolean synchronizeProperties);
 
     RemoteRepositoryBuilder assumedOfflinePeriodSecs(long assumedOfflinePeriodSecs);
 
-    RemoteRepositoryBuilder listRemoteFolderItems(boolean listRemoteFolderItems);
-
-    RemoteRepositoryBuilder rejectInvalidJars(boolean rejectInvalidJars);
 }
