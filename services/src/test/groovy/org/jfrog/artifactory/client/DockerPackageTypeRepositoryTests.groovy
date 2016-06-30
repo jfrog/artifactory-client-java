@@ -14,6 +14,7 @@ import org.testng.annotations.Test
  */
 public class DockerPackageTypeRepositoryTests extends BaseRepositoryTests {
 
+    /*
     @BeforeMethod
     protected void setUp() {
         settings = new DockerRepositorySettingsImpl()
@@ -73,7 +74,6 @@ public class DockerPackageTypeRepositoryTests extends BaseRepositoryTests {
         }
     }
 
-
     @Test(groups = "dockerPackageTypeRepo")
     public void testDockerVirtualRepo() {
         artifactory.repositories().create(0, virtualRepo)
@@ -93,5 +93,5 @@ public class DockerPackageTypeRepositoryTests extends BaseRepositoryTests {
             assertThat(forceDockerAuthentication, CoreMatchers.is(settings.getForceDockerAuthentication()))
         }
     }
-
+    */
 }

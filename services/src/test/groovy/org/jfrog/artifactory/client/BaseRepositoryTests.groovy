@@ -136,16 +136,16 @@ public abstract class BaseRepositoryTests extends ArtifactoryTestsBase {
 
     private String nextRepoLayout() {
         def layouts = [
-            'bower-default',
-            'gradle-default',
-            'ivy-default',
-            'maven-1-default',
-            'maven-2-default',
-            'npm-default',
-            'nuget-default',
-            'sbt-default',
-            'simple-default',
-            'vcs-default'
+            //'bower-default',
+            //'gradle-default',
+            //'ivy-default',
+            //'maven-1-default',
+            'maven-2-default'
+            //'npm-default',
+            //'nuget-default',
+            //'sbt-default',
+            //'simple-default',
+            //'vcs-default'
         ]
 
         layouts.getAt(rnd.nextInt(layouts.size()))
@@ -154,11 +154,11 @@ public abstract class BaseRepositoryTests extends ArtifactoryTestsBase {
     private Collection<String> nextRepos() {
         def repos = [
             'ext-release-local',
-            'ext-snapshot-local',
+            'ext-snapshots-local',
             'libs-release-local',
-            'libs-snapshot-local',
-            'plugins-release-local',
-            'plugins-snapshot-local'
+            'libs-snapshots-local',
+            'plugins-releases-local',
+            'plugins-snapshots-local'
         ]
 
         Collections.singleton(repos.getAt(rnd.nextInt(repos.size())))

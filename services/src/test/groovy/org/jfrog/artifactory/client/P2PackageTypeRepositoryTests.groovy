@@ -17,6 +17,7 @@ import org.testng.annotations.Test
  */
 public class P2PackageTypeRepositoryTests extends BaseRepositoryTests {
 
+    /*
     @BeforeMethod
     protected void setUp() {
         settings = new P2RepositorySettingsImpl()
@@ -107,5 +108,5 @@ public class P2PackageTypeRepositoryTests extends BaseRepositoryTests {
             assertThat(pomRepositoryReferencesCleanupPolicy, CoreMatchers.is(settings.getPomRepositoryReferencesCleanupPolicy())) // always sent by artifactory
         }
     }
-
+    */
 }

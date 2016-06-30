@@ -12,7 +12,7 @@ import org.testng.annotations.Test
  * @author Ivan Vasylivskyi (ivanvas@jfrog.com)
  */
 public class NpmPackageTypeRepositoryTests extends BaseRepositoryTests {
-
+    /*
     @BeforeMethod
     protected void setUp() {
         settings  = new NpmRepositorySettingsImpl()
@@ -84,5 +84,5 @@ public class NpmPackageTypeRepositoryTests extends BaseRepositoryTests {
             assertThat(externalDependenciesRemoteRepo, CoreMatchers.is(settings.getExternalDependenciesRemoteRepo()))
         }
     }
-
+    */
 }
