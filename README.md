@@ -1,27 +1,17 @@
-artifactory-client-java
-=======================
+# Artifactory Java Client
 
 Artifactory Java client provides simple yet powerful Artifactory connection and management within your Java code.
 
-Among the features: 
-
-Search, resolve and publish artifacts to or from Artifactory.
-
-Manage your repositories, users, groups, permissions and system configuration.
+The client aallows managing Artifactory repositories, users, groups, permissions and system configuration.
+It also allows searches, upload and download artifacts to or from Artifactory and a lot more.
 
 [ ![Download](https://api.bintray.com/packages/jfrog/artifactory-tools/artifactory-client-java/images/download.png) ](https://bintray.com/jfrog/artifactory-tools/artifactory-client-java/_latestVersion)
 
-# Getting Started
-Artifactory Java client hosted at JCenter repository.
+## Getting Started
 
-For quick setup click `SET ME UP!` 
-[here](https://bintray.com/jfrog/artifactory-tools/artifactory-client-java/1.2.2/view).
-
-### Add the artifactory-java-client-services as a dependency to your build script.
+### Add *artifactory-java-client-services* as a dependency to your build script.
 #### Maven
 Add the following dependency to your `pom.xml` file:
-
-
 
 ```maven
 <dependency>
@@ -41,168 +31,167 @@ dependencies {
     compile 'org.jfrog.artifactory.client:artifactory-java-client-services:+'
 }
 ```
+
 ### Examples:
-This section includes a few examples for using the Artifactory Java client APIs for your application code.
+This section includes a few usage examples of the Java client APIs from your application code.
 
 #### Setting up Artifactory
 ```
 Artifactory artifactory = ArtifactoryClient.create("ArtifactoryUrl", "username", "password");
 ```
-#### Downloading, uploading artifacts
+#### Uploading and downloading artifacts
 
-##### Uploading artifacts
+##### Uploading an Artifacts
 ```
 File file = new File("fileToUpload.txt");
 File result = artifactory.repository("RepoName").upload("path/to/newName.txt", file).doUpload();
 ```
 
-##### Upload artifact with property
+##### Uploading an Artifact with Properties
 ```
 File file = new File("fileToUpload.txt");
 File deployed = artifactory.repository("RepoName")
-        .upload("path/to/newName.txt", file)
-        .withProperty("color", "blue")
-        .withProperty("color", "red")
-        .doUpload();
+    .upload("path/to/newName.txt", file)
+    .withProperty("color", "blue")
+    .withProperty("color", "red")
+    .doUpload();
 ```
 
-##### Download artifact
+##### Downloading an Artifact
 ```
 InputStream iStream = artifactory.repository("RepoName")
-        .download("path/to/fileToDownload.txt")
-        .doDownload();
+    .download("path/to/fileToDownload.txt")
+    .doDownload();
 ```
-##### Downloading artifact with property
+
+##### Downloading an Artifact with properties
 ```
 InputStream iStream = artifactory.repository("RepoName")
-        .download("path/to/fileToDownload.txt")
-        .withProperty("colors", "red")
-        .doDownload();
+    .download("path/to/fileToDownload.txt")
+    .withProperty("colors", "red")
+    .doDownload();
 ```
 
-##### Downloading artifact with mandatory property
+##### Downloading Artifact with mandatory properties
 ```
 InputStream iStream = artifactory.repository("RepoName")
-        .download("path/to/fileToDownload.txt")
-        .withMandatoryProperty("colors", "red")
-        .doDownload();
+    .download("path/to/fileToDownload.txt")
+    .withMandatoryProperty("colors", "red")
+    .doDownload();
 ```
 
-#### File, folder, repo information
-
-##### File info
+#### File, Folder and Repository info
+##### File Info
 
 ```
 File file = artifactory.repository("RepoName").file("path/to/file.txt").info();
-boolean isFile      = file.isFolder();
-long fileSize       = file.getSize();
-String fileUri      = file.getDownloadUri();
-String md5Checksum  = file.getChecksums().getMd5();
+boolean isFile = file.isFolder();
+long fileSize = file.getSize();
+String fileUri = file.getDownloadUri();
+String md5Checksum = file.getChecksums().getMd5();
 String sha1Checksum = file.getChecksums().getSha1();
 ```
 
-##### Folder info
+##### Folder Info
 ```
 Folder folder = artifactory.repository("RepoName").folder("path/to/folder").info();
-boolean isFolder      = folder.isFolder();
-String repoName       = folder.getRepo();
-String folderPath     = folder.getPath();
+boolean isFolder = folder.isFolder();
+String repoName = folder.getRepo();
+String folderPath = folder.getPath();
 int childrenItemsSize = folder.getChildren().size();
 ```
-##### Repo info
+##### Repository Info
 
 ```
 Repository repo = artifactory.repository("RepoName").get();
-String repoKey           = repo.getKey();           //RepoName
-String desc              = repo.getDescription();
-String layout            = repo.getRepoLayoutRef(); //maven-2-default
-RepositoryType repoClass = repo.getRclass();        //local
+String repoKey = repo.getKey();
+String desc = repo.getDescription();
+String layout = repo.getRepoLayoutRef();
+RepositoryType repoClass = repo.getRclass();
 
 RepositorySettings settings = repo.getRepositorySettings();
 PackageType packageType  = settings.getPackageType();
 
 if (PackageType.bower == packageType) {
-    BowerRepositorySettings settingsForBower = (BowerRepositorySettings) settings;
-
+    BowerRepositorySettings settingsForBower = (BowerRepositorySettings)settings;
     String bowerRegistryUrl = settingsForBower.getBowerRegistryUrl();
 }
 ```
 
-#### Managing items
+#### Managing Items (files and folders)
 
-##### Getting item
+##### Getting Items
 ```
-ItemHandle fileItem   = artifactory.repository("RepoName").file("path/to/file.txt");
+ItemHandle fileItem = artifactory.repository("RepoName").file("path/to/file.txt");
 ItemHandle folderItem = artifactory.repository("RepoName").folder("path/to/folder");
 ```
 
-##### Copy item
+##### Copying Items
 ```
-ItemHandle item    = ...
+ItemHandle item = ...
 ItemHandle newItem = item.copy("ToRepoName", "path/to/item");
 ```
 
-##### Move item
+##### Moving Items
 ```
-ItemHandle item    = ...
+ItemHandle item = ...
 ItemHandle newItem = item.move("ToRepoName", "path/to/item");
 ```
 
-##### Delete item
+##### Deleting Items
 ```
 String result = artifactory.repository("RepoName").delete("path/to/item");
 ```
 
-#### Managing repositories
-##### List all repositories
+#### Managing Repositories
+##### List all Repositories
 ```
 List<LightweightRepository> repoList = artifactory.repositories().list(LOCAL);
 ```
 
-##### Create repository
+##### Creating Repositories
 ```
 DebianRepositorySettingsImpl settings = new DebianRepositorySettingsImpl();
 settings.setDebianTrivialLayout(true);
 
 Repository repository = artifactory.repositories()
-        .builders()
-        .localRepositoryBuilder()
-        .key("NewRepoName")
-        .description("new local repository")
-        .repositorySettings(settings)
-        .build();
+    .builders()
+    .localRepositoryBuilder()
+    .key("NewRepoName")
+    .description("new local repository")
+    .repositorySettings(settings)
+    .build();
 
 String result = artifactory.repositories().create(2, repository);
 ```
 
-##### Update repository
+##### Updating Repositories
 ```
 Repository repository = artifactory.repository("RepoName").get();
 RepositorySettings settings = repository.getRepositorySettings();
 
 if (PackageType.debian == settings.getPackageType()) {
     DebianRepositorySettingsImpl settingsForDebian = (DebianRepositorySettingsImpl) settings;
-
     settingsForDebian.setDebianTrivialLayout(false);
 }
 
 Repository updatedRepository = artifactory.repositories()
-        .builders()
-        .builderFrom(repository)
-        .description("new_description")
-        .build();
+    .builders()
+    .builderFrom(repository)
+    .description("new_description")
+    .build();
 
 String result = artifactory.repositories().update(updatedRepository);
 ```
 
-##### Delete repository
+##### Deleting Repositories
 ```
 String result = artifactory.repository("RepoName").delete();
 ```
 
 #### Search
 
-##### Available searches
+##### Available Searches
 ```
 Searches repositories(String... repositories);
 Searches artifactsByName(String name);
@@ -210,20 +199,20 @@ Searches artifactsCreatedSince(long sinceMillis);
 Searches artifactsCreatedInDateRange(long fromMillis, long toMillis);
 ```
 
-##### Search file in repository
+##### Searching Files in Repositories
 ```
 List<RepoPath> searchItems = artifactory.searches()
-        .repositories("RepoName", "RepoName2")
-        .artifactsByName("prefixedWith*.txt")
-        .doSearch();
+    .repositories("RepoName", "RepoName2")
+    .artifactsByName("prefixedWith*.txt")
+    .doSearch();
                     
 for (RepoPath searchItem : searchItems) {
-    String repoKey  = searchItem.getRepoKey();
+    String repoKey = searchItem.getRepoKey();
     String itemPath = searchItem.getItemPath();
 }
 ```
 
-##### Search by property
+##### Searching Files by Properties
 ```
 List<RepoPath> searchItems = artifactory.searches()
         .repositories("RepoName", "RepoName2")
@@ -233,28 +222,27 @@ List<RepoPath> searchItems = artifactory.searches()
         .doSearch();
                     
 for (RepoPath searchItem : searchItems) {
-    String repoKey  = searchItem.getRepoKey();
+    String repoKey = searchItem.getRepoKey();
     String itemPath = searchItem.getItemPath();
 }
 ```
 
-#### Managing users
+#### Managing Users
 
-##### Get user
+##### Geting User Information
 ```
 User user = artifactory.security().user("userName");
-String name               = user.getName();
-String email              = user.getEmail();
+String name = user.getName();
+String email = user.getEmail();
 Collection<String> groups = user.getGroups();
-Date loggedIn             = user.getLastLoggedIn();
-boolean profileUpdatable  = user.isProfileUpdatable();
-boolean isAdmin           = user.isAdmin();
-boolean internalPass      = user.isInternalPasswordDisabled();
-String realm              = user.getRealm();
+Date loggedIn = user.getLastLoggedIn();
+boolean profileUpdatable = user.isProfileUpdatable();
+boolean isAdmin = user.isAdmin();
+boolean internalPass = user.isInternalPasswordDisabled();
+String realm = user.getRealm();
 ```
 
-
-##### List all user names
+##### List all User Names
 ```
 Collection<String> userNames = artifactory.security().userNames();
 for (String userName : userNames) {
@@ -262,34 +250,34 @@ for (String userName : userNames) {
 }
 ```
 
-##### Create or update user
+##### Creating or Updating Users
 ```
 UserBuilder userBuilder = artifactory.security().builders().userBuilder();
 User user = userBuilder.name("userName)
-        .email("user@mail.com")
-        .admin(false)
-        .profileUpdatable(true)
-        .password("password")
-        .build();
+    .email("user@mail.com")
+    .admin(false)
+    .profileUpdatable(true)
+    .password("password")
+    .build();
 
 artifactory.security().createOrUpdate(user);
 ```
 
-##### Delete user name 
+##### Deleting Users
 ```
 String result = artifactory.security().deleteUser("userName");
 ```
 
-#### Managing groups
+#### Managing User Groups
 
-##### Get group
+##### Get User Group Information
 ```
 Group group = artifactory.security().group("groupName");
 String description = group.getDescription();
 boolean isAutoJoin = group.isAutoJoin();
 ```
 
-##### List all groups
+##### List all User Groups
 ```
 List<String> groupNames = artifactory.security().groupNames();
 for (String groupName : groupNames) {
@@ -297,44 +285,44 @@ for (String groupName : groupNames) {
 }
 ```
 
-##### Create or update group
+##### Creating or Updating User Groups
 ```
 Group group = groupBuilder.name("groupName).autoJoin(true).description("new group").build();
-
 artifactory.security().createOrUpdateGroup(group);
 ```
 
-##### Delete group
+##### Deleting User Groups
 ```
 artifactory.security().deleteGroup("groupName");
 ```
 
 #### Permissions
-##### Get item permissions
+
+##### Getting Item Permissions
 ```
 Set<ItemPermission> itemPermissions = artifactory.repository("RepoName")
-        .file("path/to/file.txt")
-        .effectivePermissions();
+    .file("path/to/file.txt")
+    .effectivePermissions();
                                         
 for (ItemPermission itemPermission : itemPermissions) {
-    RepoPath repoPath          = itemPermissions.getRepoPath();
+    RepoPath repoPath = itemPermissions.getRepoPath();
     List<Privilege> privileges = getPrivileges();
-    Subject subject            = getSubject();
-    boolean isAllowedTo        = isAllowedTo(ADMIN, DELETE, DEPLOY, ANNOTATE, READ);
+    Subject subject = getSubject();
+    boolean isAllowedTo = isAllowedTo(ADMIN, DELETE, DEPLOY, ANNOTATE, READ);
 }
 ```
 
-##### Get permission target
+##### Getting Permission Target information
 ```
 PermissionTarget permissionTarget = artifactory.security().permissionTarget("permissionName");
-String name               = permissionTarget.getName());
-String exclude            = permissionTarget.getExcludesPattern();
-String include            = permissionTarget.getIncludesPattern();
-List<String> repos        = permissionTarget.getRepositories();
+String name = permissionTarget.getName());
+String exclude = permissionTarget.getExcludesPattern();
+String include = permissionTarget.getIncludesPattern();
+List<String> repos = permissionTarget.getRepositories();
 List<ItemPermission> perm = permissionTarget.getItemPermissions();
 ```
 
-##### List all permission targets
+##### Listing all Permission Targets
 ```
 List<String> permissionTargetNames = artifactory.security().permissionTargets();
 for (String permissionTargetName : permissionTargetNames) {
@@ -347,29 +335,29 @@ for (String permissionTargetName : permissionTargetNames) {
 ##### Artifactory version
 ```
 Version version = artifactory.system().version();
-String version      = version.getVersion();
-String revision     = version.getRevision();
-String license      = version.getLicense();
+String version = version.getVersion();
+String revision = version.getRevision();
+String license = version.getLicense();
 List<String> addons = version.getAddons();
 ```
 
-##### Get Artifactory configuration XLM
+##### Getting System Configuration XML
 ```
 String xml = artifactory.system().configuration();
 ```
 
-##### Set Artifactory configuration XML
+##### Settimg System Configuration XML
 ```
 String xml = ... 
 artifactory.system().configuration(xml);
 ```
 
 #### Rest API
-Use Rest API for not yet implemented capabilities of Artifactory Java client.
+Executing an Artifactory REST API
 ```
 ArtifactoryRequest repositoryRequest = new ArtifactoryRequestImpl().apiUrl("api/repositories")
-        .method(ArtifactoryRequest.Method.GET)
-        .responseType(ArtifactoryRequest.ContentType.JSON);
+    .method(ArtifactoryRequest.Method.GET)
+    .responseType(ArtifactoryRequest.ContentType.JSON);
 List<String> response = artifactory.restCall(repositoryRequest);
 ```
 
