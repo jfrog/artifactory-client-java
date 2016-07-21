@@ -5,8 +5,6 @@ Artifactory Java client provides simple yet powerful Artifactory connection and 
 The client aallows managing Artifactory repositories, users, groups, permissions and system configuration.
 It also allows searches, upload and download artifacts to or from Artifactory and a lot more.
 
-[ ![Download](https://api.bintray.com/packages/jfrog/artifactory-tools/artifactory-client-java/images/download.png) ](https://bintray.com/jfrog/artifactory-tools/artifactory-client-java/_latestVersion)
-
 ## Getting Started
 
 ### Add *artifactory-java-client-services* as a dependency to your build script.
