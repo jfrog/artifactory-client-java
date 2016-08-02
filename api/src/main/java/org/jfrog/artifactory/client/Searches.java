@@ -19,6 +19,20 @@ public interface Searches {
 
     Searches artifactsCreatedInDateRange(long fromMillis, long toMillis);
 
+    /**
+     * Search by maven coordinates.
+     * GroupId, artifactId, version and classifier, as well as repositories.
+     */
+    Searches artifactsByGavc();
+
+    Searches groupId(String groupId);
+
+    Searches artifactId(String artifactId);
+
+    Searches version(String version);
+
+    Searches classifier(String classifierId);
+
     List<RepoPath> doSearch();
 
     PropertyFilters itemsByProperty();
