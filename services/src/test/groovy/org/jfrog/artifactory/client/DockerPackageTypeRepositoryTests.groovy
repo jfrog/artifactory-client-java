@@ -25,9 +25,6 @@ public class DockerPackageTypeRepositoryTests extends BaseRepositoryTests {
             // remote
             enableTokenAuthentication = rnd.nextBoolean()
             listRemoteFolderItems = rnd.nextBoolean()
-
-            // local, remote, virtual
-            forceDockerAuthentication = rnd.nextBoolean()
         }
 
         super.setUp()
@@ -47,9 +44,6 @@ public class DockerPackageTypeRepositoryTests extends BaseRepositoryTests {
             // remote
             assertThat(enableTokenAuthentication, CoreMatchers.is(CoreMatchers.nullValue()))
             assertThat(listRemoteFolderItems, CoreMatchers.is(CoreMatchers.nullValue()))
-
-            // local, remote, virtual
-            assertThat(forceDockerAuthentication, CoreMatchers.is(settings.getForceDockerAuthentication()))
         }
     }
 
@@ -67,9 +61,6 @@ public class DockerPackageTypeRepositoryTests extends BaseRepositoryTests {
             // remote
             assertThat(enableTokenAuthentication, CoreMatchers.is(settings.getEnableTokenAuthentication()))
             assertThat(listRemoteFolderItems, CoreMatchers.is(settings.getListRemoteFolderItems()))
-
-            // local, remote, virtual
-            assertThat(forceDockerAuthentication, CoreMatchers.is(settings.getForceDockerAuthentication()))
         }
     }
 
@@ -87,9 +78,6 @@ public class DockerPackageTypeRepositoryTests extends BaseRepositoryTests {
             // remote
             assertThat(enableTokenAuthentication, CoreMatchers.is(CoreMatchers.nullValue()))
             assertThat(listRemoteFolderItems, CoreMatchers.is(CoreMatchers.nullValue()))
-
-            // local, remote, virtual
-            assertThat(forceDockerAuthentication, CoreMatchers.is(settings.getForceDockerAuthentication()))
         }
     }
 }

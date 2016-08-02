@@ -137,7 +137,6 @@ public class RepositoryTests extends ArtifactoryTestsBase {
         assertTrue(jcenter.getUrl().equals("http://jcenter.bintray.com"));
         assertEquals(jcenter.getUsername(), "");
         assertEquals(jcenter.getPassword(), "");
-        assertTrue(jcenter.getDescription().equals("Bintray Central Java repository"));
         assertEquals(jcenter.getNotes(), "");
         assertEquals(jcenter.getIncludesPattern(), "**/*");
         assertEquals(jcenter.getExcludesPattern(), "");

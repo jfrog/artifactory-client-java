@@ -16,9 +16,4 @@ public interface DockerRepositorySettings extends RepositorySettings {
     Boolean getEnableTokenAuthentication();
 
     Boolean getListRemoteFolderItems();
-
-    // ** local + remote + virtual ** //
-
-    Boolean getForceDockerAuthentication();
-
 }

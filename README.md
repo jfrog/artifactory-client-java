@@ -359,6 +359,24 @@ ArtifactoryRequest repositoryRequest = new ArtifactoryRequestImpl().apiUrl("api/
 List<String> response = artifactory.restCall(repositoryRequest);
 ```
 
+## Building and Testing the Sources
+The code is built using Gradle and includes integration tests.
+If you'd like to build the code without tests, run:
+```
+> gradle clean build -x test
+```
+
+Please follow these steps to build and test the code:
+* Startup an Artifactory-Pro instance.
+* Set the *CLIENTTESTS_ARTIFACTORY_URL*, *CLIENTTESTS_ARTIFACTORY_USERNAME* and *CLIENTTESTS_ARTIFACTORY_PASSWORD* environment variables with your Artifactory URL, username and password.
+* Run:
+```
+> gradle clean build
+```
+
+## Contributing Code
+We welcome community contribution through pull requests.
+
 # License
 This client is available under the [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0).
 

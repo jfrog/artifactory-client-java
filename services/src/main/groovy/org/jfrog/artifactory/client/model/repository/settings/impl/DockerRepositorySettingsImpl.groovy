@@ -13,7 +13,6 @@ public class DockerRepositorySettingsImpl implements DockerRepositorySettings{
     DockerApiVersion dockerApiVersion
     Boolean enableTokenAuthentication
     Boolean listRemoteFolderItems
-    Boolean forceDockerAuthentication
 
     @Override
     public PackageType getPackageType() {

@@ -89,11 +89,21 @@ public abstract class ArtifactoryTestsBase {
     }
 
     private void failInit() {
-        fail(
-                "Failed to load test Artifactory instance credentials." +
-                        "Looking for System properties '" + CLIENTTESTS_ARTIFACTORY_PROPERTIES_PREFIX + "url', 'clienttests.artifactory.username' and 'clienttests.artifactory.password', " +
-                        "or properties file with those properties in classpath," +
-                        "or Environment variables '" + CLIENTTESTS_ARTIFACTORY_ENV_VAR_PREFIX + "URL', 'CLIENTTESTS_ARTIFACTORY_USERNAME' and 'CLIENTTESTS_ARTIFACTORY_PASSWORD'");
+        String message =
+            new StringBuilder("Failed to load test Artifactory instance credentials. ")
+                .append("Looking for System properties '")
+                .append(CLIENTTESTS_ARTIFACTORY_PROPERTIES_PREFIX)
+                .append("url', ")
+                .append(CLIENTTESTS_ARTIFACTORY_PROPERTIES_PREFIX)
+                .append("username' and ")
+                .append(CLIENTTESTS_ARTIFACTORY_PROPERTIES_PREFIX)
+                .append("password' or a properties file with those properties in classpath ")
+                .append("or Environment variables '")
+                .append(CLIENTTESTS_ARTIFACTORY_ENV_VAR_PREFIX).append("URL', ")
+                .append(CLIENTTESTS_ARTIFACTORY_ENV_VAR_PREFIX).append("USERNAME' and ")
+                .append(CLIENTTESTS_ARTIFACTORY_ENV_VAR_PREFIX).append("PASSWORD'").toString();
+
+        fail(message);
     }
 
     @AfterClass

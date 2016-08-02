@@ -43,7 +43,7 @@ public class GeneralRepositoryTests extends BaseRepositoryTests {
         resp.with {
             assertThat(rclass, CoreMatchers.is(RepositoryTypeImpl.REMOTE))
             assertThat(key, CoreMatchers.is(remoteRepo.getKey()))
-            assertThat(description, CoreMatchers.is(remoteRepo.getDescription()))
+            assertThat(description.startsWith(remoteRepo.getDescription()), CoreMatchers.is(true))
             assertThat(notes, CoreMatchers.is(remoteRepo.getNotes()))
             assertThat(allowAnyHostAuth, CoreMatchers.is(remoteRepo.isAllowAnyHostAuth()))
             assertThat(archiveBrowsingEnabled, CoreMatchers.is(remoteRepo.isArchiveBrowsingEnabled()))
