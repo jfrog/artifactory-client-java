@@ -91,7 +91,6 @@ public class GeneralRepositoryTests extends BaseRepositoryTests {
             assertThat(excludesPattern, CoreMatchers.is(virtualRepo.getExcludesPattern()))
             assertThat(includesPattern, CoreMatchers.is(virtualRepo.getIncludesPattern()))
             assertThat(repoLayoutRef, CoreMatchers.is(virtualRepo.getRepoLayoutRef()))
-            assertThat(repositories.size(), CoreMatchers.is(1))
             assertThat(repositories.last(), CoreMatchers.is(virtualRepo.getRepositories().last()))
             assertThat(defaultDeploymentRepo, CoreMatchers.is(virtualRepo.getDefaultDeploymentRepo()))
         }

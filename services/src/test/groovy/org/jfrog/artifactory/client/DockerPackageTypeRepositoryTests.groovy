@@ -14,7 +14,6 @@ import org.testng.annotations.Test
  */
 public class DockerPackageTypeRepositoryTests extends BaseRepositoryTests {
 
-    /*
     @BeforeMethod
     protected void setUp() {
         settings = new DockerRepositorySettingsImpl()
@@ -93,5 +92,4 @@ public class DockerPackageTypeRepositoryTests extends BaseRepositoryTests {
             assertThat(forceDockerAuthentication, CoreMatchers.is(settings.getForceDockerAuthentication()))
         }
     }
-    */
 }

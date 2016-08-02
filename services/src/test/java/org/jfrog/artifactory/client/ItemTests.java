@@ -29,6 +29,8 @@ public class ItemTests extends ArtifactoryTestsBase {
 
     @Test
     public void testFolderInfo() {
+        //Get the folder to the cache
+        artifactory.repository(JCENTER).download("junit/junit/4.10/junit-4.10-sources.jar").doDownload();
         Folder folder = artifactory.repository(JCENTER_CACHE).folder("junit").info();
         assertNotNull(folder);
         assertTrue(folder.isFolder());
@@ -39,12 +41,16 @@ public class ItemTests extends ArtifactoryTestsBase {
 
     @Test
     public void testFileInfo() {
+
+        //Get the file to the cache
+        artifactory.repository(JCENTER).download("junit/junit/4.10/junit-4.10-sources.jar").doDownload();
+
         File file = artifactory.repository(JCENTER_CACHE).file("junit/junit/4.10/junit-4.10-sources.jar").info();
         assertNotNull(file);
         assertFalse(file.isFolder());
         assertEquals(file.getSize(), 141185);
         assertEquals(file.getDownloadUri(),
-                url + "/" + JCENTER_CACHE + "/junit/junit/4.10/junit-4.10-sources.jar");
+                url + JCENTER_CACHE + "/junit/junit/4.10/junit-4.10-sources.jar");
         assertEquals(file.getChecksums().getMd5(), "8f17d4271b86478a2731deebdab8c846");
         assertEquals(file.getChecksums().getSha1(), "6c98d6766e72d5575f96c9479d1c1d3b865c6e25");
     }
@@ -52,10 +58,10 @@ public class ItemTests extends ArtifactoryTestsBase {
     @Test(groups = "items", dependsOnGroups = "repositoryBasics")
     public void testSetItemProperties() throws Exception {
         //Upload a clean file
-        InputStream content = this.getClass().getResourceAsStream("/sample.txt");
+        InputStream content = this.getClass().getResourceAsStream("/sample_props.txt");
         assertNotNull(content);
-        artifactory.repository(NEW_LOCAL).upload(PATH, content).doUpload();
-        ItemHandle file = artifactory.repository(NEW_LOCAL).file(PATH);
+        artifactory.repository(NEW_LOCAL).upload(PATH_PROPS, content).doUpload();
+        ItemHandle file = artifactory.repository(NEW_LOCAL).file(PATH_PROPS);
         Map<String, ?> resProps = file.getProperties();
         assertTrue(resProps.isEmpty());
         Map<String, String> props = new HashMap<>();

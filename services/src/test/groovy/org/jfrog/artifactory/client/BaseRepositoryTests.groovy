@@ -5,6 +5,7 @@ import org.hamcrest.Matcher
 import org.hamcrest.StringDescription
 import org.jfrog.artifactory.client.model.Repository
 import org.jfrog.artifactory.client.model.repository.settings.RepositorySettings
+import org.jfrog.artifactory.client.model.repository.settings.impl.GenericRepositorySettingsImpl
 import org.testng.annotations.AfterMethod
 import org.testng.annotations.BeforeMethod
 
@@ -19,10 +20,12 @@ public abstract class BaseRepositoryTests extends ArtifactoryTestsBase {
      */
     protected static final Random rnd = new Random()
 
+    protected boolean prepareGenericRepo = true
     protected boolean prepareLocalRepo = true
     protected boolean prepareRemoteRepo = true
     protected boolean prepareVirtualRepo = true
 
+    protected Repository genericRepo
     protected Repository localRepo
     protected Repository remoteRepo
     protected Repository virtualRepo
@@ -31,6 +34,21 @@ public abstract class BaseRepositoryTests extends ArtifactoryTestsBase {
 
     @BeforeMethod
     protected void setUp() {
+        if (prepareGenericRepo) {
+            RepositorySettings genericSettings = new GenericRepositorySettingsImpl();
+            genericRepo = artifactory.repositories().builders().localRepositoryBuilder()
+                    .key("cutsman-repo_${rnd.nextInt()}")
+                    .description("description_${rnd.nextInt()}")
+                    .notes("notes_${rnd.nextInt()}")
+                    .archiveBrowsingEnabled(rnd.nextBoolean())
+                    .blackedOut(rnd.nextBoolean())
+                    .excludesPattern("org/${rnd.nextInt()}/**")
+                    .includesPattern("org/${rnd.nextInt()}/**")
+                    .propertySets(Collections.emptyList()) // no property sets configured
+                    .repoLayoutRef(nextRepoLayout())
+                    .repositorySettings(genericSettings)
+                    .build();
+        }
         if (prepareLocalRepo) {
             localRepo = artifactory.repositories().builders().localRepositoryBuilder()
                 .key("cutsman-repo_${rnd.nextInt()}")
@@ -83,7 +101,9 @@ public abstract class BaseRepositoryTests extends ArtifactoryTestsBase {
         }
 
         if(prepareVirtualRepo) {
-            def repos = nextRepos()
+            artifactory.repositories().create(0, genericRepo)
+            def repos = new ArrayList<String>()
+            repos.add(genericRepo.getKey())
 
             virtualRepo = artifactory.repositories().builders().virtualRepositoryBuilder()
                 .key("cutsman-repo_${rnd.nextInt()}")
@@ -102,36 +122,11 @@ public abstract class BaseRepositoryTests extends ArtifactoryTestsBase {
 
     @AfterMethod
     protected void tearDown() {
-        def catchException = { Exception exception ->
-            if (exception.getMessage().equals('Not Found')) {
-            } else {
-                throw exception
-            }
-        }
-
-        if(localRepo) {
-            try {
-                artifactory.repository(localRepo.getKey()).delete()
-            } catch (Exception e) {
-                catchException(e)
-            }
-        }
-
-        if(remoteRepo) {
-            try {
-                artifactory.repository(remoteRepo.getKey()).delete()
-            } catch (Exception e) {
-                catchException(e)
-            }
-        }
-
-        if(virtualRepo) {
-            try {
-                artifactory.repository(virtualRepo.getKey()).delete()
-            } catch (Exception e) {
-                catchException(e)
-            }
-        }
+        deleteRepoIfExists(localRepo?.getKey())
+        deleteRepoIfExists(remoteRepo?.getKey())
+        deleteRepoIfExists(virtualRepo?.getKey())
+        //Invoking sequence is important!
+        deleteRepoIfExists(genericRepo?.getKey())
     }
 
     private String nextRepoLayout() {

@@ -94,7 +94,7 @@ public class RepositoryTests extends ArtifactoryTestsBase {
     public void testListRemotes() throws Exception {
         List<LightweightRepository> remoteRepositories = artifactory.repositories().list(REMOTE);
         assertNotNull(remoteRepositories);
-        String expected = curlAndStrip("api/repositories?type=remote");
+        String expected = curlAndStrip("api/repositories/?type=remote");
         assertEquals(remoteRepositories.size(), countMatches(expected, "{"));
         LightweightRepository repo = remoteRepositories.get(0);
         assertNotNull(repo);
@@ -145,11 +145,7 @@ public class RepositoryTests extends ArtifactoryTestsBase {
         assertFalse(jcenter.isOffline());
         assertFalse(jcenter.isBlackedOut());
         assertTrue(jcenter.isStoreArtifactsLocally());
-        assertEquals(jcenter.getSocketTimeoutMillis(), 15000);
         assertEquals(jcenter.getLocalAddress(), "");
-        assertEquals(jcenter.getRetrievalCachePeriodSecs(), 43200);
-        assertEquals(jcenter.getMissedRetrievalCachePeriodSecs(), 7200);
-        assertEquals(jcenter.getUnusedArtifactsCleanupPeriodHours(), 0);
         assertFalse(jcenter.isShareConfiguration());
         assertFalse(jcenter.isSynchronizeProperties());
         List<String> propertySets = jcenter.getPropertySets();

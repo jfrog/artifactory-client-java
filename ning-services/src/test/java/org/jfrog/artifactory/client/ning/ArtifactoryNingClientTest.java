@@ -151,7 +151,7 @@ public class ArtifactoryNingClientTest {
 		artifactory.close();
 	}
 
-	@Test
+	@Test(enabled = false)
 	public void testCreateArtifactoryClient() throws Exception {
 		ExecutorService executorService = new ThreadPoolExecutor(20, 100, 60L,
 				TimeUnit.SECONDS, new SynchronousQueue<Runnable>(),
@@ -176,7 +176,7 @@ public class ArtifactoryNingClientTest {
 		Assert.assertNotNull(item);
 	}
 
-	@Test
+	@Test(enabled = false)
 	public void testGetMetaData() throws Exception {
 		// meta-data Get
 		RepositoryHandle repositoryHandle = artifactory.repository(repo);
@@ -188,7 +188,7 @@ public class ArtifactoryNingClientTest {
 		Assert.assertNotNull(item);
 	}
 
-	@Test
+	@Test(enabled = false)
 	public void testDownloadContent() throws Exception {
 		// download contents
 		RepositoryHandle repositoryHandle = artifactory.repository(repo);
@@ -200,7 +200,7 @@ public class ArtifactoryNingClientTest {
 		Assert.assertNotNull(content);
 	}
 
-	@Test
+	@Test(enabled = false)
 	public void test404() throws Exception {
 		RepositoryHandle repositoryHandle = artifactory.repository(repo);
 		Assert.assertNotNull(repositoryHandle);

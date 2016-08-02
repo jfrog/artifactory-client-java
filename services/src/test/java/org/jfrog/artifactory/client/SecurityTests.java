@@ -32,7 +32,7 @@ public class SecurityTests extends ArtifactoryTestsBase {
         }
     }
 
-    @Test
+    @Test(enabled = false)
     public void testListUserNames() throws Exception {
         Collection<String> userNames = artifactory.security().userNames();
         assertTrue(userNames.size() > 2);

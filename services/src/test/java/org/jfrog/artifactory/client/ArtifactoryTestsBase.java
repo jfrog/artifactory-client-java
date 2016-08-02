@@ -16,9 +16,10 @@ import java.io.InputStreamReader;
 import java.util.Properties;
 
 import static org.apache.commons.codec.binary.Base64.encodeBase64;
+import static org.apache.commons.lang.StringUtils.isEmpty;
 import static org.apache.commons.lang.StringUtils.remove;
 import static org.jfrog.artifactory.client.ArtifactoryClient.create;
-import static org.testng.Assert.*;
+import static org.testng.Assert.fail;
 
 /**
  * @author jbaruch
@@ -27,6 +28,7 @@ import static org.testng.Assert.*;
 public abstract class ArtifactoryTestsBase {
     protected static final String NEW_LOCAL = "ext-release-local";
     protected static final String PATH = "m/a/b/c.txt";
+    protected static final String PATH_PROPS = "m/a/b/p.txt";
     protected static final String LIBS_RELEASE_LOCAL = "libs-release-local";
     protected static final String LIBS_RELEASE_VIRTUAL = "libs-release";
     protected static final String JCENTER = "jcenter";
@@ -54,21 +56,29 @@ public abstract class ArtifactoryTestsBase {
         }
 
         url = readParam(props, "url");
+        if (!url.endsWith("/")) {
+            url += "/";
+        }
         username = readParam(props, "username");
         password = readParam(props, "password");
-        filePath = readParam(props, "filePath");
-        fileSize = Long.valueOf(readParam(props, "fileSize"));
-        fileMd5 = readParam(props, "fileMd5");
-        fileSha1 = readParam(props, "fileSha1");
+
+
+        filePath = "a/b";
+        fileSize = 141185;
+        fileMd5 = "8f17d4271b86478a2731deebdab8c846";
+        fileSha1 = "6c98d6766e72d5575f96c9479d1c1d3b865c6e25";
 
         artifactory = create(url, username, password);
     }
 
     private String readParam(Properties props, String paramName) {
+        String paramValue = null;
         if (props.size() > 0) {
-            return props.getProperty(CLIENTTESTS_ARTIFACTORY_PROPERTIES_PREFIX + paramName);
+            paramValue = props.getProperty(CLIENTTESTS_ARTIFACTORY_PROPERTIES_PREFIX + paramName);
         }
-        String paramValue = System.getProperty(CLIENTTESTS_ARTIFACTORY_PROPERTIES_PREFIX + paramName);
+        if(paramValue == null) {
+            paramValue = System.getProperty(CLIENTTESTS_ARTIFACTORY_PROPERTIES_PREFIX + paramName);
+        }
         if (paramValue == null) {
             paramValue = System.getenv(CLIENTTESTS_ARTIFACTORY_ENV_VAR_PREFIX + paramName.toUpperCase());
         }
@@ -95,7 +105,7 @@ public abstract class ArtifactoryTestsBase {
         String authStringEnc = new String(encodeBase64((username + ":" + password).getBytes()));
         CloseableHttpResponse response = null;
         String responseString = null;
-        try (CloseableHttpClient  httpClient = HttpClients.createDefault()) {
+        try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
             HttpUriRequest request = createRequest(path, method);
             request.addHeader("Authorization", "Basic " + authStringEnc);
             response = httpClient.execute(request);
@@ -111,12 +121,12 @@ public abstract class ArtifactoryTestsBase {
 
     private HttpUriRequest createRequest(String path, String method) {
         HttpUriRequest request;
-        switch (method.toLowerCase()){
+        switch (method.toLowerCase()) {
             case "get":
-                request = new HttpGet(url + "/" + path);
+                request = new HttpGet(url + path);
                 break;
             case "post":
-                request = new HttpPost(url + "/" + path);
+                request = new HttpPost(url + path);
                 break;
             default:
                 throw new IllegalArgumentException("Http Method " + method + " is invalid");
@@ -153,10 +163,12 @@ public abstract class ArtifactoryTestsBase {
     }
 
     protected String deleteRepoIfExists(String repoName) throws IOException {
+        if (isEmpty(repoName)) {
+            return null;
+        }
+
         try {
             String result = artifactory.repository(repoName).delete();
-            assertTrue(result.startsWith("Repository " + repoName + " and all its content have been removed successfully."));
-            assertFalse(curl(LIST_PATH).contains("\""+repoName+"\""));
             return result;
         } catch (Exception e) {
             if (e.getMessage().equals("Not Found")) { //if repo wasn't found - that's ok.

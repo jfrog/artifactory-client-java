@@ -1,7 +1,6 @@
 package org.jfrog.artifactory.client
 
 import org.hamcrest.CoreMatchers
-import org.jfrog.artifactory.client.model.*
 import org.jfrog.artifactory.client.model.repository.settings.impl.BowerRepositorySettingsImpl
 import org.jfrog.artifactory.client.model.repository.settings.vcs.VcsGitProvider
 import org.jfrog.artifactory.client.model.repository.settings.vcs.VcsType
@@ -10,7 +9,7 @@ import org.testng.annotations.Test
 
 /**
  * test that client correctly sends and receives repository configuration with `bower` package type
- * 
+ *
  * @author Ivan Vasylivskyi (ivanvas@jfrog.com)
  */
 public class BowerPackageTypeRepositoryTests extends BaseRepositoryTests {
@@ -25,7 +24,7 @@ public class BowerPackageTypeRepositoryTests extends BaseRepositoryTests {
             maxUniqueSnapshots = rnd.nextInt()
             bowerRegistryUrl = "http://jfrog.com/${rnd.nextInt()}"
             vcsGitDownloadUrl = "http://jfrog.com/${rnd.nextInt()}"
-            vcsGitProvider  = VcsGitProvider.CUSTOM
+            vcsGitProvider = VcsGitProvider.CUSTOM
             vcsType = VcsType.values()[rnd.nextInt(VcsType.values().length)]
 
             // virtual

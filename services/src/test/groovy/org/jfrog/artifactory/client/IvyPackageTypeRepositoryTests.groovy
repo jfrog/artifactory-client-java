@@ -17,7 +17,6 @@ import org.testng.annotations.Test
  */
 public class IvyPackageTypeRepositoryTests extends BaseRepositoryTests {
 
-    /*
     @BeforeMethod
     protected void setUp() {
         settings = new IvyRepositorySettingsImpl()
@@ -134,5 +133,4 @@ public class IvyPackageTypeRepositoryTests extends BaseRepositoryTests {
             assertThat(pomRepositoryReferencesCleanupPolicy, CoreMatchers.is(settings.getPomRepositoryReferencesCleanupPolicy())) // always sent by artifactory
         }
     }
-    */
 }
