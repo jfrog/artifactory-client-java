@@ -32,6 +32,30 @@ class SearchesImpl implements Searches {
         this
     }
 
+    @Override
+    Searches groupId(String groupId) {
+        this.searchQuery << [g: groupId]
+        this
+    }
+
+    @Override
+    Searches artifactId(String artifactId) {
+        this.searchQuery << [a: artifactId]
+        this
+    }
+
+    @Override
+    Searches version(String version) {
+        this.searchQuery << [v: version]
+        this
+    }
+
+    @Override
+    Searches classifier(String classifier) {
+        this.searchQuery << [c: classifier]
+        this
+    }
+
     Searches artifactsByName(String name) {
         this.searchUrl = 'artifact'
         this.searchQuery = [name: name]
@@ -48,6 +72,20 @@ class SearchesImpl implements Searches {
         if (toMillis >= 0) {
             this.searchQuery << ['to': toMillis as String]
         }
+        this
+    }
+
+    @Override
+    Searches artifactVersion() {
+        this.searchUrl = 'versions'
+        this.searchQuery = [:]
+        this
+    }
+
+    @Override
+    Searches artifactGAVC() {
+        this.searchUrl = 'gavc'
+        this.searchQuery = [:]
         this
     }
 
