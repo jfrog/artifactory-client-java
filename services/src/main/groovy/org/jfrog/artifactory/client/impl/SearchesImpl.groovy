@@ -51,6 +51,37 @@ class SearchesImpl implements Searches {
         this
     }
 
+    @Override
+    Searches artifactsByGavc() {
+        this.searchUrl = 'gavc'
+        this.searchQuery=[:]
+        this
+    }
+
+    @Override
+    Searches groupId(String groupId) {
+        this.searchQuery << [g:groupId]
+        this
+    }
+
+    @Override
+    Searches artifactId(String artifactId) {
+        this.searchQuery << [a:artifactId]
+        this
+    }
+
+    @Override
+    Searches version(String version) {
+        this.searchQuery << [v:version]
+        this
+    }
+
+    @Override
+    Searches classifier(String classifier) {
+        this.searchQuery << [c:classifier]
+        this
+    }
+
     List<RepoPath> doSearch() {
         if (!searchUrl) {
             throw new IllegalArgumentException("Search url wasn't set. Please call one of the 'artifacts...' methods before calling 'search()'")

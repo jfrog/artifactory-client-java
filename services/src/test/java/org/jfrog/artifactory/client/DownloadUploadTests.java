@@ -153,6 +153,22 @@ public class DownloadUploadTests extends ArtifactoryTestsBase {
         assertEquals(deployed.getSize(), temp.length());
     }
 
+
+    @Test(groups = "uploadBasics", dependsOnGroups = "repositoryBasics")
+    public void testUploadWithMavenGAVC() throws IOException {
+        InputStream inputStream = this.getClass().getResourceAsStream("/sample.zip");
+        assertNotNull(inputStream);
+        final String targetPath = "com/example/com.example.test/1.0.0/com.example.test-1.0.0-zip.jar";
+        File deployed = artifactory.repository(NEW_LOCAL).upload(targetPath, inputStream).doUpload();
+        assertNotNull(deployed);
+        assertEquals(deployed.getRepo(), NEW_LOCAL);
+        assertEquals(deployed.getPath(), "/" + targetPath);
+        assertEquals(deployed.getCreatedBy(), username);
+        // GroupId: com.example; ArtifactId: com.example.test; Version 1.0.0; Classifier: zip
+        assertEquals(deployed.getDownloadUri(), url + "/" + NEW_LOCAL + "/" + targetPath);
+        assertEquals(deployed.getSize(), 442);
+    }
+
     @Test(groups = "uploadBasics", dependsOnMethods = "testUploadWithSingleProperty")
     public void testUploadExplodeArchive() throws IOException {
         artifactory.repository(NEW_LOCAL).upload("sample/sample.zip", this.getClass().getResourceAsStream("/sample.zip"))
@@ -171,7 +187,6 @@ public class DownloadUploadTests extends ArtifactoryTestsBase {
                 .withProperty("released", false).doUpload();
         assertTrue(curlAndStrip("api/storage/" + NEW_LOCAL + "/" + PATH + "?properties").contains("{\"build\":[\"28\"],\"colors\":[\"red\"],\"released\":[\"false\"]}"));
     }
-
 
     //TODO (jb) enable once RTFACT-5126 is fixed
     @Test(enabled = false, dependsOnMethods = "testUploadWithSingleProperty")
@@ -241,4 +256,5 @@ public class DownloadUploadTests extends ArtifactoryTestsBase {
                         .withProperty("foo", "bar").withMandatoryProperty("colors", "red").doDownload();
         assertEquals(textFrom(inputStream), textFrom(this.getClass().getResourceAsStream("/sample.txt")));
     }
+
 }

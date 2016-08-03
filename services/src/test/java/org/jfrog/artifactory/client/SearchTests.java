@@ -126,4 +126,27 @@ public class SearchTests extends ArtifactoryTestsBase {
         assertEquals(results.size(), 1);
         assertTrue(results.get(0).getItemPath().contains("a/b/c.txt"));
     }
+
+    @Test(dependsOnGroups = "uploadBasics")
+    public void testSearchByGavc() throws IOException {
+        List<RepoPath> results = artifactory.searches().artifactsByGavc()
+                .groupId("com.example")
+                .artifactId("com.example.test")
+                .version("1.0.0")
+                .classifier("zip")
+                .doSearch();
+        assertEquals(results.size(), 1);
+        assertTrue(results.get(0).getItemPath().contains("com.example.test-1.0.0-zip.jar"));
+    }
+
+    @Test(dependsOnGroups = "uploadBasics")
+    public void testSearchByGavcAndRepository() throws IOException {
+        List<RepoPath> results = artifactory.searches().artifactsByGavc()
+                .groupId("com.example")
+                .artifactId("com.example.test")
+                .repositories(NEW_LOCAL)
+                .doSearch();
+        assertEquals(results.size(), 1);
+        assertTrue(results.get(0).getItemPath().contains("com.example.test-1.0.0-zip.jar"));
+    }
 }
