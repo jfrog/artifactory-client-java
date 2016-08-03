@@ -195,6 +195,7 @@ Searches repositories(String... repositories);
 Searches artifactsByName(String name);
 Searches artifactsCreatedSince(long sinceMillis);
 Searches artifactsCreatedInDateRange(long fromMillis, long toMillis);
+Searches artifactsByGavc();
 ```
 
 ##### Searching Files in Repositories
@@ -213,12 +214,41 @@ for (RepoPath searchItem : searchItems) {
 ##### Searching Files by Properties
 ```
 List<RepoPath> searchItems = artifactory.searches()
-        .repositories("RepoName", "RepoName2")
-        .itemsByProperty()
-        .property("released")
-        .property("colors", "r*?")
-        .doSearch();
+    .repositories("RepoName", "RepoName2")
+    .itemsByProperty()
+    .property("released")
+    .property("colors", "r*?")
+    .doSearch();
                     
+for (RepoPath searchItem : searchItems) {
+    String repoKey = searchItem.getRepoKey();
+    String itemPath = searchItem.getItemPath();
+}
+```
+
+##### Searching Files by GAVC
+```
+List<RepoPath> results = artifactory.searches().artifactsByGavc()
+    .groupId("com.example")
+    .artifactId("com.example.test")
+    .version("1.0.0")
+    .classifier("zip")
+    .doSearch();
+
+for (RepoPath searchItem : searchItems) {
+    String repoKey = searchItem.getRepoKey();
+    String itemPath = searchItem.getItemPath();
+}
+```
+
+##### Searching Files by GAVC and Repository
+```
+List<RepoPath> results = artifactory.searches().artifactsByGavc()
+    .groupId("com.example")
+    .artifactId("com.example.test")
+    .repositories("liba-release-local")
+    .doSearch();
+
 for (RepoPath searchItem : searchItems) {
     String repoKey = searchItem.getRepoKey();
     String itemPath = searchItem.getItemPath();

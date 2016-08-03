@@ -165,7 +165,7 @@ public class DownloadUploadTests extends ArtifactoryTestsBase {
         assertEquals(deployed.getPath(), "/" + targetPath);
         assertEquals(deployed.getCreatedBy(), username);
         // GroupId: com.example; ArtifactId: com.example.test; Version 1.0.0; Classifier: zip
-        assertEquals(deployed.getDownloadUri(), url + "/" + NEW_LOCAL + "/" + targetPath);
+        assertEquals(deployed.getDownloadUri(), url + NEW_LOCAL + "/" + targetPath);
         assertEquals(deployed.getSize(), 442);
     }
 
@@ -256,5 +256,4 @@ public class DownloadUploadTests extends ArtifactoryTestsBase {
                         .withProperty("foo", "bar").withMandatoryProperty("colors", "red").doDownload();
         assertEquals(textFrom(inputStream), textFrom(this.getClass().getResourceAsStream("/sample.txt")));
     }
-
 }
