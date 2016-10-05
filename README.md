@@ -315,9 +315,25 @@ for (String groupName : groupNames) {
 
 ##### Creating or Updating User Groups
 ```
-Group group = groupBuilder.name("groupName).autoJoin(true).description("new group").build();
+Group group = groupBuilder.name("groupName").autoJoin(true).description("new group").build();
 artifactory.security().createOrUpdateGroup(group);
 ```
+
+##### Creating or Updating User External Groups
+
+When using [LDAP integration](https://www.jfrog.com/confluence/display/RTF/Managing+Security+with+LDAP) or [realm User plugin](https://www.jfrog.com/confluence/display/RTF/User+Plugins#UserPlugins-Realms), it could be interesting to preload groups (and permissions) before any user login :
+
+```
+String realmAttributes = "ldapGroupName=groupName;groupsStrategy=STATIC;groupDn=cn=GROUPNAME,ou=foo,o=bar";
+Group group = groupBuilder.name("groupName")
+    .description("GROUPNAME")
+    .realm("ldap")
+    .realmAttributes(realmAttributes)
+    .build();
+artifactory.security().createOrUpdateGroup(group);
+```
+
+**NB**: The *realmAttributes* depends of realm implementation ; so firstly, use [LDAP Groups Synchronization](https://www.jfrog.com/confluence/display/RTF/LDAP+Groups#LDAPGroups-SynchronizingLDAPGroupswithArtifactory) to import some groups manually in Artifactory, and analyse a JSON GET on one of this/these group(s) to understand the content of *realmAttributes* parameter. 
 
 ##### Deleting User Groups
 ```
