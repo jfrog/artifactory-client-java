@@ -36,4 +36,6 @@ public interface SystemInfo {
     long getNoneHeapMemoryMax();
 
     long getHeapMemoryMax();
+
+    long getJvmUpTime();
 }
