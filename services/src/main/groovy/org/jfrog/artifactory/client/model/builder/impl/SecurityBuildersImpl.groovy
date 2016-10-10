@@ -1,9 +1,11 @@
 package org.jfrog.artifactory.client.model.builder.impl
 
-import org.jfrog.artifactory.client.model.PermissionTarget
+import org.jfrog.artifactory.client.model.Permission
 import org.jfrog.artifactory.client.model.User
 import org.jfrog.artifactory.client.model.builder.GroupBuilder
-import org.jfrog.artifactory.client.model.builder.PermissionTargetBuilder
+import org.jfrog.artifactory.client.model.builder.PermissionBuilder
+import org.jfrog.artifactory.client.model.builder.PrincipalBuilder
+import org.jfrog.artifactory.client.model.builder.PrincipalsBuilder
 import org.jfrog.artifactory.client.model.builder.SecurityBuilders
 import org.jfrog.artifactory.client.model.builder.UserBuilder
 
@@ -34,16 +36,28 @@ class SecurityBuildersImpl implements SecurityBuilders {
 
     @Override
     UserBuilder builderFrom(User from) {
-        return null  //TODO implement copy builder for User
+        //TODO implement copy builder for User
+        throw new UnsupportedOperationException("Not Yet Implemented");
     }
 
     @Override
-    PermissionTargetBuilder permissionTargetBuilder() {
-        return new PermissionTargetBuilderImpl();
+    PermissionBuilder permissionBuilder() {
+        return new PermissionBuilderImpl();
     }
 
     @Override
-    PermissionTargetBuilder builderFrom(PermissionTarget from) {
-        return null  //TODO implement copy builder for PermissionTarget
+    PermissionBuilder builderFrom(Permission from) {
+        //TODO implement copy builder for PermissionTarget
+        throw new UnsupportedOperationException("Not Yet Implemented");
+    }
+
+    @Override
+    public PrincipalsBuilder principalsBuilder() {
+        return new PrincipalsBuilderImpl();
+    }
+
+    @Override
+    public PrincipalBuilder principalBuilder() {
+        return new PrincipalBuilderImpl();
     }
 }

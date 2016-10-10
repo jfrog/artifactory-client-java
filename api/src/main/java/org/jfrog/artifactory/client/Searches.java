@@ -22,6 +22,7 @@ public interface Searches {
     /**
      * Search by maven coordinates.
      * GroupId, artifactId, version and classifier, as well as repositories.
+     * @return The result
      */
     Searches artifactsByGavc();
 

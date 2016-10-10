@@ -342,7 +342,7 @@ artifactory.security().deleteGroup("groupName");
 
 #### Permissions
 
-##### Getting Item Permissions
+##### Getting Item Permissions linked to a repository
 ```
 Set<ItemPermission> itemPermissions = artifactory.repository("RepoName")
     .file("path/to/file.txt")
@@ -356,22 +356,59 @@ for (ItemPermission itemPermission : itemPermissions) {
 }
 ```
 
-##### Getting Permission Target information
+##### Getting Permission information
 ```
-PermissionTarget permissionTarget = artifactory.security().permissionTarget("permissionName");
-String name = permissionTarget.getName());
-String exclude = permissionTarget.getExcludesPattern();
-String include = permissionTarget.getIncludesPattern();
-List<String> repos = permissionTarget.getRepositories();
-List<ItemPermission> perm = permissionTarget.getItemPermissions();
+Permission permission = artifactory.security().permission("permissionName");
+String name = permission.getName();
+String exclude = permission.getExcludesPattern(); // Separated by comma
+String include = permission.getIncludesPattern(); // Separated by comma
+List<String> repos = permission.getRepositories();
+boolean hasAdminPrivilege = permissionRes.getPrincipals().getUser("admin").isAllowedTo(Privilege.ADMIN);
+Set<Privilege> privilegesAdmin = permission.getPrincipals().getUser("admin").getPrivileges();
+List<Principal> privilegesGroups = permission.getPrincipals().getGroups();
 ```
 
-##### Listing all Permission Targets
+##### Listing all Permissions
 ```
-List<String> permissionTargetNames = artifactory.security().permissionTargets();
-for (String permissionTargetName : permissionTargetNames) {
-    PermissionTarget permissionTarget = artifactory.security().permissionTarget(permissionTargetName);
+List<String> permissionNames = artifactory.security().permissions();
+for (String permissionName : permissionNames) {
+    Permission permission = artifactory.security().permission(permissionName);
 }
+```
+
+##### Creating or Updating Permission
+```
+
+// Create some privileges for Users 
+Principal userAno = artifactory.security().builders().principalBuilder().name("anonymous")
+   .privileges(Privilege.READ)
+   .build();
+Principal userAdmin = artifactory.security().builders().principalBuilder().name("admin")
+   .privileges(Privilege.ADMIN)
+   .build();
+
+// Create some privileges for Groups
+Principal groupRead = artifactory.security().builders().principalBuilder().name("readers")
+   .privileges(Privilege.READ, Privilege.ANNOTATE)
+   .build();
+Principal groupAdmin = artifactory.security().builders().principalBuilder().name("Admin")
+   .privileges(Privilege.DEPLOY, Privilege.DELETE, Privilege.DELETE) // Hey dude, this is a 'Set', double fill is useless
+   .build();
+
+// Create the principal
+Principals principals = artifactory.security().builders().principalsBuilder().users(userAno, userAdmin).groups(groupRead, groupAdmin).build();
+
+// Create main informations for permissions
+PermissionBuilder permissionBuilder = artifactory.security().builders().permissionBuilder();
+Permission permission = permissionBuilder.name("myPermission")
+   .repositories("ANY REMOTE", "jcenter")
+   .includesPattern("com/company")
+   .excludesPattern("org/blacklist/,org/bug/")
+   .principals(principals)
+   .build();
+
+// Create or udpate permission
+artifactory.security().createOrUpdatePermission(permission);
 ```
 
 #### System

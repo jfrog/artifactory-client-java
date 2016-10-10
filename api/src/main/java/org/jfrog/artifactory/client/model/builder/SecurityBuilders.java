@@ -1,11 +1,10 @@
 package org.jfrog.artifactory.client.model.builder;
 
-import org.jfrog.artifactory.client.model.PermissionTarget;
+import org.jfrog.artifactory.client.model.Permission;
 import org.jfrog.artifactory.client.model.User;
 
 /**
- * Date: 10/18/12
- * Time: 9:27 AM
+ * Date: 10/18/12 Time: 9:27 AM
  *
  * @author freds
  */
@@ -16,8 +15,12 @@ public interface SecurityBuilders {
 
     UserBuilder builderFrom(User from);
 
-    PermissionTargetBuilder permissionTargetBuilder();
+    PermissionBuilder permissionBuilder();
 
-    PermissionTargetBuilder builderFrom(PermissionTarget from);
+    PermissionBuilder builderFrom(Permission from);
+
+    PrincipalsBuilder principalsBuilder();
+
+    PrincipalBuilder principalBuilder();
 
 }
