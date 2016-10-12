@@ -61,10 +61,6 @@ public class SystemTests extends ArtifactoryTestsBase {
 
     @Test
     public void testSystemInfo() {
-        // This test code should uncommented once the new /api/system/info Artifactory API is
-        // is released.
-
-        /*
         SystemInfo info = artifactory.system().info();
         Assert.assertNotNull(info);
         Assert.assertTrue(info.getCommittedVirtualMemorySize() > 0);
@@ -74,8 +70,8 @@ public class SystemTests extends ArtifactoryTestsBase {
         Assert.assertTrue(info.getTotalPhysicalMemorySize() > 0);
         Assert.assertTrue(info.getOpenFileDescriptorCount() > 0);
         Assert.assertTrue(info.getMaxFileDescriptorCount() > 0);
-        Assert.assertTrue(info.getProcessCpuLoad() > 0);
-        Assert.assertTrue(info.getSystemCpuLoad() > 0);
+        Assert.assertTrue(info.getProcessCpuLoad() > 0.0d);
+        Assert.assertTrue(info.getSystemCpuLoad() > 0.0d);
         Assert.assertTrue(info.getFreePhysicalMemorySize() > 0);
         Assert.assertTrue(info.getNumberOfCores() > 0);
         Assert.assertTrue(info.getHeapMemoryUsage() > 0);
@@ -83,6 +79,6 @@ public class SystemTests extends ArtifactoryTestsBase {
         Assert.assertTrue(info.getThreadCount() > 0);
         Assert.assertTrue(info.getNoneHeapMemoryMax() > 0);
         Assert.assertTrue(info.getHeapMemoryMax() > 0);
-        */
+        Assert.assertTrue(info.getJvmUpTime() > 0);
     }
 }
