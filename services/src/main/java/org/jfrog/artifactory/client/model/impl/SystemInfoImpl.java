@@ -22,6 +22,7 @@ public class SystemInfoImpl implements SystemInfo {
     private long threadCount;
     private long noneHeapMemoryMax;
     private long heapMemoryMax;
+    private long jvmUpTime;
 
     @Override
     public long getCommittedVirtualMemorySize() {
@@ -165,5 +166,14 @@ public class SystemInfoImpl implements SystemInfo {
 
     public void setHeapMemoryMax(long heapMemoryMax) {
         this.heapMemoryMax = heapMemoryMax;
+    }
+
+    @Override
+    public long getJvmUpTime() {
+        return jvmUpTime;
+    }
+
+    public void setJvmUpTime(long jvmUpTime) {
+        this.jvmUpTime = jvmUpTime;
     }
 }
