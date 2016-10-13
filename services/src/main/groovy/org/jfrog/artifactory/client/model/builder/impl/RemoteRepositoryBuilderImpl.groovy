@@ -18,7 +18,8 @@ import static org.jfrog.artifactory.client.model.impl.RemoteRepoChecksumPolicyTy
 class RemoteRepositoryBuilderImpl extends NonVirtualRepositoryBuilderBase<RemoteRepositoryBuilder, RemoteRepository> implements RemoteRepositoryBuilder {
 
     RemoteRepositoryBuilderImpl() {
-        super([bower, cocoapods, debian, docker, gems, generic, gitlfs, gradle, ivy, maven, npm, nuget, opkg, p2, pypi, sbt, vcs, yum])
+        super([bower, cocoapods, debian, docker, gems, generic, gitlfs, gradle, ivy, maven, npm, nuget, opkg, p2,
+               pypi, sbt, vcs, yum, composer])
         repoLayoutRef = MAVEN_2_REPO_LAYOUT
     }
 

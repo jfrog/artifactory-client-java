@@ -17,7 +17,8 @@ import static org.jfrog.artifactory.client.model.PackageType.*
 class LocalRepositoryBuilderImpl extends NonVirtualRepositoryBuilderBase<LocalRepositoryBuilder, LocalRepository> implements LocalRepositoryBuilder {
 
     private LocalRepositoryBuilderImpl() {
-        super([bower, cocoapods, debian, docker, gems, generic, gitlfs, gradle, ivy, maven, npm, nuget, opkg, pypi, sbt, vagrant, yum])
+        super([bower, cocoapods, debian, docker, gems, generic, gitlfs, gradle, ivy, maven, npm, nuget, opkg, pypi,
+               sbt, vagrant, yum, composer])
         this.repoLayoutRef = Repository.MAVEN_2_REPO_LAYOUT
     }
 
