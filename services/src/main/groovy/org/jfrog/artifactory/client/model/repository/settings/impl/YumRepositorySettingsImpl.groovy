@@ -8,7 +8,7 @@ import org.jfrog.artifactory.client.model.repository.settings.YumRepositorySetti
  * 
  * @author Ivan Vasylivskyi (ivanvas@jfrog.com)
  */
-class YumRepositorySettingsImpl implements YumRepositorySettings {
+class YumRepositorySettingsImpl extends AbstractRepositorySettings implements YumRepositorySettings {
     Integer yumRootDepth
     String groupFileNames
     Boolean calculateYumMetadata

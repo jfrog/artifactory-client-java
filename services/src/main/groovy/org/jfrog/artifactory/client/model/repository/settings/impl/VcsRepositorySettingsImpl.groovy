@@ -10,7 +10,7 @@ import org.jfrog.artifactory.client.model.repository.settings.vcs.VcsType
  * 
  * @author Ivan Vasylivskyi (ivanvas@jfrog.com)
  */
-class VcsRepositorySettingsImpl implements VcsRepositorySettings {
+class VcsRepositorySettingsImpl extends AbstractRepositorySettings implements VcsRepositorySettings {
     VcsGitProvider vcsGitProvider
     VcsType vcsType
     Integer maxUniqueSnapshots

@@ -8,7 +8,7 @@ import org.jfrog.artifactory.client.model.repository.settings.OpkgRepositorySett
  * 
  * @author Ivan Vasylivskyi (ivanvas@jfrog.com)
  */ 
-class OpkgRepositorySettingsImpl implements OpkgRepositorySettings {
+class OpkgRepositorySettingsImpl extends AbstractRepositorySettings implements OpkgRepositorySettings {
     Boolean listRemoteFolderItems
 
     @Override
