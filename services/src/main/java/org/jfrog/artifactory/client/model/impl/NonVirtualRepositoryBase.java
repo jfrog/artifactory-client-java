@@ -101,7 +101,6 @@ public abstract class NonVirtualRepositoryBase extends RepositoryBase implements
         this.archiveBrowsingEnabled = archiveBrowsingEnabled;
     }
 
-
     @Override
     public Boolean getXrayIndex() {
         if (xraySettings != null) {
