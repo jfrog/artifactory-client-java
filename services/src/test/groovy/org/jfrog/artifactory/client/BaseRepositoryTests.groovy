@@ -5,7 +5,9 @@ import org.hamcrest.Matcher
 import org.hamcrest.StringDescription
 import org.jfrog.artifactory.client.model.Repository
 import org.jfrog.artifactory.client.model.repository.settings.RepositorySettings
+import org.jfrog.artifactory.client.model.repository.settings.XraySettings
 import org.jfrog.artifactory.client.model.repository.settings.impl.GenericRepositorySettingsImpl
+import org.jfrog.artifactory.client.model.xray.settings.impl.XraySettingsImpl
 import org.testng.annotations.AfterMethod
 import org.testng.annotations.BeforeMethod
 
@@ -31,11 +33,13 @@ public abstract class BaseRepositoryTests extends ArtifactoryTestsBase {
     protected Repository virtualRepo
 
     protected RepositorySettings settings
+    protected XraySettings xraySettings
 
     @BeforeMethod
     protected void setUp() {
         if (prepareGenericRepo) {
             RepositorySettings genericSettings = new GenericRepositorySettingsImpl();
+            XraySettings genericXraySettings = new XraySettingsImpl();
             genericRepo = artifactory.repositories().builders().localRepositoryBuilder()
                     .key("cutsman-repo_${rnd.nextInt()}")
                     .description("description_${rnd.nextInt()}")
@@ -47,6 +51,7 @@ public abstract class BaseRepositoryTests extends ArtifactoryTestsBase {
                     .propertySets(Collections.emptyList()) // no property sets configured
                     .repoLayoutRef(nextRepoLayout())
                     .repositorySettings(genericSettings)
+                    .xraySettings(genericXraySettings)
                     .build();
         }
         if (prepareLocalRepo) {
@@ -61,6 +66,7 @@ public abstract class BaseRepositoryTests extends ArtifactoryTestsBase {
                 .propertySets(Collections.emptyList()) // no property sets configured
                 .repoLayoutRef(nextRepoLayout())
                 .repositorySettings(settings)
+                .xraySettings(xraySettings)
                 .build();
         }
 
@@ -97,6 +103,7 @@ public abstract class BaseRepositoryTests extends ArtifactoryTestsBase {
                 .url("http://jfrog.com/${rnd.nextInt()}")
                 .username("user_${rnd.nextInt()}")
                 .repositorySettings(settings)
+                .xraySettings(xraySettings)
                 .build()
         }
 

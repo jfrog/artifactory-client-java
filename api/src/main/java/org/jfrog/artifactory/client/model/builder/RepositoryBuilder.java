@@ -2,6 +2,7 @@ package org.jfrog.artifactory.client.model.builder;
 
 import org.jfrog.artifactory.client.model.Repository;
 import org.jfrog.artifactory.client.model.repository.settings.RepositorySettings;
+import org.jfrog.artifactory.client.model.repository.settings.XraySettings;
 
 /**
  * @author jbaruch
@@ -26,5 +27,7 @@ public interface RepositoryBuilder<B extends RepositoryBuilder, R extends Reposi
     void validate();
 
     B repositorySettings(RepositorySettings settings);
+
+    B xraySettings(XraySettings xraySettings);
 
 }

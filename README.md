@@ -190,14 +190,11 @@ String result = artifactory.repository("RepoName").delete();
 ##### Managing Xray properties
 ```
     Repository repository = artifactory.repository("RepoName").get();
-    RepositorySettings settings = repository.getRepositorySettings();
-
-    if (PackageType.debian == settings.getPackageType()) {
-      DebianRepositorySettingsImpl settingsForDebian = (DebianRepositorySettingsImpl) settings;
-      settingsForDebian.setXrayIndex(true)
-      settingsForDebian.setBlockXrayUnscannedArtifacts(true)
-      settingsForDebian.setXrayMinimumBlockedSeverity('Minor')
-    }
+    
+    XraySettings xraySettings = repository.getXraySettings();
+    xraySettings.setXrayIndex(true)
+    xraySettings.setBlockXrayUnscannedArtifacts(true)
+    xraySettings.setXrayMinimumBlockedSeverity('Minor')
 
     Repository updatedRepository = artifactory.repositories()
         .builders()

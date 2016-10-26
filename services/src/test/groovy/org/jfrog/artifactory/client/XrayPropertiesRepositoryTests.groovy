@@ -1,7 +1,9 @@
 package org.jfrog.artifactory.client
 
 import org.hamcrest.CoreMatchers
+import org.jfrog.artifactory.client.model.VirtualRepository
 import org.jfrog.artifactory.client.model.repository.settings.impl.MavenRepositorySettingsImpl
+import org.jfrog.artifactory.client.model.xray.settings.impl.XraySettingsImpl
 import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
 
@@ -12,8 +14,9 @@ class XrayPropertiesRepositoryTests extends BaseRepositoryTests {
   @BeforeMethod
   protected void setUp() {
     settings = new MavenRepositorySettingsImpl()
+    xraySettings = new XraySettingsImpl()
 
-    settings.with {
+    xraySettings.with {
       // local
       xrayIndex = true;
       blockXrayUnscannedArtifacts = rnd.nextBoolean();
@@ -28,13 +31,10 @@ class XrayPropertiesRepositoryTests extends BaseRepositoryTests {
     artifactory.repositories().create(0, localRepo)
 
     def resp = artifactory.repository(localRepo.getKey()).get()
-    resp.getRepositorySettings().with {
-      assertThat(packageType, CoreMatchers.is(settings.getPackageType()))
-
-      // xray
-      assertThat(xrayIndex, CoreMatchers.is(settings.getXrayIndex()))
-      assertThat(blockXrayUnscannedArtifacts, CoreMatchers.is(settings.getBlockXrayUnscannedArtifacts()))
-      assertThat(xrayMinimumBlockedSeverity, CoreMatchers.is(settings.getXrayMinimumBlockedSeverity()))
+    resp.getXraySettings().with {
+      assertThat(xrayIndex, CoreMatchers.is(xraySettings.getXrayIndex()))
+      assertThat(blockXrayUnscannedArtifacts, CoreMatchers.is(xraySettings.getBlockXrayUnscannedArtifacts()))
+      assertThat(xrayMinimumBlockedSeverity, CoreMatchers.is(xraySettings.getXrayMinimumBlockedSeverity()))
     }
   }
 
@@ -43,13 +43,10 @@ class XrayPropertiesRepositoryTests extends BaseRepositoryTests {
     artifactory.repositories().create(0, remoteRepo)
 
     def resp = artifactory.repository(remoteRepo.getKey()).get()
-    resp.getRepositorySettings().with {
-      assertThat(packageType, CoreMatchers.is(settings.getPackageType()))
-
-      // xray
-      assertThat(xrayIndex, CoreMatchers.is(settings.getXrayIndex()))
-      assertThat(blockXrayUnscannedArtifacts, CoreMatchers.is(settings.getBlockXrayUnscannedArtifacts()))
-      assertThat(xrayMinimumBlockedSeverity, CoreMatchers.is(settings.getXrayMinimumBlockedSeverity()))
+    resp.getXraySettings().with {
+      assertThat(xrayIndex, CoreMatchers.is(xraySettings.getXrayIndex()))
+      assertThat(blockXrayUnscannedArtifacts, CoreMatchers.is(xraySettings.getBlockXrayUnscannedArtifacts()))
+      assertThat(xrayMinimumBlockedSeverity, CoreMatchers.is(xraySettings.getXrayMinimumBlockedSeverity()))
     }
   }
 
@@ -57,11 +54,9 @@ class XrayPropertiesRepositoryTests extends BaseRepositoryTests {
   public void testXrayPropertiesVirtualRepo() {
     artifactory.repositories().create(0, virtualRepo)
 
-    def resp = artifactory.repository(virtualRepo.getKey()).get()
-    resp.getRepositorySettings().with {
-      assertThat(packageType, CoreMatchers.is(settings.getPackageType()))
+    VirtualRepository resp = artifactory.repository(virtualRepo.getKey()).get() as VirtualRepository
 
-      // xray
+    resp.getXraySettings().with {
       assertThat(xrayIndex, CoreMatchers.nullValue())
       assertThat(blockXrayUnscannedArtifacts, CoreMatchers.nullValue())
       assertThat(xrayMinimumBlockedSeverity, CoreMatchers.nullValue())

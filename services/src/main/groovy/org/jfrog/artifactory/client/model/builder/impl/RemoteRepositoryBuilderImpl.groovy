@@ -142,7 +142,7 @@ class RemoteRepositoryBuilderImpl extends NonVirtualRepositoryBuilderBase<Remote
     RemoteRepository build() {
         validate()
 
-        new RemoteRepositoryImpl(key, settings, description, excludesPattern,
+        new RemoteRepositoryImpl(key, settings, xraySettings, description, excludesPattern,
                 includesPattern, notes, blackedOut,
                 propertySets,
                 failedRetrievalCachePeriodSecs,

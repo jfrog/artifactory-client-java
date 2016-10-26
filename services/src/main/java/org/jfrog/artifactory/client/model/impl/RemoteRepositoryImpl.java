@@ -3,6 +3,7 @@ package org.jfrog.artifactory.client.model.impl;
 import org.jfrog.artifactory.client.model.RemoteRepository;
 import org.jfrog.artifactory.client.model.RepositoryType;
 import org.jfrog.artifactory.client.model.repository.settings.RepositorySettings;
+import org.jfrog.artifactory.client.model.repository.settings.XraySettings;
 
 import java.util.List;
 
@@ -36,7 +37,8 @@ public class RemoteRepositoryImpl extends NonVirtualRepositoryBase implements Re
         repoLayoutRef = MAVEN_2_REPO_LAYOUT;
     }
 
-    RemoteRepositoryImpl(String key, RepositorySettings settings, String description, String excludesPattern, String includesPattern, String notes, boolean blackedOut,
+    RemoteRepositoryImpl(String key, RepositorySettings settings, XraySettings xraySettings, String description,
+                         String excludesPattern, String includesPattern, String notes, boolean blackedOut,
                          List<String> propertySets,
                          int failedRetrievalCachePeriodSecs, boolean hardFail, String localAddress,
                          int missedRetrievalCachePeriodSecs, boolean offline, String password, String proxy,
@@ -44,7 +46,7 @@ public class RemoteRepositoryImpl extends NonVirtualRepositoryBase implements Re
                          boolean unusedArtifactsCleanupEnabled, int unusedArtifactsCleanupPeriodHours, String url, String username, String repoLayoutRef,
                          long assumedOfflinePeriodSecs, boolean archiveBrowsingEnabled) {
 
-        super(key, settings, description, excludesPattern, includesPattern,
+        super(key, settings, xraySettings, description, excludesPattern, includesPattern,
             notes, blackedOut,
             propertySets,
             repoLayoutRef, archiveBrowsingEnabled);

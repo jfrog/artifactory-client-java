@@ -5,6 +5,7 @@ import org.jfrog.artifactory.client.model.Repository
 import org.jfrog.artifactory.client.model.RepositoryType
 import org.jfrog.artifactory.client.model.builder.RepositoryBuilder
 import org.jfrog.artifactory.client.model.repository.settings.RepositorySettings
+import org.jfrog.artifactory.client.model.repository.settings.XraySettings
 
 /**
  * @author jbaruch
@@ -18,6 +19,7 @@ abstract class RepositoryBuilderBase<B extends RepositoryBuilder, R extends Repo
     protected String notes
     protected String repoLayoutRef
     protected RepositorySettings settings
+    protected XraySettings xraySettings
 
     public final Set<PackageType> supportedTypes
 
@@ -67,6 +69,11 @@ abstract class RepositoryBuilderBase<B extends RepositoryBuilder, R extends Repo
         this as B
     }
 
+    @Override
+    B xraySettings(XraySettings xraySettings) {
+        this.xraySettings = xraySettings
+        this as B
+    }
     abstract RepositoryType getRepositoryType()
 
     @Override
