@@ -8,8 +8,4 @@ import org.jfrog.artifactory.client.model.PackageType;
 public interface RepositorySettings {
 
     PackageType getPackageType();
-
-    Boolean getXrayIndex();
-    Boolean getBlockXrayUnscannedArtifacts();
-    String getXrayMinimumBlockedSeverity();
 }

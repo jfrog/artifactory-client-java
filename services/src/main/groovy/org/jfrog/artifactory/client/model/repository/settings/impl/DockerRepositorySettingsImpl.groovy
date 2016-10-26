@@ -9,7 +9,7 @@ import org.jfrog.artifactory.client.model.repository.settings.docker.DockerApiVe
  *
  * @author Ivan Vasylivskyi (ivanvas@jfrog.com)
  */
-public class DockerRepositorySettingsImpl extends AbstractRepositorySettings implements DockerRepositorySettings{
+public class DockerRepositorySettingsImpl extends AbstractXraySettings implements DockerRepositorySettings{
     DockerApiVersion dockerApiVersion
     Boolean enableTokenAuthentication
     Boolean listRemoteFolderItems

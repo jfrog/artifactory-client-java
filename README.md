@@ -187,6 +187,27 @@ String result = artifactory.repositories().update(updatedRepository);
 String result = artifactory.repository("RepoName").delete();
 ```
 
+##### Managing Xray properties
+```
+    Repository repository = artifactory.repository("RepoName").get();
+    RepositorySettings settings = repository.getRepositorySettings();
+
+    if (PackageType.debian == settings.getPackageType()) {
+      DebianRepositorySettingsImpl settingsForDebian = (DebianRepositorySettingsImpl) settings;
+      settingsForDebian.setXrayIndex(true)
+      settingsForDebian.setBlockXrayUnscannedArtifacts(true)
+      settingsForDebian.setXrayMinimumBlockedSeverity('Minor')
+    }
+
+    Repository updatedRepository = artifactory.repositories()
+        .builders()
+        .builderFrom(repository)
+        .description("new_description")
+        .build();
+
+    String result = artifactory.repositories().update(updatedRepository);
+```
+
 #### Search
 
 ##### Available Searches

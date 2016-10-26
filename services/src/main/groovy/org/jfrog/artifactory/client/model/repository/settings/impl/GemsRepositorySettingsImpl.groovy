@@ -8,7 +8,7 @@ import org.jfrog.artifactory.client.model.repository.settings.GemsRepositorySett
  * 
  * @author Ivan Vasylivskyi (ivanvas@jfrog.com)
  */ 
-class GemsRepositorySettingsImpl extends AbstractRepositorySettings implements GemsRepositorySettings {
+class GemsRepositorySettingsImpl extends AbstractXraySettings implements GemsRepositorySettings {
     Boolean listRemoteFolderItems
 
     @Override

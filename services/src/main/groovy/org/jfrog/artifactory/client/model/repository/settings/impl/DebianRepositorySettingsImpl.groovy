@@ -8,7 +8,7 @@ import org.jfrog.artifactory.client.model.repository.settings.DebianRepositorySe
  * 
  * @author Ivan Vasylivskyi (ivanvas@jfrog.com)
  */
-class DebianRepositorySettingsImpl extends AbstractRepositorySettings implements DebianRepositorySettings {
+class DebianRepositorySettingsImpl extends AbstractXraySettings implements DebianRepositorySettings {
     Boolean debianTrivialLayout
     Boolean listRemoteFolderItems
 

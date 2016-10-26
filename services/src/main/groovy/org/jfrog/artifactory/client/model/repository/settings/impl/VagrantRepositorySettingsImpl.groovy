@@ -8,7 +8,7 @@ import org.jfrog.artifactory.client.model.repository.settings.VagrantRepositoryS
  * 
  * @author Ivan Vasylivskyi (ivanvas@jfrog.com)
  */ 
-class VagrantRepositorySettingsImpl extends AbstractRepositorySettings implements VagrantRepositorySettings {
+class VagrantRepositorySettingsImpl extends AbstractXraySettings implements VagrantRepositorySettings {
     @Override
     public PackageType getPackageType() {
         return PackageType.vagrant
