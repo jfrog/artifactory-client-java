@@ -1,10 +1,10 @@
 package org.jfrog.artifactory.client.model.impl;
 
+import java.util.List;
+
 import org.jfrog.artifactory.client.model.NonVirtualRepository;
 import org.jfrog.artifactory.client.model.repository.settings.RepositorySettings;
 import org.jfrog.artifactory.client.model.repository.settings.XraySettings;
-
-import java.util.List;
 
 /**
  * @author jbaruch
@@ -103,17 +103,26 @@ public abstract class NonVirtualRepositoryBase extends RepositoryBase implements
 
 
     @Override
-    public Boolean getXrayIndex(){
-        return xraySettings.getXrayIndex();
+    public Boolean getXrayIndex() {
+        if (xraySettings != null) {
+            return xraySettings.getXrayIndex();
+        }
+        return false;
     }
 
     @Override
-    public Boolean getBlockXrayUnscannedArtifacts(){
-        return xraySettings.getBlockXrayUnscannedArtifacts();
+    public Boolean getBlockXrayUnscannedArtifacts() {
+        if (xraySettings != null) {
+            return xraySettings.getBlockXrayUnscannedArtifacts();
+        }
+        return false;
     }
 
     @Override
-    public String getXrayMinimumBlockedSeverity(){
-        return xraySettings.getXrayMinimumBlockedSeverity();
+    public String getXrayMinimumBlockedSeverity() {
+        if (xraySettings != null) {
+            return xraySettings.getXrayMinimumBlockedSeverity();
+        }
+        return "";
     }
 }
