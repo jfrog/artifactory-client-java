@@ -8,7 +8,7 @@ import org.jfrog.artifactory.client.model.repository.settings.NpmRepositorySetti
  * 
  * @author Ivan Vasylivskyi (ivanvas@jfrog.com)
  */
-class NpmRepositorySettingsImpl extends AbstractXraySettings implements NpmRepositorySettings {
+class NpmRepositorySettingsImpl implements NpmRepositorySettings {
     Boolean listRemoteFolderItems
     Boolean externalDependenciesEnabled
     Collection<String> externalDependenciesPatterns

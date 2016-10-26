@@ -8,7 +8,7 @@ import org.jfrog.artifactory.client.model.repository.settings.NugetRepositorySet
  * 
  * @author Ivan Vasylivskyi (ivanvas@jfrog.com)
  */
-class NugetRepositorySettingsImpl extends AbstractXraySettings implements NugetRepositorySettings {
+class NugetRepositorySettingsImpl implements NugetRepositorySettings {
     Integer maxUniqueSnapshots
     Boolean forceNugetAuthentication
     String feedContextPath

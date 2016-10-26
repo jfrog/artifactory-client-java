@@ -8,7 +8,7 @@ import org.jfrog.artifactory.client.model.repository.settings.GenericRepositoryS
  * 
  * @author Ivan Vasylivskyi (ivanvas@jfrog.com)
  */ 
-class GenericRepositorySettingsImpl extends AbstractXraySettings implements GenericRepositorySettings {
+class GenericRepositorySettingsImpl implements GenericRepositorySettings {
     Boolean listRemoteFolderItems
 
     @Override

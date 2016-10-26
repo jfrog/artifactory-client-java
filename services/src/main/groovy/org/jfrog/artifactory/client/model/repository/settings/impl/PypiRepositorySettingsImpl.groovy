@@ -8,7 +8,7 @@ import org.jfrog.artifactory.client.model.repository.settings.PypiRepositorySett
  * 
  * @author Ivan Vasylivskyi (ivanvas@jfrog.com)
  */ 
-class PypiRepositorySettingsImpl extends AbstractXraySettings implements PypiRepositorySettings {
+class PypiRepositorySettingsImpl implements PypiRepositorySettings {
     Boolean listRemoteFolderItems
 
     @Override
