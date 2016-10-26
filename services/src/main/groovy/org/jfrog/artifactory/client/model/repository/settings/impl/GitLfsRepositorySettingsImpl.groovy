@@ -8,7 +8,7 @@ import org.jfrog.artifactory.client.model.repository.settings.GitLfsRepositorySe
  * 
  * @author Ivan Vasylivskyi (ivanvas@jfrog.com)
  */ 
-class GitLfsRepositorySettingsImpl extends AbstractXraySettings implements GitLfsRepositorySettings {
+class GitLfsRepositorySettingsImpl implements GitLfsRepositorySettings {
     Boolean listRemoteFolderItems
 
     @Override

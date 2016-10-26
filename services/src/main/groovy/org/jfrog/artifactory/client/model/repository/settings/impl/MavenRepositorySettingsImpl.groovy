@@ -12,7 +12,7 @@ import org.jfrog.artifactory.client.model.repository.settings.MavenRepositorySet
  * 
  * @author Ivan Vasylivskyi (ivanvas@jfrog.com)
  */
-class MavenRepositorySettingsImpl extends AbstractXraySettings implements MavenRepositorySettings {
+class MavenRepositorySettingsImpl implements MavenRepositorySettings {
     Integer maxUniqueSnapshots
     Boolean handleReleases
     Boolean handleSnapshots
