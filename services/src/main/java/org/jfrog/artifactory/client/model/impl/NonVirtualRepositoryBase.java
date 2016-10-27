@@ -1,15 +1,16 @@
 package org.jfrog.artifactory.client.model.impl;
 
+import java.util.List;
+
 import org.jfrog.artifactory.client.model.NonVirtualRepository;
 import org.jfrog.artifactory.client.model.repository.settings.RepositorySettings;
-
-import java.util.List;
+import org.jfrog.artifactory.client.model.repository.settings.XraySettings;
 
 /**
  * @author jbaruch
  * @since 29/07/12
  */
-public abstract class NonVirtualRepositoryBase extends RepositoryBase implements NonVirtualRepository {
+public abstract class NonVirtualRepositoryBase extends RepositoryBase implements NonVirtualRepository, XraySettings {
 
     private boolean blackedOut;
     private List<String> propertySets;
@@ -18,14 +19,14 @@ public abstract class NonVirtualRepositoryBase extends RepositoryBase implements
     protected NonVirtualRepositoryBase() {
     }
 
-    protected NonVirtualRepositoryBase(String key, RepositorySettings settings,
+    protected NonVirtualRepositoryBase(String key, RepositorySettings settings, XraySettings xraySettings,
         String description, String excludesPattern, String includesPattern,
         String notes, boolean blackedOut,
         List<String> propertySets,
         String repoLayoutRef,
         boolean archiveBrowsingEnabled) {
 
-        super(key, settings, description, excludesPattern, includesPattern, notes,
+        super(key, settings, xraySettings, description, excludesPattern, includesPattern, notes,
             repoLayoutRef);
 
         this.blackedOut = blackedOut;
@@ -98,5 +99,30 @@ public abstract class NonVirtualRepositoryBase extends RepositoryBase implements
 
     private void setArchiveBrowsingEnabled(boolean archiveBrowsingEnabled) {
         this.archiveBrowsingEnabled = archiveBrowsingEnabled;
+    }
+
+
+    @Override
+    public Boolean getXrayIndex() {
+        if (xraySettings != null) {
+            return xraySettings.getXrayIndex();
+        }
+        return null;
+    }
+
+    @Override
+    public Boolean getBlockXrayUnscannedArtifacts() {
+        if (xraySettings != null) {
+            return xraySettings.getBlockXrayUnscannedArtifacts();
+        }
+        return null;
+    }
+
+    @Override
+    public String getXrayMinimumBlockedSeverity() {
+        if (xraySettings != null) {
+            return xraySettings.getXrayMinimumBlockedSeverity();
+        }
+        return null;
     }
 }

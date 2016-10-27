@@ -1,6 +1,7 @@
 package org.jfrog.artifactory.client.model;
 
 import org.jfrog.artifactory.client.model.repository.settings.RepositorySettings;
+import org.jfrog.artifactory.client.model.repository.settings.XraySettings;
 
 /**
  * @author jbaruch
@@ -25,4 +26,5 @@ public interface Repository {
 
     RepositorySettings getRepositorySettings();
 
+    XraySettings getXraySettings();
 }

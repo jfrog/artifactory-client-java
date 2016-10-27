@@ -187,6 +187,24 @@ String result = artifactory.repositories().update(updatedRepository);
 String result = artifactory.repository("RepoName").delete();
 ```
 
+##### Managing Xray properties
+```
+    Repository repository = artifactory.repository("RepoName").get();
+    
+    XraySettings xraySettings = repository.getXraySettings();
+    xraySettings.setXrayIndex(true)
+    xraySettings.setBlockXrayUnscannedArtifacts(true)
+    xraySettings.setXrayMinimumBlockedSeverity('Minor')
+
+    Repository updatedRepository = artifactory.repositories()
+        .builders()
+        .builderFrom(repository)
+        .description("new_description")
+        .build();
+
+    String result = artifactory.repositories().update(updatedRepository);
+```
+
 #### Search
 
 ##### Available Searches

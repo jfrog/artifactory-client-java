@@ -10,8 +10,7 @@ import org.jfrog.artifactory.client.model.impl.FileImpl
 import org.jfrog.artifactory.client.model.impl.FolderImpl
 import org.jfrog.artifactory.client.model.impl.ReplicationStatusImpl
 import org.jfrog.artifactory.client.model.repository.settings.RepositorySettings
-
-import static org.jfrog.artifactory.client.model.impl.RepositoryTypeImpl.parseString
+import org.jfrog.artifactory.client.model.xray.settings.impl.XraySettingsImpl
 
 /**
  *
@@ -58,10 +57,12 @@ class RepositoryHandleImpl implements RepositoryHandle {
     }
 
     private Repository parseJsonAsRepository(String json) {
-        def settings = artifactory.parseText(json, RepositorySettings)
         def repo = artifactory.parseText(json, Repository)
+        def settings = artifactory.parseText(json, RepositorySettings)
+        XraySettingsImpl xray = artifactory.parseText(json, XraySettingsImpl)
 
         repo.setRepositorySettings settings
+        repo.setXraySettings xray
 
         repo
     }

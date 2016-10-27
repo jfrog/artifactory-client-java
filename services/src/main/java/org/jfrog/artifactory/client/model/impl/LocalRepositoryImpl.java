@@ -2,6 +2,7 @@ package org.jfrog.artifactory.client.model.impl;
 
 import org.jfrog.artifactory.client.model.LocalRepository;
 import org.jfrog.artifactory.client.model.repository.settings.RepositorySettings;
+import org.jfrog.artifactory.client.model.repository.settings.XraySettings;
 
 import java.util.List;
 
@@ -15,16 +16,15 @@ public class LocalRepositoryImpl extends NonVirtualRepositoryBase implements Loc
         repoLayoutRef = MAVEN_2_REPO_LAYOUT;
     }
 
-    public LocalRepositoryImpl(String key, RepositorySettings settings,
+    public LocalRepositoryImpl(String key, RepositorySettings settings, XraySettings xraySettings,
         String description, String excludesPattern, String includesPattern, String notes,
         boolean blackedOut,
         List<String> propertySets,
         String repoLayoutRef,
         boolean archiveBrowsingEnabled) {
 
-        super(key, settings, description, excludesPattern, includesPattern, notes, blackedOut,
-            propertySets,
-            repoLayoutRef, archiveBrowsingEnabled);
+        super(key, settings, xraySettings, description, excludesPattern, includesPattern, notes, blackedOut,
+            propertySets, repoLayoutRef, archiveBrowsingEnabled);
     }
 
     @Override

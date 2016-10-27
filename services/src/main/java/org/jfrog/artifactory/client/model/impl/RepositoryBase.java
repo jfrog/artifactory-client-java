@@ -3,6 +3,7 @@ package org.jfrog.artifactory.client.model.impl;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.jfrog.artifactory.client.model.Repository;
 import org.jfrog.artifactory.client.model.repository.settings.RepositorySettings;
+import org.jfrog.artifactory.client.model.repository.settings.XraySettings;
 
 /**
  * @author jbaruch
@@ -18,21 +19,31 @@ public abstract class RepositoryBase implements Repository {
     protected String repoLayoutRef;
     @JsonIgnore
     protected RepositorySettings settings;
+    @JsonIgnore
+    protected XraySettings xraySettings;
 
     protected RepositoryBase() {
+    }
+
+    protected RepositoryBase(String key, RepositorySettings settings, XraySettings xraySettings,
+        String description, String excludesPattern, String includesPattern,
+        String notes, String repoLayoutRef) {
+
+        this.key = key;
+        this.settings = settings;
+        this.xraySettings = xraySettings;
+        this.description = description;
+        this.excludesPattern = excludesPattern;
+        this.includesPattern = includesPattern;
+        this.notes = notes;
+        this.repoLayoutRef = repoLayoutRef;
     }
 
     protected RepositoryBase(String key, RepositorySettings settings,
         String description, String excludesPattern, String includesPattern,
         String notes, String repoLayoutRef) {
 
-        this.key = key;
-        this.settings = settings;
-        this.description = description;
-        this.excludesPattern = excludesPattern;
-        this.includesPattern = includesPattern;
-        this.notes = notes;
-        this.repoLayoutRef = repoLayoutRef;
+       this(key,settings, null, description, excludesPattern, includesPattern,  notes, repoLayoutRef);
     }
 
     @Override
@@ -139,4 +150,12 @@ public abstract class RepositoryBase implements Repository {
         this.settings = settings;
     }
 
+    @Override
+    public XraySettings getXraySettings() {
+        return xraySettings;
+    }
+
+    public void setXraySettings(XraySettings xraySettings) {
+        this.xraySettings = xraySettings;
+    }
 }
