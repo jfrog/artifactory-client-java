@@ -53,16 +53,14 @@ public class SearchTests extends ArtifactoryTestsBase {
 
     @Test
     public void testArtifactsCreatedSinceSearch() throws IOException {
-        long aWeekAgo = System.currentTimeMillis() - 86400000L * 7;
-        List<RepoPath> results = artifactory.searches().artifactsCreatedSince(aWeekAgo).doSearch();
+        List<RepoPath> results = artifactory.searches().artifactsCreatedSince(0L).doSearch();
         assertFalse(results.isEmpty());
     }
 
     @Test
     public void testArtifactsCreatedInDateRangeSearch() throws IOException {
-        long aWeekAgo = System.currentTimeMillis() - 86400000L * 7;
         long now = System.currentTimeMillis();
-        List<RepoPath> results = artifactory.searches().artifactsCreatedInDateRange(aWeekAgo, now).doSearch();
+        List<RepoPath> results = artifactory.searches().artifactsCreatedInDateRange(0L, now).doSearch();
         assertFalse(results.isEmpty());
     }
 
