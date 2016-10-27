@@ -10,4 +10,10 @@ public interface XraySettings {
   Boolean getBlockXrayUnscannedArtifacts();
 
   String getXrayMinimumBlockedSeverity();
+
+  void setXrayIndex(Boolean xrayIndex);
+
+  void setXrayMinimumBlockedSeverity(String xrayMinimumBlockedSeverity);
+
+  void setBlockXrayUnscannedArtifacts(Boolean blockXrayUnscannedArtifacts);
 }
