@@ -107,7 +107,7 @@ public abstract class NonVirtualRepositoryBase extends RepositoryBase implements
         if (xraySettings != null) {
             return xraySettings.getXrayIndex();
         }
-        return false;
+        return null;
     }
 
     @Override
@@ -115,7 +115,7 @@ public abstract class NonVirtualRepositoryBase extends RepositoryBase implements
         if (xraySettings != null) {
             return xraySettings.getBlockXrayUnscannedArtifacts();
         }
-        return false;
+        return null;
     }
 
     @Override
@@ -123,6 +123,6 @@ public abstract class NonVirtualRepositoryBase extends RepositoryBase implements
         if (xraySettings != null) {
             return xraySettings.getXrayMinimumBlockedSeverity();
         }
-        return "";
+        return null;
     }
 }
