@@ -8,9 +8,11 @@ import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 
@@ -117,6 +119,40 @@ public class RestCallTests extends ArtifactoryTestsBase {
         assertTrue(deleteResponse.contains("All 'new-name' builds have been deleted successfully"));
     }
 
+    @Test
+    public void testGetPermissionTargets() {
+        ArrayList response = getPermissionTargets();
+        assertNotNull(response);
+    }
+
+    @Test
+    public void testCreateDeletePermissionTarget() throws IOException {
+        final String permissionName = "java-client-tests-permission";
+        Map<String, Object> map = createPermissionTargetBody(permissionName);
+
+        // Create permission target:
+        ArtifactoryRequest req = new ArtifactoryRequestImpl()
+            .method(ArtifactoryRequest.Method.PUT)
+            .apiUrl("api/security/permissions/" + permissionName)
+            .requestType(ArtifactoryRequest.ContentType.JSON)
+            .requestBody(map);
+        artifactory.restCall(req);
+
+        // Verify permission target created:
+        ArrayList permissions = getPermissionTargets();
+        assertTrue(findPermissionInLiat(permissions, permissionName));
+
+        // Delete permission target:
+        req = new ArtifactoryRequestImpl()
+            .method(ArtifactoryRequest.Method.DELETE)
+            .apiUrl("api/security/permissions/" + permissionName);
+        artifactory.restCall(req);
+
+        // Verify permission target deleted:
+        permissions = getPermissionTargets();
+        assertFalse(findPermissionInLiat(permissions, permissionName));
+    }
+
     private String deleteBuild(String name) {
         ArtifactoryRequest deleteBuild = new ArtifactoryRequestImpl()
                 .apiUrl("api/build/" + name)
@@ -126,6 +162,45 @@ public class RestCallTests extends ArtifactoryTestsBase {
                 .addQueryParam("deleteAll", "1")
                 .addQueryParam("artifacts", "1");
         return artifactory.restCall(deleteBuild);
+    }
+
+    private ArrayList getPermissionTargets() {
+        ArtifactoryRequest req = new ArtifactoryRequestImpl()
+                .method(ArtifactoryRequest.Method.GET)
+                .apiUrl("api/security/permissions")
+                .responseType(ArtifactoryRequest.ContentType.JSON);
+
+        return artifactory.restCall(req);
+    }
+
+    private Map<String, Object> createPermissionTargetBody(String permissionName) throws IOException {
+        String json =
+            "{" +
+                "\"name\" : \"" + permissionName + "\"," +
+                "\"includesPattern\" : \"**\"," +
+                "\"excludesPattern\" : \"\"," +
+                "\"repositories\" : [ \"ANY\" ]," +
+                "\"principals\" : {" +
+                    "\"users\" : {" +
+                        "\"anonymous\" : [ \"r\" ]" +
+                    "}," +
+                    "\"groups\" : {" +
+                        "\"readers\" : [ \"r\" ]" +
+                    "}" +
+                "}" +
+            "}";
+
+        return new ObjectMapper().readValue(json, Map.class);
+    }
+
+    private boolean findPermissionInLiat(ArrayList list, String permissionName) {
+        for(Object permission : list) {
+            Object name = ((Map)permission).get("name");
+            if (permissionName.equals(name)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private Map<String, Object> createBuildBody() throws IOException {
