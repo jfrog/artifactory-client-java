@@ -9,6 +9,6 @@ class ComposerRepositorySettingsImpl extends VcsRepositorySettingsImpl implement
 
     @Override
     PackageType getPackageType() {
-      return PackageType.composer;
+      return PackageType.composer
     }
 }
