@@ -19,7 +19,7 @@ class RemoteRepositoryBuilderImpl extends NonVirtualRepositoryBuilderBase<Remote
 
     RemoteRepositoryBuilderImpl() {
         super([bower, cocoapods, debian, docker, gems, generic, gitlfs, gradle, ivy, maven, npm, nuget, opkg, p2,
-               pypi, sbt, vcs, yum, composer])
+               pypi, sbt, vcs, yum, composer, conan])
         repoLayoutRef = MAVEN_2_REPO_LAYOUT
     }
 
