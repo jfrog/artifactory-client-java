@@ -13,6 +13,7 @@ import static java.util.Arrays.asList;
 import static org.apache.commons.lang.StringUtils.countMatches;
 import static org.jfrog.artifactory.client.model.impl.RepositoryTypeImpl.*;
 import static org.testng.Assert.*;
+import static org.testng.Assert.assertNotNull;
 
 /**
  * @author jbaruch
@@ -151,6 +152,10 @@ public class RepositoryTests extends ArtifactoryTestsBase {
         assertEquals(propertySets.size(), 1);
         assertEquals(propertySets.get(0), ("artifactory"));
         assertEquals(jcenter.getRepoLayoutRef(), "maven-2-default");
+        assertNotNull(jcenter.getContentSynchronisation());
+        assertNotNull(jcenter.getContentSynchronisation().getProperties());
+        assertNotNull(jcenter.getContentSynchronisation().getStatistics());
+        assertNotNull(jcenter.getContentSynchronisation().getSource());
     }
 
     @Test

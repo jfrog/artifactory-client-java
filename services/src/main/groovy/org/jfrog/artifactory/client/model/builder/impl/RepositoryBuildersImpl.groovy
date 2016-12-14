@@ -37,6 +37,7 @@ class RepositoryBuildersImpl implements RepositoryBuilders {
                 .unusedArtifactsCleanupPeriodHours(from.unusedArtifactsCleanupPeriodHours)
                 .shareConfiguration(from.shareConfiguration).synchronizeProperties(from.synchronizeProperties).repoLayoutRef(from.repoLayoutRef)
                 .assumedOfflinePeriodSecs(from.assumedOfflinePeriodSecs).archiveBrowsingEnabled(from.archiveBrowsingEnabled)
+                .listRemoteFolderItems(from.listRemoteFolderItems).contentSynchronisation(from.contentSynchronisation)
     }
 
     LocalRepositoryBuilder localRepositoryBuilder() {

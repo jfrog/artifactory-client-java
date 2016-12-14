@@ -1,5 +1,8 @@
 package org.jfrog.artifactory.client.model.impl;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
+import org.jfrog.artifactory.client.model.ContentSynchronisation;
 import org.jfrog.artifactory.client.model.RemoteRepository;
 import org.jfrog.artifactory.client.model.RepositoryType;
 import org.jfrog.artifactory.client.model.repository.settings.RepositorySettings;
@@ -32,25 +35,31 @@ public class RemoteRepositoryImpl extends NonVirtualRepositoryBase implements Re
     private boolean shareConfiguration;
     private boolean synchronizeProperties;
     private long assumedOfflinePeriodSecs;
+    private boolean listRemoteFolderItems;
+    @JsonDeserialize(as=ContentSynchronisationImpl.class)
+    private ContentSynchronisation contentSynchronisation;
 
     private RemoteRepositoryImpl() {
         repoLayoutRef = MAVEN_2_REPO_LAYOUT;
     }
 
-    RemoteRepositoryImpl(String key, RepositorySettings settings, XraySettings xraySettings, String description,
+    RemoteRepositoryImpl(String key, RepositorySettings settings, XraySettings xraySettings,
+                         ContentSynchronisation contentSynchronisation, String description,
                          String excludesPattern, String includesPattern, String notes, boolean blackedOut,
                          List<String> propertySets,
                          int failedRetrievalCachePeriodSecs, boolean hardFail, String localAddress,
                          int missedRetrievalCachePeriodSecs, boolean offline, String password, String proxy,
                          int retrievalCachePeriodSecs, boolean shareConfiguration, int socketTimeoutMillis, boolean cookieManagementEnabled, boolean allowAnyHostAuth, boolean storeArtifactsLocally, boolean synchronizeProperties,
                          boolean unusedArtifactsCleanupEnabled, int unusedArtifactsCleanupPeriodHours, String url, String username, String repoLayoutRef,
-                         long assumedOfflinePeriodSecs, boolean archiveBrowsingEnabled) {
+                         long assumedOfflinePeriodSecs, boolean archiveBrowsingEnabled,
+                         boolean listRemoteFolderItems) {
 
         super(key, settings, xraySettings, description, excludesPattern, includesPattern,
             notes, blackedOut,
             propertySets,
             repoLayoutRef, archiveBrowsingEnabled);
 
+        this.contentSynchronisation = contentSynchronisation;
         this.failedRetrievalCachePeriodSecs = failedRetrievalCachePeriodSecs;
         this.hardFail = hardFail;
         this.localAddress = localAddress;
@@ -70,6 +79,7 @@ public class RemoteRepositoryImpl extends NonVirtualRepositoryBase implements Re
         this.url = url;
         this.username = username;
         this.assumedOfflinePeriodSecs = assumedOfflinePeriodSecs;
+        this.listRemoteFolderItems = listRemoteFolderItems;
     }
 
     @Override
@@ -232,6 +242,24 @@ public class RemoteRepositoryImpl extends NonVirtualRepositoryBase implements Re
 
     private void setSynchronizeProperties(boolean synchronizeProperties) {
         this.synchronizeProperties = synchronizeProperties;
+    }
+
+    @Override
+    public boolean isListRemoteFolderItems() {
+        return listRemoteFolderItems;
+    }
+
+    private void setListRemoteFolderItems(boolean listRemoteFolderItems) {
+        this.listRemoteFolderItems = listRemoteFolderItems;
+    }
+
+    @Override
+    public ContentSynchronisation getContentSynchronisation() {
+        return contentSynchronisation;
+    }
+
+    private void setContentSynchronisation(ContentSynchronisation contentSynchronisation) {
+        this.contentSynchronisation = contentSynchronisation;
     }
 
     @Override

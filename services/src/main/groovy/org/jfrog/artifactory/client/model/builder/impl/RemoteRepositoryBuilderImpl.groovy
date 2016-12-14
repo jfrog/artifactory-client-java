@@ -1,5 +1,6 @@
 package org.jfrog.artifactory.client.model.builder.impl
 
+import org.jfrog.artifactory.client.model.ContentSynchronisation
 import org.jfrog.artifactory.client.model.RemoteRepository
 import org.jfrog.artifactory.client.model.RepositoryType
 import org.jfrog.artifactory.client.model.builder.RemoteRepositoryBuilder
@@ -8,7 +9,6 @@ import org.jfrog.artifactory.client.model.impl.RepositoryTypeImpl
 
 import static org.jfrog.artifactory.client.model.PackageType.*
 import static org.jfrog.artifactory.client.model.Repository.MAVEN_2_REPO_LAYOUT
-import static org.jfrog.artifactory.client.model.impl.RemoteRepoChecksumPolicyTypeImpl.generate_if_absent
 
 /**
  *
@@ -42,6 +42,8 @@ class RemoteRepositoryBuilderImpl extends NonVirtualRepositoryBuilderBase<Remote
     private boolean shareConfiguration
     private boolean synchronizeProperties
     private long assumedOfflinePeriodSecs = 300
+    private boolean listRemoteFolderItems
+    private ContentSynchronisation contentSynchronisation
 
     RemoteRepositoryBuilder url(String url) {
         this.url = url
@@ -138,20 +140,28 @@ class RemoteRepositoryBuilderImpl extends NonVirtualRepositoryBuilderBase<Remote
         this
     }
 
+    RemoteRepositoryBuilder listRemoteFolderItems(long listRemoteFolderItems) {
+        this.listRemoteFolderItems = listRemoteFolderItems
+        this
+    }
+
+    RemoteRepositoryBuilder contentSynchronisation(ContentSynchronisation contentSynchronisation) {
+        this.synchronizeProperties = contentSynchronisation
+        this
+    }
+
     @SuppressWarnings("GroovyAccessibility")
     RemoteRepository build() {
         validate()
 
-        new RemoteRepositoryImpl(key, settings, xraySettings, description, excludesPattern,
-                includesPattern, notes, blackedOut,
-                propertySets,
-                failedRetrievalCachePeriodSecs,
+        new RemoteRepositoryImpl(key, settings, xraySettings, contentSynchronisation, description, excludesPattern,
+                includesPattern, notes, blackedOut, propertySets, failedRetrievalCachePeriodSecs,
                 hardFail, localAddress, missedRetrievalCachePeriodSecs,
                 offline, password, proxy, retrievalCachePeriodSecs,
                 shareConfiguration, socketTimeoutMillis, enableCookieManagement, allowAnyHostAuth,
                 storeArtifactsLocally, synchronizeProperties, unusedArtifactsCleanupEnabled,
                 unusedArtifactsCleanupPeriodHours, url, username, repoLayoutRef,
-                assumedOfflinePeriodSecs, archiveBrowsingEnabled)
+                assumedOfflinePeriodSecs, archiveBrowsingEnabled, listRemoteFolderItems)
     }
 
     @Override
