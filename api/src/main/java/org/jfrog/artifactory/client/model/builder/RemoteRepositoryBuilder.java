@@ -47,7 +47,7 @@ public interface RemoteRepositoryBuilder extends NonVirtualRepositoryBuilder<Rem
 
     RemoteRepositoryBuilder assumedOfflinePeriodSecs(long assumedOfflinePeriodSecs);
 
-    RemoteRepositoryBuilder listRemoteFolderItems(long listRemoteFolderItems);
+    RemoteRepositoryBuilder listRemoteFolderItems(boolean listRemoteFolderItems);
 
     RemoteRepositoryBuilder contentSynchronisation(ContentSynchronisation contentSynchronisation);
 

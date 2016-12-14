@@ -140,13 +140,13 @@ class RemoteRepositoryBuilderImpl extends NonVirtualRepositoryBuilderBase<Remote
         this
     }
 
-    RemoteRepositoryBuilder listRemoteFolderItems(long listRemoteFolderItems) {
+    RemoteRepositoryBuilder listRemoteFolderItems(boolean listRemoteFolderItems) {
         this.listRemoteFolderItems = listRemoteFolderItems
         this
     }
 
     RemoteRepositoryBuilder contentSynchronisation(ContentSynchronisation contentSynchronisation) {
-        this.synchronizeProperties = contentSynchronisation
+        this.contentSynchronisation = contentSynchronisation
         this
     }
 
