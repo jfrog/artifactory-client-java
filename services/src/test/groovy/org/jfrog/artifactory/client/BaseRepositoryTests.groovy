@@ -3,9 +3,9 @@ package org.jfrog.artifactory.client;
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.StringDescription
-import org.jfrog.artifactory.client.model.ContentSynchronisation
+import org.jfrog.artifactory.client.model.ContentSync
 import org.jfrog.artifactory.client.model.Repository
-import org.jfrog.artifactory.client.model.impl.ContentSynchronisationImpl
+import org.jfrog.artifactory.client.model.impl.ContentSyncImpl
 import org.jfrog.artifactory.client.model.repository.settings.RepositorySettings
 import org.jfrog.artifactory.client.model.repository.settings.XraySettings
 import org.jfrog.artifactory.client.model.repository.settings.impl.GenericRepositorySettingsImpl
@@ -73,7 +73,7 @@ public abstract class BaseRepositoryTests extends ArtifactoryTestsBase {
         }
 
         if(prepareRemoteRepo) {
-            ContentSynchronisation smartSettings = new ContentSynchronisationImpl();
+            ContentSync contentSync = new ContentSyncImpl();
             remoteRepo = artifactory.repositories().builders().remoteRepositoryBuilder()
                 .key("cutsman-repo_${rnd.nextInt()}")
                 .description("description_${rnd.nextInt()}")
@@ -107,7 +107,7 @@ public abstract class BaseRepositoryTests extends ArtifactoryTestsBase {
                 .username("user_${rnd.nextInt()}")
                 .repositorySettings(settings)
                 .xraySettings(xraySettings)
-                .contentSynchronisation(smartSettings)
+                .contentSync(contentSync)
                 .build()
         }
 

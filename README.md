@@ -205,6 +205,31 @@ String result = artifactory.repository("RepoName").delete();
     String result = artifactory.repositories().update(updatedRepository);
 ```
 
+##### Smart Remote Repositories
+
+A [smart remote repository](https://www.jfrog.com/confluence/display/RTF/Smart+Remote+Repositories) is a remote repository that proxies a repository from another instance of Artifactory.
+Smart remote repositories are configured with four additional properties.
+
+```
+        RemoteRepository remoteRepository = (RemoteRepository) artifactory.repository("SmartRemoteRepoName").get();
+        ContentSync contentSync = remoteRepository.getContentSync();
+        contentSync.setEnabled(true);
+        // Report Statistics
+        contentSync.getStatistics().setEnabled(true);
+        // Sync Properties
+        contentSync.getProperties().setEnabled(true);
+        // Source Absence Detection
+        contentSync.getSource().setOriginAbsenceDetection(true);
+
+        Repository updatedRepository = artifactory.repositories()
+            .builders()
+            .builderFrom(remoteRepository)
+            .listRemoteFolderItems(true)    // List Remote Folder Items
+            .build();
+
+        String result = artifactory.repositories().update(updatedRepository);
+```
+
 #### Search
 
 ##### Available Searches
@@ -408,7 +433,7 @@ List<String> addons = version.getAddons();
 String xml = artifactory.system().configuration();
 ```
 
-##### Settimg System Configuration XML
+##### Setting System Configuration XML
 ```
 String xml = ... 
 artifactory.system().configuration(xml);

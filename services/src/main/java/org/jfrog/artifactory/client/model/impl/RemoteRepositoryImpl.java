@@ -1,8 +1,9 @@
 package org.jfrog.artifactory.client.model.impl;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
-import org.jfrog.artifactory.client.model.ContentSynchronisation;
+import org.jfrog.artifactory.client.model.ContentSync;
 import org.jfrog.artifactory.client.model.RemoteRepository;
 import org.jfrog.artifactory.client.model.RepositoryType;
 import org.jfrog.artifactory.client.model.repository.settings.RepositorySettings;
@@ -36,15 +37,16 @@ public class RemoteRepositoryImpl extends NonVirtualRepositoryBase implements Re
     private boolean synchronizeProperties;
     private long assumedOfflinePeriodSecs;
     private boolean listRemoteFolderItems;
-    @JsonDeserialize(as=ContentSynchronisationImpl.class)
-    private ContentSynchronisation contentSynchronisation;
+    @JsonDeserialize(as=ContentSyncImpl.class)
+    @JsonProperty("contentSynchronisation")
+    private ContentSync contentSync;
 
     private RemoteRepositoryImpl() {
         repoLayoutRef = MAVEN_2_REPO_LAYOUT;
     }
 
     RemoteRepositoryImpl(String key, RepositorySettings settings, XraySettings xraySettings,
-                         ContentSynchronisation contentSynchronisation, String description,
+                         ContentSync contentSync, String description,
                          String excludesPattern, String includesPattern, String notes, boolean blackedOut,
                          List<String> propertySets,
                          int failedRetrievalCachePeriodSecs, boolean hardFail, String localAddress,
@@ -59,7 +61,7 @@ public class RemoteRepositoryImpl extends NonVirtualRepositoryBase implements Re
             propertySets,
             repoLayoutRef, archiveBrowsingEnabled);
 
-        this.contentSynchronisation = contentSynchronisation;
+        this.contentSync = contentSync;
         this.failedRetrievalCachePeriodSecs = failedRetrievalCachePeriodSecs;
         this.hardFail = hardFail;
         this.localAddress = localAddress;
@@ -254,12 +256,12 @@ public class RemoteRepositoryImpl extends NonVirtualRepositoryBase implements Re
     }
 
     @Override
-    public ContentSynchronisation getContentSynchronisation() {
-        return contentSynchronisation;
+    public ContentSync getContentSync() {
+        return contentSync;
     }
 
-    private void setContentSynchronisation(ContentSynchronisation contentSynchronisation) {
-        this.contentSynchronisation = contentSynchronisation;
+    private void setContentSync(ContentSync contentSync) {
+        this.contentSync = contentSync;
     }
 
     @Override

@@ -1,6 +1,6 @@
 package org.jfrog.artifactory.client.model.builder.impl
 
-import org.jfrog.artifactory.client.model.ContentSynchronisation
+import org.jfrog.artifactory.client.model.ContentSync
 import org.jfrog.artifactory.client.model.RemoteRepository
 import org.jfrog.artifactory.client.model.RepositoryType
 import org.jfrog.artifactory.client.model.builder.RemoteRepositoryBuilder
@@ -43,7 +43,7 @@ class RemoteRepositoryBuilderImpl extends NonVirtualRepositoryBuilderBase<Remote
     private boolean synchronizeProperties
     private long assumedOfflinePeriodSecs = 300
     private boolean listRemoteFolderItems
-    private ContentSynchronisation contentSynchronisation
+    private ContentSync contentSync
 
     RemoteRepositoryBuilder url(String url) {
         this.url = url
@@ -145,8 +145,8 @@ class RemoteRepositoryBuilderImpl extends NonVirtualRepositoryBuilderBase<Remote
         this
     }
 
-    RemoteRepositoryBuilder contentSynchronisation(ContentSynchronisation contentSynchronisation) {
-        this.contentSynchronisation = contentSynchronisation
+    RemoteRepositoryBuilder contentSync(ContentSync contentSync) {
+        this.contentSync = contentSync
         this
     }
 
@@ -154,7 +154,7 @@ class RemoteRepositoryBuilderImpl extends NonVirtualRepositoryBuilderBase<Remote
     RemoteRepository build() {
         validate()
 
-        new RemoteRepositoryImpl(key, settings, xraySettings, contentSynchronisation, description, excludesPattern,
+        new RemoteRepositoryImpl(key, settings, xraySettings, contentSync, description, excludesPattern,
                 includesPattern, notes, blackedOut, propertySets, failedRetrievalCachePeriodSecs,
                 hardFail, localAddress, missedRetrievalCachePeriodSecs,
                 offline, password, proxy, retrievalCachePeriodSecs,

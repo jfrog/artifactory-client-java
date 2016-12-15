@@ -1,6 +1,7 @@
 package org.jfrog.artifactory.client;
 
 import org.jfrog.artifactory.client.model.*;
+import org.jfrog.artifactory.client.model.impl.ContentSyncImpl;
 import org.jfrog.artifactory.client.model.repository.settings.RepositorySettings;
 import org.jfrog.artifactory.client.model.repository.settings.impl.GenericRepositorySettingsImpl;
 import org.testng.annotations.BeforeMethod;
@@ -152,10 +153,10 @@ public class RepositoryTests extends ArtifactoryTestsBase {
         assertEquals(propertySets.size(), 1);
         assertEquals(propertySets.get(0), ("artifactory"));
         assertEquals(jcenter.getRepoLayoutRef(), "maven-2-default");
-        assertNotNull(jcenter.getContentSynchronisation());
-        assertNotNull(jcenter.getContentSynchronisation().getProperties());
-        assertNotNull(jcenter.getContentSynchronisation().getStatistics());
-        assertNotNull(jcenter.getContentSynchronisation().getSource());
+        assertNotNull(jcenter.getContentSync());
+        assertNotNull(jcenter.getContentSync().getProperties());
+        assertNotNull(jcenter.getContentSync().getStatistics());
+        assertNotNull(jcenter.getContentSync().getSource());
     }
 
     @Test

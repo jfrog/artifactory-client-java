@@ -1,8 +1,8 @@
 package org.jfrog.artifactory.client.model;
 
-public interface ContentSynchronisation {
+public interface ContentSync {
 
-    boolean getEnabled();
+    boolean isEnabled();
 
     EnabledHolder getStatistics();
 
@@ -20,14 +20,14 @@ public interface ContentSynchronisation {
 
     interface EnabledHolder {
 
-        boolean getEnabled();
+        boolean isEnabled();
 
         void setEnabled(boolean enabled);
     }
 
     interface OriginAbsenceDetectionHolder {
 
-        boolean getOriginAbsenceDetection();
+        boolean isOriginAbsenceDetection();
 
         void setOriginAbsenceDetection(boolean originAbsenceDetection);
     }

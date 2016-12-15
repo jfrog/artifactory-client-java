@@ -46,6 +46,6 @@ public interface RemoteRepository extends Repository, NonVirtualRepository {
 
     boolean isListRemoteFolderItems();
 
-    ContentSynchronisation getContentSynchronisation();
+    ContentSync getContentSync();
 
 }

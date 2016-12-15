@@ -2,9 +2,9 @@ package org.jfrog.artifactory.client.model.impl;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
-import org.jfrog.artifactory.client.model.ContentSynchronisation;
+import org.jfrog.artifactory.client.model.ContentSync;
 
-public class ContentSynchronisationImpl implements ContentSynchronisation {
+public class ContentSyncImpl implements ContentSync {
 
     private boolean enabled;
 
@@ -17,14 +17,14 @@ public class ContentSynchronisationImpl implements ContentSynchronisation {
     @JsonDeserialize(as = OriginAbsenceDetectionHolderImpl.class)
     private OriginAbsenceDetectionHolder source;
 
-    public ContentSynchronisationImpl() {
+    public ContentSyncImpl() {
         statistics = new EnabledHolderImpl();
         properties = new EnabledHolderImpl();
         source = new OriginAbsenceDetectionHolderImpl();
     }
 
     @Override
-    public boolean getEnabled() {
+    public boolean isEnabled() {
         return enabled;
     }
 
@@ -68,7 +68,7 @@ public class ContentSynchronisationImpl implements ContentSynchronisation {
         private boolean enabled;
 
         @Override
-        public boolean getEnabled() {
+        public boolean isEnabled() {
             return enabled;
         }
 
@@ -83,7 +83,7 @@ public class ContentSynchronisationImpl implements ContentSynchronisation {
         private boolean originAbsenceDetection;
 
         @Override
-        public boolean getOriginAbsenceDetection() {
+        public boolean isOriginAbsenceDetection() {
             return originAbsenceDetection;
         }
 

@@ -1,6 +1,6 @@
 package org.jfrog.artifactory.client.model.builder;
 
-import org.jfrog.artifactory.client.model.ContentSynchronisation;
+import org.jfrog.artifactory.client.model.ContentSync;
 import org.jfrog.artifactory.client.model.RemoteRepository;
 
 /**
@@ -49,6 +49,6 @@ public interface RemoteRepositoryBuilder extends NonVirtualRepositoryBuilder<Rem
 
     RemoteRepositoryBuilder listRemoteFolderItems(boolean listRemoteFolderItems);
 
-    RemoteRepositoryBuilder contentSynchronisation(ContentSynchronisation contentSynchronisation);
+    RemoteRepositoryBuilder contentSync(ContentSync contentSync);
 
 }
