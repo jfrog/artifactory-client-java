@@ -1,6 +1,7 @@
 package org.jfrog.artifactory.client;
 
 import org.jfrog.artifactory.client.model.*;
+import org.jfrog.artifactory.client.model.impl.ContentSyncImpl;
 import org.jfrog.artifactory.client.model.repository.settings.RepositorySettings;
 import org.jfrog.artifactory.client.model.repository.settings.impl.GenericRepositorySettingsImpl;
 import org.testng.annotations.BeforeMethod;
@@ -13,6 +14,7 @@ import static java.util.Arrays.asList;
 import static org.apache.commons.lang.StringUtils.countMatches;
 import static org.jfrog.artifactory.client.model.impl.RepositoryTypeImpl.*;
 import static org.testng.Assert.*;
+import static org.testng.Assert.assertNotNull;
 
 /**
  * @author jbaruch
@@ -151,6 +153,10 @@ public class RepositoryTests extends ArtifactoryTestsBase {
         assertEquals(propertySets.size(), 1);
         assertEquals(propertySets.get(0), ("artifactory"));
         assertEquals(jcenter.getRepoLayoutRef(), "maven-2-default");
+        assertNotNull(jcenter.getContentSync());
+        assertNotNull(jcenter.getContentSync().getProperties());
+        assertNotNull(jcenter.getContentSync().getStatistics());
+        assertNotNull(jcenter.getContentSync().getSource());
     }
 
     @Test

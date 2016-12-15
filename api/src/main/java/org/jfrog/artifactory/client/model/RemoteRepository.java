@@ -44,4 +44,8 @@ public interface RemoteRepository extends Repository, NonVirtualRepository {
 
     long getAssumedOfflinePeriodSecs();
 
+    boolean isListRemoteFolderItems();
+
+    ContentSync getContentSync();
+
 }
