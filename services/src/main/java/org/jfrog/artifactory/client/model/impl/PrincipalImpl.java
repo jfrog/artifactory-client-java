@@ -1,11 +1,11 @@
 package org.jfrog.artifactory.client.model.impl;
 
-import org.jfrog.artifactory.client.model.Principal;
-import org.jfrog.artifactory.client.model.Privilege;
+import static java.util.Collections.unmodifiableSet;
 
 import java.util.Set;
 
-import static java.util.Collections.unmodifiableSet;
+import org.jfrog.artifactory.client.model.Principal;
+import org.jfrog.artifactory.client.model.Privilege;
 
 /**
  * @author jbaruch
@@ -15,6 +15,8 @@ public class PrincipalImpl implements Principal {
 
     private final String name;
     private final Set<Privilege> privileges;
+
+    // TODO : http://stackoverflow.com/questions/25185545/jackson-object-mapper-annotations-to-deserialize-a-inner-collection ?
 
     public PrincipalImpl(String name, Set<Privilege> privileges) {
         this.name = name;
@@ -40,4 +42,5 @@ public class PrincipalImpl implements Principal {
         }
         return true;
     }
+
 }

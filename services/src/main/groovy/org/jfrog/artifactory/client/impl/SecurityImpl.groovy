@@ -1,16 +1,19 @@
 package org.jfrog.artifactory.client.impl
 
-import com.fasterxml.jackson.core.type.TypeReference
 import groovyx.net.http.ContentType
+
+import org.apache.commons.collections.CollectionUtils
 import org.jfrog.artifactory.client.Security
 import org.jfrog.artifactory.client.model.Group
-import org.jfrog.artifactory.client.model.PermissionTarget
+import org.jfrog.artifactory.client.model.Permission
 import org.jfrog.artifactory.client.model.User
 import org.jfrog.artifactory.client.model.builder.SecurityBuilders
 import org.jfrog.artifactory.client.model.builder.impl.SecurityBuildersImpl
 import org.jfrog.artifactory.client.model.impl.GroupImpl
-import org.jfrog.artifactory.client.model.impl.PermissionTargetImpl
+import org.jfrog.artifactory.client.model.impl.PermissionImpl
 import org.jfrog.artifactory.client.model.impl.UserImpl
+
+import com.fasterxml.jackson.core.type.TypeReference
 
 /**
  *
@@ -52,9 +55,8 @@ class SecurityImpl implements Security {
     }
 
     @Override
-    PermissionTarget permissionTarget(String name) {
-        artifactory.get("${getSecurityPermissionsApi()}/$name", ContentType.JSON, new TypeReference<PermissionTargetImpl>() {})
-
+    Permission permission(String name) {
+        artifactory.get("${getSecurityPermissionsApi()}/$name", ContentType.JSON, new TypeReference<PermissionImpl>() {})
     }
 
     @Override
@@ -65,7 +67,7 @@ class SecurityImpl implements Security {
     }
 
     @Override
-    List<String> permissionTargets() {
+    List<String> permissions() {
         def permissionTargets = artifactory.get("${getSecurityPermissionsApi()}", ContentType.JSON)
         def permissionTargetNames = permissionTargets.collect { it.name }
         return permissionTargetNames
@@ -82,13 +84,26 @@ class SecurityImpl implements Security {
     }
 
     @Override
-    String deleteUser(String name) {
+    public void createOrUpdatePermission(Permission permission) {
+        if(CollectionUtils.isEmpty(permission.getRepositories())){
+            throw new UnsupportedOperationException("At least 1 repository is required in permission (could be 'ANY', 'ANY LOCAL', 'ANY REMOTE')")
+        }
+        artifactory.put("${getSecurityPermissionsApi()}/${permission.name}", [:], ContentType.ANY, null, ContentType.JSON, permission)
+    }
+
+    @Override
+    void deleteUser(String name) {
         artifactory.delete("${getSecurityUsersApi()}/$name")
     }
 
     @Override
-    String deleteGroup(String name) {
+    void deleteGroup(String name) {
         artifactory.delete("${getSecurityUserGroupsApi()}/$name")
+    }
+
+    @Override
+    public void deletePermission(String name) {
+        artifactory.delete("${getSecurityPermissionsApi()}/$name")
     }
 
     @Override

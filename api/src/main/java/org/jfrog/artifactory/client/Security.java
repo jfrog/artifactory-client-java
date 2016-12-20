@@ -1,16 +1,15 @@
 package org.jfrog.artifactory.client;
 
-import org.jfrog.artifactory.client.model.Group;
-import org.jfrog.artifactory.client.model.PermissionTarget;
-import org.jfrog.artifactory.client.model.User;
-import org.jfrog.artifactory.client.model.builder.SecurityBuilders;
-
 import java.util.Collection;
 import java.util.List;
 
+import org.jfrog.artifactory.client.model.Group;
+import org.jfrog.artifactory.client.model.Permission;
+import org.jfrog.artifactory.client.model.User;
+import org.jfrog.artifactory.client.model.builder.SecurityBuilders;
+
 /**
- * Date: 10/18/12
- * Time: 9:25 AM
+ * Date: 10/18/12 Time: 9:25 AM
  *
  * @author freds
  */
@@ -26,17 +25,21 @@ public interface Security {
 
     List<String> groupNames();
 
-    PermissionTarget permissionTarget(String name);
+    Permission permission(String name);
 
-    List<String> permissionTargets();
+    List<String> permissions();
 
     void createOrUpdate(User user);
 
     void createOrUpdateGroup(Group group);
 
-    String deleteUser(String name);
+    void createOrUpdatePermission(Permission permission);
 
-    String deleteGroup(String name);
+    void deleteUser(String name);
+
+    void deleteGroup(String name);
+
+    void deletePermission(String name);
 
     String getSecurityApi();
 
