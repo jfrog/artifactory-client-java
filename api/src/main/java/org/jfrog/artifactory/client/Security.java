@@ -34,9 +34,13 @@ public interface Security {
 
     void createOrUpdateGroup(Group group);
 
+    void createOrReplacePermissionTarget(PermissionTarget permissionTarget);
+
     String deleteUser(String name);
 
     String deleteGroup(String name);
+
+    String deletePermissionTarget(String name);
 
     String getSecurityApi();
 

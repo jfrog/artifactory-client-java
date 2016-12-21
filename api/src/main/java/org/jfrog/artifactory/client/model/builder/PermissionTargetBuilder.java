@@ -1,7 +1,7 @@
 package org.jfrog.artifactory.client.model.builder;
 
-import org.jfrog.artifactory.client.model.ItemPermission;
 import org.jfrog.artifactory.client.model.PermissionTarget;
+import org.jfrog.artifactory.client.model.Principals;
 
 /**
  * @author jbaruch
@@ -17,7 +17,7 @@ public interface PermissionTargetBuilder {
 
     PermissionTargetBuilder repositories(String... repositories);
 
-    PermissionTargetBuilder itemPermissions(ItemPermission... itemPermissions);
+    PermissionTargetBuilder principals(Principals principals);
 
     PermissionTarget build();
 }

@@ -14,16 +14,12 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
-import org.jfrog.artifactory.client.model.Group;
-import org.jfrog.artifactory.client.model.ItemPermission;
-import org.jfrog.artifactory.client.model.PermissionTarget;
-import org.jfrog.artifactory.client.model.Privilege;
-import org.jfrog.artifactory.client.model.Subject;
-import org.jfrog.artifactory.client.model.User;
+import groovyx.net.http.HttpResponseException;
+import org.jfrog.artifactory.client.model.*;
 import org.jfrog.artifactory.client.model.builder.GroupBuilder;
+import org.jfrog.artifactory.client.model.builder.PermissionTargetBuilder;
 import org.jfrog.artifactory.client.model.builder.UserBuilder;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.Test;
+import org.testng.annotations.*;
 
 /**
  * @author freds
@@ -34,6 +30,7 @@ public class SecurityTests extends ArtifactoryTestsBase {
     private static final String USER_NAME = "test" + ("" + System.currentTimeMillis()).substring(5);
     private static final String GROUP_NAME = "test_group" + ("" + System.currentTimeMillis()).substring(5);
     private static final String GROUP_EXTERNAL_NAME = "test_group_external" + ("" + System.currentTimeMillis()).substring(5);
+    private static final String PERMISSION_Target_NAME = "test_permission" + ("" + System.currentTimeMillis()).substring(5);
 
     @AfterMethod
     public void leaveItClean() {
@@ -98,9 +95,18 @@ public class SecurityTests extends ArtifactoryTestsBase {
     }
 
     @Test
-    public void testPermissionTarget() {
+    public void testGetPermissionTarget() {
         PermissionTarget permissionTarget = artifactory.security().permissionTarget("Anything");
         assertEquals("Anything", permissionTarget.getName());
+        assertTrue(permissionTarget.getIncludesPattern().contains("**"));
+        assertTrue(permissionTarget.getRepositories().size() > 0);
+        assertNotNull(permissionTarget.getPrincipals());
+        assertNotNull(permissionTarget.getPrincipals().getUsers());
+        final String user = permissionTarget.getPrincipals().getUsers().get(0).getName();
+        assertFalse(permissionTarget.getPrincipals().getUser(user).getPrivileges().contains(Privilege.ADMIN));
+        assertFalse(permissionTarget.getPrincipals().getUser(user).getPrivileges().contains(Privilege.DELETE));
+        assertTrue(permissionTarget.getPrincipals().getUser(user).getPrivileges().contains(Privilege.READ));
+        assertNotNull(permissionTarget.getPrincipals().getGroups());
     }
 
     @Test
@@ -110,6 +116,71 @@ public class SecurityTests extends ArtifactoryTestsBase {
             PermissionTarget permissionTarget = artifactory.security().permissionTarget(name);
             assertNotNull(permissionTarget);
         }
+    }
+
+    @Test(groups = "create")
+    public void testCreatePermissionTarget() {
+        // WARN: This test is using default Artifactory users/groups
+        Principal userAno = artifactory.security().builders().principalBuilder().name("anonymous").privileges(Privilege.READ).build();
+        Principal groupRead = artifactory.security().builders().principalBuilder().name("readers").privileges(Privilege.READ, Privilege.ANNOTATE)
+                .build();
+
+        Principals principals = artifactory.security().builders().principalsBuilder().users(userAno).groups(groupRead).build();
+
+        PermissionTargetBuilder permissionBuilder = artifactory.security().builders().permissionTargetBuilder();
+        PermissionTarget permission = permissionBuilder.name(PERMISSION_Target_NAME).repositories("ANY REMOTE").includesPattern("com/company")
+                .excludesPattern("org/blacklist/,org/bug/").principals(principals).build();
+
+        try {
+            artifactory.security().createOrReplacePermissionTarget(permission);
+        } catch (Exception e) {
+            if (e instanceof HttpResponseException) {
+                throw new UnsupportedOperationException(((HttpResponseException) e).getResponse().getData().toString(), e);
+            }
+            throw new UnsupportedOperationException(e);
+        }
+
+        PermissionTarget permissionTargetRes = artifactory.security().permissionTarget(PERMISSION_Target_NAME);
+        assertNotNull(permissionTargetRes);
+        assertEquals(permissionTargetRes.getName(), PERMISSION_Target_NAME);
+        assertEquals("ANY REMOTE", permissionTargetRes.getRepositories().get(0));
+        assertNotNull(permissionTargetRes.getPrincipals());
+        assertEquals(permissionTargetRes.getPrincipals().getUsers().get(0).getName(), "anonymous");
+        assertEquals(permissionTargetRes.getPrincipals().getUsers().get(0).getPrivileges(), userAno.getPrivileges());
+        assertEquals(permissionTargetRes.getPrincipals().getGroups().get(0).getName(), "readers");
+        assertEquals(permissionTargetRes.getPrincipals().getGroups().get(0).getPrivileges(), groupRead.getPrivileges());
+
+    }
+
+    @Test(dependsOnGroups = "create")
+    public void testReplacePermissionTarget() {
+        // WARN: This test is using default Artifactory users/groups
+        PermissionTarget permissionTarget = artifactory.security().permissionTarget(PERMISSION_Target_NAME);
+        assertNotNull(permissionTarget);
+        Principal userAno = artifactory.security().builders().principalBuilder().name("anonymous").privileges(Privilege.READ, ANNOTATE).build();
+
+        Principals principals = artifactory.security().builders().principalsBuilder().users(userAno).build();
+
+        PermissionTargetBuilder permissionBuilder = artifactory.security().builders().permissionTargetBuilder();
+        PermissionTarget permission = permissionBuilder.name(PERMISSION_Target_NAME).repositories("jcenter").principals(principals).build();
+
+        try {
+            artifactory.security().createOrReplacePermissionTarget(permission);
+        } catch (Exception e) {
+            if (e instanceof HttpResponseException) {
+                throw new UnsupportedOperationException(((HttpResponseException) e).getResponse().getData().toString(), e);
+            }
+            throw new UnsupportedOperationException(e);
+        }
+
+        PermissionTarget permissionTargetRes = artifactory.security().permissionTarget(PERMISSION_Target_NAME);
+        assertNotNull(permissionTargetRes);
+        assertEquals(permissionTargetRes.getName(), PERMISSION_Target_NAME);
+        assertEquals("jcenter", permissionTargetRes.getRepositories().get(0));
+        assertNotNull(permissionTargetRes.getPrincipals());
+        assertEquals(permissionTargetRes.getPrincipals().getUsers().get(0).getName(), "anonymous");
+        assertEquals(permissionTargetRes.getPrincipals().getUsers().get(0).getPrivileges(), userAno.getPrivileges());
+        assertEquals(permissionTargetRes.getPrincipals().getGroups().size(), 0);
     }
 
     @Test
@@ -171,6 +242,14 @@ public class SecurityTests extends ArtifactoryTestsBase {
     public void testEffectiveRepoPermissions() {
         Set<ItemPermission> itemPermissions = artifactory.repository(NEW_LOCAL).effectivePermissions();
         assertItemPermissions(itemPermissions);
+    }
+
+    @AfterClass
+    public void tearDown() {
+        try {
+            artifactory.security().deletePermissionTarget(PERMISSION_Target_NAME);
+        }catch (Exception ignore) {
+        }
     }
 
     private void assertPermissions(ItemPermission itemPermission, boolean isGroup, Privilege[] allowedPrivileges, Privilege[] notAllowedPrivileges) {

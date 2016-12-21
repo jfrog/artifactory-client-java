@@ -20,4 +20,7 @@ public interface SecurityBuilders {
 
     PermissionTargetBuilder builderFrom(PermissionTarget from);
 
+    PrincipalsBuilder principalsBuilder();
+
+    PrincipalBuilder principalBuilder();
 }

@@ -2,6 +2,7 @@ package org.jfrog.artifactory.client.impl
 
 import com.fasterxml.jackson.core.type.TypeReference
 import groovyx.net.http.ContentType
+import org.apache.commons.collections.CollectionUtils
 import org.jfrog.artifactory.client.Security
 import org.jfrog.artifactory.client.model.Group
 import org.jfrog.artifactory.client.model.PermissionTarget
@@ -82,6 +83,14 @@ class SecurityImpl implements Security {
     }
 
     @Override
+    public void createOrReplacePermissionTarget(PermissionTarget permissionTarget) {
+        if (CollectionUtils.isEmpty(permissionTarget.getRepositories())) {
+            throw new UnsupportedOperationException("At least 1 repository is required in permission target (could be 'ANY', 'ANY LOCAL', 'ANY REMOTE')")
+        }
+        artifactory.put("${getSecurityPermissionsApi()}/${permissionTarget.name}", [:], ContentType.ANY, null, ContentType.JSON, permissionTarget)
+    }
+
+    @Override
     String deleteUser(String name) {
         artifactory.delete("${getSecurityUsersApi()}/$name")
     }
@@ -92,8 +101,13 @@ class SecurityImpl implements Security {
     }
 
     @Override
+    String deletePermissionTarget(String name) {
+        artifactory.delete("${getSecurityPermissionsApi()}/$name")
+    }
+
+    @Override
     String getSecurityApi() {
-        return baseApiPath  + "/security/";
+        return baseApiPath + "/security/";
     }
 
     @Override

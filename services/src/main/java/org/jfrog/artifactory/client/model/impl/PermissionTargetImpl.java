@@ -1,8 +1,8 @@
 package org.jfrog.artifactory.client.model.impl;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import org.jfrog.artifactory.client.model.ItemPermission;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.jfrog.artifactory.client.model.PermissionTarget;
+import org.jfrog.artifactory.client.model.Principals;
 
 import java.util.List;
 
@@ -10,26 +10,25 @@ import java.util.List;
  * @author jbaruch
  * @since 26/11/12
  */
-@JsonIgnoreProperties("principals")
 public class PermissionTargetImpl implements PermissionTarget {
 
     private String name;
     private String includesPattern;
     private String excludesPattern;
     private List<String> repositories;
-    //    @JsonIgnore this 2 lines of code can be used instead of annotation above the class
-//    private  List<String> principals;
-    private List<ItemPermission> itemPermissions;
+    @JsonDeserialize(as = PrincipalsImpl.class)
+    private Principals principals;
 
     public PermissionTargetImpl() {
+        super();
     }
 
-    public PermissionTargetImpl(String name, String includesPattern, String excludesPattern, List<String> repositories, List<ItemPermission> itemPermissions) {
+    public PermissionTargetImpl(String name, String includesPattern, String excludesPattern, List<String> repositories, Principals principals) {
         this.name = name;
         this.includesPattern = includesPattern;
         this.excludesPattern = excludesPattern;
         this.repositories = repositories;
-        this.itemPermissions = itemPermissions;
+        this.principals = principals;
     }
 
     @Override
@@ -49,8 +48,8 @@ public class PermissionTargetImpl implements PermissionTarget {
         return repositories;
     }
 
-    public List<ItemPermission> getItemPermissions() {
-        return itemPermissions;
+    @Override
+    public Principals getPrincipals() {
+        return principals;
     }
-
 }
