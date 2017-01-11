@@ -39,6 +39,7 @@ public abstract class ArtifactoryTestsBase {
     protected Artifactory artifactory;
     protected String username;
     private String password;
+    private String apikey;
     protected String url;
     protected String filePath;
     protected long fileSize;
@@ -61,6 +62,7 @@ public abstract class ArtifactoryTestsBase {
         }
         username = readParam(props, "username");
         password = readParam(props, "password");
+        apikey = readParam(props, "apikey");
 
 
         filePath = "a/b";
@@ -187,5 +189,9 @@ public abstract class ArtifactoryTestsBase {
                 throw e;
             }
         }
+    }
+
+    protected Artifactory getArtifactoryClientWithApiKey() {
+        return create(url, username, apikey, true);
     }
 }

@@ -33,7 +33,7 @@ class ArtifactoryImpl implements Artifactory {
     def final originalJsonParser
     def final originalTextParser
     private final String contextName
-    private String username;
+    private String username
     private final ObjectMapper objectMapper
 
     ArtifactoryImpl(RESTClient client, String contextName) {
