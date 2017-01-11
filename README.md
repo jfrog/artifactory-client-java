@@ -39,7 +39,7 @@ Artifactory artifactory = ArtifactoryClient.create("ArtifactoryUrl", "username",
 ```
 
 #### Setting up Artifactory with Artifactory api key
-When the boolean parameter is set to true the password will be used as an apikey instead of a normal basic authentication password.
+The boolean parameter is set to true to use password as an apikey instead of a normal basic authentication password.
 ```
 Artifactory artifactory = ArtifactoryClient.create("ArtifactoryUrl", "username", "apikey", true);
 ```
