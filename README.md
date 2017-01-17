@@ -124,10 +124,7 @@ FileStorageSummary fileStorageSummary = artifactory.storage().getStorageInfo().g
 for (RepositorySummary repoSummary : artifactory.storage().getStorageInfo().getRepositoriesSummaryList()) {
     repoSummary.getRepoKey();
 }
-
 ```
-
-**NB**: The [storage](https://www.jfrog.com/confluence/display/RTF/Artifactory+REST+API#ArtifactoryRESTAPI-FolderInfo) API is usable with `artifactory.repository("RepoName").file|folder("path")``. See previous [File Info](file-info) & [Folder Info](folder-info) sections.
 
 #### Managing Items (files and folders)
 
