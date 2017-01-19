@@ -12,11 +12,11 @@ import org.jfrog.artifactory.client.model.repository.settings.XraySettings
  * @since 31/07/12
  */
 abstract class RepositoryBuilderBase<B extends RepositoryBuilder, R extends Repository> implements RepositoryBuilder<B, R> {
-    protected String description
-    protected String excludesPattern
+    protected String description = ''
+    protected String excludesPattern = ''
     protected String includesPattern = '**/*'
     protected String key
-    protected String notes
+    protected String notes = ''
     protected String repoLayoutRef
     protected RepositorySettings settings
     protected XraySettings xraySettings

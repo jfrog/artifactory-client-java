@@ -24,7 +24,8 @@ class RemoteRepositoryBuilderImpl extends NonVirtualRepositoryBuilderBase<Remote
     }
 
     private String url
-    private String username
+    protected String description = ' (local file cache)'
+    private String username = ''
     private String password
     private String proxy
     private boolean hardFail
@@ -33,7 +34,7 @@ class RemoteRepositoryBuilderImpl extends NonVirtualRepositoryBuilderBase<Remote
     private int socketTimeoutMillis = 15000
     private boolean enableCookieManagement = false
     private boolean allowAnyHostAuth = false
-    private String localAddress
+    private String localAddress = ''
     private int retrievalCachePeriodSecs = 43200
     private int missedRetrievalCachePeriodSecs = 7200
     private int failedRetrievalCachePeriodSecs = 30
@@ -47,6 +48,12 @@ class RemoteRepositoryBuilderImpl extends NonVirtualRepositoryBuilderBase<Remote
 
     RemoteRepositoryBuilder url(String url) {
         this.url = url
+        this
+    }
+
+    @Override
+    RemoteRepositoryBuilder description(String description) {
+        this.description = !description ? ' (local file cache)' : description
         this
     }
 
