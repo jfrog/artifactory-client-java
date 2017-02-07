@@ -13,6 +13,7 @@ public class DockerRepositorySettingsImpl implements DockerRepositorySettings{
     DockerApiVersion dockerApiVersion
     Boolean enableTokenAuthentication
     Boolean listRemoteFolderItems
+    Integer maxUniqueTags
 
     @Override
     public PackageType getPackageType() {
