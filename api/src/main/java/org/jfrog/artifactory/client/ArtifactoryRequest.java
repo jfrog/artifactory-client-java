@@ -29,6 +29,7 @@ public interface ArtifactoryRequest {
     enum ContentType {
         JSON("JSON"),
         TEXT("TEXT"),
+        URLENC("x-www-form-urlencoded"),
         ANY("ANY");
         private String text;
         ContentType(String text){
