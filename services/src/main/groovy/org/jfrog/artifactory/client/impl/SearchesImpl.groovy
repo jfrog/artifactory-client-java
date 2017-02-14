@@ -54,31 +54,38 @@ class SearchesImpl implements Searches {
     @Override
     Searches artifactsByGavc() {
         this.searchUrl = 'gavc'
-        this.searchQuery=[:]
+        this.searchQuery = [:]
+        this
+    }
+
+    @Override
+    Searches artifactsLatestVersion() {
+        this.searchUrl = 'latestVersion'
+        this.searchQuery = [:]
         this
     }
 
     @Override
     Searches groupId(String groupId) {
-        this.searchQuery << [g:groupId]
+        this.searchQuery << [g: groupId]
         this
     }
 
     @Override
     Searches artifactId(String artifactId) {
-        this.searchQuery << [a:artifactId]
+        this.searchQuery << [a: artifactId]
         this
     }
 
     @Override
     Searches version(String version) {
-        this.searchQuery << [v:version]
+        this.searchQuery << [v: version]
         this
     }
 
     @Override
     Searches classifier(String classifier) {
-        this.searchQuery << [c:classifier]
+        this.searchQuery << [c: classifier]
         this
     }
 
@@ -89,7 +96,18 @@ class SearchesImpl implements Searches {
         search(searchUrl, searchQuery)
     }
 
+    String doRawSearch() {
+        if (!searchUrl) {
+            throw new IllegalArgumentException("Search url wasn't set. Please call one of the 'artifacts...' methods before calling 'search()'")
+        }
+        rawSearch(searchUrl, searchQuery)
+    }
+
     private List<RepoPath> search(String url, Map query) {
+        if (url.equals("latestVersion")) {
+            throw new IllegalArgumentException("For search 'latestVersion' use doRawSearch.")
+        }
+
         if (reposFilter) {
             query.repos = reposFilter.join(',')
         }
@@ -102,6 +120,22 @@ class SearchesImpl implements Searches {
             }
         } catch (HttpResponseException e) {
             return []
+        }
+    }
+
+    private String rawSearch(String url, Map query) {
+        if (reposFilter) {
+            query.repos = reposFilter.join(',')
+        }
+        try {
+            def contentType = ContentType.JSON
+            if (url.equals("latestVersion")) {
+                contentType = ContentType.TEXT
+            }
+            def result = artifactory.get("${getSearcherApi()}$url", query, contentType)
+            result
+        } catch (HttpResponseException e) {
+            return ""
         }
     }
 

@@ -26,6 +26,16 @@ public class SearchTests extends ArtifactoryTestsBase {
     }
 
     @Test
+    public void testLatestVersionSearch() throws IOException {
+        String results = artifactory.searches().artifactsLatestVersion()
+                .groupId("junit")
+                .artifactId("junit")
+                .repositories("repo1-cache")
+                .doRawSearch();
+        assertEquals(results, "4.12");
+    }
+
+    @Test
     public void testQuickSearchWithWrongSingleLimit() throws IOException {
         List<RepoPath> list = artifactory.searches().artifactsByName("junit").repositories(NEW_LOCAL).doSearch();
         assertTrue(list.isEmpty());
@@ -53,14 +63,16 @@ public class SearchTests extends ArtifactoryTestsBase {
 
     @Test
     public void testArtifactsCreatedSinceSearch() throws IOException {
-        List<RepoPath> results = artifactory.searches().artifactsCreatedSince(0L).doSearch();
+        long startTime =  System.currentTimeMillis() - 86400000L;
+        List<RepoPath> results = artifactory.searches().artifactsCreatedSince(startTime).doSearch();
         assertFalse(results.isEmpty());
     }
 
     @Test
     public void testArtifactsCreatedInDateRangeSearch() throws IOException {
         long now = System.currentTimeMillis();
-        List<RepoPath> results = artifactory.searches().artifactsCreatedInDateRange(0L, now).doSearch();
+        long startTime =  System.currentTimeMillis() - 86400000L;
+        List<RepoPath> results = artifactory.searches().artifactsCreatedInDateRange(startTime, now).doSearch();
         assertFalse(results.isEmpty());
     }
 
