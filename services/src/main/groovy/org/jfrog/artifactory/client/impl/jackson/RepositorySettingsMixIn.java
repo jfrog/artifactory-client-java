@@ -32,7 +32,9 @@ import org.jfrog.artifactory.client.model.repository.settings.impl.*;
     @JsonSubTypes.Type(value = VcsRepositorySettingsImpl.class, name = "vcs"),
     @JsonSubTypes.Type(value = YumRepositorySettingsImpl.class, name = "yum"),
     @JsonSubTypes.Type(value = ComposerRepositorySettingsImpl.class, name = "composer"),
-    @JsonSubTypes.Type(value = ConanRepositorySettingsImpl.class, name = "conan")
+    @JsonSubTypes.Type(value = ConanRepositorySettingsImpl.class, name = "conan"),
+    @JsonSubTypes.Type(value = ChefRepositorySettingsImpl.class, name = "chef"),
+    @JsonSubTypes.Type(value = PuppetRepositorySettingsImpl.class, name = "puppet")
 })
 public interface RepositorySettingsMixIn {
 

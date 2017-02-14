@@ -17,7 +17,7 @@ class VirtualRepositoryBuilderImpl extends RepositoryBuilderBase<VirtualReposito
 
     private VirtualRepositoryBuilderImpl() {
         super([bower, docker, gems, generic, gitlfs, gradle, ivy, maven, npm, nuget, p2, pypi, sbt, yum, composer,
-               conan])
+               conan, chef, puppet])
     }
 
     private Collection<String> repositories = Collections.emptyList();
