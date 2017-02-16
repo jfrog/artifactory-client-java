@@ -249,6 +249,7 @@ Searches artifactsByName(String name);
 Searches artifactsCreatedSince(long sinceMillis);
 Searches artifactsCreatedInDateRange(long fromMillis, long toMillis);
 Searches artifactsByGavc();
+Searches artifactsLatestVersion();
 ```
 
 ##### Searching Files in Repositories
@@ -306,6 +307,15 @@ for (RepoPath searchItem : searchItems) {
     String repoKey = searchItem.getRepoKey();
     String itemPath = searchItem.getItemPath();
 }
+```
+
+##### Searching Latest Version by GAVC and Repository
+```
+String latestVersion = artifactory.searches().artifactsLatestVersion()
+    .groupId("com.example")
+    .artifactId("com.example.test")
+    .repositories("liba-release-local")
+    .doRawSearch();
 ```
 
 #### Managing Users
