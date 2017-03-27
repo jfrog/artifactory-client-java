@@ -22,7 +22,8 @@ public class ArtifactoryClient {
         Integer connectionTimeout = null,
         Integer socketTimeout = null,
         ProxyConfig proxy = null,
-        userAgent = null) {
+        userAgent = null,
+        ignoreSSLIssues = false) {
 
         def matcher = url=~/(https?:\/\/[^\/]+)\/+([^\/]*).*/
         if (!matcher) {
@@ -84,6 +85,10 @@ public class ArtifactoryClient {
                     new UsernamePasswordCredentials(proxy.user, proxy.password))
             }
         }
+        if (ignoreSSLIssues) {
+            client.ignoreSSLIssues();
+        }
+
         Artifactory artifactory = new ArtifactoryImpl(client, matcher[0][2])
         artifactory.@username = username
         artifactory
