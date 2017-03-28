@@ -15,10 +15,24 @@ import org.jfrog.artifactory.client.impl.ArtifactoryImpl
  * @since 12/08/12
  */
 public class ArtifactoryClient {
+    /**
+     *
+     * @param url url
+     * @param username username
+     * @param password password
+     * @param apiKey if true, password field will function as apikey.
+     * @param connectionTimeout connectionTimeout
+     * @param socketTimeout socketTimeout
+     * @param proxy proxy
+     * @param userAgent userAgent
+     * @return {@link ArtifactoryImpl}
+     *
+     */
     public static Artifactory create(
         String url,
         String username = null,
         String password = null,
+        boolean apiKey = false,
         Integer connectionTimeout = null,
         Integer socketTimeout = null,
         ProxyConfig proxy = null,
@@ -67,8 +81,12 @@ public class ArtifactoryClient {
         client.headers.'User-Agent' = userAgent
         //TODO (JB) remove preemptive auth once RTFACT-5119 is fixed
         if (username && password) {
-            client.auth.basic username, password
-            client.headers.Authorization = "Basic ${"$username:$password".toString().bytes.encodeBase64()}"
+            if (apiKey) {
+                client.headers.'X-JFrog-Art-Api'= password
+            } else {
+                client.auth.basic username, password
+                client.headers.Authorization = "Basic ${"$username:$password".toString().bytes.encodeBase64()}"
+            }
         }
         if (connectionTimeout) {
             client.client.params.setParameter("http.connection.timeout", connectionTimeout)

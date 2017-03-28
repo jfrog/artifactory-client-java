@@ -33,10 +33,17 @@ dependencies {
 ### Examples:
 This section includes a few usage examples of the Java client APIs from your application code.
 
-#### Setting up Artifactory
+#### Setting up Artifactory with basic authentication
 ```
 Artifactory artifactory = ArtifactoryClient.create("ArtifactoryUrl", "username", "password");
 ```
+
+#### Setting up Artifactory with Artifactory api key
+The boolean parameter is set to true to use password as an apikey instead of a normal basic authentication password.
+```
+Artifactory artifactory = ArtifactoryClient.create("ArtifactoryUrl", "username", "apikey", true);
+```
+
 #### Uploading and downloading artifacts
 
 ##### Uploading an Artifacts
