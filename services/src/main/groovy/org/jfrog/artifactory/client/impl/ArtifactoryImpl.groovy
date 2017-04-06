@@ -59,6 +59,11 @@ class ArtifactoryImpl implements Artifactory {
         client.shutdown()
     }
 
+    @Override
+    void setToken(String token) {
+        client.headers.Authorization = "Bearer $token"
+    }
+
     String getUri() {
         return client.uri.toString()
     }

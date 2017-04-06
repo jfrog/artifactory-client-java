@@ -33,4 +33,6 @@ public interface Artifactory extends ApiInterface {
     <T> T restCall(ArtifactoryRequest request);
 
     void close();
+
+    void setToken(String token);
 }
