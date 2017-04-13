@@ -24,7 +24,7 @@ public class ArtifactoryClient {
         ProxyConfig proxy = null,
         userAgent = null,
         ignoreSSLIssues = false,
-        String token = null) {
+        String accessToken = null) {
 
         def matcher = url=~/(https?:\/\/[^\/]+)\/+([^\/]*).*/
         if (!matcher) {
@@ -67,8 +67,8 @@ public class ArtifactoryClient {
         }
         client.headers.'User-Agent' = userAgent
         //TODO (JB) remove preemptive auth once RTFACT-5119 is fixed
-        if (token) {
-            client.headers.Authorization = "Bearer $token"
+        if (accessToken) {
+            client.headers.Authorization = "Bearer $accessToken"
         } else if (username && password) {
             client.auth.basic username, password
             client.headers.Authorization = "Basic ${"$username:$password".toString().bytes.encodeBase64()}"
