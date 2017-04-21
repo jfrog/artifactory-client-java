@@ -16,14 +16,15 @@ import org.jfrog.artifactory.client.model.impl.RepoPathImpl
  */
 class SearchesImpl implements Searches {
 
-    private String SEARCHES_API = "/api/search/"
+    private String baseApiPath
     private ArtifactoryImpl artifactory
     private List<String> reposFilter = []
     private String searchUrl
     private Map searchQuery
 
-    SearchesImpl(Artifactory artifactory) {
+    SearchesImpl(Artifactory artifactory, String baseApiPath) {
         this.artifactory = artifactory as ArtifactoryImpl
+        this.baseApiPath = baseApiPath
     }
 
     Searches repositories(String... repositories) {
@@ -50,6 +51,44 @@ class SearchesImpl implements Searches {
         this
     }
 
+    @Override
+    Searches artifactsByGavc() {
+        this.searchUrl = 'gavc'
+        this.searchQuery = [:]
+        this
+    }
+
+    @Override
+    Searches artifactsLatestVersion() {
+        this.searchUrl = 'latestVersion'
+        this.searchQuery = [:]
+        this
+    }
+
+    @Override
+    Searches groupId(String groupId) {
+        this.searchQuery << [g: groupId]
+        this
+    }
+
+    @Override
+    Searches artifactId(String artifactId) {
+        this.searchQuery << [a: artifactId]
+        this
+    }
+
+    @Override
+    Searches version(String version) {
+        this.searchQuery << [v: version]
+        this
+    }
+
+    @Override
+    Searches classifier(String classifier) {
+        this.searchQuery << [c: classifier]
+        this
+    }
+
     List<RepoPath> doSearch() {
         if (!searchUrl) {
             throw new IllegalArgumentException("Search url wasn't set. Please call one of the 'artifacts...' methods before calling 'search()'")
@@ -57,14 +96,25 @@ class SearchesImpl implements Searches {
         search(searchUrl, searchQuery)
     }
 
+    String doRawSearch() {
+        if (!searchUrl) {
+            throw new IllegalArgumentException("Search url wasn't set. Please call one of the 'artifacts...' methods before calling 'search()'")
+        }
+        rawSearch(searchUrl, searchQuery)
+    }
+
     private List<RepoPath> search(String url, Map query) {
+        if (url.equals("latestVersion")) {
+            throw new IllegalArgumentException("For search 'latestVersion' use doRawSearch.")
+        }
+
         if (reposFilter) {
             query.repos = reposFilter.join(',')
         }
         try {
-            def result = artifactory.get("${SEARCHES_API}$url", query, ContentType.JSON)
+            def result = artifactory.get("${getSearcherApi()}$url", query, ContentType.JSON)
             result.results.collect {
-                String path = it.uri.split('/api/storage/')[1]
+                String path = it.uri.split(baseApiPath + '/storage/')[1]
                 String repo = path.split('/')[0]
                 new RepoPathImpl(repo, path - (repo + '/'))
             }
@@ -73,8 +123,27 @@ class SearchesImpl implements Searches {
         }
     }
 
+    private String rawSearch(String url, Map query) {
+        if (reposFilter) {
+            query.repos = reposFilter.join(',')
+        }
+        try {
+            def contentType = ContentType.JSON
+            if (url.equals("latestVersion")) {
+                contentType = ContentType.TEXT
+            }
+            def result = artifactory.get("${getSearcherApi()}$url", query, contentType)
+            result
+        } catch (HttpResponseException e) {
+            return ""
+        }
+    }
+
     PropertyFilters itemsByProperty() {
         new PropertyFiltersImpl(this)
     }
 
+    String getSearcherApi() {
+        return baseApiPath + "/search/";
+    }
 }

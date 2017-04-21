@@ -37,11 +37,14 @@ class UploadableArtifactImpl extends ArtifactBase<UploadableArtifact> implements
     org.jfrog.artifactory.client.model.File doUpload() {
         def params = parseParams(props, '=')
         if (sha1) {
+            def headers = ['X-Checksum-Deploy': true, 'X-Checksum-Sha1': sha1]
             try {
-                artifactory.put("/$repo/$path${params}", [:], ContentType.JSON, FileImpl, ContentType.BINARY, null, ['X-Checksum-Deploy': true, 'X-Checksum-Sha1': sha1], file ? file.length() : -1)
+                artifactory.put("/$repo/$path${params}", [:], ContentType.JSON, FileImpl, ContentType.BINARY, null,
+                                    headers, file ? file.length() : -1)
             } catch (HttpResponseException e) {
                 if (e.statusCode == 404) {
-                    uploadContent(params)
+                    headers = ['X-Checksum-Sha1': sha1]
+                    uploadContent(params, headers)
                 } else {
                     throw e
                 }
@@ -51,12 +54,25 @@ class UploadableArtifactImpl extends ArtifactBase<UploadableArtifact> implements
         }
     }
 
+    @Override
+    String doUploadAndExplode() {
+        def params = parseParams(props, "=")
+        def headers = ['X-Explode-Archive': true]
+
+        artifactory.put("/$repo/$path${params}", [:], ContentType.TEXT, FileImpl, ContentType.BINARY, content,
+                headers, file ? file.length() : -1)
+    }
+
     private uploadContent(params) {
+        uploadContent(params, null)
+    }
+
+    private uploadContent(params, headers) {
         if (listener) {
             content = new ProgressInputStream(content, file.size(), listener)
         }
         content.withStream {
-            artifactory.put("/$repo/$path${params}", [:], ContentType.JSON, FileImpl, ContentType.BINARY, content, null, file ? file.size() : -1)
+            artifactory.put("/$repo/$path${params}", [:], ContentType.JSON, FileImpl, ContentType.BINARY, content, headers, file ? file.size() : -1)
         } as org.jfrog.artifactory.client.model.File
     }
 

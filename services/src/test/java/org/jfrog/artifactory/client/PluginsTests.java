@@ -19,7 +19,7 @@ public class PluginsTests extends ArtifactoryTestsBase {
 
     private static final String PLUGIN_NAME = "helloWorld";
 
-    @Test
+    @Test(enabled = false)
     public void testPluginsList() {
         Map<PluginType, List<Plugin>> plugins = artifactory.plugins().list();
         assertEquals(plugins.size(), 1);
@@ -39,13 +39,13 @@ public class PluginsTests extends ArtifactoryTestsBase {
         assertEquals("world", params.get("whom"));
     }
 
-    @Test
+    @Test(enabled = false)
     public void testPluginsListByType() {
         List<Plugin> list = artifactory.plugins().list(executions);
         verifyExecutionPlugins(list);
     }
 
-    @Test
+    @Test(enabled = false)
     public void testExecutePlugin(){
         //TODO change to assert default params instead of null once RTFACT-5867 is fixed
         verifyExecutionResult(artifactory.plugins().execute(PLUGIN_NAME).sync(), null);

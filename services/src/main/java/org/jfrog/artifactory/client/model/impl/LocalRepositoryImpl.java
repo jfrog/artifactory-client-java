@@ -1,8 +1,8 @@
 package org.jfrog.artifactory.client.model.impl;
 
-import org.jfrog.artifactory.client.model.ChecksumPolicyType;
 import org.jfrog.artifactory.client.model.LocalRepository;
-import org.jfrog.artifactory.client.model.SnapshotVersionBehavior;
+import org.jfrog.artifactory.client.model.repository.settings.RepositorySettings;
+import org.jfrog.artifactory.client.model.repository.settings.XraySettings;
 
 import java.util.List;
 
@@ -12,53 +12,24 @@ import java.util.List;
  */
 public class LocalRepositoryImpl extends NonVirtualRepositoryBase implements LocalRepository {
 
-    private ChecksumPolicyType checksumPolicyType;
-    private boolean calculateYumMetadata;
-    private int yumRootDepth;
-
-
     private LocalRepositoryImpl() {
-        checksumPolicyType = ChecksumPolicyTypeImpl.client_checksums;
         repoLayoutRef = MAVEN_2_REPO_LAYOUT;
     }
 
-    private LocalRepositoryImpl(String description, String excludesPattern, String includesPattern, String key, String notes, boolean blackedOut, boolean handleReleases, boolean handleSnapshots, int maxUniqueSnapshots, List<String> propertySets, SnapshotVersionBehavior snapshotVersionBehavior, boolean suppressPomConsistencyChecks, ChecksumPolicyType checksumPolicyType, String repoLayoutRef, boolean enableNuGetSupport, boolean archiveBrowsingEnabled, boolean calculateYumMetadata, int yumRootDepth, boolean enableGemsSupport, boolean enableNpmSupport, boolean enableDebianSupport, boolean debianTrivialLayout) {
-        super(description, excludesPattern, includesPattern, key, notes, blackedOut, handleReleases, handleSnapshots, maxUniqueSnapshots, propertySets, snapshotVersionBehavior, suppressPomConsistencyChecks, repoLayoutRef, enableNuGetSupport, archiveBrowsingEnabled, enableGemsSupport, enableNpmSupport, enableDebianSupport, debianTrivialLayout);
-        this.checksumPolicyType = checksumPolicyType;
-        this.calculateYumMetadata = calculateYumMetadata;
-        this.yumRootDepth = yumRootDepth;
-    }
+    public LocalRepositoryImpl(String key, RepositorySettings settings, XraySettings xraySettings,
+        String description, String excludesPattern, String includesPattern, String notes,
+        boolean blackedOut,
+        List<String> propertySets,
+        String repoLayoutRef,
+        boolean archiveBrowsingEnabled) {
 
-    @Override
-    public ChecksumPolicyType getChecksumPolicyType() {
-        return checksumPolicyType;
-    }
-
-    private void setChecksumPolicyType(ChecksumPolicyTypeImpl checksumPolicyType) {
-        this.checksumPolicyType = checksumPolicyType;
+        super(key, settings, xraySettings, description, excludesPattern, includesPattern, notes, blackedOut,
+            propertySets, repoLayoutRef, archiveBrowsingEnabled);
     }
 
     @Override
     public RepositoryTypeImpl getRclass() {
         return RepositoryTypeImpl.LOCAL;
-    }
-
-    @Override
-    public boolean isCalculateYumMetadata() {
-        return calculateYumMetadata;
-    }
-
-    private void setCalculateYumMetadata(boolean calculateYumMetadata) {
-        this.calculateYumMetadata = calculateYumMetadata;
-    }
-
-    @Override
-    public int getYumRootDepth() {
-        return yumRootDepth;
-    }
-
-    private void setYumRootDepth(int yumRootDepth) {
-        this.yumRootDepth = yumRootDepth;
     }
 
     @Override
@@ -73,36 +44,17 @@ public class LocalRepositoryImpl extends NonVirtualRepositoryBase implements Loc
             return false;
         }
 
-        LocalRepositoryImpl that = (LocalRepositoryImpl) o;
-
-        if (calculateYumMetadata != that.calculateYumMetadata) {
-            return false;
-        }
-        if (yumRootDepth != that.yumRootDepth) {
-            return false;
-        }
-        if (checksumPolicyType != that.checksumPolicyType) {
-            return false;
-        }
-
         return true;
     }
 
     @Override
     public int hashCode() {
-        int result = super.hashCode();
-        result = 31 * result + (checksumPolicyType != null ? checksumPolicyType.hashCode() : 0);
-        result = 31 * result + (calculateYumMetadata ? 1 : 0);
-        result = 31 * result + yumRootDepth;
-        return result;
+        return super.hashCode();
     }
 
     @Override
     public String toString() {
         return "LocalRepositoryImpl{" +
-                "checksumPolicyType=" + checksumPolicyType +
-                ", calculateYumMetadata=" + calculateYumMetadata +
-                ", yumRootDepth=" + yumRootDepth +
                 '}';
     }
 }

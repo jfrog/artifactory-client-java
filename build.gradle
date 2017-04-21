@@ -5,13 +5,14 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath(group: 'org.jfrog.buildinfo', name: 'build-info-extractor-gradle', version: '3.0.1')
+        classpath(group: 'org.jfrog.buildinfo', name: 'build-info-extractor-gradle', version: '3.1.1')
         classpath(group: 'eu.appsatori', name: 'gradle-fatjar-plugin', version: '0.3')
     }
 }
 
 allprojects {
 
+    apply plugin: 'maven'
     apply plugin: 'maven-publish'
     apply plugin: 'com.jfrog.artifactory'
 
@@ -67,13 +68,13 @@ subprojects {
 
     task javadocJar(type: Jar, dependsOn: javadoc) {
         classifier = 'javadoc'
-        from destinationDir
+        from javadoc.destinationDir
     }
 
     // add javadoc/source jar tasks as artifacts
     artifacts {
         archives sourcesJar, 
-			//javadocJar, 
+			javadocJar,
 			jar
     }
 
@@ -132,6 +133,5 @@ subprojects {
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '2.0'
-    distributionUrl = 'https://services.gradle.org/distributions-snapshots/gradle-2.0-all.zip'
+    gradleVersion = '2.9'
 }

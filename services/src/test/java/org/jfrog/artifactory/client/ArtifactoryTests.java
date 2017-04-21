@@ -11,7 +11,7 @@ import static org.jfrog.artifactory.client.ArtifactoryClient.create;
  * @author yoavl
  * @since 30/07/12
  */
-public abstract class ArtifactoryTests {
+public class ArtifactoryTests {
 
     @Test
     public void urlsTest() throws IOException {
@@ -39,5 +39,10 @@ public abstract class ArtifactoryTests {
         artifactory = create("http://myhost.com:80/", "", "");
         assertEquals(artifactory.getUri(), "http://myhost.com:80");
         assertEquals(artifactory.getContextName(), "");
+
+        artifactory = create("http://myhost.com:80/", "", "", null, null, null, "testAgent");
+        assertEquals(artifactory.getUri(), "http://myhost.com:80");
+        assertEquals(artifactory.getContextName(), "");
+        assertEquals(artifactory.getUserAgent(), "testAgent");
     }
 }

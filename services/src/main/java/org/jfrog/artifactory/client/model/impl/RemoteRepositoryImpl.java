@@ -1,9 +1,13 @@
 package org.jfrog.artifactory.client.model.impl;
 
-import org.jfrog.artifactory.client.model.RemoteRepoChecksumPolicyType;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
+import org.jfrog.artifactory.client.model.ContentSync;
 import org.jfrog.artifactory.client.model.RemoteRepository;
 import org.jfrog.artifactory.client.model.RepositoryType;
-import org.jfrog.artifactory.client.model.SnapshotVersionBehavior;
+import org.jfrog.artifactory.client.model.repository.settings.RepositorySettings;
+import org.jfrog.artifactory.client.model.repository.settings.XraySettings;
 
 import java.util.List;
 
@@ -17,54 +21,59 @@ public class RemoteRepositoryImpl extends NonVirtualRepositoryBase implements Re
     private String username;
     private String password;
     private String proxy;
-    private RemoteRepoChecksumPolicyType remoteRepoChecksumPolicyType;
     private boolean hardFail;
     private boolean offline;
     private boolean storeArtifactsLocally;
     private int socketTimeoutMillis;
+    private boolean enableCookieManagement;
+    private boolean allowAnyHostAuth;
     private String localAddress;
     private int retrievalCachePeriodSecs;
     private int missedRetrievalCachePeriodSecs;
     private int failedRetrievalCachePeriodSecs;
     private boolean unusedArtifactsCleanupEnabled;
     private int unusedArtifactsCleanupPeriodHours;
-    private boolean fetchJarsEagerly;
-    private boolean fetchSourcesEagerly;
     private boolean shareConfiguration;
     private boolean synchronizeProperties;
     private long assumedOfflinePeriodSecs;
     private boolean listRemoteFolderItems;
-    private boolean rejectInvalidJars;
-    private boolean p2Support;
+    @JsonDeserialize(as=ContentSyncImpl.class)
+    @JsonProperty("contentSynchronisation")
+    private ContentSync contentSync;
 
     private RemoteRepositoryImpl() {
-        remoteRepoChecksumPolicyType = RemoteRepoChecksumPolicyTypeImpl.generate_if_absent;
         repoLayoutRef = MAVEN_2_REPO_LAYOUT;
     }
 
-    RemoteRepositoryImpl(String description, String excludesPattern, String includesPattern, String key, String notes, boolean blackedOut, boolean handleReleases, boolean handleSnapshots,
-                         int maxUniqueSnapshots, List<String> propertySets, SnapshotVersionBehavior snapshotVersionBehavior, boolean suppressPomConsistencyChecks,
-                         int failedRetrievalCachePeriodSecs, boolean fetchJarsEagerly, boolean fetchSourcesEagerly, boolean hardFail, String localAddress,
-                         int missedRetrievalCachePeriodSecs, boolean offline, String password, String proxy, RemoteRepoChecksumPolicyType remoteRepoChecksumPolicyType,
-                         int retrievalCachePeriodSecs, boolean shareConfiguration, int socketTimeoutMillis, boolean storeArtifactsLocally, boolean synchronizeProperties,
-                         boolean unusedArtifactsCleanupEnabled, int unusedArtifactsCleanupPeriodHours, String url, String username, String repoLayoutRef, boolean enableNuGetSupport,
-                         long assumedOfflinePeriodSecs, boolean archiveBrowsingEnabled, boolean listRemoteFolderItems, boolean rejectInvalidJars, boolean p2Support,
-                         boolean enableGemsSupport, boolean enableNpmSupport, boolean enableDebianSupport, boolean debianTrivialLayout) {
-        super(description, excludesPattern, includesPattern, key, notes, blackedOut, handleReleases, handleSnapshots, maxUniqueSnapshots, propertySets, snapshotVersionBehavior,
-                suppressPomConsistencyChecks, repoLayoutRef, enableNuGetSupport, archiveBrowsingEnabled, enableGemsSupport, enableNpmSupport, enableDebianSupport, debianTrivialLayout);
+    RemoteRepositoryImpl(String key, RepositorySettings settings, XraySettings xraySettings,
+                         ContentSync contentSync, String description,
+                         String excludesPattern, String includesPattern, String notes, boolean blackedOut,
+                         List<String> propertySets,
+                         int failedRetrievalCachePeriodSecs, boolean hardFail, String localAddress,
+                         int missedRetrievalCachePeriodSecs, boolean offline, String password, String proxy,
+                         int retrievalCachePeriodSecs, boolean shareConfiguration, int socketTimeoutMillis, boolean cookieManagementEnabled, boolean allowAnyHostAuth, boolean storeArtifactsLocally, boolean synchronizeProperties,
+                         boolean unusedArtifactsCleanupEnabled, int unusedArtifactsCleanupPeriodHours, String url, String username, String repoLayoutRef,
+                         long assumedOfflinePeriodSecs, boolean archiveBrowsingEnabled,
+                         boolean listRemoteFolderItems) {
+
+        super(key, settings, xraySettings, description, excludesPattern, includesPattern,
+            notes, blackedOut,
+            propertySets,
+            repoLayoutRef, archiveBrowsingEnabled);
+
+        this.contentSync = contentSync;
         this.failedRetrievalCachePeriodSecs = failedRetrievalCachePeriodSecs;
-        this.fetchJarsEagerly = fetchJarsEagerly;
-        this.fetchSourcesEagerly = fetchSourcesEagerly;
         this.hardFail = hardFail;
         this.localAddress = localAddress;
         this.missedRetrievalCachePeriodSecs = missedRetrievalCachePeriodSecs;
         this.offline = offline;
         this.password = password;
         this.proxy = proxy;
-        this.remoteRepoChecksumPolicyType = remoteRepoChecksumPolicyType;
         this.retrievalCachePeriodSecs = retrievalCachePeriodSecs;
         this.shareConfiguration = shareConfiguration;
         this.socketTimeoutMillis = socketTimeoutMillis;
+        this.enableCookieManagement = cookieManagementEnabled;
+        this.allowAnyHostAuth = allowAnyHostAuth;
         this.storeArtifactsLocally = storeArtifactsLocally;
         this.synchronizeProperties = synchronizeProperties;
         this.unusedArtifactsCleanupEnabled = unusedArtifactsCleanupEnabled;
@@ -73,8 +82,6 @@ public class RemoteRepositoryImpl extends NonVirtualRepositoryBase implements Re
         this.username = username;
         this.assumedOfflinePeriodSecs = assumedOfflinePeriodSecs;
         this.listRemoteFolderItems = listRemoteFolderItems;
-        this.rejectInvalidJars = rejectInvalidJars;
-        this.p2Support = p2Support;
     }
 
     @Override
@@ -114,15 +121,6 @@ public class RemoteRepositoryImpl extends NonVirtualRepositoryBase implements Re
     }
 
     @Override
-    public RemoteRepoChecksumPolicyType getRemoteRepoChecksumPolicyType() {
-        return remoteRepoChecksumPolicyType;
-    }
-
-    private void setRemoteRepoChecksumPolicyType(RemoteRepoChecksumPolicyTypeImpl remoteRepoChecksumPolicyType) {
-        this.remoteRepoChecksumPolicyType = remoteRepoChecksumPolicyType;
-    }
-
-    @Override
     public boolean isHardFail() {
         return hardFail;
     }
@@ -156,6 +154,24 @@ public class RemoteRepositoryImpl extends NonVirtualRepositoryBase implements Re
 
     private void setSocketTimeoutMillis(int socketTimeoutMillis) {
         this.socketTimeoutMillis = socketTimeoutMillis;
+    }
+
+    @Override
+    public boolean isEnableCookieManagement() {
+        return enableCookieManagement;
+    }
+
+    public void setEnableCookieManagement(boolean cookieManagementEnbaled) {
+        this.enableCookieManagement = cookieManagementEnbaled;
+    }
+
+    @Override
+    public boolean isAllowAnyHostAuth() {
+        return allowAnyHostAuth;
+    }
+
+    public void setAllowAnyHostAuth(boolean allowAnyHostAuth) {
+        this.allowAnyHostAuth = allowAnyHostAuth;
     }
 
     @Override
@@ -213,24 +229,6 @@ public class RemoteRepositoryImpl extends NonVirtualRepositoryBase implements Re
     }
 
     @Override
-    public boolean isFetchJarsEagerly() {
-        return fetchJarsEagerly;
-    }
-
-    private void setFetchJarsEagerly(boolean fetchJarsEagerly) {
-        this.fetchJarsEagerly = fetchJarsEagerly;
-    }
-
-    @Override
-    public boolean isFetchSourcesEagerly() {
-        return fetchSourcesEagerly;
-    }
-
-    private void setFetchSourcesEagerly(boolean fetchSourcesEagerly) {
-        this.fetchSourcesEagerly = fetchSourcesEagerly;
-    }
-
-    @Override
     public boolean isShareConfiguration() {
         return shareConfiguration;
     }
@@ -249,6 +247,24 @@ public class RemoteRepositoryImpl extends NonVirtualRepositoryBase implements Re
     }
 
     @Override
+    public boolean isListRemoteFolderItems() {
+        return listRemoteFolderItems;
+    }
+
+    private void setListRemoteFolderItems(boolean listRemoteFolderItems) {
+        this.listRemoteFolderItems = listRemoteFolderItems;
+    }
+
+    @Override
+    public ContentSync getContentSync() {
+        return contentSync;
+    }
+
+    private void setContentSync(ContentSync contentSync) {
+        this.contentSync = contentSync;
+    }
+
+    @Override
     public RepositoryType getRclass() {
         return RepositoryTypeImpl.REMOTE;
     }
@@ -263,24 +279,6 @@ public class RemoteRepositoryImpl extends NonVirtualRepositoryBase implements Re
     }
 
     @Override
-    public boolean isListRemoteFolderItems() {
-        return listRemoteFolderItems;
-    }
-
-    private void setListRemoteFolderItems(boolean listRemoteFolderItems) {
-        this.listRemoteFolderItems = listRemoteFolderItems;
-    }
-
-    @Override
-    public boolean isRejectInvalidJars() {
-        return rejectInvalidJars;
-    }
-
-    private void setRejectInvalidJars(boolean rejectInvalidJars) {
-        this.rejectInvalidJars = rejectInvalidJars;
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -289,14 +287,14 @@ public class RemoteRepositoryImpl extends NonVirtualRepositoryBase implements Re
         RemoteRepositoryImpl that = (RemoteRepositoryImpl) o;
 
         if (failedRetrievalCachePeriodSecs != that.failedRetrievalCachePeriodSecs) return false;
-        if (fetchJarsEagerly != that.fetchJarsEagerly) return false;
-        if (fetchSourcesEagerly != that.fetchSourcesEagerly) return false;
         if (hardFail != that.hardFail) return false;
         if (missedRetrievalCachePeriodSecs != that.missedRetrievalCachePeriodSecs) return false;
         if (offline != that.offline) return false;
         if (retrievalCachePeriodSecs != that.retrievalCachePeriodSecs) return false;
         if (shareConfiguration != that.shareConfiguration) return false;
         if (socketTimeoutMillis != that.socketTimeoutMillis) return false;
+        if (allowAnyHostAuth != that.allowAnyHostAuth) return false;
+        if (enableCookieManagement != that.allowAnyHostAuth) return false;
         if (storeArtifactsLocally != that.storeArtifactsLocally) return false;
         if (synchronizeProperties != that.synchronizeProperties) return false;
         if (unusedArtifactsCleanupEnabled != that.unusedArtifactsCleanupEnabled) return false;
@@ -304,7 +302,6 @@ public class RemoteRepositoryImpl extends NonVirtualRepositoryBase implements Re
         if (localAddress != null ? !localAddress.equals(that.localAddress) : that.localAddress != null) return false;
         if (password != null ? !password.equals(that.password) : that.password != null) return false;
         if (proxy != null ? !proxy.equals(that.proxy) : that.proxy != null) return false;
-        if (remoteRepoChecksumPolicyType != that.remoteRepoChecksumPolicyType) return false;
         if (url != null ? !url.equals(that.url) : that.url != null) return false;
         if (username != null ? !username.equals(that.username) : that.username != null) return false;
 
@@ -318,19 +315,18 @@ public class RemoteRepositoryImpl extends NonVirtualRepositoryBase implements Re
         result = 31 * result + (username != null ? username.hashCode() : 0);
         result = 31 * result + (password != null ? password.hashCode() : 0);
         result = 31 * result + (proxy != null ? proxy.hashCode() : 0);
-        result = 31 * result + (remoteRepoChecksumPolicyType != null ? remoteRepoChecksumPolicyType.hashCode() : 0);
         result = 31 * result + (hardFail ? 1 : 0);
         result = 31 * result + (offline ? 1 : 0);
         result = 31 * result + (storeArtifactsLocally ? 1 : 0);
         result = 31 * result + socketTimeoutMillis;
+        result = 31 * result + (allowAnyHostAuth ? 1 : 0);
+        result = 31 * result + (enableCookieManagement ? 1 : 0);
         result = 31 * result + (localAddress != null ? localAddress.hashCode() : 0);
         result = 31 * result + retrievalCachePeriodSecs;
         result = 31 * result + missedRetrievalCachePeriodSecs;
         result = 31 * result + failedRetrievalCachePeriodSecs;
         result = 31 * result + (unusedArtifactsCleanupEnabled ? 1 : 0);
         result = 31 * result + unusedArtifactsCleanupPeriodHours;
-        result = 31 * result + (fetchJarsEagerly ? 1 : 0);
-        result = 31 * result + (fetchSourcesEagerly ? 1 : 0);
         result = 31 * result + (shareConfiguration ? 1 : 0);
         result = 31 * result + (synchronizeProperties ? 1 : 0);
         return result;
@@ -344,29 +340,19 @@ public class RemoteRepositoryImpl extends NonVirtualRepositoryBase implements Re
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 ", proxy='" + proxy + '\'' +
-                ", remoteRepoChecksumPolicyType=" + remoteRepoChecksumPolicyType +
                 ", hardFail=" + hardFail +
                 ", offline=" + offline +
                 ", storeArtifactsLocally=" + storeArtifactsLocally +
                 ", socketTimeoutMillis=" + socketTimeoutMillis +
+                ", allowAnyHostAuth=" + allowAnyHostAuth +
+                ", enableCookieManagement=" + enableCookieManagement +
                 ", localAddress='" + localAddress + '\'' +
                 ", retrievalCachePeriodSecs=" + retrievalCachePeriodSecs +
                 ", missedRetrievalCachePeriodSecs=" + missedRetrievalCachePeriodSecs +
                 ", unusedArtifactsCleanupEnabled=" + unusedArtifactsCleanupEnabled +
                 ", unusedArtifactsCleanupPeriodHours=" + unusedArtifactsCleanupPeriodHours +
-                ", fetchJarsEagerly=" + fetchJarsEagerly +
-                ", fetchSourcesEagerly=" + fetchSourcesEagerly +
                 ", shareConfiguration=" + shareConfiguration +
                 ", synchronizeProperties=" + synchronizeProperties +
                 '}';
-    }
-
-    @Override
-    public boolean isP2Support() {
-        return p2Support;
-    }
-
-    private void setP2Support(boolean p2Support) {
-        this.p2Support = p2Support;
     }
 }

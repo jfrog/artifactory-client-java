@@ -26,17 +26,18 @@ class RepositoryBuildersImpl implements RepositoryBuilders {
     }
 
     RemoteRepositoryBuilder builderFrom(RemoteRepository from) {
-        new RemoteRepositoryBuilderImpl().blackedOut(from.blackedOut).description(from.description).excludesPattern(from.excludesPattern).handleReleases(from.handleReleases)
-                .handleSnapshots(from.handleSnapshots).includesPattern(from.includesPattern).key(from.key).maxUniqueSnapshots(from.maxUniqueSnapshots).notes(from.notes)
-                .propertySets(from.propertySets).snapshotVersionBehavior(from.snapshotVersionBehavior).suppressPomConsistencyChecks(from.suppressPomConsistencyChecks).url(from.url)
-                .username(from.username).password(from.password).proxy(from.proxy).remoteRepoChecksumPolicyType(from.remoteRepoChecksumPolicyType).hardFail(from.hardFail)
-                .offline(from.offline).storeArtifactsLocally(from.storeArtifactsLocally).socketTimeoutMillis(from.socketTimeoutMillis).localAddress(from.localAddress)
+        new RemoteRepositoryBuilderImpl().repositorySettings(from.repositorySettings).blackedOut(from.blackedOut).description(from.description).excludesPattern(from.excludesPattern)
+                .includesPattern(from.includesPattern).key(from.key).notes(from.notes)
+                .propertySets(from.propertySets).url(from.url)
+                .username(from.username).password(from.password).proxy(from.proxy).hardFail(from.hardFail)
+                .offline(from.offline).storeArtifactsLocally(from.storeArtifactsLocally).socketTimeoutMillis(from.socketTimeoutMillis).allowAnyHostAuth(from.allowAnyHostAuth)
+                .enableCookieManagement(from.enableCookieManagement).localAddress(from.localAddress)
                 .retrievalCachePeriodSecs(from.retrievalCachePeriodSecs).missedRetrievalCachePeriodSecs(from.missedRetrievalCachePeriodSecs)
                 .failedRetrievalCachePeriodSecs(from.failedRetrievalCachePeriodSecs).unusedArtifactsCleanupEnabled(from.unusedArtifactsCleanupEnabled)
-                .unusedArtifactsCleanupPeriodHours(from.unusedArtifactsCleanupPeriodHours).fetchJarsEagerly(from.fetchJarsEagerly).fetchSourcesEagerly(from.fetchSourcesEagerly)
-                .shareConfiguration(from.shareConfiguration).synchronizeProperties(from.synchronizeProperties).repoLayoutRef(from.repoLayoutRef).enableNuGetSupport(from.enableNuGetSupport)
-                .assumedOfflinePeriodSecs(from.assumedOfflinePeriodSecs).archiveBrowsingEnabled(from.archiveBrowsingEnabled).listRemoteFolderItems(from.listRemoteFolderItems)
-                .rejectInvalidJars(from.rejectInvalidJars).p2Support(from.p2Support)
+                .unusedArtifactsCleanupPeriodHours(from.unusedArtifactsCleanupPeriodHours)
+                .shareConfiguration(from.shareConfiguration).synchronizeProperties(from.synchronizeProperties).repoLayoutRef(from.repoLayoutRef)
+                .assumedOfflinePeriodSecs(from.assumedOfflinePeriodSecs).archiveBrowsingEnabled(from.archiveBrowsingEnabled)
+                .listRemoteFolderItems(from.listRemoteFolderItems).contentSync(from.contentSync)
     }
 
     LocalRepositoryBuilder localRepositoryBuilder() {
@@ -44,11 +45,10 @@ class RepositoryBuildersImpl implements RepositoryBuilders {
     }
 
     LocalRepositoryBuilder builderFrom(LocalRepository from) {
-        new LocalRepositoryBuilderImpl().blackedOut(from.blackedOut).checksumPolicyType(from.checksumPolicyType).description(from.description)
-                .excludesPattern(from.excludesPattern).handleReleases(from.handleReleases).handleSnapshots(from.handleSnapshots).includesPattern(from.includesPattern)
-                .key(from.key).maxUniqueSnapshots(from.maxUniqueSnapshots).notes(from.notes).propertySets(from.propertySets).snapshotVersionBehavior(from.snapshotVersionBehavior)
-                .suppressPomConsistencyChecks(from.suppressPomConsistencyChecks).repoLayoutRef(from.repoLayoutRef).archiveBrowsingEnabled(from.archiveBrowsingEnabled)
-                .enableNuGetSupport(from.enableNuGetSupport).calculateYumMetadata(from.calculateYumMetadata).yumRootDepth(from.yumRootDepth)
+        new LocalRepositoryBuilderImpl().repositorySettings(from.repositorySettings).blackedOut(from.blackedOut).description(from.description)
+                .excludesPattern(from.excludesPattern).includesPattern(from.includesPattern)
+                .key(from.key).notes(from.notes).propertySets(from.propertySets)
+                .repoLayoutRef(from.repoLayoutRef).archiveBrowsingEnabled(from.archiveBrowsingEnabled)
     }
 
     VirtualRepositoryBuilder virtualRepositoryBuilder() {
@@ -56,8 +56,9 @@ class RepositoryBuildersImpl implements RepositoryBuilders {
     }
 
     VirtualRepositoryBuilder builderFrom(VirtualRepository from) {
-        new VirtualRepositoryBuilderImpl().description(from.description).excludesPattern(from.excludesPattern).includesPattern(from.includesPattern).key(from.key)
-                .notes(from.notes).pomRepositoryReferencesCleanupPolicy(from.pomRepositoryReferencesCleanupPolicy)
-                .artifactoryRequestsCanRetrieveRemoteArtifacts(from.artifactoryRequestsCanRetrieveRemoteArtifacts).keyPair(from.keyPair).repositories(from.repositories)
+        new VirtualRepositoryBuilderImpl().repositorySettings(from.repositorySettings).description(from.description).excludesPattern(from.excludesPattern).includesPattern(from.includesPattern).key(from.key)
+                .notes(from.notes)
+                .artifactoryRequestsCanRetrieveRemoteArtifacts(from.artifactoryRequestsCanRetrieveRemoteArtifacts).repositories(from.repositories)
+                .defaultDeploymentRepo(from.defaultDeploymentRepo)
     }
 }

@@ -1,9 +1,10 @@
 package org.jfrog.artifactory.client.model.impl;
 
 import org.jfrog.artifactory.client.model.VirtualRepository;
+import org.jfrog.artifactory.client.model.repository.settings.RepositorySettings;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 
 /**
  * @author jbaruch
@@ -11,31 +12,31 @@ import java.util.List;
  */
 public class VirtualRepositoryImpl extends RepositoryBase implements VirtualRepository {
 
-    private List<String> repositories = new ArrayList<String>();
+    private Collection<String> repositories = new ArrayList<String>();
     private boolean artifactoryRequestsCanRetrieveRemoteArtifacts;
-    private String keyPair;
-    private PomRepositoryReferencesCleanupPolicy pomRepositoryReferencesCleanupPolicy = PomRepositoryReferencesCleanupPolicy.discard_active_reference;
+    private String deploymentRepo;
 
     private VirtualRepositoryImpl() {
     }
 
-    private VirtualRepositoryImpl(String description, String excludesPattern, String includesPattern, String key, String notes,
-                                  boolean artifactoryRequestsCanRetrieveRemoteArtifacts, String keyPair,
-                                  PomRepositoryReferencesCleanupPolicy pomRepositoryReferencesCleanupPolicy, List<String> repositories, String repoLayoutRef,
-                                  boolean enableNuGetSupport, boolean enableGemsSupport, boolean enableNpmSupport, boolean enableDebianSupport, boolean debianTrivialLayout) {
-        super(description, excludesPattern, includesPattern, key, notes, repoLayoutRef, enableNuGetSupport, enableGemsSupport, enableNpmSupport, enableDebianSupport, debianTrivialLayout);
+    private VirtualRepositoryImpl(String key, RepositorySettings settings,
+        String description, String excludesPattern, String includesPattern, String notes,
+        boolean artifactoryRequestsCanRetrieveRemoteArtifacts,
+        Collection<String> repositories, String repoLayoutRef, String deploymentRepo) {
+
+        super(key, settings, description, excludesPattern, includesPattern, notes, repoLayoutRef);
+
         this.artifactoryRequestsCanRetrieveRemoteArtifacts = artifactoryRequestsCanRetrieveRemoteArtifacts;
-        this.keyPair = keyPair;
-        this.pomRepositoryReferencesCleanupPolicy = pomRepositoryReferencesCleanupPolicy;
         this.repositories = repositories;
+        this.deploymentRepo = deploymentRepo;
     }
 
     @Override
-    public List<String> getRepositories() {
+    public Collection<String> getRepositories() {
         return repositories;
     }
 
-    private void setRepositories(List<String> repositories) {
+    private void setRepositories(Collection<String> repositories) {
         this.repositories = repositories;
     }
 
@@ -49,21 +50,12 @@ public class VirtualRepositoryImpl extends RepositoryBase implements VirtualRepo
     }
 
     @Override
-    public String getKeyPair() {
-        return keyPair;
+    public String getDefaultDeploymentRepo() {
+        return deploymentRepo;
     }
 
-    private void setKeyPair(String keyPair) {
-        this.keyPair = keyPair;
-    }
-
-    @Override
-    public PomRepositoryReferencesCleanupPolicy getPomRepositoryReferencesCleanupPolicy() {
-        return pomRepositoryReferencesCleanupPolicy;
-    }
-
-    private void setPomRepositoryReferencesCleanupPolicy(PomRepositoryReferencesCleanupPolicy pomRepositoryReferencesCleanupPolicy) {
-        this.pomRepositoryReferencesCleanupPolicy = pomRepositoryReferencesCleanupPolicy;
+    private void setDefaultDeploymentRepo(String deploymentRepo) {
+        this.deploymentRepo = deploymentRepo;
     }
 
     @Override
@@ -81,8 +73,6 @@ public class VirtualRepositoryImpl extends RepositoryBase implements VirtualRepo
 
         if (artifactoryRequestsCanRetrieveRemoteArtifacts != that.artifactoryRequestsCanRetrieveRemoteArtifacts)
             return false;
-        if (keyPair != null ? !keyPair.equals(that.keyPair) : that.keyPair != null) return false;
-        if (pomRepositoryReferencesCleanupPolicy != that.pomRepositoryReferencesCleanupPolicy) return false;
         if (repositories != null ? !repositories.equals(that.repositories) : that.repositories != null) return false;
 
         return true;
@@ -93,8 +83,7 @@ public class VirtualRepositoryImpl extends RepositoryBase implements VirtualRepo
         int result = super.hashCode();
         result = 31 * result + (repositories != null ? repositories.hashCode() : 0);
         result = 31 * result + (artifactoryRequestsCanRetrieveRemoteArtifacts ? 1 : 0);
-        result = 31 * result + (keyPair != null ? keyPair.hashCode() : 0);
-        result = 31 * result + (pomRepositoryReferencesCleanupPolicy != null ? pomRepositoryReferencesCleanupPolicy.hashCode() : 0);
+
         return result;
     }
 
@@ -103,8 +92,6 @@ public class VirtualRepositoryImpl extends RepositoryBase implements VirtualRepo
         return super.toString() + "\nVirtualRepository{" +
                 "artifactoryRequestsCanRetrieveRemoteArtifacts=" + artifactoryRequestsCanRetrieveRemoteArtifacts +
                 ", repositories=" + repositories +
-                ", keyPair='" + keyPair + '\'' +
-                ", pomRepositoryReferencesCleanupPolicy=" + pomRepositoryReferencesCleanupPolicy +
                 '}';
     }
 }

@@ -1,12 +1,18 @@
 package org.jfrog.artifactory.client.impl
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect
+import com.fasterxml.jackson.annotation.JsonInclude.Include
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat
 import groovyx.net.http.*
 import org.apache.http.HttpResponse
 import org.jfrog.artifactory.client.*
+import org.jfrog.artifactory.client.impl.jackson.RepositoryMixIn
+import org.jfrog.artifactory.client.impl.jackson.RepositorySettingsMixIn
+import org.jfrog.artifactory.client.model.Repository
+import org.jfrog.artifactory.client.model.repository.settings.RepositorySettings
 
 import java.text.DateFormat
 
@@ -36,10 +42,17 @@ class ArtifactoryImpl implements Artifactory {
         originalTextParser = client.parser.getAt(TEXT)
         this.contextName = contextName
         objectMapper = new ObjectMapper()
+
+        objectMapper.addMixIn Repository, RepositoryMixIn
+        objectMapper.addMixIn RepositorySettings, RepositorySettingsMixIn
+
         objectMapper.configure WRITE_DATES_AS_TIMESTAMPS, false
         objectMapper.dateFormat = ISO8601_DATE_FORMAT
         objectMapper.visibilityChecker = defaultInstance().withFieldVisibility(JsonAutoDetect.Visibility.ANY)
+
         objectMapper.configure DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false
+        objectMapper.configure SerializationFeature.FAIL_ON_UNWRAPPED_TYPE_IDENTIFIERS, false
+        objectMapper.setSerializationInclusion(Include.NON_NULL)
     }
 
     void close() {
@@ -59,32 +72,73 @@ class ArtifactoryImpl implements Artifactory {
         return username
     }
 
+    @Override
+    String getUserAgent() {
+        return client.headers.'User-Agent'
+    }
+
     Repositories repositories() {
-        new RepositoriesImpl(this)
+        new RepositoriesImpl(this, API_BASE)
     }
 
     RepositoryHandle repository(String repo) {
         if(!repo){
             throw new IllegalArgumentException('Repository name is required')
         }
-        new RepositoriesImpl(this).repository(repo)
+        new RepositoriesImpl(this, API_BASE).repository(repo)
     }
 
     Searches searches() {
-        return new SearchesImpl(this)
+        return new SearchesImpl(this, API_BASE)
     }
 
     Security security() {
-        new SecurityImpl(this)
+        new SecurityImpl(this, API_BASE)
+    }
+
+    Storage storage() {
+        new StorageImpl(this)
     }
 
     Plugins plugins() {
-        new PluginsImpl(this)
+        new PluginsImpl(this, API_BASE)
     }
 
     @Override
     ArtifactorySystem system() {
-        new ArtifactorySystemImpl(this)
+        new ArtifactorySystemImpl(this, API_BASE)
+    }
+
+    /**
+     * Create a REST call to artifactory with a generic request
+     * @param request that should be sent to artifactory
+     * @return artifactory response as per to the request sent
+     */
+    @Override
+    def <T> T restCall(ArtifactoryRequest request) {
+
+        def responseType = Enum.valueOf(ContentType.class, request.getResponseType().getText())
+        def requestType  = Enum.valueOf(ContentType.class, request.getRequestType().getText())
+        def requestPath  = "/${request.getApiUrl()}"
+
+        switch (request.getMethod()) {
+            case (ArtifactoryRequest.Method.GET):
+                get(requestPath, request.getQueryParams(), responseType, null, request.getHeaders())
+                break
+            case (ArtifactoryRequest.Method.POST):
+                post(requestPath, request.getQueryParams(), responseType, null, requestType, request.getBody(),
+                        request.getHeaders())
+                break
+            case (ArtifactoryRequest.Method.PUT):
+                put(requestPath, request.getQueryParams(), responseType, null, requestType, request.getBody(),
+                        request.getHeaders())
+                break
+            case (ArtifactoryRequest.Method.DELETE):
+                delete(requestPath, request.getQueryParams(), responseType, null, request.getHeaders())
+                break
+            default:
+                throw new IllegalArgumentException("HTTP method invalid.")
+        }
     }
 
     protected InputStream getInputStream(String path, Map query = [:]) {
@@ -97,19 +151,23 @@ class ArtifactoryImpl implements Artifactory {
         get(path, [:], responseContentType, responseClass, headers)
     }
 
-    def <T> T get(String path, Map query, ContentType responseContentType = ANY, def responseClass = null, Map headers = null) {
+    def <T> T get(String path, Map query, ContentType responseContentType = ANY,
+                  def responseClass = null, Map headers = null) {
         rest(GET, path, query, responseContentType, responseClass, ANY, null, headers)
     }
 
-    def <T> T delete(String path, Map query = null, ContentType responseContentType = ANY, def responseClass = null, Map addlHeaders = null) {
+    def <T> T delete(String path, Map query = null, ContentType responseContentType = ANY,
+                     def responseClass = null, Map addlHeaders = null) {
         rest(DELETE, path, query, responseContentType, responseClass, TEXT, null, addlHeaders)
     }
 
-    def <T> T post(String path, Map query = null, ContentType responseContentType = ANY, def responseClass = null, ContentType requestContentType = JSON, requestBody = null, Map addlHeaders = null, long contentLength = -1) {
+    def <T> T post(String path, Map query = null, ContentType responseContentType = ANY,
+                   def responseClass = null, ContentType requestContentType = JSON, requestBody = null, Map addlHeaders = null, long contentLength = -1) {
         rest(POST, path, query, responseContentType, responseClass, requestContentType, requestBody, addlHeaders, contentLength)
     }
 
-    def <T> T put(String path, Map query = null, ContentType responseContentType = ANY, def responseClass = null, ContentType requestContentType = JSON, requestBody = null, Map addlHeaders = null, long contentLength = -1) {
+    def <T> T put(String path, Map query = null, ContentType responseContentType = ANY,
+                  def responseClass = null, ContentType requestContentType = JSON, requestBody = null, Map addlHeaders = null, long contentLength = -1) {
         rest(PUT, path, query, responseContentType, responseClass, requestContentType, requestBody, addlHeaders, contentLength)
     }
 
@@ -125,11 +183,12 @@ class ArtifactoryImpl implements Artifactory {
      * @param addlHeaders
      * @return
      */
-    private def <T> T rest(Method method, String path, Map query = null, responseType = ANY, def responseClass, ContentType requestContentType = JSON, requestBody = null, Map addlHeaders = null, long contentLength = -1 ) {
+    private def <T> T rest(Method method, String path, Map query = null, responseType = ANY,
+                           def responseClass, ContentType requestContentType = JSON, requestBody = null, Map addlHeaders = null, long contentLength = -1) {
         def originalParser
         try {
             // Let us send one thing to the server and parse it differently. But we have to careful to restore it.
-                originalParser = client.parser.getAt(responseType)
+            originalParser = client.parser.getAt(responseType)
 
             // Change the JSON parser on the fly, not thread safe since the responseClass we're using is locked to this call's argument
             if (responseClass == String) {
@@ -150,21 +209,20 @@ class ArtifactoryImpl implements Artifactory {
 
     def cleanPath(path) {
         def fullpath = "${contextName}${path}"
-        // URIBuilder will try to "simplify" the url, so if there's double slashes it'll remove the first part of the uri purposefully
+        // URIBuilder will try to "simplify" the apiUrl, so if there's double slashes it'll remove the first part of the uri purposefully
         if (!fullpath.startsWith('/')) {
             fullpath = "/${fullpath}"
         }
         return fullpath
     }
 
-    private def <T> T restWrapped(Method method, String path, Map query = null, responseType = ANY, def responseClass, ContentType requestContentType = JSON, requestBody = null, Map addlHeaders = null, long contentLength = -1 ) {
+    private def <T> T restWrapped(Method method, String path, Map query = null, responseType = ANY,
+        def responseClass, ContentType requestContentType = JSON, requestBody = null,
+        Map<String, String> addlHeaders = null, long contentLength = -1) {
+
         def ret
 
-        //TODO Ensure requestContentType is not null
-        def allHeaders = addlHeaders?addlHeaders.clone():[:]
-//        if (contentLength >= 0) {
-//            allHeaders << [(HTTP.CONTENT_LEN): contentLength]
-//        }
+        Map<String, String> allHeaders = addlHeaders ? addlHeaders.clone() : [:]
 
         // responseType will be used as the type to parse (XML, JSON, or Reader), it'll also create a header for Accept
         // Artifactory typically only returns one type, so let's ANY align those two. The caller can then do the appropriate thing.
@@ -178,7 +236,7 @@ class ArtifactoryImpl implements Artifactory {
             }
             headers.putAll(allHeaders)
 
-            if(requestBody) {
+            if (requestBody) {
                 if (requestContentType == JSON) {
                     // Override JSON
                     send JSON, objectMapper.writeValueAsString(requestBody)
@@ -190,7 +248,7 @@ class ArtifactoryImpl implements Artifactory {
             }
 
             response.success = { HttpResponse resp, slurped ->
-                if ( responseClass==String || responseType == TEXT) {
+                if (responseClass == String || responseType == TEXT) {
                     // we overrode the parser to be just text, but oddly it returns an InputStreamReader instead of a String
                     ret = slurped?.text
                 } else {
@@ -200,6 +258,15 @@ class ArtifactoryImpl implements Artifactory {
 
             response.'404' = { resp ->
                 throw new HttpResponseException(resp)
+            }
+
+            response.'409' = { resp, slurped ->
+                if (responseClass == String || responseType == TEXT) {
+                    // we overrode the parser to be just text, but oddly it returns an InputStreamReader instead of a String
+                    ret = slurped?.text
+                } else {
+                    ret = slurped // Will be type according to responseType
+                }
             }
         }
         ret

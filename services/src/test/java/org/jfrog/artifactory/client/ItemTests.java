@@ -5,7 +5,8 @@ import org.jfrog.artifactory.client.impl.CopyMoveException;
 import org.jfrog.artifactory.client.model.File;
 import org.jfrog.artifactory.client.model.Folder;
 import org.jfrog.artifactory.client.model.LocalRepository;
-import org.jfrog.artifactory.client.model.Repository;
+import org.jfrog.artifactory.client.model.repository.settings.RepositorySettings;
+import org.jfrog.artifactory.client.model.repository.settings.impl.GenericRepositorySettingsImpl;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
@@ -28,6 +29,8 @@ public class ItemTests extends ArtifactoryTestsBase {
 
     @Test
     public void testFolderInfo() {
+        //Get the folder to the cache
+        artifactory.repository(JCENTER).download("junit/junit/4.10/junit-4.10-sources.jar").doDownload();
         Folder folder = artifactory.repository(JCENTER_CACHE).folder("junit").info();
         assertNotNull(folder);
         assertTrue(folder.isFolder());
@@ -38,24 +41,27 @@ public class ItemTests extends ArtifactoryTestsBase {
 
     @Test
     public void testFileInfo() {
+
+        //Get the file to the cache
+        artifactory.repository(JCENTER).download("junit/junit/4.10/junit-4.10-sources.jar").doDownload();
+
         File file = artifactory.repository(JCENTER_CACHE).file("junit/junit/4.10/junit-4.10-sources.jar").info();
         assertNotNull(file);
         assertFalse(file.isFolder());
         assertEquals(file.getSize(), 141185);
         assertEquals(file.getDownloadUri(),
-                url + "/" + JCENTER_CACHE + "/junit/junit/4.10/junit-4.10-sources.jar");
+                url + JCENTER_CACHE + "/junit/junit/4.10/junit-4.10-sources.jar");
         assertEquals(file.getChecksums().getMd5(), "8f17d4271b86478a2731deebdab8c846");
         assertEquals(file.getChecksums().getSha1(), "6c98d6766e72d5575f96c9479d1c1d3b865c6e25");
     }
 
     @Test(groups = "items", dependsOnGroups = "repositoryBasics")
     public void testSetItemProperties() throws Exception {
-        setupLocalRepo(NEW_LOCAL);
         //Upload a clean file
-        InputStream content = this.getClass().getResourceAsStream("/sample.txt");
+        InputStream content = this.getClass().getResourceAsStream("/sample_props.txt");
         assertNotNull(content);
-        artifactory.repository(NEW_LOCAL).upload(PATH, content).doUpload();
-        ItemHandle file = artifactory.repository(NEW_LOCAL).file(PATH);
+        artifactory.repository(NEW_LOCAL).upload(PATH_PROPS, content).doUpload();
+        ItemHandle file = artifactory.repository(NEW_LOCAL).file(PATH_PROPS);
         Map<String, ?> resProps = file.getProperties();
         assertTrue(resProps.isEmpty());
         Map<String, String> props = new HashMap<>();
@@ -94,10 +100,15 @@ public class ItemTests extends ArtifactoryTestsBase {
 
     private void setupLocalRepo(String repoName) {
         try {
-            // Make sure the local repo exists
-            LocalRepository localRepository = artifactory.repositories().builders().localRepositoryBuilder().key(
-                    repoName)
-                    .description("new local repository").build();
+            RepositorySettings genericRepo = new GenericRepositorySettingsImpl();
+
+            // make sure the local repo exists
+            LocalRepository localRepository = artifactory.repositories().builders().localRepositoryBuilder()
+                    .key(repoName)
+                    .description("new local repository")
+                    .repositorySettings(genericRepo)
+                    .build();
+
             artifactory.repositories().create(2, localRepository);
         } catch (Exception e) {
             //noinspection ConstantConditions
@@ -107,9 +118,8 @@ public class ItemTests extends ArtifactoryTestsBase {
         }
     }
 
-    @Test//(groups = "items", dependsOnGroups = "repositoryBasics")
+    @Test(groups = "items", dependsOnGroups = "repositoryBasics")
     public void testSetItemPropertiesOnNonExistingDirectory() throws Exception {
-        setupLocalRepo(NEW_LOCAL);
         ItemHandle folder = artifactory.repository(NEW_LOCAL).folder("x/y/z");
         try {
             folder.info();
@@ -186,7 +196,7 @@ public class ItemTests extends ArtifactoryTestsBase {
         try {
             itemHandle.move(NEW_LOCAL_TO, PATH);
         } catch (CopyMoveException e) {
-            assertTrue(curl("api/move/" + NEW_LOCAL_FROM + "/a/a?to="+PATH, "POST").contains(e.getCopyMoveResultReport().getMessages().get(0).getMessage()));
+            assertTrue(curl("api/move/" + NEW_LOCAL_FROM + "/a/a?to=" + NEW_LOCAL_TO + "/" + PATH, "POST").contains(e.getCopyMoveResultReport().getMessages().get(0).getMessage()));
         } finally {
             deleteAllRelatedRepos();
         }
@@ -199,7 +209,7 @@ public class ItemTests extends ArtifactoryTestsBase {
         try {
             itemHandle.copy(NEW_LOCAL_TO, PATH);
         } catch (CopyMoveException e) {
-            assertTrue(curl("api/copy/" + NEW_LOCAL_FROM + "/a/a?to="+PATH, "POST").contains(e.getCopyMoveResultReport().getMessages().get(0).getMessage()));
+            assertTrue(curl("api/copy/" + NEW_LOCAL_FROM + "/a/a?to=" +  NEW_LOCAL_TO + "/" + PATH, "POST").contains(e.getCopyMoveResultReport().getMessages().get(0).getMessage()));
         } finally {
             deleteAllRelatedRepos();
         }

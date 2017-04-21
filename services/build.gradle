@@ -6,11 +6,15 @@ dependencies {
     compile addGroovy('groovy')
     compile addGroovy('groovy-json')
     compile addGroovy('groovy-xml')
-    compile group: 'org.codehaus.groovy.modules.http-builder', name: 'http-builder', version: '0.6'
+    compile (group:'org.codehaus.groovy.modules.http-builder', name: 'http-builder', version: '0.7.1') {
+        exclude group: 'org.apache.httpcomponents', module: 'httpclient'
+    }
     compile group: 'net.sourceforge.nekohtml', name: 'nekohtml', version: '1.9.17'
     compile addSlf4J('slf4j-api')
     compile addSlf4J('log4j-over-slf4j')
     compile addSlf4J('jcl-over-slf4j')
+    compile 'org.apache.httpcomponents:httpclient:4.4.1'
+    compile 'commons-io:commons-io:2.4'
     compile group: 'ch.qos.logback', name: 'logback-classic', version: '1.0.9'
     compile addJackson('jackson-core')
     compile addJackson('jackson-annotations')
@@ -18,12 +22,19 @@ dependencies {
     testCompile group: 'org.testng', name: 'testng', version: '6.5.2'
 }
 
+task createReleasePropertiesFile(type:Exec) {
+    String fileName = 'artifactory.client.release.properties'
+    println 'Creating $fileName'
+    String fileContent = "version=$currentVersion"
+    (new File("$rootDir/services/src/main/resources/$fileName")).write(fileContent)
+}
+
 def addGroovy(name) {
     [group: 'org.codehaus.groovy', name: name, version: '2.3.2']
 }
 
 def addJackson(name) {
-    [group: 'com.fasterxml.jackson.core', name: name, version: '2.0.4']
+    [group: 'com.fasterxml.jackson.core', name: name, version: '2.4.6']
 }
 
 def addSlf4J(name) {
@@ -40,8 +51,8 @@ fatJar {
 }
 
 artifacts {
-    archives sourcesJar, 
-		//javadocJar, 
-		jar, fatJar
+    archives sourcesJar,
+            javadocJar,
+            jar, fatJar
 }
 

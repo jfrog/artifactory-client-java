@@ -26,6 +26,16 @@ public class SearchTests extends ArtifactoryTestsBase {
     }
 
     @Test
+    public void testLatestVersionSearch() throws IOException {
+        String results = artifactory.searches().artifactsLatestVersion()
+                .groupId("junit")
+                .artifactId("junit")
+                .repositories("repo1-cache")
+                .doRawSearch();
+        assertEquals(results, "4.12");
+    }
+
+    @Test
     public void testQuickSearchWithWrongSingleLimit() throws IOException {
         List<RepoPath> list = artifactory.searches().artifactsByName("junit").repositories(NEW_LOCAL).doSearch();
         assertTrue(list.isEmpty());
@@ -53,16 +63,16 @@ public class SearchTests extends ArtifactoryTestsBase {
 
     @Test
     public void testArtifactsCreatedSinceSearch() throws IOException {
-        long aWeekAgo = System.currentTimeMillis() - 86400000L * 7;
-        List<RepoPath> results = artifactory.searches().artifactsCreatedSince(aWeekAgo).doSearch();
+        long startTime =  System.currentTimeMillis() - 86400000L;
+        List<RepoPath> results = artifactory.searches().artifactsCreatedSince(startTime).doSearch();
         assertFalse(results.isEmpty());
     }
 
     @Test
     public void testArtifactsCreatedInDateRangeSearch() throws IOException {
-        long aWeekAgo = System.currentTimeMillis() - 86400000L * 7;
         long now = System.currentTimeMillis();
-        List<RepoPath> results = artifactory.searches().artifactsCreatedInDateRange(aWeekAgo, now).doSearch();
+        long startTime =  System.currentTimeMillis() - 86400000L;
+        List<RepoPath> results = artifactory.searches().artifactsCreatedInDateRange(startTime, now).doSearch();
         assertFalse(results.isEmpty());
     }
 
@@ -125,5 +135,28 @@ public class SearchTests extends ArtifactoryTestsBase {
         List<RepoPath> results = artifactory.searches().itemsByProperty().property("colors", "r*?").doSearch();
         assertEquals(results.size(), 1);
         assertTrue(results.get(0).getItemPath().contains("a/b/c.txt"));
+    }
+
+    @Test(dependsOnGroups = "uploadBasics")
+    public void testSearchByGavc() throws IOException {
+        List<RepoPath> results = artifactory.searches().artifactsByGavc()
+                .groupId("com.example")
+                .artifactId("com.example.test")
+                .version("1.0.0")
+                .classifier("zip")
+                .doSearch();
+        assertEquals(results.size(), 1);
+        assertTrue(results.get(0).getItemPath().contains("com.example.test-1.0.0-zip.jar"));
+    }
+
+    @Test(dependsOnGroups = "uploadBasics")
+    public void testSearchByGavcAndRepository() throws IOException {
+        List<RepoPath> results = artifactory.searches().artifactsByGavc()
+                .groupId("com.example")
+                .artifactId("com.example.test")
+                .repositories(NEW_LOCAL)
+                .doSearch();
+        assertEquals(results.size(), 1);
+        assertTrue(results.get(0).getItemPath().contains("com.example.test-1.0.0-zip.jar"));
     }
 }

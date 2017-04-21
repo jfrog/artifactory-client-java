@@ -11,16 +11,19 @@ import org.jfrog.artifactory.client.impl.util.QueryUtil
  */
 class PropertiesHandlerImpl implements PropertiesHandler {
 
+    private String baseApiPath
+
     private final ArtifactoryImpl artifactory
     private final String repo
     private final String path
 
     private Map<String, Iterable<?>> props
 
-    public PropertiesHandlerImpl(ArtifactoryImpl artifactory, String repo, String path) {
+    public PropertiesHandlerImpl(ArtifactoryImpl artifactory, String baseApiPath, String repo, String path) {
+        this.artifactory = artifactory
+        this.baseApiPath = baseApiPath
         this.path = path
         this.repo = repo
-        this.artifactory = artifactory
         this.props = [:]
     }
 
@@ -58,7 +61,7 @@ class PropertiesHandlerImpl implements PropertiesHandler {
         }
         def propList = QueryUtil.getQueryList(props)
         try {
-            artifactory.put("/api/storage/$repo/$path", [properties: propList, recursive: recursive ? 1 : 0])
+            artifactory.put(baseApiPath + "/storage/$repo/$path", [properties: propList, recursive: recursive ? 1 : 0])
         } catch (HttpResponseException e) {
             if (e.statusCode == 404) {
                 artifactory.put("/$repo/$path/;${propList.replaceAll(/\|/, ';')}")

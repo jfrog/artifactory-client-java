@@ -4,6 +4,8 @@ import org.jfrog.artifactory.client.model.PermissionTarget
 import org.jfrog.artifactory.client.model.User
 import org.jfrog.artifactory.client.model.builder.GroupBuilder
 import org.jfrog.artifactory.client.model.builder.PermissionTargetBuilder
+import org.jfrog.artifactory.client.model.builder.PrincipalBuilder
+import org.jfrog.artifactory.client.model.builder.PrincipalsBuilder
 import org.jfrog.artifactory.client.model.builder.SecurityBuilders
 import org.jfrog.artifactory.client.model.builder.UserBuilder
 
@@ -45,5 +47,15 @@ class SecurityBuildersImpl implements SecurityBuilders {
     @Override
     PermissionTargetBuilder builderFrom(PermissionTarget from) {
         return null  //TODO implement copy builder for PermissionTarget
+    }
+
+    @Override
+    PrincipalsBuilder principalsBuilder() {
+        return new PrincipalsBuilderImpl()
+    }
+
+    @Override
+    public PrincipalBuilder principalBuilder() {
+        return new PrincipalBuilderImpl();
     }
 }

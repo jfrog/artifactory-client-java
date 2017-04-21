@@ -1,6 +1,6 @@
 package org.jfrog.artifactory.client.model.builder;
 
-import org.jfrog.artifactory.client.model.RemoteRepoChecksumPolicyType;
+import org.jfrog.artifactory.client.model.ContentSync;
 import org.jfrog.artifactory.client.model.RemoteRepository;
 
 /**
@@ -17,8 +17,6 @@ public interface RemoteRepositoryBuilder extends NonVirtualRepositoryBuilder<Rem
 
     RemoteRepositoryBuilder proxy(String proxy);
 
-    RemoteRepositoryBuilder remoteRepoChecksumPolicyType(RemoteRepoChecksumPolicyType remoteRepoChecksumPolicyType);
-
     RemoteRepositoryBuilder hardFail(boolean hardFail);
 
     RemoteRepositoryBuilder offline(boolean offline);
@@ -26,6 +24,10 @@ public interface RemoteRepositoryBuilder extends NonVirtualRepositoryBuilder<Rem
     RemoteRepositoryBuilder storeArtifactsLocally(boolean storeArtifactsLocally);
 
     RemoteRepositoryBuilder socketTimeoutMillis(int socketTimeoutMillis);
+
+    RemoteRepositoryBuilder enableCookieManagement(boolean cookieManagementEnabled);
+
+    RemoteRepositoryBuilder allowAnyHostAuth(boolean allowAnyHostAuth);
 
     RemoteRepositoryBuilder localAddress(String localAddress);
 
@@ -39,10 +41,6 @@ public interface RemoteRepositoryBuilder extends NonVirtualRepositoryBuilder<Rem
 
     RemoteRepositoryBuilder unusedArtifactsCleanupPeriodHours(int unusedArtifactsCleanupPeriodHours);
 
-    RemoteRepositoryBuilder fetchJarsEagerly(boolean fetchJarsEagerly);
-
-    RemoteRepositoryBuilder fetchSourcesEagerly(boolean fetchSourcesEagerly);
-
     RemoteRepositoryBuilder shareConfiguration(boolean shareConfiguration);
 
     RemoteRepositoryBuilder synchronizeProperties(boolean synchronizeProperties);
@@ -51,9 +49,6 @@ public interface RemoteRepositoryBuilder extends NonVirtualRepositoryBuilder<Rem
 
     RemoteRepositoryBuilder listRemoteFolderItems(boolean listRemoteFolderItems);
 
-    RemoteRepositoryBuilder rejectInvalidJars(boolean rejectInvalidJars);
-
-    RemoteRepositoryBuilder p2Support(boolean p2Support);
-
+    RemoteRepositoryBuilder contentSync(ContentSync contentSync);
 
 }

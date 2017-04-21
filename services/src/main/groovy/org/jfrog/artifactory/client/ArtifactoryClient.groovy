@@ -3,7 +3,11 @@ package org.jfrog.artifactory.client
 import groovyx.net.http.ContentType
 import groovyx.net.http.EncoderRegistry
 import groovyx.net.http.RESTClient
+import org.apache.http.auth.AuthScope
+import org.apache.http.auth.UsernamePasswordCredentials
+import org.apache.http.client.CredentialsProvider
 import org.apache.http.entity.InputStreamEntity
+import org.apache.http.impl.client.DefaultHttpClient
 import org.jfrog.artifactory.client.impl.ArtifactoryImpl
 
 /**
@@ -11,8 +15,17 @@ import org.jfrog.artifactory.client.impl.ArtifactoryImpl
  * @since 12/08/12
  */
 public class ArtifactoryClient {
+    public static Artifactory create(
+        String url,
+        String username = null,
+        String password = null,
+        Integer connectionTimeout = null,
+        Integer socketTimeout = null,
+        ProxyConfig proxy = null,
+        userAgent = null,
+        ignoreSSLIssues = false,
+        String accessToken = null) {
 
-    static Artifactory create(String url, String username = null, String password = null) {
         def matcher = url=~/(https?:\/\/[^\/]+)\/+([^\/]*).*/
         if (!matcher) {
             matcher = url=~/(https?:\/\/[^\/]+)\/*()/
@@ -36,7 +49,7 @@ public class ArtifactoryClient {
                     return entity
                 } else if (data instanceof InputStream) {
                     final InputStream stream = (InputStream) data
-                    InputStreamEntity entity = new InputStreamEntity(stream, stream.available());
+                    InputStreamEntity entity = new InputStreamEntity(stream, null);
                     if (contentType == null) {
                         contentType = ContentType.BINARY
                     };
@@ -49,14 +62,97 @@ public class ArtifactoryClient {
         }
         client.encoders = er
 
-        client.headers.'User-Agent' = 'Artifactory-Client/1.0'
+        if (!userAgent) {
+            userAgent = getUserAgent()
+        }
+        client.headers.'User-Agent' = userAgent
         //TODO (JB) remove preemptive auth once RTFACT-5119 is fixed
-        if (username && password) {
+        if (accessToken) {
+            client.headers.Authorization = "Bearer $accessToken"
+        } else if (username && password) {
             client.auth.basic username, password
             client.headers.Authorization = "Basic ${"$username:$password".toString().bytes.encodeBase64()}"
         }
+        if (connectionTimeout) {
+            client.client.params.setParameter("http.connection.timeout", connectionTimeout)
+        }
+        if (socketTimeout) {
+            client.client.params.setParameter("http.socket.timeout", socketTimeout)
+        }
+        if (proxy) {
+            client.setProxy(proxy.host, proxy.port, proxy.scheme)
+            if (proxy.user && proxy.password) {
+                DefaultHttpClient c = ((DefaultHttpClient)client.client)
+                CredentialsProvider credsProvider = c.getCredentialsProvider();
+                credsProvider.setCredentials(new AuthScope(proxy.host, proxy.port),
+                    new UsernamePasswordCredentials(proxy.user, proxy.password))
+            }
+        }
+        if (ignoreSSLIssues) {
+            client.ignoreSSLIssues();
+        }
+
         Artifactory artifactory = new ArtifactoryImpl(client, matcher[0][2])
         artifactory.@username = username
         artifactory
+    }
+
+    private static String getUserAgent() {
+        Properties prop = new Properties()
+        InputStream propStream = ArtifactoryClient.class.classLoader
+            .getResource("artifactory.client.release.properties").openStream();
+        prop.load(propStream)
+        return "artifactory-client-java/" + prop.getProperty("version")
+    }
+
+    public static class ProxyConfig {
+        /**
+         * Host name or IP
+         */
+        private String host
+        /**
+         * Port, or -1 for the default port
+         */
+        private int port
+        /**
+         * Usually "http" or "https," or <code>null</code> for the default
+        */
+        private String scheme
+        /**
+         * Proxy user.
+         */
+        private String user
+        /**
+         * Proxy password
+         */
+        private String password
+
+        ProxyConfig(String host, int port, String scheme, String user, String password) {
+            this.host = host
+            this.port = port
+            this.scheme = scheme
+            this.user = user
+            this.password = password
+        }
+
+        String getHost() {
+            return host
+        }
+
+        int getPort() {
+            return port
+        }
+
+        String getScheme() {
+            return scheme
+        }
+
+        String getUser() {
+            return user
+        }
+
+        String getPassword() {
+            return password
+        }
     }
 }

@@ -2,7 +2,7 @@ package org.jfrog.artifactory.client.model.impl;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
-import org.jfrog.artifactory.client.model.RemoteRepoChecksumPolicyType;
+import org.jfrog.artifactory.client.model.repository.RemoteRepoChecksumPolicyType;
 
 /**
  * @author jbaruch

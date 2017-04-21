@@ -1,14 +1,14 @@
 package org.jfrog.artifactory.client.model.builder;
 
 import org.jfrog.artifactory.client.model.Repository;
+import org.jfrog.artifactory.client.model.repository.settings.RepositorySettings;
+import org.jfrog.artifactory.client.model.repository.settings.XraySettings;
 
 /**
  * @author jbaruch
  * @since 13/08/12
  */
 public interface RepositoryBuilder<B extends RepositoryBuilder, R extends Repository> {
-
-    B enableDebianSupport(boolean enableDebianSupport);
 
     B description(String description);
 
@@ -24,9 +24,10 @@ public interface RepositoryBuilder<B extends RepositoryBuilder, R extends Reposi
 
     R build();
 
-    B enableNuGetSupport(boolean enableNuGetSupport);
+    void validate();
 
-    B enableGemsSupport(boolean enableGemsSupport);
+    B repositorySettings(RepositorySettings settings);
 
-    B debianTrivialLayout(boolean debianTrivialLayout);
+    B xraySettings(XraySettings xraySettings);
+
 }

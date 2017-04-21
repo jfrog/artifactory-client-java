@@ -1,10 +1,12 @@
 package org.jfrog.artifactory.client.model.builder.impl
 
+import org.jfrog.artifactory.client.model.RepositoryType
 import org.jfrog.artifactory.client.model.VirtualRepository
 import org.jfrog.artifactory.client.model.builder.VirtualRepositoryBuilder
+import org.jfrog.artifactory.client.model.impl.RepositoryTypeImpl
 import org.jfrog.artifactory.client.model.impl.VirtualRepositoryImpl
 
-import static org.jfrog.artifactory.client.model.VirtualRepository.PomRepositoryReferencesCleanupPolicy.discard_active_reference
+import static org.jfrog.artifactory.client.model.PackageType.*
 
 /**
  *
@@ -13,14 +15,16 @@ import static org.jfrog.artifactory.client.model.VirtualRepository.PomRepository
  */
 class VirtualRepositoryBuilderImpl extends RepositoryBuilderBase<VirtualRepositoryBuilder, VirtualRepository> implements VirtualRepositoryBuilder {
 
-    private VirtualRepositoryBuilderImpl() { }
+    private VirtualRepositoryBuilderImpl() {
+        super([bower, docker, gems, generic, gitlfs, gradle, ivy, maven, npm, nuget, p2, pypi, sbt, yum, composer,
+               conan, chef, puppet])
+    }
 
-    private List<String> repositories = new ArrayList<String>()
+    private Collection<String> repositories = Collections.emptyList();
     private boolean artifactoryRequestsCanRetrieveRemoteArtifacts
-    private String keyPair
-    private VirtualRepository.PomRepositoryReferencesCleanupPolicy pomRepositoryReferencesCleanupPolicy = discard_active_reference
+    private String defaultDeploymentRepo;
 
-    VirtualRepositoryBuilder repositories(List<String> repositories) {
+    VirtualRepositoryBuilder repositories(Collection<String> repositories) {
         this.repositories = repositories
         this
     }
@@ -30,17 +34,20 @@ class VirtualRepositoryBuilderImpl extends RepositoryBuilderBase<VirtualReposito
         this
     }
 
-    VirtualRepositoryBuilder keyPair(String keyPair) {
-        this.keyPair = keyPair
-        this
-    }
-
-    VirtualRepositoryBuilder pomRepositoryReferencesCleanupPolicy(VirtualRepository.PomRepositoryReferencesCleanupPolicy pomRepositoryReferencesCleanupPolicy) {
-        this.pomRepositoryReferencesCleanupPolicy = pomRepositoryReferencesCleanupPolicy
+    VirtualRepositoryBuilder defaultDeploymentRepo(String deploymentRepo) {
+        this.defaultDeploymentRepo = deploymentRepo
         this
     }
 
     VirtualRepository build() {
-        new VirtualRepositoryImpl(description, excludesPattern, includesPattern, key, notes, artifactoryRequestsCanRetrieveRemoteArtifacts, keyPair, pomRepositoryReferencesCleanupPolicy, repositories, repoLayoutRef, enableNuGetSupport, enableGemsSupport, enableNpmSupport, enableDebianSupport, debianTrivialLayout)
+        validate()
+        new VirtualRepositoryImpl(key, settings, description, excludesPattern,
+            includesPattern, notes, artifactoryRequestsCanRetrieveRemoteArtifacts,
+            repositories, repoLayoutRef, defaultDeploymentRepo)
+    }
+
+    @Override
+    RepositoryType getRepositoryType() {
+        return RepositoryTypeImpl.VIRTUAL
     }
 }

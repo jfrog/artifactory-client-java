@@ -10,6 +10,8 @@ import org.jfrog.artifactory.client.model.impl.GroupImpl
 class GroupBuilderImpl implements GroupBuilder {
     String name
     String description
+    String realm
+    String realmAttributes
     boolean autoJoin
 
     @Override
@@ -31,7 +33,19 @@ class GroupBuilderImpl implements GroupBuilder {
     }
 
     @Override
+    public GroupBuilder realm(String realm) {
+        this.realm = realm;
+        return this
+    }
+
+    @Override
+    public GroupBuilder realmAttributes(String realmAttributes) {
+        this.realmAttributes = realmAttributes;
+        return this
+    }
+
+    @Override
     Group build() {
-        new GroupImpl(name, autoJoin, description)
+        new GroupImpl(name, autoJoin, description, realm, realmAttributes)
     }
 }

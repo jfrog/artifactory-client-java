@@ -17,4 +17,6 @@ public interface Plugins {
     List<Plugin> list(PluginType type);
 
     PluginHandle execute(String name);
+
+    String getPluginsApi();
 }

@@ -28,4 +28,6 @@ public interface UserBuilder {
     UserBuilder addGroup(String group);
 
     User build();
+
+    void validate();
 }

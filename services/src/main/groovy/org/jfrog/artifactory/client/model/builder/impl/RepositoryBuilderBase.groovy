@@ -1,25 +1,31 @@
 package org.jfrog.artifactory.client.model.builder.impl
 
+import org.jfrog.artifactory.client.model.PackageType
 import org.jfrog.artifactory.client.model.Repository
-import org.jfrog.artifactory.client.model.builder.RepositoryBuilder;
+import org.jfrog.artifactory.client.model.RepositoryType
+import org.jfrog.artifactory.client.model.builder.RepositoryBuilder
+import org.jfrog.artifactory.client.model.repository.settings.RepositorySettings
+import org.jfrog.artifactory.client.model.repository.settings.XraySettings
 
 /**
  * @author jbaruch
  * @since 31/07/12
  */
 abstract class RepositoryBuilderBase<B extends RepositoryBuilder, R extends Repository> implements RepositoryBuilder<B, R> {
-
-    protected String description
-    protected String excludesPattern
+    protected String description = ''
+    protected String excludesPattern = ''
     protected String includesPattern = '**/*'
     protected String key
-    protected String notes
+    protected String notes = ''
     protected String repoLayoutRef
-    protected boolean enableNuGetSupport = false
-    protected boolean enableGemsSupport = false
-    protected boolean enableNpmSupport = false
-    protected boolean enableDebianSupport = false
-    protected boolean debianTrivialLayout = false
+    protected RepositorySettings settings
+    protected XraySettings xraySettings
+
+    public final Set<PackageType> supportedTypes
+
+    RepositoryBuilderBase(Set<PackageType> supportedTypes) {
+        this.supportedTypes = supportedTypes
+    }
 
     @Override
     B description(String description) {
@@ -58,26 +64,28 @@ abstract class RepositoryBuilderBase<B extends RepositoryBuilder, R extends Repo
     }
 
     @Override
-    B enableNuGetSupport(boolean enableNuGetSupport) {
-        this.enableNuGetSupport = enableNuGetSupport
+    B repositorySettings(RepositorySettings settings) {
+        this.settings = settings
         this as B
     }
 
     @Override
-    B enableGemsSupport(boolean enableGemsSupport) {
-        this.enableGemsSupport = enableGemsSupport
+    B xraySettings(XraySettings xraySettings) {
+        this.xraySettings = xraySettings
         this as B
     }
+    abstract RepositoryType getRepositoryType()
 
     @Override
-    B enableDebianSupport(boolean enableDebianSupport) {
-        this.enableDebianSupport = enableDebianSupport
-        this as B
-    }
-
-    @Override
-    B debianTrivialLayout(boolean debianTrivialLayout) {
-        this.debianTrivialLayout = debianTrivialLayout
-        this as B
+    void validate() {
+        if (!key) {
+            throw new IllegalArgumentException("The 'key' property is mandatory.")
+        }
+        if (key.length() > 64) {
+            throw new IllegalArgumentException("The 'key' value is limitted to 64 characters.")
+        }
+        if (this.settings != null && !supportedTypes.contains(settings.packageType)) {
+            throw new IllegalArgumentException("Package type '${settings.packageType}' is not supported in $repositoryType repositories");
+        }
     }
 }

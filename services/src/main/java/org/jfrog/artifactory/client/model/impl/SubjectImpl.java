@@ -10,6 +10,7 @@ public abstract class SubjectImpl implements Subject {
 
     private final String name;
     private String realm;
+    private String realmAttributes;
 
     protected SubjectImpl(String name) {
         this.name = name;
@@ -24,9 +25,18 @@ public abstract class SubjectImpl implements Subject {
         this.realm = realm;
     }
 
+    public void setRealmAttributes(String realmAttributes) {
+        this.realmAttributes = realmAttributes;
+    }
+
     @Override
     public String getRealm() {
         return realm;
+    }
+
+    @Override
+    public String getRealmAttributes() {
+        return realmAttributes;
     }
 
     @Override

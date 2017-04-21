@@ -12,5 +12,8 @@ public interface Subject extends Serializable {
 
     String getRealm();
 
+    String getRealmAttributes();
+
     boolean isGroup();
+
 }

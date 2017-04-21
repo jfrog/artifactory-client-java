@@ -1,5 +1,8 @@
 package org.jfrog.artifactory.client.model;
 
+import org.jfrog.artifactory.client.model.repository.settings.RepositorySettings;
+import org.jfrog.artifactory.client.model.repository.settings.XraySettings;
+
 /**
  * @author jbaruch
  * @since 30/07/12
@@ -21,17 +24,7 @@ public interface Repository {
 
     String getRepoLayoutRef();
 
-    boolean isEnableNuGetSupport();
+    RepositorySettings getRepositorySettings();
 
-    boolean isEnableGemsSupport();
-
-    boolean isEnableNpmSupport();
-
-    boolean isEnablePypiSupport();
-
-    boolean isEnableDockerSupport();
-
-    boolean isEnableDebianSupport();
-
-    boolean isDebianTrivialLayout();
+    XraySettings getXraySettings();
 }

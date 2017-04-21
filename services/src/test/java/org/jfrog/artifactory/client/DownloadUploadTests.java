@@ -3,6 +3,8 @@ package org.jfrog.artifactory.client;
 import groovyx.net.http.HttpResponseException;
 import junit.framework.Assert;
 import org.jfrog.artifactory.client.model.File;
+import org.jfrog.artifactory.client.model.Item;
+import org.jfrog.artifactory.client.model.impl.FolderImpl;
 import org.testng.annotations.Test;
 
 import java.io.FileInputStream;
@@ -18,6 +20,7 @@ import java.nio.file.StandardOpenOption;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Arrays;
+import java.util.List;
 
 import static org.testng.Assert.*;
 
@@ -40,7 +43,7 @@ public class DownloadUploadTests extends ArtifactoryTestsBase {
         assertEquals(deployed.getRepo(), NEW_LOCAL);
         assertEquals(deployed.getPath(), "/" + PATH);
         assertEquals(deployed.getCreatedBy(), username);
-        assertEquals(deployed.getDownloadUri(), url + "/" + NEW_LOCAL + "/" + PATH);
+        assertEquals(deployed.getDownloadUri(), url + NEW_LOCAL + "/" + PATH);
         assertTrue(deployed.getSize() == 3044 || deployed.getSize() == 3017);
         assertTrue(curlAndStrip("api/storage/" + NEW_LOCAL + "/" + PATH + "?properties").contains("\"color\":[\"red\"]"));
     }
@@ -60,7 +63,7 @@ public class DownloadUploadTests extends ArtifactoryTestsBase {
         assertEquals(deployed.getRepo(), NEW_LOCAL);
         assertEquals(deployed.getPath(), "/" + PATH);
         assertEquals(deployed.getCreatedBy(), username);
-        assertEquals(deployed.getDownloadUri(), url + "/" + NEW_LOCAL + "/" + PATH);
+        assertEquals(deployed.getDownloadUri(), url + NEW_LOCAL + "/" + PATH);
         assertTrue(deployed.getSize() == 3044 || deployed.getSize() == 3017);
         try {
             curlAndStrip("api/storage/" + NEW_LOCAL + "/" + PATH + "?properties");
@@ -84,7 +87,7 @@ public class DownloadUploadTests extends ArtifactoryTestsBase {
         assertEquals(deployed.getRepo(), NEW_LOCAL);
         assertEquals(deployed.getPath(), "/" + PATH);
         assertEquals(deployed.getCreatedBy(), username);
-        assertEquals(deployed.getDownloadUri(), url + "/" + NEW_LOCAL + "/" + PATH);
+        assertEquals(deployed.getDownloadUri(), url + NEW_LOCAL + "/" + PATH);
         assertTrue(deployed.getSize() == 3044 || deployed.getSize() == 3017);
         assertTrue(curlAndStrip("api/storage/" + NEW_LOCAL + "/" + PATH + "?properties").contains("\"color\":[\"red\"]"));
         assertFalse(curlAndStrip("api/storage/" + NEW_LOCAL + "/" + PATH + "?properties").contains("\"target\":[\"m/a\"]"));
@@ -107,7 +110,7 @@ public class DownloadUploadTests extends ArtifactoryTestsBase {
         assertEquals(deployed.getRepo(), NEW_LOCAL);
         assertEquals(deployed.getPath(), "/" + PATH);
         assertEquals(deployed.getCreatedBy(), username);
-        assertEquals(deployed.getDownloadUri(), url + "/" + NEW_LOCAL + "/" + PATH);
+        assertEquals(deployed.getDownloadUri(), url + NEW_LOCAL + "/" + PATH);
         assertTrue(deployed.getSize() == SAMPLE_FILE_SIZE || deployed.getSize() == SAMPLE_FILE_SIZE_WIN_ENDINGS);
         assertTrue(uploaded[0] == SAMPLE_FILE_SIZE || uploaded[0] == SAMPLE_FILE_SIZE_WIN_ENDINGS);
     }
@@ -146,8 +149,34 @@ public class DownloadUploadTests extends ArtifactoryTestsBase {
         assertEquals(deployed.getRepo(), NEW_LOCAL);
         assertEquals(deployed.getPath(), "/" + PATH);
         assertEquals(deployed.getCreatedBy(), username);
-        assertEquals(deployed.getDownloadUri(), url + "/" + NEW_LOCAL + "/" + PATH);
+        assertEquals(deployed.getDownloadUri(), url + NEW_LOCAL + "/" + PATH);
         assertEquals(deployed.getSize(), temp.length());
+    }
+
+
+    @Test(groups = "uploadBasics", dependsOnGroups = "repositoryBasics")
+    public void testUploadWithMavenGAVC() throws IOException {
+        InputStream inputStream = this.getClass().getResourceAsStream("/sample.zip");
+        assertNotNull(inputStream);
+        final String targetPath = "com/example/com.example.test/1.0.0/com.example.test-1.0.0-zip.jar";
+        File deployed = artifactory.repository(NEW_LOCAL).upload(targetPath, inputStream).doUpload();
+        assertNotNull(deployed);
+        assertEquals(deployed.getRepo(), NEW_LOCAL);
+        assertEquals(deployed.getPath(), "/" + targetPath);
+        assertEquals(deployed.getCreatedBy(), username);
+        // GroupId: com.example; ArtifactId: com.example.test; Version 1.0.0; Classifier: zip
+        assertEquals(deployed.getDownloadUri(), url + NEW_LOCAL + "/" + targetPath);
+        assertEquals(deployed.getSize(), 442);
+    }
+
+    @Test(groups = "uploadBasics", dependsOnMethods = "testUploadWithSingleProperty")
+    public void testUploadExplodeArchive() throws IOException {
+        artifactory.repository(NEW_LOCAL).upload("sample/sample.zip", this.getClass().getResourceAsStream("/sample.zip"))
+                .doUploadAndExplode();
+        List<Item> items = ((FolderImpl) artifactory.repository(NEW_LOCAL).folder("sample").info()).getChildren();
+        assertEquals(items.get(0).getUri(), "/a.txt");
+        assertEquals(items.get(1).getUri(), "/b.txt");
+        assertEquals(items.get(2).getUri(), "/c.txt");
     }
 
     @Test(groups = "uploadBasics", dependsOnMethods = "testUploadWithSingleProperty")//to spare all the checks
@@ -158,7 +187,6 @@ public class DownloadUploadTests extends ArtifactoryTestsBase {
                 .withProperty("released", false).doUpload();
         assertTrue(curlAndStrip("api/storage/" + NEW_LOCAL + "/" + PATH + "?properties").contains("{\"build\":[\"28\"],\"colors\":[\"red\"],\"released\":[\"false\"]}"));
     }
-
 
     //TODO (jb) enable once RTFACT-5126 is fixed
     @Test(enabled = false, dependsOnMethods = "testUploadWithSingleProperty")

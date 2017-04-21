@@ -15,13 +15,16 @@ import static java.util.Collections.unmodifiableSet
  */
 class ItemHandleImpl implements ItemHandle {
 
+    private String baseApiPath
+
     private ArtifactoryImpl artifactory
     private String repo
     private String path
     private Class<? extends Item>  itemType
 
-    ItemHandleImpl(ArtifactoryImpl artifactory, String repo, String path, Class itemType) {
+    ItemHandleImpl(ArtifactoryImpl artifactory, String baseApiPath, String repo, String path, Class itemType) {
         this.artifactory = artifactory
+        this.baseApiPath = baseApiPath
         this.repo = repo
         this.path = path
         this.itemType = itemType
@@ -31,7 +34,7 @@ class ItemHandleImpl implements ItemHandle {
         assert artifactory
         assert repo
         assert path
-        artifactory.get("/api/storage/$repo/$path", JSON, itemType)
+        artifactory.get(baseApiPath + "/storage/$repo/$path", JSON, itemType)
     }
 
     public Map<String, List<String>> getProperties(String... properties) {
@@ -39,7 +42,7 @@ class ItemHandleImpl implements ItemHandle {
         assert repo
         assert path
         try {
-            artifactory.get("/api/storage/$repo/$path", [properties: properties.join(',')], JSON, Map.class)?.properties
+            artifactory.get(baseApiPath + "/storage/$repo/$path", [properties: properties.join(',')], JSON, Map.class)?.properties
         } catch (HttpResponseException e) {
             if (e.statusCode == 404) {
                 return [:]
@@ -58,7 +61,7 @@ class ItemHandleImpl implements ItemHandle {
     }
 
     public PropertiesHandler properties() {
-        return new PropertiesHandlerImpl(artifactory, repo, path);
+        return new PropertiesHandlerImpl(artifactory, baseApiPath, repo, path);
     }
 
     @Override
@@ -67,7 +70,7 @@ class ItemHandleImpl implements ItemHandle {
         assert repo
         assert path
         try {
-            artifactory.delete("/api/storage/$repo/$path", [properties: properties.join(',')])?.properties
+            artifactory.delete(baseApiPath + "/storage/$repo/$path", [properties: properties.join(',')])?.properties
         } catch (HttpResponseException e) {
             if (e.statusCode == 404) {
                 return [:]
@@ -78,7 +81,7 @@ class ItemHandleImpl implements ItemHandle {
 
     @Override
     Set<ItemPermission> effectivePermissions() {
-        Map json = artifactory.get("/api/storage/${repo}/${path}", ['permissions': null], JSON, Map) as Map
+        Map json = artifactory.get(baseApiPath + "/storage/${repo}/${path}", ['permissions': null], JSON, Map) as Map
         unmodifiableSet(mapToItemPermissions(json.principals.users, User) + mapToItemPermissions(json.principals.groups, Group) as Set<? extends ItemPermission>) as Set<ItemPermission>
     }
 
@@ -98,7 +101,7 @@ class ItemHandleImpl implements ItemHandle {
         assert repo
         assert path
         try {
-            artifactory.delete("/api/storage/$repo/$path", [properties: property])?.properties
+            artifactory.delete(baseApiPath + "/storage/$repo/$path", [properties: property])?.properties
         } catch (HttpResponseException e) {
             if (e.statusCode == 404) {
                 return [:]
@@ -126,10 +129,10 @@ class ItemHandleImpl implements ItemHandle {
     }
 
     private ItemHandle moveOrCopy(String toRepo, String toPath, String operation) {
-        CopyMoveResultReport message = artifactory.post("/api/$operation/$repo/$path", [to: "$toRepo/$toPath"], JSON, CopyMoveResultReportImpl) as CopyMoveResultReport
+        CopyMoveResultReport message = artifactory.post(baseApiPath + "/$operation/$repo/$path", [to: "$toRepo/$toPath"], JSON, CopyMoveResultReportImpl) as CopyMoveResultReport
         if (!message.getMessages().get(0).getLevel().equals('INFO')) {
             throw new CopyMoveException(message)
         }
-        new ItemHandleImpl(artifactory, toRepo, toPath, folder ? FolderImpl : FileImpl)
+        new ItemHandleImpl(artifactory, baseApiPath, toRepo, toPath, folder ? FolderImpl : FileImpl)
     }
 }

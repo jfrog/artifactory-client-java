@@ -1,21 +1,17 @@
 package org.jfrog.artifactory.client.model;
 
-import java.util.List;
+import java.util.Collection;
 
 /**
  * @author jbaruch
  * @since 30/07/12
  */
 public interface VirtualRepository extends Repository {
-    List<String> getRepositories();
+
+    Collection<String> getRepositories();
 
     boolean isArtifactoryRequestsCanRetrieveRemoteArtifacts();
 
-    String getKeyPair();
+    String getDefaultDeploymentRepo();
 
-    PomRepositoryReferencesCleanupPolicy getPomRepositoryReferencesCleanupPolicy();
-
-    public enum PomRepositoryReferencesCleanupPolicy {
-        discard_active_reference, discard_any_reference, nothing
-    }
 }
