@@ -1,5 +1,12 @@
 package org.jfrog.artifactory.client;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.Properties;
+import static org.apache.commons.codec.binary.Base64.encodeBase64;
+import static org.apache.commons.lang.StringUtils.isEmpty;
+import static org.apache.commons.lang.StringUtils.remove;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -7,19 +14,9 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import static org.testng.Assert.fail;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.Properties;
-
-import static org.apache.commons.codec.binary.Base64.encodeBase64;
-import static org.apache.commons.lang.StringUtils.isEmpty;
-import static org.apache.commons.lang.StringUtils.remove;
-import static org.jfrog.artifactory.client.ArtifactoryClient.create;
-import static org.testng.Assert.fail;
 
 /**
  * @author jbaruch
@@ -37,6 +34,7 @@ public abstract class ArtifactoryTestsBase {
     private static final String CLIENTTESTS_ARTIFACTORY_ENV_VAR_PREFIX = "CLIENTTESTS_ARTIFACTORY_";
     private static final String CLIENTTESTS_ARTIFACTORY_PROPERTIES_PREFIX = "clienttests.artifactory.";
     protected Artifactory artifactory;
+    protected Artifactory threadSafeArtifactory;
     protected String username;
     private String password;
     protected String url;
@@ -68,7 +66,12 @@ public abstract class ArtifactoryTestsBase {
         fileMd5 = "8f17d4271b86478a2731deebdab8c846";
         fileSha1 = "6c98d6766e72d5575f96c9479d1c1d3b865c6e25";
 
-        artifactory = create(url, username, password);
+
+        artifactory = ArtifactoryClientBuilder.create()
+                .setUrl(url)
+                .setUsername(username)
+                .setPassword(password)
+                .build();
     }
 
     private String readParam(Properties props, String paramName) {
@@ -76,7 +79,7 @@ public abstract class ArtifactoryTestsBase {
         if (props.size() > 0) {
             paramValue = props.getProperty(CLIENTTESTS_ARTIFACTORY_PROPERTIES_PREFIX + paramName);
         }
-        if(paramValue == null) {
+        if (paramValue == null) {
             paramValue = System.getProperty(CLIENTTESTS_ARTIFACTORY_PROPERTIES_PREFIX + paramName);
         }
         if (paramValue == null) {
@@ -90,18 +93,18 @@ public abstract class ArtifactoryTestsBase {
 
     private void failInit() {
         String message =
-            new StringBuilder("Failed to load test Artifactory instance credentials. ")
-                .append("Looking for System properties '")
-                .append(CLIENTTESTS_ARTIFACTORY_PROPERTIES_PREFIX)
-                .append("url', ")
-                .append(CLIENTTESTS_ARTIFACTORY_PROPERTIES_PREFIX)
-                .append("username' and ")
-                .append(CLIENTTESTS_ARTIFACTORY_PROPERTIES_PREFIX)
-                .append("password' or a properties file with those properties in classpath ")
-                .append("or Environment variables '")
-                .append(CLIENTTESTS_ARTIFACTORY_ENV_VAR_PREFIX).append("URL', ")
-                .append(CLIENTTESTS_ARTIFACTORY_ENV_VAR_PREFIX).append("USERNAME' and ")
-                .append(CLIENTTESTS_ARTIFACTORY_ENV_VAR_PREFIX).append("PASSWORD'").toString();
+                new StringBuilder("Failed to load test Artifactory instance credentials. ")
+                        .append("Looking for System properties '")
+                        .append(CLIENTTESTS_ARTIFACTORY_PROPERTIES_PREFIX)
+                        .append("url', ")
+                        .append(CLIENTTESTS_ARTIFACTORY_PROPERTIES_PREFIX)
+                        .append("username' and ")
+                        .append(CLIENTTESTS_ARTIFACTORY_PROPERTIES_PREFIX)
+                        .append("password' or a properties file with those properties in classpath ")
+                        .append("or Environment variables '")
+                        .append(CLIENTTESTS_ARTIFACTORY_ENV_VAR_PREFIX).append("URL', ")
+                        .append(CLIENTTESTS_ARTIFACTORY_ENV_VAR_PREFIX).append("USERNAME' and ")
+                        .append(CLIENTTESTS_ARTIFACTORY_ENV_VAR_PREFIX).append("PASSWORD'").toString();
 
         fail(message);
     }
