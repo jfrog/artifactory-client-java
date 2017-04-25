@@ -378,7 +378,12 @@ for (String groupName : groupNames) {
 
 ##### Creating or Updating User Groups
 ```
-Group group = groupBuilder.name("groupName").autoJoin(true).description("new group").build();
+Group group = artifactory.security().builders().groupBuilder()
+    .name("groupName")
+    .autoJoin(true)
+    .description("new group")
+    .build();
+
 artifactory.security().createOrUpdateGroup(group);
 ```
 
@@ -388,7 +393,8 @@ When using [LDAP integration](https://www.jfrog.com/confluence/display/RTF/Manag
 
 ```
 String realmAttributes = "ldapGroupName=groupName;groupsStrategy=STATIC;groupDn=cn=GROUPNAME,ou=foo,o=bar";
-Group group = groupBuilder.name("groupName")
+Group group = artifactory.security().builders().groupBuilder()
+    .name("groupName")
     .description("GROUPNAME")
     .realm("ldap")
     .realmAttributes(realmAttributes)
@@ -435,6 +441,33 @@ List<String> permissionTargetNames = artifactory.security().permissionTargets();
 for (String permissionTargetName : permissionTargetNames) {
     PermissionTarget permissionTarget = artifactory.security().permissionTarget(permissionTargetName);
 }
+```
+
+##### Creating a Permission Target
+```
+Principal userAdmin = artifactory.security().builders().principalBuilder()
+    .name("admin")
+    .privileges(Privilege.ADMIN)
+    .build();
+
+Principal groupTest = artifactory.security().builders().principalBuilder()
+    .name("myTest")
+    .privileges(Privilege.DEPLOY, Privilege.READ)
+    .build();
+
+Principals principals = artifactory.security().builders().principalsBuilder()
+    .users(userAdmin)
+    .groups(groupTest)
+    .build();
+
+PermissionTarget permissionTarget = artifactory.security().builders().permissionTargetBuilder()
+    .name("myPermission")
+    .principals(principals)
+    .repositories("some-repository")
+    .includesPattern("com/company/**,org/public/**")
+    .build();
+
+artifactory.security().createOrReplacePermissionTarget(permissionTarget);
 ```
 
 #### System
