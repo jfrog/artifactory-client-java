@@ -34,7 +34,6 @@ public abstract class ArtifactoryTestsBase {
     private static final String CLIENTTESTS_ARTIFACTORY_ENV_VAR_PREFIX = "CLIENTTESTS_ARTIFACTORY_";
     private static final String CLIENTTESTS_ARTIFACTORY_PROPERTIES_PREFIX = "clienttests.artifactory.";
     protected Artifactory artifactory;
-    protected Artifactory threadSafeArtifactory;
     protected String username;
     private String password;
     protected String url;
