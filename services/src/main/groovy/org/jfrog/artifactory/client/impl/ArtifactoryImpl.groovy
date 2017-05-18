@@ -20,6 +20,7 @@ import static com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS
 import static com.fasterxml.jackson.databind.introspect.VisibilityChecker.Std.defaultInstance
 import static groovyx.net.http.ContentType.*
 import static groovyx.net.http.Method.*
+
 /**
  *
  * @author jbaruch
@@ -30,16 +31,15 @@ class ArtifactoryImpl implements Artifactory {
     private static final DateFormat ISO8601_DATE_FORMAT = ISO8601DateFormat.newInstance()
 
     final RESTClient client
-    def final originalJsonParser
-    def final originalTextParser
     private final String contextName
-    private String username;
+    private String username
     private final ObjectMapper objectMapper
 
     ArtifactoryImpl(RESTClient client, String contextName) {
         this.client = client
-        originalJsonParser = client.parser.getAt(JSON)
-        originalTextParser = client.parser.getAt(TEXT)
+        client.parser[JSON] = client.parser[TEXT]
+        client.parser[XML] = client.parser[TEXT]
+
         this.contextName = contextName
         objectMapper = new ObjectMapper()
 
@@ -82,7 +82,7 @@ class ArtifactoryImpl implements Artifactory {
     }
 
     RepositoryHandle repository(String repo) {
-        if(!repo){
+        if (!repo) {
             throw new IllegalArgumentException('Repository name is required')
         }
         new RepositoriesImpl(this, API_BASE).repository(repo)
@@ -118,8 +118,8 @@ class ArtifactoryImpl implements Artifactory {
     def <T> T restCall(ArtifactoryRequest request) {
 
         def responseType = Enum.valueOf(ContentType.class, request.getResponseType().getText())
-        def requestType  = Enum.valueOf(ContentType.class, request.getRequestType().getText())
-        def requestPath  = "/${request.getApiUrl()}"
+        def requestType = Enum.valueOf(ContentType.class, request.getRequestType().getText())
+        def requestPath = "/${request.getApiUrl()}"
 
         switch (request.getMethod()) {
             case (ArtifactoryRequest.Method.GET):
@@ -147,65 +147,38 @@ class ArtifactoryImpl implements Artifactory {
         return ret.data
     }
 
+    protected Boolean head(String path) {
+        try {
+            client.head([path: cleanPath(path)]).success
+        } catch (HttpResponseException e) {
+            false
+        }
+    }
+
     def <T> T get(String path, ContentType responseContentType = ANY, def responseClass = null, Map headers = null) {
         get(path, [:], responseContentType, responseClass, headers)
     }
 
     def <T> T get(String path, Map query, ContentType responseContentType = ANY,
                   def responseClass = null, Map headers = null) {
-        rest(GET, path, query, responseContentType, responseClass, ANY, null, headers)
+        doRest(GET, path, query, responseContentType, responseClass, ANY, null, headers)
     }
 
     def <T> T delete(String path, Map query = null, ContentType responseContentType = ANY,
                      def responseClass = null, Map addlHeaders = null) {
-        rest(DELETE, path, query, responseContentType, responseClass, TEXT, null, addlHeaders)
+        doRest(DELETE, path, query, responseContentType, responseClass, TEXT, null, addlHeaders)
     }
 
     def <T> T post(String path, Map query = null, ContentType responseContentType = ANY,
                    def responseClass = null, ContentType requestContentType = JSON, requestBody = null, Map addlHeaders = null, long contentLength = -1) {
-        rest(POST, path, query, responseContentType, responseClass, requestContentType, requestBody, addlHeaders, contentLength)
+        doRest(POST, path, query, responseContentType, responseClass, requestContentType, requestBody, addlHeaders, contentLength)
     }
 
     def <T> T put(String path, Map query = null, ContentType responseContentType = ANY,
                   def responseClass = null, ContentType requestContentType = JSON, requestBody = null, Map addlHeaders = null, long contentLength = -1) {
-        rest(PUT, path, query, responseContentType, responseClass, requestContentType, requestBody, addlHeaders, contentLength)
+        doRest(PUT, path, query, responseContentType, responseClass, requestContentType, requestBody, addlHeaders, contentLength)
     }
 
-    /**
-     *
-     * @param method
-     * @param path
-     * @param query
-     * @param responseType Header and parsing type for response
-     * @param responseClass If responseType is JSON, a class to have the object mapped to can be provided. Not necessarily a class, it could be a TypeReference, hence it's not the same as T
-     * @param requestContentType
-     * @param requestBody
-     * @param addlHeaders
-     * @return
-     */
-    private def <T> T rest(Method method, String path, Map query = null, responseType = ANY,
-                           def responseClass, ContentType requestContentType = JSON, requestBody = null, Map addlHeaders = null, long contentLength = -1) {
-        def originalParser
-        try {
-            // Let us send one thing to the server and parse it differently. But we have to careful to restore it.
-            originalParser = client.parser.getAt(responseType)
-
-            // Change the JSON parser on the fly, not thread safe since the responseClass we're using is locked to this call's argument
-            if (responseClass == String) {
-                // They just want us to leave the response alone
-                client.parser.putAt(responseType, originalTextParser)
-            } else if (responseType == JSON && responseClass) {
-                client.parser.putAt(JSON) { HttpResponse resp ->
-                    InputStream is = resp.entity.content
-                    return objectMapper.readValue(is, responseClass) as T
-                }
-            }
-
-            restWrapped(method, path, query, responseType, responseClass, requestContentType, requestBody, addlHeaders, contentLength)
-        } finally {
-            client.parser.putAt(responseType, originalParser)
-        }
-    }
 
     def cleanPath(path) {
         def fullpath = "${contextName}${path}"
@@ -216,9 +189,9 @@ class ArtifactoryImpl implements Artifactory {
         return fullpath
     }
 
-    private def <T> T restWrapped(Method method, String path, Map query = null, responseType = ANY,
-        def responseClass, ContentType requestContentType = JSON, requestBody = null,
-        Map<String, String> addlHeaders = null, long contentLength = -1) {
+    private def <T> T doRest(Method method, String path, Map query = null, responseType = ANY,
+                             def responseClass, ContentType requestContentType = JSON, requestBody = null,
+                             Map<String, String> addlHeaders = null, long contentLength = -1) {
 
         def ret
 
@@ -247,29 +220,36 @@ class ArtifactoryImpl implements Artifactory {
                 setRequestContentType(requestContentType)
             }
 
-            response.success = { HttpResponse resp, slurped ->
-                if (responseClass == String || responseType == TEXT) {
-                    // we overrode the parser to be just text, but oddly it returns an InputStreamReader instead of a String
-                    ret = slurped?.text
-                } else {
-                    ret = slurped // Will be type according to responseType
-                }
+            response.success = { HttpResponse resp, responseBody ->
+                ret = parseResponseBody(responseBody, responseType, responseClass)
             }
 
             response.'404' = { resp ->
                 throw new HttpResponseException(resp)
             }
 
-            response.'409' = { resp, slurped ->
-                if (responseClass == String || responseType == TEXT) {
-                    // we overrode the parser to be just text, but oddly it returns an InputStreamReader instead of a String
-                    ret = slurped?.text
-                } else {
-                    ret = slurped // Will be type according to responseType
-                }
+            response.'409' = { resp, responseBody ->
+                ret = parseResponseBody(responseBody, responseType, responseClass)
             }
         }
         ret
+    }
+
+    private parseResponseBody(responseBody, responseType, responseClass) {
+        if (responseBody) {
+            if (responseType == BINARY) {
+                return responseBody
+            }
+            if (responseType != JSON || responseClass == String) {
+                return responseBody.text
+            }
+            return parseJson(responseClass, responseBody)
+        }
+        return null
+    }
+
+    private Object parseJson(responseClass, responseBody) {
+        responseClass ? objectMapper.readValue(responseBody, responseClass) : objectMapper.readValue(responseBody, Object)
     }
 
     /**

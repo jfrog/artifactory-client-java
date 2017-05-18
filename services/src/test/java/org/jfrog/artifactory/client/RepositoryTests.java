@@ -1,7 +1,6 @@
 package org.jfrog.artifactory.client;
 
 import org.jfrog.artifactory.client.model.*;
-import org.jfrog.artifactory.client.model.impl.ContentSyncImpl;
 import org.jfrog.artifactory.client.model.repository.settings.RepositorySettings;
 import org.jfrog.artifactory.client.model.repository.settings.impl.GenericRepositorySettingsImpl;
 import org.testng.annotations.BeforeMethod;
@@ -29,10 +28,10 @@ public class RepositoryTests extends ArtifactoryTestsBase {
         RepositorySettings genericRepo = new GenericRepositorySettingsImpl();
 
         localRepository = artifactory.repositories().builders().localRepositoryBuilder()
-            .key(NEW_LOCAL)
-            .description("new local repository")
-            .repositorySettings(genericRepo)
-            .build();
+                .key(NEW_LOCAL)
+                .description("new local repository")
+                .repositorySettings(genericRepo)
+                .build();
     }
 
     @Test(groups = "repositoryBasics", dependsOnMethods = "testDelete")
@@ -89,7 +88,7 @@ public class RepositoryTests extends ArtifactoryTestsBase {
     @Test(groups = "repositoryBasics")
     public void testDelete() throws Exception {
         //all the assertions are taken care of in deleteRepoIfExists
-            deleteRepoIfExists(NEW_LOCAL);
+        deleteRepoIfExists(NEW_LOCAL);
     }
 
     @Test
@@ -201,5 +200,13 @@ public class RepositoryTests extends ArtifactoryTestsBase {
         } catch (Exception e) {
             assertTrue(e.getMessage().contains("Internal Server Error"));
         }
+    }
+
+    @Test(dependsOnMethods = "testCreate")
+    public void testRepositoryExists() throws IOException {
+
+        assertTrue(artifactory.repository(NEW_LOCAL).exists());
+        String notExistsRepoName = Long.toString(System.currentTimeMillis());
+        assertFalse(artifactory.repository(notExistsRepoName).exists());
     }
 }

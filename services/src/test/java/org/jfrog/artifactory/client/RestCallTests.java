@@ -121,7 +121,7 @@ public class RestCallTests extends ArtifactoryTestsBase {
 
     @Test
     public void testGetPermissionTargets() {
-        ArrayList response = getPermissionTargets();
+        List response = getPermissionTargets();
         assertNotNull(response);
     }
 
@@ -139,7 +139,7 @@ public class RestCallTests extends ArtifactoryTestsBase {
         artifactory.restCall(req);
 
         // Verify permission target created:
-        ArrayList permissions = getPermissionTargets();
+        List permissions = getPermissionTargets();
         assertTrue(findPermissionInLiat(permissions, permissionName));
 
         // Delete permission target:
@@ -164,7 +164,7 @@ public class RestCallTests extends ArtifactoryTestsBase {
         return artifactory.restCall(deleteBuild);
     }
 
-    private ArrayList getPermissionTargets() {
+    private List getPermissionTargets() {
         ArtifactoryRequest req = new ArtifactoryRequestImpl()
                 .method(ArtifactoryRequest.Method.GET)
                 .apiUrl("api/security/permissions")
@@ -193,7 +193,7 @@ public class RestCallTests extends ArtifactoryTestsBase {
         return new ObjectMapper().readValue(json, Map.class);
     }
 
-    private boolean findPermissionInLiat(ArrayList list, String permissionName) {
+    private boolean findPermissionInLiat(List list, String permissionName) {
         for(Object permission : list) {
             Object name = ((Map)permission).get("name");
             if (permissionName.equals(name)) {
