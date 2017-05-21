@@ -31,26 +31,32 @@ class RepositoryHandleImpl implements RepositoryHandle {
     }
 
     //TODO: [by yl] Use a FileHandler and a FolderHandler instead or returning Items
+    @Override
     ItemHandle folder(String folderName) {
         new ItemHandleImpl(artifactory, baseApiPath, repoKey, folderName, FolderImpl)
     }
 
+    @Override
     ItemHandle file(String filePath) {
         new ItemHandleImpl(artifactory, baseApiPath, repoKey, filePath, FileImpl)
     }
 
+    @Override
     ReplicationStatus replicationStatus() {
         artifactory.get("${repository.getReplicationApi()}${repoKey}", ContentType.JSON, ReplicationStatusImpl.class)
     }
 
+    @Override
     String delete() {
         artifactory.delete("${repository.getRepositoriesApi()}${repoKey}", [:], ContentType.TEXT)
     }
 
+    @Override
     String delete(String path) {
         artifactory.delete("/${repoKey}/${path}", [:], ContentType.TEXT)
     }
 
+    @Override
     Repository get() {
         String json = artifactory.get("${repository.getRepositoriesApi()}${repoKey}", ContentType.JSON, String)
         parseJsonAsRepository(json)
@@ -67,6 +73,7 @@ class RepositoryHandleImpl implements RepositoryHandle {
         repo
     }
 
+    @Override
     UploadableArtifact upload(String targetPath, InputStream content) {
         new UploadableArtifactImpl(repoKey, targetPath, (InputStream) content, artifactory)
     }
@@ -77,6 +84,12 @@ class RepositoryHandleImpl implements RepositoryHandle {
         new UploadableArtifactImpl(repoKey, targetPath, content, artifactory)
     }
 
+    @Override
+    UploadableArtifact copyBySha1(String targetPath, String sha1) {
+        new UploadableArtifactImpl(repoKey, targetPath, sha1, artifactory)
+    }
+
+    @Override
     DownloadableArtifact download(String path) {
         new DownloadableArtifactImpl(repoKey, path, artifactory)
     }
@@ -85,7 +98,8 @@ class RepositoryHandleImpl implements RepositoryHandle {
     Set<ItemPermission> effectivePermissions() {
         this.folder('').effectivePermissions()
     }
-    
+
+    @Override
     boolean isFolder(String path) {
         String itemInfoJson = artifactory.get("/api/storage/${repoKey}/${path}", ContentType.JSON, String)
         JsonSlurper slurper = new JsonSlurper()

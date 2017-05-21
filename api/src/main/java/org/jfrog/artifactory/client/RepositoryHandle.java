@@ -30,6 +30,8 @@ public interface RepositoryHandle {
 
     UploadableArtifact upload(String targetPath, File content);
 
+    UploadableArtifact copyBySha1(String targetPath, String sha1);
+
     DownloadableArtifact download(String path);
 
     Set<ItemPermission> effectivePermissions();

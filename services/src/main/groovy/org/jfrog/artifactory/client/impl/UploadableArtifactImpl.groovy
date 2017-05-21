@@ -8,6 +8,7 @@ import org.jfrog.artifactory.client.UploadableArtifact
 import org.jfrog.artifactory.client.model.impl.FileImpl
 
 import java.security.MessageDigest
+
 /**
  *
  * @author jbaruch
@@ -34,15 +35,22 @@ class UploadableArtifactImpl extends ArtifactBase<UploadableArtifact> implements
         this.file = file
     }
 
+    UploadableArtifactImpl(String repo, String path, String sha1, Artifactory artifactory) {
+        super(repo)
+        this.artifactory = artifactory as ArtifactoryImpl
+        this.path = path
+        this.sha1 = sha1
+    }
+
     org.jfrog.artifactory.client.model.File doUpload() {
         def params = parseParams(props, '=')
         if (sha1) {
             def headers = ['X-Checksum-Deploy': true, 'X-Checksum-Sha1': sha1]
             try {
                 artifactory.put("/$repo/$path${params}", [:], ContentType.JSON, FileImpl, ContentType.BINARY, null,
-                                    headers, file ? file.length() : -1)
+                        headers, file ? file.length() : -1)
             } catch (HttpResponseException e) {
-                if (e.statusCode == 404) {
+                if (e.statusCode == 404 && content != null) {
                     headers = ['X-Checksum-Sha1': sha1]
                     uploadContent(params, headers)
                 } else {
@@ -95,7 +103,7 @@ class UploadableArtifactImpl extends ArtifactBase<UploadableArtifact> implements
     UploadableArtifact bySha1Checksum() {
         if (!file) {
             throw new IllegalStateException('Can\'t calculate checksum for streaming content. Try uploading a file instead of an input stream or provide a checksum.')
-        };
+        }
         MessageDigest md = MessageDigest.getInstance('SHA1')
         byte[] dataBytes = new byte[1024]
         int nread
