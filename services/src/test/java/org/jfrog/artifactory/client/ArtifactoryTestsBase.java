@@ -3,6 +3,8 @@ package org.jfrog.artifactory.client;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Properties;
 import static org.apache.commons.codec.binary.Base64.encodeBase64;
 import static org.apache.commons.lang.StringUtils.isEmpty;
@@ -188,6 +190,31 @@ public abstract class ArtifactoryTestsBase {
             } else {
                 throw e;
             }
+        }
+    }
+
+    public static String calcSha1(InputStream content) {
+        MessageDigest md = null;
+        try {
+            md = MessageDigest.getInstance("SHA1");
+
+            byte[] dataBytes = new byte[1024];
+            int nread;
+            while ((nread = content.read(dataBytes)) != -1) {
+                md.update(dataBytes, 0, nread);
+            }
+
+            byte[] mdbytes = md.digest();
+
+            //convert the byte to hex format
+            StringBuilder sb = new StringBuilder("");
+            for (int i = 0; i < mdbytes.length; i++) {
+                sb.append(Integer.toString((((mdbytes[i] & 0xff) + 0x100)), 16).substring(1));
+            }
+
+            return sb.toString();
+        } catch (NoSuchAlgorithmException | IOException e) {
+            return null;
         }
     }
 }

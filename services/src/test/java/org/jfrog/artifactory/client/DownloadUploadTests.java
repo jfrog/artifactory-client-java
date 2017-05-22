@@ -200,6 +200,25 @@ public class DownloadUploadTests extends ArtifactoryTestsBase {
     }
 
     @Test(dependsOnMethods = "testUploadWithSingleProperty")
+    public void testUploadCopyBySha1WithSingleProperty() throws IOException {
+        InputStream inputStream = this.getClass().getResourceAsStream("/sample.txt");
+        assertNotNull(inputStream);
+
+        String refPath = "r/a/b/c.txt";
+        String sha1 = calcSha1(inputStream);
+        File deployed = artifactory.repository(NEW_LOCAL)
+                .copyBySha1(refPath, sha1)
+                .withProperty("color", "red")
+                .doUpload();
+
+        assertNotNull(deployed);
+        inputStream = artifactory.repository(NEW_LOCAL).download(refPath).doDownload();
+        String actual = textFrom(inputStream);
+        assertEquals(actual, textFrom(this.getClass().getResourceAsStream("/sample.txt")));
+        assertTrue(curlAndStrip("api/storage/" + NEW_LOCAL + "/" + refPath + "?properties").contains("\"color\":[\"red\"]"));
+    }
+
+    @Test(dependsOnMethods = "testUploadWithSingleProperty")
     public void testDownloadWithoutProperties() throws IOException {
         InputStream inputStream = artifactory.repository(NEW_LOCAL).download(PATH).doDownload();
         String actual = textFrom(inputStream);
