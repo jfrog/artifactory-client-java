@@ -12,6 +12,7 @@ import org.testng.annotations.Test
 import java.util.concurrent.Callable
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
 
 /**
  * test that client supports Async rest calls
@@ -23,7 +24,6 @@ public class AsyncTests {
 
     @Test
     public void testChecksumDeployAsync() {
-        init()
         def repoName = 'testrepo'
         createRepo(repoName)
         def stream = this.class.getResourceAsStream("/sample.zip")
@@ -33,7 +33,7 @@ public class AsyncTests {
         for (int i = 0; i < 1000; i++) {
             futures.add(executor.submit(new ArtifactUploadRunnable(sha1, i)))
         }
-        sleep(3000)
+        executor.awaitTermination(3000, TimeUnit.MILLISECONDS)
         def exceptions = futures.collect { it.get() }.findAll { it != null }
         Assert.assertEquals(exceptions.empty, true)
         artifactory.repository(repoName).delete()
@@ -41,7 +41,6 @@ public class AsyncTests {
 
     @Test
     public void testUploadAsync() {
-        init()
         def repoName = 'testrepo'
         createRepo(repoName)
         def stream = this.class.getResourceAsStream("/sample.zip")
@@ -51,7 +50,7 @@ public class AsyncTests {
         for (int i = 0; i < 1000; i++) {
             futures.add(executor.submit(new ArtifactUploadRunnable(i)))
         }
-        sleep(3000)
+        executor.awaitTermination(3000, TimeUnit.MILLISECONDS)
         def exceptions = futures.collect { it.get() }.findAll { it != null }
         Assert.assertEquals(exceptions.empty, true)
         artifactory.repository(repoName).delete()
