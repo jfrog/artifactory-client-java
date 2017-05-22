@@ -30,7 +30,7 @@ task createReleasePropertiesFile(type:Exec) {
 }
 
 def addGroovy(name) {
-    [group: 'org.codehaus.groovy', name: name, version: '2.3.2']
+    [group: 'org.codehaus.groovy', name: name, version: '2.3.11']
 }
 
 def addJackson(name) {
