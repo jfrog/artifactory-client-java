@@ -93,4 +93,8 @@ class RepositoryHandleImpl implements RepositoryHandle {
         return itemInfo.children != null;
     }
 
+    @Override
+    boolean exists() {
+        artifactory.head("${repository.getRepositoriesApi()}${repoKey}")
+    }
 }

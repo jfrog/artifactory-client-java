@@ -35,5 +35,7 @@ public interface RepositoryHandle {
     Set<ItemPermission> effectivePermissions();
 
     boolean isFolder(String path);
+
+    boolean exists();
 }
 
