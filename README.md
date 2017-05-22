@@ -2,7 +2,7 @@
 
 Artifactory Java client provides simple yet powerful Artifactory connection and management within your Java code.
 
-The client aallows managing Artifactory repositories, users, groups, permissions and system configuration.
+The client allows managing Artifactory repositories, users, groups, permissions and system configuration.
 It also allows searches, upload and download artifacts to or from Artifactory and a lot more.
 
 ## Getting Started
@@ -15,7 +15,7 @@ Add the following dependency to your `pom.xml` file:
 <dependency>
     <groupId>org.jfrog.artifactory.client</groupId>
     <artifactId>artifactory-java-client-services</artifactId>
-    <version>LATEST</version>
+    <version>2.3.5</version>
 </dependency>
 ```
 #### Gradle
@@ -41,13 +41,13 @@ Artifactory artifactory = ArtifactoryClient.create("ArtifactoryUrl", "username",
 
 ##### Uploading an Artifacts
 ```
-File file = new File("fileToUpload.txt");
+java.io.File file = new java.io.File("fileToUpload.txt");
 File result = artifactory.repository("RepoName").upload("path/to/newName.txt", file).doUpload();
 ```
 
 ##### Uploading an Artifact with Properties
 ```
-File file = new File("fileToUpload.txt");
+java.io.File file = new java.io.File("fileToUpload.txt");
 File deployed = artifactory.repository("RepoName")
     .upload("path/to/newName.txt", file)
     .withProperty("color", "blue")
@@ -62,7 +62,7 @@ InputStream iStream = artifactory.repository("RepoName")
     .doDownload();
 ```
 
-##### Downloading an Artifact with properties
+##### Downloading an Artifact with [non-mandatory Properties](https://www.jfrog.com/confluence/display/RTF4X/Using+Properties+in+Deployment+and+Resolution#UsingPropertiesinDeploymentandResolution-Non-mandatoryProperties)
 ```
 InputStream iStream = artifactory.repository("RepoName")
     .download("path/to/fileToDownload.txt")
@@ -70,7 +70,7 @@ InputStream iStream = artifactory.repository("RepoName")
     .doDownload();
 ```
 
-##### Downloading Artifact with mandatory properties
+##### Downloading Artifact with [mandatory properties](https://www.jfrog.com/confluence/display/RTF4X/Using+Properties+in+Deployment+and+Resolution#UsingPropertiesinDeploymentandResolution-MandatoryProperties)
 ```
 InputStream iStream = artifactory.repository("RepoName")
     .download("path/to/fileToDownload.txt")
