@@ -5,5 +5,5 @@ package org.jfrog.artifactory.client.model;
  */
 public enum PackageType {
     bower, cocoapods, debian, distribution, docker, gems, generic, gitlfs, gradle, ivy, maven, npm, nuget, opkg, p2,
-    pypi, sbt, vagrant, vcs, yum, composer, conan, chef, puppet
+    pypi, sbt, vagrant, vcs, yum, rpm, composer, conan, chef, puppet
 }

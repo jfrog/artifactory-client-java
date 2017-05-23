@@ -1,21 +1,20 @@
 package org.jfrog.artifactory.client
 
 import org.hamcrest.CoreMatchers
-import org.jfrog.artifactory.client.model.*
-import org.jfrog.artifactory.client.model.repository.settings.impl.YumRepositorySettingsImpl
+import org.jfrog.artifactory.client.model.repository.settings.impl.RpmRepositorySettingsImpl
 import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
 
 /**
- * test that client correctly sends and receives repository configuration with `yum` package type
+ * test that client correctly sends and receives repository configuration with `rpm` package type
  * 
  * @author Ivan Vasylivskyi (ivanvas@jfrog.com)
  */
-public class YumPackageTypeRepositoryTests extends BaseRepositoryTests {
+public class RpmPackageTypeRepositoryTests extends BaseRepositoryTests {
 
     @BeforeMethod
     protected void setUp() {
-        settings = new YumRepositorySettingsImpl()
+        settings = new RpmRepositorySettingsImpl()
 
         settings.with {
             // local
@@ -33,7 +32,7 @@ public class YumPackageTypeRepositoryTests extends BaseRepositoryTests {
         super.setUp()
     }
 
-    @Test(groups = "yumPackageTypeRepo")
+    @Test(groups = "rpmPackageTypeRepo")
     public void testYumLocalRepo() {
         artifactory.repositories().create(0, localRepo)
 
@@ -53,7 +52,7 @@ public class YumPackageTypeRepositoryTests extends BaseRepositoryTests {
         }
     }
 
-    @Test(groups = "yumPackageTypeRepo")
+    @Test(groups = "rpmPackageTypeRepo")
     public void testYumRemoteRepo() {
         artifactory.repositories().create(0, remoteRepo)
 
