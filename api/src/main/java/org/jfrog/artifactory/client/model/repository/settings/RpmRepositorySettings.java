@@ -3,7 +3,7 @@ package org.jfrog.artifactory.client.model.repository.settings;
 /**
  * @author Ivan Vasylivskyi (ivanvas@jfrog.com)
  */
-public interface YumRepositorySettings extends RepositorySettings {
+public interface RpmRepositorySettings extends RepositorySettings {
 
     // ** local ** //
 
