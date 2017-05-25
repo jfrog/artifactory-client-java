@@ -3,11 +3,13 @@ package org.jfrog.artifactory.client
 import groovyx.net.http.ContentType
 import groovyx.net.http.EncoderRegistry
 import groovyx.net.http.RESTClient
+import org.apache.commons.lang.StringUtils
 import org.apache.http.HttpHost
 import org.apache.http.auth.AuthScope
 import org.apache.http.auth.UsernamePasswordCredentials
 import org.apache.http.client.CredentialsProvider
 import org.apache.http.client.config.RequestConfig
+import org.apache.http.client.utils.URIBuilder
 import org.apache.http.conn.HttpClientConnectionManager
 import org.apache.http.entity.InputStreamEntity
 import org.apache.http.impl.client.BasicCredentialsProvider
@@ -17,7 +19,7 @@ import org.apache.http.impl.conn.DefaultProxyRoutePlanner
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager
 import org.jfrog.artifactory.client.impl.ArtifactoryImpl
 
-import java.util.regex.Matcher
+import java.text.MessageFormat
 
 /**
  * @author jbaruch
@@ -94,11 +96,11 @@ public class ArtifactoryClientBuilder {
         return this
     }
 
-    protected HttpClientBuilder createClientBuilder(Matcher matcher) {
+    protected HttpClientBuilder createClientBuilder(URI uri) {
         HttpClientBuilder clientBuilder = HttpClients.custom()
         RequestConfig.Builder requestConfigBuilder = RequestConfig.custom()
 
-        CredentialsProvider credentialsProvider = addBasicAuth(matcher)
+        CredentialsProvider credentialsProvider = addBasicAuth(uri)
         credentialsProvider = addProxyRoute(clientBuilder, credentialsProvider)
 
         clientBuilder.setDefaultCredentialsProvider(credentialsProvider)
@@ -124,19 +126,17 @@ public class ArtifactoryClientBuilder {
         return clientBuilder
     }
 
-    protected RESTClient createClient(Matcher matcher) {
-        HttpClientBuilder clientBuilder = createClientBuilder(matcher)
+    protected RESTClient createClient(URI uri) {
+        HttpClientBuilder clientBuilder = createClientBuilder(uri)
 
         RESTClient restClient = new RESTClient()
-        restClient.setUri(matcher[0][1])
+        restClient.setUri(MessageFormat.format("{0}://{1}", uri.getScheme(), uri.getAuthority()))
         restClient.setClient(clientBuilder.build())
 
         return restClient
     }
 
-    protected CredentialsProvider addBasicAuth(Matcher matcher) {
-        URI uri = new URI(matcher[0][0].toString())
-
+    protected CredentialsProvider addBasicAuth(URI uri) {
         CredentialsProvider credsProvider = new BasicCredentialsProvider()
         if (username && password) {
             credsProvider.setCredentials(
@@ -164,15 +164,14 @@ public class ArtifactoryClientBuilder {
     }
 
     public Artifactory build() {
-        def matcher = url =~ /(https?:\/\/[^\/]+)\/+([^\/]*).*/
-        if (!matcher) {
-            matcher = url =~ /(https?:\/\/[^\/]+)\/*()/
-            if (!matcher) {
-                throw new IllegalArgumentException("Invalid Artifactory URL: ${url}.")
-            }
+        URI uri
+        try {
+            uri = new URIBuilder(url).build()
+        } catch (URISyntaxException e) {
+            throw new IllegalArgumentException("Invalid Artifactory URL: ${url}.", e)
         }
 
-        def client = createClient(matcher)
+        def client = createClient(uri)
 
         //Set an entity with a length for a stream that has the totalBytes method on it
         def er = new EncoderRegistry() {
@@ -216,7 +215,7 @@ public class ArtifactoryClientBuilder {
             client.ignoreSSLIssues()
         }
 
-        Artifactory artifactory = new ArtifactoryImpl(client, matcher[0][2])
+        Artifactory artifactory = new ArtifactoryImpl(client, StringUtils.strip(uri.getPath(), "/"))
         artifactory.@username = username
         artifactory
     }

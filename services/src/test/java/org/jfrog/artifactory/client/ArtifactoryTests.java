@@ -16,33 +16,37 @@ public class ArtifactoryTests {
     public void urlsTest() throws IOException {
         Artifactory artifactory;
         artifactory = create("http://myhost.com/clienttests", "", "");
-        assertEquals(artifactory.getUri(), "http://myhost.com");
-        assertEquals(artifactory.getContextName(), "clienttests");
+        assertEquals("http://myhost.com", artifactory.getUri());
+        assertEquals("clienttests", artifactory.getContextName());
 
         artifactory = create("http://myhost.com:80/clienttests", "", "");
-        assertEquals(artifactory.getUri(), "http://myhost.com:80");
-        assertEquals(artifactory.getContextName(), "clienttests");
+        assertEquals("http://myhost.com:80", artifactory.getUri());
+        assertEquals("clienttests", artifactory.getContextName());
 
         artifactory = create("http://myhost.com:80/clienttests/", "", "");
-        assertEquals(artifactory.getUri(), "http://myhost.com:80");
-        assertEquals(artifactory.getContextName(), "clienttests");
+        assertEquals("http://myhost.com:80", artifactory.getUri());
+        assertEquals("clienttests", artifactory.getContextName());
 
         artifactory = create("http://myhost.com", "", "");
-        assertEquals(artifactory.getUri(), "http://myhost.com");
-        assertEquals(artifactory.getContextName(), "");
+        assertEquals("http://myhost.com", artifactory.getUri());
+        assertEquals("", artifactory.getContextName());
 
         artifactory = create("http://myhost.com:80", "", "");
-        assertEquals(artifactory.getUri(), "http://myhost.com:80");
-        assertEquals(artifactory.getContextName(), "");
+        assertEquals("http://myhost.com:80", artifactory.getUri());
+        assertEquals("", artifactory.getContextName());
 
         artifactory = create("http://myhost.com:80/", "", "");
-        assertEquals(artifactory.getUri(), "http://myhost.com:80");
-        assertEquals(artifactory.getContextName(), "");
+        assertEquals("http://myhost.com:80", artifactory.getUri());
+        assertEquals("", artifactory.getContextName());
+
+        artifactory = create("http://abc.com:80/ab/artifactory/webapp/webapp", "", "");
+        assertEquals("http://abc.com:80", artifactory.getUri());
+        assertEquals("ab/artifactory/webapp/webapp", artifactory.getContextName());
 
         artifactory = create("http://myhost.com:80/", "", "", null, null, null, "testAgent");
         assertEquals(artifactory.getUri(), "http://myhost.com:80");
-        assertEquals(artifactory.getContextName(), "");
-        assertEquals(artifactory.getUserAgent(), "testAgent");
+        assertEquals("", artifactory.getContextName());
+        assertEquals("testAgent", artifactory.getUserAgent());
     }
 
     @Test
@@ -50,37 +54,42 @@ public class ArtifactoryTests {
         Artifactory artifactory;
         artifactory = ArtifactoryClientBuilder.create().setUrl("http://myhost.com/clienttests").build();
 
-        assertEquals(artifactory.getUri(), "http://myhost.com");
-        assertEquals(artifactory.getContextName(), "clienttests");
+        assertEquals("http://myhost.com", artifactory.getUri());
+        assertEquals("clienttests", artifactory.getContextName());
 
         artifactory = ArtifactoryClientBuilder.create().setUrl("http://myhost.com:80/clienttests").build();
-        assertEquals(artifactory.getUri(), "http://myhost.com:80");
-        assertEquals(artifactory.getContextName(), "clienttests");
+        assertEquals("http://myhost.com:80", artifactory.getUri());
+        assertEquals("clienttests", artifactory.getContextName());
 
         artifactory = ArtifactoryClientBuilder.create().setUrl("http://myhost.com:80/clienttests/").build();
-        assertEquals(artifactory.getUri(), "http://myhost.com:80");
-        assertEquals(artifactory.getContextName(), "clienttests");
+        assertEquals("http://myhost.com:80", artifactory.getUri());
+        assertEquals("clienttests", artifactory.getContextName());
 
         artifactory = ArtifactoryClientBuilder.create().setUrl("http://myhost.com").build();
-        assertEquals(artifactory.getUri(), "http://myhost.com");
-        assertEquals(artifactory.getContextName(), "");
+        assertEquals("http://myhost.com", artifactory.getUri());
+        assertEquals("", artifactory.getContextName());
 
         artifactory = ArtifactoryClientBuilder.create().setUrl("http://myhost.com:80").build();
-        assertEquals(artifactory.getUri(), "http://myhost.com:80");
-        assertEquals(artifactory.getContextName(), "");
+        assertEquals("http://myhost.com:80", artifactory.getUri());
+        assertEquals("", artifactory.getContextName());
 
         artifactory = ArtifactoryClientBuilder.create().setUrl("http://myhost.com:80/").build();
-        assertEquals(artifactory.getUri(), "http://myhost.com:80");
-        assertEquals(artifactory.getContextName(), "");
+        assertEquals("http://myhost.com:80", artifactory.getUri());
+        assertEquals("", artifactory.getContextName());
+
+        artifactory = ArtifactoryClientBuilder.create()
+            .setUrl("http://abc.com:80/ab/artifactory/webapp/webapp").build();
+        assertEquals("http://abc.com:80", artifactory.getUri());
+        assertEquals("ab/artifactory/webapp/webapp", artifactory.getContextName());
 
         artifactory = ArtifactoryClientBuilder.create()
                 .setUrl("http://myhost.com:80/")
                 .setUserAgent("testAgent")
                 .build();
 
-        assertEquals(artifactory.getUri(), "http://myhost.com:80");
-        assertEquals(artifactory.getContextName(), "");
-        assertEquals(artifactory.getUserAgent(), "testAgent");
+        assertEquals("http://myhost.com:80", artifactory.getUri());
+        assertEquals("", artifactory.getContextName());
+        assertEquals("testAgent", artifactory.getUserAgent());
     }
 
     @Test
