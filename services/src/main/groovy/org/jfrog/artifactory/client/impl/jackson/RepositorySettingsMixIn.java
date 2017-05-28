@@ -30,7 +30,7 @@ import org.jfrog.artifactory.client.model.repository.settings.impl.*;
     @JsonSubTypes.Type(value = SbtRepositorySettingsImpl.class, name = "sbt"),
     @JsonSubTypes.Type(value = VagrantRepositorySettingsImpl.class, name = "vagrant"),
     @JsonSubTypes.Type(value = VcsRepositorySettingsImpl.class, name = "vcs"),
-    @JsonSubTypes.Type(value = RpmRepositorySettingsImpl.class, name = "yum"),
+    @JsonSubTypes.Type(value = YumRepositorySettingsImpl.class, name = "yum"),
     @JsonSubTypes.Type(value = RpmRepositorySettingsImpl.class, name = "rpm"),
     @JsonSubTypes.Type(value = ComposerRepositorySettingsImpl.class, name = "composer"),
     @JsonSubTypes.Type(value = ConanRepositorySettingsImpl.class, name = "conan"),

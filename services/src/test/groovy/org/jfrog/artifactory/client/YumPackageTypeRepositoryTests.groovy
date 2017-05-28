@@ -1,25 +1,25 @@
 package org.jfrog.artifactory.client
 
 import org.hamcrest.CoreMatchers
+import org.jfrog.artifactory.client.model.PackageType
 import org.jfrog.artifactory.client.model.Version
-import org.jfrog.artifactory.client.model.repository.settings.impl.RpmRepositorySettingsImpl
+import org.jfrog.artifactory.client.model.repository.settings.impl.YumRepositorySettingsImpl
 import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
 
 /**
- * test that client correctly sends and receives repository configuration with `rpm` package type
+ * test that client correctly sends and receives repository configuration with `yum` package type
  *
- * @author Ivan Vasylivskyi (ivanvas@jfrog.com)
+ * @author Yahav Itzhak (yahavi@jfrog.com)
  */
-public class RpmPackageTypeRepositoryTests extends BaseRepositoryTests {
+public class YumPackageTypeRepositoryTests extends BaseRepositoryTests {
 
-    private static String MIN_ARTIFACTORY_VERSION = "5.0.0"
-    private boolean rpmPackageSupported
+    private static String YUM_REPO_DEPRECATION_VERSION = "5.0.0"
+    private PackageType expectedPackageType
 
     @BeforeMethod
     protected void setUp() {
-        rpmPackageSupported = isRpmPackageSupported()
-        settings = new RpmRepositorySettingsImpl()
+        settings = new YumRepositorySettingsImpl()
 
         settings.with {
             // local
@@ -35,23 +35,18 @@ public class RpmPackageTypeRepositoryTests extends BaseRepositoryTests {
         prepareVirtualRepo = false
 
         super.setUp()
+
+        expectedPackageType = getExpectedPackageType()
     }
 
-    private boolean isRpmPackageSupported() {
-        Version version = artifactory.system().version()
-        return version.isAtLeast(MIN_ARTIFACTORY_VERSION)
-    }
-
-    @Test(groups = "rpmPackageTypeRepo")
-    public void testRpmLocalRepo() {
-        if (!rpmPackageSupported) {
-            return
-        }
+    @Test(groups = "yumPackageTypeRepo")
+    public void testYumLocalRepo() {
         artifactory.repositories().create(0, localRepo)
 
         def resp = artifactory.repository(localRepo.getKey()).get()
         resp.getRepositorySettings().with {
-            assertThat(packageType, CoreMatchers.is(settings.getPackageType()))
+
+            assertThat(packageType, CoreMatchers.is(expectedPackageType))
 
             // local
             assertThat(calculateYumMetadata, CoreMatchers.is(settings.getCalculateYumMetadata()))
@@ -65,16 +60,13 @@ public class RpmPackageTypeRepositoryTests extends BaseRepositoryTests {
         }
     }
 
-    @Test(groups = "rpmPackageTypeRepo")
-    public void testRpmRemoteRepo() {
-        if (!rpmPackageSupported) {
-            return
-        }
+    @Test(groups = "yumPackageTypeRepo")
+    public void testYumRemoteRepo() {
         artifactory.repositories().create(0, remoteRepo)
 
         def resp = artifactory.repository(remoteRepo.getKey()).get()
         resp.getRepositorySettings().with {
-            assertThat(packageType, CoreMatchers.is(settings.getPackageType()))
+            assertThat(packageType, CoreMatchers.is(expectedPackageType))
 
             // remote
             assertThat(listRemoteFolderItems, CoreMatchers.is(settings.getListRemoteFolderItems()))
@@ -84,6 +76,11 @@ public class RpmPackageTypeRepositoryTests extends BaseRepositoryTests {
             assertThat(groupFileNames, CoreMatchers.is(CoreMatchers.nullValue()))
             assertThat(yumRootDepth, CoreMatchers.is(CoreMatchers.nullValue()))
         }
+    }
+
+    private PackageType getExpectedPackageType() {
+        Version version = artifactory.system().version()
+        return version.isAtLeast(YUM_REPO_DEPRECATION_VERSION) ? PackageType.rpm : settings.getPackageType()
     }
 
 }
