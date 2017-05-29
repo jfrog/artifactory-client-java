@@ -1,7 +1,6 @@
 package org.jfrog.artifactory.client
 
 import org.hamcrest.CoreMatchers
-import org.jfrog.artifactory.client.model.Version
 import org.jfrog.artifactory.client.model.repository.settings.impl.RpmRepositorySettingsImpl
 import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
@@ -13,12 +12,8 @@ import org.testng.annotations.Test
  */
 public class RpmPackageTypeRepositoryTests extends BaseRepositoryTests {
 
-    private static String MIN_ARTIFACTORY_VERSION = "5.0.0"
-    private boolean rpmPackageSupported
-
     @BeforeMethod
     protected void setUp() {
-        rpmPackageSupported = isRpmPackageSupported()
         settings = new RpmRepositorySettingsImpl()
 
         settings.with {
@@ -37,16 +32,8 @@ public class RpmPackageTypeRepositoryTests extends BaseRepositoryTests {
         super.setUp()
     }
 
-    private boolean isRpmPackageSupported() {
-        Version version = artifactory.system().version()
-        return version.isAtLeast(MIN_ARTIFACTORY_VERSION)
-    }
-
     @Test(groups = "rpmPackageTypeRepo")
     public void testRpmLocalRepo() {
-        if (!rpmPackageSupported) {
-            return
-        }
         artifactory.repositories().create(0, localRepo)
 
         def resp = artifactory.repository(localRepo.getKey()).get()
@@ -67,9 +54,6 @@ public class RpmPackageTypeRepositoryTests extends BaseRepositoryTests {
 
     @Test(groups = "rpmPackageTypeRepo")
     public void testRpmRemoteRepo() {
-        if (!rpmPackageSupported) {
-            return
-        }
         artifactory.repositories().create(0, remoteRepo)
 
         def resp = artifactory.repository(remoteRepo.getKey()).get()
@@ -85,5 +69,4 @@ public class RpmPackageTypeRepositoryTests extends BaseRepositoryTests {
             assertThat(yumRootDepth, CoreMatchers.is(CoreMatchers.nullValue()))
         }
     }
-
 }

@@ -2,7 +2,6 @@ package org.jfrog.artifactory.client
 
 import org.hamcrest.CoreMatchers
 import org.jfrog.artifactory.client.model.PackageType
-import org.jfrog.artifactory.client.model.Version
 import org.jfrog.artifactory.client.model.repository.settings.impl.YumRepositorySettingsImpl
 import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
@@ -10,12 +9,9 @@ import org.testng.annotations.Test
 /**
  * test that client correctly sends and receives repository configuration with `yum` package type
  *
- * @author Yahav Itzhak (yahavi@jfrog.com)
+ * @author Ivan Vasylivskyi (ivanvas@jfrog.com)
  */
 public class YumPackageTypeRepositoryTests extends BaseRepositoryTests {
-
-    private static String YUM_REPO_DEPRECATION_VERSION = "5.0.0"
-    private PackageType expectedPackageType
 
     @BeforeMethod
     protected void setUp() {
@@ -35,8 +31,6 @@ public class YumPackageTypeRepositoryTests extends BaseRepositoryTests {
         prepareVirtualRepo = false
 
         super.setUp()
-
-        expectedPackageType = getExpectedPackageType()
     }
 
     @Test(groups = "yumPackageTypeRepo")
@@ -45,8 +39,8 @@ public class YumPackageTypeRepositoryTests extends BaseRepositoryTests {
 
         def resp = artifactory.repository(localRepo.getKey()).get()
         resp.getRepositorySettings().with {
-
-            assertThat(packageType, CoreMatchers.is(expectedPackageType))
+            // The package type is 'rpm' since Artifactory 5.0.0
+            assertThat(packageType, CoreMatchers.is(PackageType.rpm))
 
             // local
             assertThat(calculateYumMetadata, CoreMatchers.is(settings.getCalculateYumMetadata()))
@@ -66,7 +60,8 @@ public class YumPackageTypeRepositoryTests extends BaseRepositoryTests {
 
         def resp = artifactory.repository(remoteRepo.getKey()).get()
         resp.getRepositorySettings().with {
-            assertThat(packageType, CoreMatchers.is(expectedPackageType))
+            // The package type is 'rpm' since Artifactory 5.0.0
+            assertThat(packageType, CoreMatchers.is(PackageType.rpm))
 
             // remote
             assertThat(listRemoteFolderItems, CoreMatchers.is(settings.getListRemoteFolderItems()))
@@ -77,10 +72,4 @@ public class YumPackageTypeRepositoryTests extends BaseRepositoryTests {
             assertThat(yumRootDepth, CoreMatchers.is(CoreMatchers.nullValue()))
         }
     }
-
-    private PackageType getExpectedPackageType() {
-        Version version = artifactory.system().version()
-        return version.isAtLeast(YUM_REPO_DEPRECATION_VERSION) ? PackageType.rpm : settings.getPackageType()
-    }
-
 }

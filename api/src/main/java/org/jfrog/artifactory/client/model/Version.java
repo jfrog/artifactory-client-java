@@ -15,6 +15,4 @@ public interface Version {
     String getLicense();
 
     List<String> getAddons();
-
-    boolean isAtLeast(String atLeast);
 }
