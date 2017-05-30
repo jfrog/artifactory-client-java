@@ -29,14 +29,29 @@ class VirtualRepositoryBuilderImpl extends RepositoryBuilderBase<VirtualReposito
         this
     }
 
+    @Override
+    Collection<String> getRepositories() {
+        repositories
+    }
+
     VirtualRepositoryBuilder artifactoryRequestsCanRetrieveRemoteArtifacts(boolean artifactoryRequestsCanRetrieveRemoteArtifacts) {
         this.artifactoryRequestsCanRetrieveRemoteArtifacts = artifactoryRequestsCanRetrieveRemoteArtifacts
         this
     }
 
+    @Override
+    boolean isArtifactoryRequestsCanRetrieveRemoteArtifacts() {
+        artifactoryRequestsCanRetrieveRemoteArtifacts
+    }
+
     VirtualRepositoryBuilder defaultDeploymentRepo(String deploymentRepo) {
         this.defaultDeploymentRepo = deploymentRepo
         this
+    }
+
+    @Override
+    String getDefaultDeploymentRepo() {
+        defaultDeploymentRepo
     }
 
     VirtualRepository build() {

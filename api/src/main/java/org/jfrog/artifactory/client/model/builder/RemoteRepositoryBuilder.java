@@ -11,44 +11,86 @@ public interface RemoteRepositoryBuilder extends NonVirtualRepositoryBuilder<Rem
 
     RemoteRepositoryBuilder url(String url);
 
+    String getUrl();
+
     RemoteRepositoryBuilder username(String username);
+
+    String getUsername();
 
     RemoteRepositoryBuilder password(String password);
 
+    String getPassword();
+
     RemoteRepositoryBuilder proxy(String proxy);
+
+    String getProxy();
 
     RemoteRepositoryBuilder hardFail(boolean hardFail);
 
+    boolean isHardFail();
+
     RemoteRepositoryBuilder offline(boolean offline);
+
+    boolean isOffline();
 
     RemoteRepositoryBuilder storeArtifactsLocally(boolean storeArtifactsLocally);
 
+    boolean isStoreArtifactsLocally();
+
     RemoteRepositoryBuilder socketTimeoutMillis(int socketTimeoutMillis);
+
+    int getSocketTimeoutMillis();
 
     RemoteRepositoryBuilder enableCookieManagement(boolean cookieManagementEnabled);
 
+    boolean isEnableCookieManagement();
+
     RemoteRepositoryBuilder allowAnyHostAuth(boolean allowAnyHostAuth);
+
+    boolean isAllowAnyHostAuth();
 
     RemoteRepositoryBuilder localAddress(String localAddress);
 
+    String getLocalAddress();
+
     RemoteRepositoryBuilder retrievalCachePeriodSecs(int retrievalCachePeriodSecs);
+
+    int getRetrievalCachePeriodSecs();
 
     RemoteRepositoryBuilder missedRetrievalCachePeriodSecs(int missedRetrievalCachePeriodSecs);
 
+    int getMissedRetrievalCachePeriodSecs();
+
     RemoteRepositoryBuilder failedRetrievalCachePeriodSecs(int failedRetrievalCachePeriodSecs);
+
+    int getFailedRetrievalCachePeriodSecs();
 
     RemoteRepositoryBuilder unusedArtifactsCleanupEnabled(boolean unusedArtifactsCleanupEnabled);
 
+    boolean isUnusedArtifactsCleanupEnabled();
+
     RemoteRepositoryBuilder unusedArtifactsCleanupPeriodHours(int unusedArtifactsCleanupPeriodHours);
+
+    int getUnusedArtifactsCleanupPeriodHours();
 
     RemoteRepositoryBuilder shareConfiguration(boolean shareConfiguration);
 
+    boolean isShareConfiguration();
+
     RemoteRepositoryBuilder synchronizeProperties(boolean synchronizeProperties);
+
+    boolean isSynchronizeProperties();
 
     RemoteRepositoryBuilder assumedOfflinePeriodSecs(long assumedOfflinePeriodSecs);
 
+    long getAssumedOfflinePeriodSecs();
+
     RemoteRepositoryBuilder listRemoteFolderItems(boolean listRemoteFolderItems);
 
+    boolean isListRemoteFolderItems();
+
     RemoteRepositoryBuilder contentSync(ContentSync contentSync);
+
+    ContentSync getContentSync();
 
 }

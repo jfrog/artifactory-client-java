@@ -12,15 +12,27 @@ public interface RepositoryBuilder<B extends RepositoryBuilder, R extends Reposi
 
     B description(String description);
 
+    String getDescription();
+
     B excludesPattern(String excludesPattern);
+
+    String getExcludesPattern();
 
     B includesPattern(String includesPattern);
 
+    String getIncludesPattern();
+
     B key(String key);
+
+    String getKey();
 
     B notes(String notes);
 
+    String getNotes();
+
     B repoLayoutRef(String repoLayoutRef);
+
+    String getRepoLayoutRef();
 
     R build();
 
@@ -28,6 +40,10 @@ public interface RepositoryBuilder<B extends RepositoryBuilder, R extends Reposi
 
     B repositorySettings(RepositorySettings settings);
 
+    RepositorySettings getRepositorySettings();
+
     B xraySettings(XraySettings xraySettings);
+
+    XraySettings getXraySettings();
 
 }

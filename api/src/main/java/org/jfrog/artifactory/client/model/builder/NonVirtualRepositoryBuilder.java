@@ -12,8 +12,14 @@ public interface NonVirtualRepositoryBuilder<B extends NonVirtualRepositoryBuild
 
     B blackedOut(boolean blackedOut);
 
+    boolean isBlackedOut();
+
     B propertySets(List<String> propertySets);
 
+    List<String> getPropertySets();
+
     B archiveBrowsingEnabled(boolean archiveBrowsingEnabled);
+
+    boolean isArchiveBrowsingEnabled();
 
 }

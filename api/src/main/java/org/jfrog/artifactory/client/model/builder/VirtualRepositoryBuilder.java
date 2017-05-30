@@ -12,8 +12,14 @@ public interface VirtualRepositoryBuilder extends RepositoryBuilder<VirtualRepos
 
     VirtualRepositoryBuilder repositories(Collection<String> repositories);
 
+    Collection<String> getRepositories();
+
     VirtualRepositoryBuilder artifactoryRequestsCanRetrieveRemoteArtifacts(boolean artifactoryRequestsCanRetrieveRemoteArtifacts);
 
+    boolean isArtifactoryRequestsCanRetrieveRemoteArtifacts();
+
     VirtualRepositoryBuilder defaultDeploymentRepo(String deploymentRepo);
+
+    String getDefaultDeploymentRepo();
 
 }
