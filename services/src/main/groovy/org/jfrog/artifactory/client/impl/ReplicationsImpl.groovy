@@ -3,6 +3,7 @@ package org.jfrog.artifactory.client.impl
 import groovyx.net.http.ContentType
 import groovyx.net.http.HttpResponseException
 import org.jfrog.artifactory.client.Replications
+import org.jfrog.artifactory.client.model.LocalReplication
 import org.jfrog.artifactory.client.model.Replication
 import org.jfrog.artifactory.client.model.impl.LocalReplicationImpl
 import org.jfrog.artifactory.client.model.impl.RemoteReplicationImpl
@@ -65,6 +66,11 @@ class ReplicationsImpl implements Replications {
         } else {
             throw new UnsupportedOperationException("The method isn't supported for a ${repository.rclass} repository")
         }
+    }
+
+    @Override
+    void createOrReplaceReplication(LocalReplication replication) {
+        artifactory.put("${getReplicationsApi()}${repoKey}", [:], ContentType.ANY, null, ContentType.JSON, replication)
     }
 
     @Override
