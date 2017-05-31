@@ -69,7 +69,7 @@ class ReplicationsImpl implements Replications {
     }
 
     @Override
-    void createOrReplaceReplication(LocalReplication replication) {
+    void createOrReplaceReplication(Replication replication) {
         artifactory.put("${getReplicationsApi()}${repoKey}", [:], ContentType.ANY, null, ContentType.JSON, replication)
     }
 
