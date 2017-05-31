@@ -11,4 +11,6 @@ public interface LocalReplication extends Replication {
     String getPassword();
 
     boolean isEnableEventReplication();
+
+    boolean isSyncStatistics();
 }

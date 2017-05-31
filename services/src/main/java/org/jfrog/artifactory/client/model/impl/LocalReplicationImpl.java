@@ -9,6 +9,7 @@ public class LocalReplicationImpl implements LocalReplication {
     private String username;
     private String password;
     private boolean enableEventReplication;
+    private boolean syncStatistics;
     private boolean enabled;
     private String cronExp;
     private boolean syncDeletes;
@@ -19,14 +20,15 @@ public class LocalReplicationImpl implements LocalReplication {
     }
 
     LocalReplicationImpl(String url, long socketTimeoutMillis, String username, String password,
-        boolean enableEventReplication, boolean enabled, String cronExp, boolean syncDeletes, boolean syncProperties,
-        String repoKey) {
+        boolean enableEventReplication, boolean syncStatistics, boolean enabled, String cronExp, boolean syncDeletes,
+        boolean syncProperties, String repoKey) {
 
         this.url = url;
         this.socketTimeoutMillis = socketTimeoutMillis;
         this.username = username;
         this.password = password;
         this.enableEventReplication = enableEventReplication;
+        this.syncStatistics = syncStatistics;
         this.enabled = enabled;
         this.cronExp = cronExp;
         this.syncDeletes = syncDeletes;
@@ -80,6 +82,11 @@ public class LocalReplicationImpl implements LocalReplication {
     }
 
     @Override
+    public boolean isSyncStatistics() {
+        return syncStatistics;
+    }
+
+    @Override
     public String getRepoKey() {
         return repoKey;
     }
@@ -93,6 +100,7 @@ public class LocalReplicationImpl implements LocalReplication {
 
         if (socketTimeoutMillis != that.socketTimeoutMillis) return false;
         if (enableEventReplication != that.enableEventReplication) return false;
+        if (syncStatistics != that.syncStatistics) return false;
         if (enabled != that.enabled) return false;
         if (syncDeletes != that.syncDeletes) return false;
         if (syncProperties != that.syncProperties) return false;
@@ -111,6 +119,7 @@ public class LocalReplicationImpl implements LocalReplication {
         result = 31 * result + (username != null ? username.hashCode() : 0);
         result = 31 * result + (password != null ? password.hashCode() : 0);
         result = 31 * result + (enableEventReplication ? 1 : 0);
+        result = 31 * result + (syncStatistics ? 1 : 0);
         result = 31 * result + (enabled ? 1 : 0);
         result = 31 * result + (cronExp != null ? cronExp.hashCode() : 0);
         result = 31 * result + (syncDeletes ? 1 : 0);
@@ -128,6 +137,7 @@ public class LocalReplicationImpl implements LocalReplication {
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 ", enableEventReplication=" + enableEventReplication +
+                ", syncStatistics=" + syncStatistics +
                 ", enabled=" + enabled +
                 ", cronExp='" + cronExp + '\'' +
                 ", syncDeletes=" + syncDeletes +

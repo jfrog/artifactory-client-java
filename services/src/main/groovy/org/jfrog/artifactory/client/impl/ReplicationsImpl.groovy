@@ -39,7 +39,8 @@ class ReplicationsImpl implements Replications {
         if ((repository.rclass == RepositoryTypeImpl.LOCAL) || (repository.rclass == RepositoryTypeImpl.REMOTE)) {
             try {
                 // We can't use Jackson to convert the JSON into java objects because the structure of the JSON response
-                // changes depending on the number of replications returned by the server
+                // changes depending on the number of replications returned by the server. This changed in version 4.15
+                // (see the release notes) but is still required to properly process the response from old versions
                 // One replication -> The API returns a JSON object
                 // Two replications -> The API returns an array of JSON objects
                 def json = artifactory.get(path, [:], ContentType.JSON)
@@ -104,7 +105,7 @@ class ReplicationsImpl implements Replications {
             object.put('enabled', replication.enabled)
             object.put('syncDeletes', replication.syncDeletes)
             object.put('syncProperties', replication.syncProperties)
-            // TODO object.put('syncStatistics', replication.syncStatistics)
+            object.put('syncStatistics', replication.syncStatistics)
             object.put('repoKey', replication.repoKey)
 
             array.add(object)
