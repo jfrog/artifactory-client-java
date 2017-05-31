@@ -89,6 +89,9 @@ class ReplicationsImpl implements Replications {
 
         def path = "${getReplicationsMultipleApi()}${repoKey}"
 
+        // The code below adapts a 'Get Repository Replication Configuration' service response into a
+        // 'Create or Replace Local Multi-push Replication' service request
+
         // Use the first replication to infer the shared properties
         def first = replications.iterator().next() as LocalReplication
 
