@@ -2,6 +2,8 @@ package org.jfrog.artifactory.client.impl
 
 import groovyx.net.http.ContentType
 import groovyx.net.http.HttpResponseException
+import net.sf.json.JSONArray
+import net.sf.json.JSONObject
 import org.jfrog.artifactory.client.Replications
 import org.jfrog.artifactory.client.model.LocalReplication
 import org.jfrog.artifactory.client.model.Replication
@@ -74,6 +76,53 @@ class ReplicationsImpl implements Replications {
     }
 
     @Override
+    void createOrReplaceReplications(Collection<LocalReplication> replications) {
+        assert replications
+
+        // Determine the type of the repository (not all repository types support replications)
+        def repository = artifactory.repository(repoKey).get()
+
+        if (!repository) {
+            throw new RuntimeException("The repository '${repoKey}' doesn't exist")
+        }
+
+        def path = "${getReplicationsMultipleApi()}${repoKey}"
+
+        // Use the first replication to infer the shared properties
+        def first = replications.iterator().next() as LocalReplication
+
+        // Convert the incoming list of replications into the correct request
+        def array = new JSONArray()
+
+        replications.each { replication ->
+            def object = new JSONObject()
+            object.put('url', replication.url)
+            object.put('socketTimeoutMillis', replication.socketTimeoutMillis)
+            object.put('username', replication.username)
+            object.put('password', replication.password)
+            object.put('enableEventReplication', replication.enableEventReplication)
+            object.put('enabled', replication.enabled)
+            object.put('syncDeletes', replication.syncDeletes)
+            object.put('syncProperties', replication.syncProperties)
+            // TODO object.put('syncStatistics', replication.syncStatistics)
+            object.put('repoKey', replication.repoKey)
+
+            array.add(object)
+        }
+
+        def payload = new JSONObject()
+        payload.put('cronExp', first.cronExp)
+        payload.put('enableEventReplication', first.enableEventReplication)
+        payload.put('replications', array)
+
+        if (repository.rclass == RepositoryTypeImpl.LOCAL) {
+            artifactory.put(path, [:], ContentType.ANY, null, ContentType.JSON, payload)
+        } else {
+            throw new UnsupportedOperationException("The method isn't supported for a ${repository.rclass} repository")
+        }
+    }
+
+    @Override
     void delete() {
         // Determine the type of the repository (not all repository types support replications)
         def repository = artifactory.repository(repoKey).get()
@@ -94,5 +143,10 @@ class ReplicationsImpl implements Replications {
     @Override
     String getReplicationsApi() {
         return baseApiPath + "/replications/";
+    }
+
+    @Override
+    String getReplicationsMultipleApi() {
+        return baseApiPath + "/replications/multiple/";
     }
 }
