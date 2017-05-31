@@ -8,5 +8,7 @@ public interface Replications {
 
     List<Replication> list();
 
+    void delete();
+
     String getReplicationsApi();
 }

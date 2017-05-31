@@ -68,6 +68,24 @@ class ReplicationsImpl implements Replications {
     }
 
     @Override
+    void delete() {
+        // Determine the type of the repository (not all repository types support replications)
+        def repository = artifactory.repository(repoKey).get()
+
+        if (!repository) {
+            throw new RuntimeException("The repository '${repoKey}' doesn't exist")
+        }
+
+        def path = "${getReplicationsApi()}${repoKey}"
+
+        if ((repository.rclass == RepositoryTypeImpl.LOCAL) || (repository.rclass == RepositoryTypeImpl.REMOTE)) {
+            artifactory.delete(path, [:], ContentType.JSON)
+        } else {
+            throw new UnsupportedOperationException("The method isn't supported for a ${repository.rclass} repository")
+        }
+    }
+
+    @Override
     String getReplicationsApi() {
         return baseApiPath + "/replications/";
     }
