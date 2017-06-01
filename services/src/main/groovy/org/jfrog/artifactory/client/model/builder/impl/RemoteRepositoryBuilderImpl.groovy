@@ -52,6 +52,11 @@ class RemoteRepositoryBuilderImpl extends NonVirtualRepositoryBuilderBase<Remote
     }
 
     @Override
+    String getUrl() {
+        url
+    }
+
+    @Override
     RemoteRepositoryBuilder description(String description) {
         this.description = !description ? ' (local file cache)' : description
         this
@@ -62,9 +67,19 @@ class RemoteRepositoryBuilderImpl extends NonVirtualRepositoryBuilderBase<Remote
         this
     }
 
+    @Override
+    String getUsername() {
+        username
+    }
+
     RemoteRepositoryBuilder password(String password) {
         this.password = password
         this
+    }
+
+    @Override
+    String getPassword() {
+        password
     }
 
     RemoteRepositoryBuilder proxy(String proxy) {
@@ -72,9 +87,19 @@ class RemoteRepositoryBuilderImpl extends NonVirtualRepositoryBuilderBase<Remote
         this
     }
 
+    @Override
+    String getProxy() {
+        proxy
+    }
+
     RemoteRepositoryBuilder hardFail(boolean hardFail) {
         this.hardFail = hardFail
         this
+    }
+
+    @Override
+    boolean isHardFail() {
+        hardFail
     }
 
     RemoteRepositoryBuilder offline(boolean offline) {
@@ -82,9 +107,19 @@ class RemoteRepositoryBuilderImpl extends NonVirtualRepositoryBuilderBase<Remote
         this
     }
 
+    @Override
+    boolean isOffline() {
+        offline
+    }
+
     RemoteRepositoryBuilder storeArtifactsLocally(boolean storeArtifactsLocally) {
         this.storeArtifactsLocally = storeArtifactsLocally
         this
+    }
+
+    @Override
+    boolean isStoreArtifactsLocally() {
+        storeArtifactsLocally
     }
 
     RemoteRepositoryBuilder socketTimeoutMillis(int socketTimeoutMillis) {
@@ -92,9 +127,19 @@ class RemoteRepositoryBuilderImpl extends NonVirtualRepositoryBuilderBase<Remote
         this
     }
 
+    @Override
+    int getSocketTimeoutMillis() {
+        socketTimeoutMillis
+    }
+
     RemoteRepositoryBuilder allowAnyHostAuth(boolean allowAnyHostAuth) {
         this.allowAnyHostAuth = allowAnyHostAuth;
         this
+    }
+
+    @Override
+    boolean isAllowAnyHostAuth() {
+        allowAnyHostAuth
     }
 
     RemoteRepositoryBuilder enableCookieManagement(boolean cookieManagementEnabled){
@@ -102,9 +147,19 @@ class RemoteRepositoryBuilderImpl extends NonVirtualRepositoryBuilderBase<Remote
         this
     }
 
+    @Override
+    boolean isEnableCookieManagement() {
+        enableCookieManagement
+    }
+
     RemoteRepositoryBuilder localAddress(String localAddress) {
         this.localAddress = localAddress
         this
+    }
+
+    @Override
+    String getLocalAddress() {
+        localAddress
     }
 
     RemoteRepositoryBuilder retrievalCachePeriodSecs(int retrievalCachePeriodSecs) {
@@ -112,9 +167,19 @@ class RemoteRepositoryBuilderImpl extends NonVirtualRepositoryBuilderBase<Remote
         this
     }
 
+    @Override
+    int getRetrievalCachePeriodSecs() {
+        retrievalCachePeriodSecs
+    }
+
     RemoteRepositoryBuilder missedRetrievalCachePeriodSecs(int missedRetrievalCachePeriodSecs) {
         this.missedRetrievalCachePeriodSecs = missedRetrievalCachePeriodSecs
         this
+    }
+
+    @Override
+    int getMissedRetrievalCachePeriodSecs() {
+        missedRetrievalCachePeriodSecs
     }
 
     RemoteRepositoryBuilder failedRetrievalCachePeriodSecs(int failedRetrievalCachePeriodSecs) {
@@ -122,9 +187,19 @@ class RemoteRepositoryBuilderImpl extends NonVirtualRepositoryBuilderBase<Remote
         this
     }
 
+    @Override
+    int getFailedRetrievalCachePeriodSecs() {
+        failedRetrievalCachePeriodSecs
+    }
+
     RemoteRepositoryBuilder unusedArtifactsCleanupEnabled(boolean unusedArtifactsCleanupEnabled) {
         this.unusedArtifactsCleanupEnabled = unusedArtifactsCleanupEnabled
         this
+    }
+
+    @Override
+    boolean isUnusedArtifactsCleanupEnabled() {
+        unusedArtifactsCleanupEnabled
     }
 
     RemoteRepositoryBuilder unusedArtifactsCleanupPeriodHours(int unusedArtifactsCleanupPeriodHours) {
@@ -132,9 +207,19 @@ class RemoteRepositoryBuilderImpl extends NonVirtualRepositoryBuilderBase<Remote
         this
     }
 
+    @Override
+    int getUnusedArtifactsCleanupPeriodHours() {
+        unusedArtifactsCleanupPeriodHours
+    }
+
     RemoteRepositoryBuilder shareConfiguration(boolean shareConfiguration) {
         this.shareConfiguration = shareConfiguration
         this
+    }
+
+    @Override
+    boolean isShareConfiguration() {
+        shareConfiguration
     }
 
     RemoteRepositoryBuilder synchronizeProperties(boolean synchronizeProperties) {
@@ -142,9 +227,19 @@ class RemoteRepositoryBuilderImpl extends NonVirtualRepositoryBuilderBase<Remote
         this
     }
 
+    @Override
+    boolean isSynchronizeProperties() {
+        synchronizeProperties
+    }
+
     RemoteRepositoryBuilder assumedOfflinePeriodSecs(long assumedOfflinePeriodSecs) {
         this.assumedOfflinePeriodSecs = assumedOfflinePeriodSecs
         this
+    }
+
+    @Override
+    long getAssumedOfflinePeriodSecs() {
+        assumedOfflinePeriodSecs
     }
 
     RemoteRepositoryBuilder listRemoteFolderItems(boolean listRemoteFolderItems) {
@@ -152,9 +247,19 @@ class RemoteRepositoryBuilderImpl extends NonVirtualRepositoryBuilderBase<Remote
         this
     }
 
+    @Override
+    boolean isListRemoteFolderItems() {
+        listRemoteFolderItems
+    }
+
     RemoteRepositoryBuilder contentSync(ContentSync contentSync) {
         this.contentSync = contentSync
         this
+    }
+
+    @Override
+    ContentSync getContentSync() {
+        contentSync
     }
 
     @SuppressWarnings("GroovyAccessibility")

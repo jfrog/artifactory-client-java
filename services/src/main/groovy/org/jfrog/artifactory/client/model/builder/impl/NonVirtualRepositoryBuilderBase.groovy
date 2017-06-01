@@ -25,13 +25,28 @@ abstract class NonVirtualRepositoryBuilderBase<B extends NonVirtualRepositoryBui
     }
 
     @Override
+    boolean isBlackedOut() {
+        blackedOut
+    }
+
+    @Override
     B propertySets(List<String> propertySets) {
         this.propertySets = propertySets
         this as B
     }
 
+    @Override
+    List<String> getPropertySets() {
+        propertySets
+    }
+
     B archiveBrowsingEnabled(boolean archiveBrowsingEnabled) {
         this.archiveBrowsingEnabled = archiveBrowsingEnabled
         this as B
+    }
+
+    @Override
+    boolean isArchiveBrowsingEnabled() {
+        archiveBrowsingEnabled
     }
 }

@@ -34,9 +34,19 @@ abstract class RepositoryBuilderBase<B extends RepositoryBuilder, R extends Repo
     }
 
     @Override
+    String getDescription() {
+        description
+    }
+
+    @Override
     B excludesPattern(String excludesPattern) {
         this.excludesPattern = excludesPattern
         this as B
+    }
+
+    @Override
+    String getExcludesPattern() {
+        excludesPattern
     }
 
     @Override
@@ -46,9 +56,19 @@ abstract class RepositoryBuilderBase<B extends RepositoryBuilder, R extends Repo
     }
 
     @Override
+    String getIncludesPattern() {
+        includesPattern
+    }
+
+    @Override
     B key(String key) {
         this.key = key
         this as B
+    }
+
+    @Override
+    String getKey() {
+        key
     }
 
     @Override
@@ -58,9 +78,19 @@ abstract class RepositoryBuilderBase<B extends RepositoryBuilder, R extends Repo
     }
 
     @Override
+    String getNotes() {
+        notes
+    }
+
+    @Override
     B repoLayoutRef(String repoLayoutRef) {
         this.repoLayoutRef = repoLayoutRef
         this as B
+    }
+
+    @Override
+    String getRepoLayoutRef() {
+        repoLayoutRef
     }
 
     @Override
@@ -70,10 +100,21 @@ abstract class RepositoryBuilderBase<B extends RepositoryBuilder, R extends Repo
     }
 
     @Override
+    RepositorySettings getRepositorySettings() {
+        settings
+    }
+
+    @Override
     B xraySettings(XraySettings xraySettings) {
         this.xraySettings = xraySettings
         this as B
     }
+
+    @Override
+    XraySettings getXraySettings() {
+        xraySettings
+    }
+
     abstract RepositoryType getRepositoryType()
 
     @Override
