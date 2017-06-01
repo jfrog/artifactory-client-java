@@ -1,7 +1,6 @@
 package org.jfrog.artifactory.client
 
 import groovyx.net.http.HttpResponseException
-import org.hamcrest.CoreMatchers
 import org.jfrog.artifactory.client.model.impl.LocalReplicationImpl
 import org.jfrog.artifactory.client.model.impl.RemoteReplicationImpl
 import org.testng.annotations.BeforeMethod
@@ -61,7 +60,7 @@ public class ReplicationTests extends BaseRepositoryTests {
         replication1.syncStatistics = true
         replication1.repoKey = localRepo.key
 
-        replications.createOrReplaceReplication(replication1)
+        replications.createOrReplace(replication1)
 
         def result = replications.list()
 
@@ -107,7 +106,7 @@ public class ReplicationTests extends BaseRepositoryTests {
         replication2.syncStatistics = true
         replication2.repoKey = localRepo.key
 
-        replications.createOrReplaceReplications([ replication1, replication2 ])
+        replications.createOrReplace([replication1, replication2 ])
 
         def result = replications.list()
 
@@ -171,7 +170,7 @@ public class ReplicationTests extends BaseRepositoryTests {
         replication1.syncStatistics = true
         replication1.repoKey = localRepo.key
 
-        replications.createOrReplaceReplication(replication1)
+        replications.createOrReplace(replication1)
 
         def result = replications.list()
 
@@ -210,7 +209,7 @@ public class ReplicationTests extends BaseRepositoryTests {
         replication1.syncStatistics = true
         replication1.repoKey = localRepo.key
 
-        replications.createOrReplaceReplication(replication1)
+        replications.createOrReplace(replication1)
 
         def result = replications.list()
 
@@ -224,7 +223,7 @@ public class ReplicationTests extends BaseRepositoryTests {
         replication1.enabled = !replication1.enabled
         replication1.syncDeletes = !replication1.syncDeletes
 
-        replications.createOrReplaceReplication(replication1)
+        replications.createOrReplace(replication1)
 
         def result2 = replications.list()
 
@@ -268,7 +267,7 @@ public class ReplicationTests extends BaseRepositoryTests {
         replication2.syncStatistics = true
         replication2.repoKey = localRepo.key
 
-        replications.createOrReplaceReplications([replication1, replication2])
+        replications.createOrReplace([replication1, replication2])
 
         def result = replications.list()
 
@@ -324,7 +323,7 @@ public class ReplicationTests extends BaseRepositoryTests {
         replication1.syncProperties = true
         replication1.repoKey = remoteRepo.key
 
-        replications.createOrReplaceReplication(replication1)
+        replications.createOrReplace(replication1)
 
         def result = replications.list()
 
@@ -364,7 +363,7 @@ public class ReplicationTests extends BaseRepositoryTests {
         replication1.syncProperties = true
         replication1.repoKey = remoteRepo.key
 
-        replications.createOrReplaceReplication(replication1)
+        replications.createOrReplace(replication1)
 
         def result = replications.list()
 
@@ -397,7 +396,7 @@ public class ReplicationTests extends BaseRepositoryTests {
         replication1.syncProperties = true
         replication1.repoKey = remoteRepo.key
 
-        replications.createOrReplaceReplication(replication1)
+        replications.createOrReplace(replication1)
 
         def result = replications.list()
 
@@ -411,7 +410,7 @@ public class ReplicationTests extends BaseRepositoryTests {
         replication1.enabled = !replication1.enabled
         replication1.syncDeletes = !replication1.syncDeletes
 
-        replications.createOrReplaceReplication(replication1)
+        replications.createOrReplace(replication1)
 
         def result2 = replications.list()
 

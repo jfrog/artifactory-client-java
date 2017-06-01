@@ -72,12 +72,12 @@ class ReplicationsImpl implements Replications {
     }
 
     @Override
-    void createOrReplaceReplication(Replication replication) {
+    void createOrReplace(Replication replication) {
         artifactory.put("${getReplicationsApi()}${repoKey}", [:], ContentType.ANY, null, ContentType.JSON, replication)
     }
 
     @Override
-    void createOrReplaceReplications(Collection<LocalReplication> replications) {
+    void createOrReplace(Collection<LocalReplication> replications) {
         assert replications
 
         // Determine the type of the repository (not all repository types support replications)

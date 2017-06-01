@@ -12,10 +12,10 @@ public interface Replications {
     List<Replication> list();
 
     // Supports local and remote repositories
-    void createOrReplaceReplication(Replication replication);
+    void createOrReplace(Replication replication);
 
     // Supports only local repositories
-    void createOrReplaceReplications(Collection<LocalReplication> replications);
+    void createOrReplace(Collection<LocalReplication> replications);
 
     void delete();
 
