@@ -8,4 +8,6 @@ public interface Checksums {
     String getMd5();
 
     String getSha1();
+
+    String getSha256();
 }

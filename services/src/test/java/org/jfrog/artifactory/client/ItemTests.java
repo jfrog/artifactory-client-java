@@ -1,6 +1,8 @@
 package org.jfrog.artifactory.client;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import groovyx.net.http.HttpResponseException;
+import org.jfrog.artifactory.client.impl.ArtifactoryRequestImpl;
 import org.jfrog.artifactory.client.impl.CopyMoveException;
 import org.jfrog.artifactory.client.model.File;
 import org.jfrog.artifactory.client.model.Folder;
@@ -53,6 +55,20 @@ public class ItemTests extends ArtifactoryTestsBase {
                 url + JCENTER_CACHE + "/junit/junit/4.10/junit-4.10-sources.jar");
         assertEquals(file.getChecksums().getMd5(), "8f17d4271b86478a2731deebdab8c846");
         assertEquals(file.getChecksums().getSha1(), "6c98d6766e72d5575f96c9479d1c1d3b865c6e25");
+    }
+
+    @Test(dependsOnMethods = "testFileInfo")
+    public void testFileInfoWithSha256() {
+        String path = "junit/junit/4.10/junit-4.10-sources.jar";
+        calcSha256ForItem(JCENTER_CACHE, path);
+        File file = artifactory.repository(JCENTER_CACHE).file(path).info();
+
+        assertNotNull(file);
+        assertEquals(file.getDownloadUri(),
+                url + JCENTER_CACHE + "/junit/junit/4.10/junit-4.10-sources.jar");
+        assertEquals(file.getChecksums().getMd5(), "8f17d4271b86478a2731deebdab8c846");
+        assertEquals(file.getChecksums().getSha1(), "6c98d6766e72d5575f96c9479d1c1d3b865c6e25");
+        assertEquals(file.getChecksums().getSha256(), "e3a4cb7ac3343265f5663b68857078ae68787450afc6e72dc6826962a1bf5212");
     }
 
     @Test(groups = "items", dependsOnGroups = "repositoryBasics")
@@ -238,5 +254,25 @@ public class ItemTests extends ArtifactoryTestsBase {
     private void deleteAllRelatedRepos() throws IOException {
         deleteRepoIfExists(NEW_LOCAL_FROM);
         deleteRepoIfExists(NEW_LOCAL_TO);
+    }
+
+    private void calcSha256ForItem(String repoName, String path) {
+        ObjectMapper mapper = new ObjectMapper();
+        Map<String, Object> map = null;
+        try {
+            map = mapper.readValue(
+                    "{\"repoKey\":\""+ repoName +"\", \"path\":\""+path+"\"}", Map.class
+            );
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        ArtifactoryRequest request = new ArtifactoryRequestImpl()
+                .apiUrl("api/checksum/sha256")
+                .method(ArtifactoryRequest.Method.POST)
+                .requestType(ArtifactoryRequest.ContentType.JSON)
+                .requestBody(map);
+
+        artifactory.restCall(request);
     }
 }
