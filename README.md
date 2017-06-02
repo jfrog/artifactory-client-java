@@ -197,6 +197,67 @@ String result = artifactory.repositories().update(updatedRepository);
 String result = artifactory.repository("RepoName").delete();
 ```
 
+##### Listing all Repository Replications
+```
+// Method supported for local and remote repositories
+List<Replication> replications = artifactory.repository("RepoName").replications.list()
+```
+
+##### Deleting all Repository Replications
+```
+// Method supported for local and remote repositories
+artifactory.repository("RepoName").replications.delete()
+```
+
+##### Creating / Updating a Local Repository's Replication(s)
+```
+def replication1 = new LocalReplicationImpl()
+replication1.url = "http://hostname1:port/artifactory/RepoName"
+replication1.socketTimeoutMillis = 30000
+replication1.username = 'john.doe'
+replication1.password = 'secret'
+replication1.enableEventReplication = false
+replication1.enabled = false
+replication1.cronExp = '0 0 0/2 * * ?'
+replication1.syncDeletes = true
+replication1.syncProperties = true
+replication1.syncStatistics = true
+replication1.repoKey = "RepoName"
+
+def replication2 = new LocalReplicationImpl()
+replication2.url = "http://hostname2:port/artifactory/RepoName"
+replication2.socketTimeoutMillis = 60000
+replication2.username = 'jane.doe'
+replication2.password = 'secret2'
+replication2.enableEventReplication = true
+replication2.enabled = true
+replication2.cronExp = '0 0 0/4 * * ?'
+replication2.syncDeletes = true
+replication2.syncProperties = true
+replication2.syncStatistics = true
+replication2.repoKey = "RepoName"
+
+// Create (or replace) one replication
+artifactory.repository("RepoName").replications.createOrReplace(replication1)
+artifactory.repository("RepoName").replications.createOrReplace([ replication1 ])
+
+// Create (or replace) several replications at once
+artifactory.repository("RepoName").replications.createOrReplace([ replication1, replication2 ])
+```
+
+##### Creating / Updating a Remote Repository's Replication
+```
+def replication = new RemoteReplicationImpl()
+replication.enabled = false
+replication.cronExp = '0 0 0/2 * * ?'
+replication.syncDeletes = true
+replication.syncProperties = true
+replication.repoKey = "RepoName"
+
+// Create (or replace) one replication
+artifactory.repository("RepoName").replications.createOrReplace(replication)
+```
+
 ##### Managing Xray properties
 ```
     Repository repository = artifactory.repository("RepoName").get();
