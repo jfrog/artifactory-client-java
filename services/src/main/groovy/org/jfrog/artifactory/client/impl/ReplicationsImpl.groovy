@@ -33,41 +33,28 @@ class ReplicationsImpl implements Replications {
         if (!repository) {
             throw new RuntimeException("The repository '${repoKey}' doesn't exist")
         }
+        if (repository.rclass == RepositoryTypeImpl.VIRTUAL) {
+            throw new UnsupportedOperationException("The method isn't supported for a ${repository.rclass} repository")
+        }
 
         def path = "${getReplicationsApi()}${repoKey}"
 
-        if ((repository.rclass == RepositoryTypeImpl.LOCAL) || (repository.rclass == RepositoryTypeImpl.REMOTE)) {
-            try {
-                // We can't use Jackson to convert the JSON into java objects because the structure of the JSON response
-                // changes depending on the number of replications returned by the server. This changed in version 4.15
-                // (see the release notes) but is still required to properly process the response from old versions
-                // One replication -> The API returns a JSON object
-                // Two replications -> The API returns an array of JSON objects
-                def json = artifactory.get(path, [:], ContentType.JSON)
+        try {
+            // The structure of the JSON response depends on the type of the repository
+            def json = artifactory.get(path, [:], ContentType.JSON)
 
-                if (repository.rclass == RepositoryTypeImpl.LOCAL) {
-                    if (json instanceof List) {
-                        return json.collect { new LocalReplicationImpl(it) }
-                    } else {
-                        return [ new LocalReplicationImpl(json) ]
-                    }
-                } else if (repository.rclass == RepositoryTypeImpl.REMOTE) {
-                    if (json instanceof List) {
-                        return json.collect { new RemoteReplicationImpl(it) }
-                    } else {
-                        return [ new RemoteReplicationImpl(json) ]
-                    }
-                }
-            } catch (HttpResponseException e) {
-                if (e.statusCode == 404) {
-                    // The REST API returns a 404 status code when the repository defines no replication
-                    return []
-                }
-
-                throw e
+            if (repository.rclass == RepositoryTypeImpl.LOCAL) {
+                return json.collect { new LocalReplicationImpl(it) }
+            } else if (repository.rclass == RepositoryTypeImpl.REMOTE) {
+                return json.collect { new RemoteReplicationImpl(it) }
             }
-        } else {
-            throw new UnsupportedOperationException("The method isn't supported for a ${repository.rclass} repository")
+        } catch (HttpResponseException e) {
+            if (e.statusCode == 404) {
+                // The REST API returns a 404 status code when the repository defines no replication
+                return []
+            }
+
+            throw e
         }
     }
 
@@ -85,6 +72,9 @@ class ReplicationsImpl implements Replications {
 
         if (!repository) {
             throw new RuntimeException("The repository '${repoKey}' doesn't exist")
+        }
+        if (repository.rclass != RepositoryTypeImpl.LOCAL) {
+            throw new UnsupportedOperationException("The method isn't supported for a ${repository.rclass} repository")
         }
 
         def path = "${getReplicationsMultipleApi()}${repoKey}"
@@ -119,11 +109,7 @@ class ReplicationsImpl implements Replications {
         payload.put('enableEventReplication', first.enableEventReplication)
         payload.put('replications', array)
 
-        if (repository.rclass == RepositoryTypeImpl.LOCAL) {
-            artifactory.put(path, [:], ContentType.ANY, null, ContentType.JSON, payload)
-        } else {
-            throw new UnsupportedOperationException("The method isn't supported for a ${repository.rclass} repository")
-        }
+        artifactory.put(path, [:], ContentType.ANY, null, ContentType.JSON, payload)
     }
 
     @Override
@@ -134,14 +120,13 @@ class ReplicationsImpl implements Replications {
         if (!repository) {
             throw new RuntimeException("The repository '${repoKey}' doesn't exist")
         }
+        if (repository.rclass == RepositoryTypeImpl.VIRTUAL) {
+            throw new UnsupportedOperationException("The method isn't supported for a ${repository.rclass} repository")
+        }
 
         def path = "${getReplicationsApi()}${repoKey}"
 
-        if ((repository.rclass == RepositoryTypeImpl.LOCAL) || (repository.rclass == RepositoryTypeImpl.REMOTE)) {
-            artifactory.delete(path, [:], ContentType.JSON)
-        } else {
-            throw new UnsupportedOperationException("The method isn't supported for a ${repository.rclass} repository")
-        }
+        artifactory.delete(path, [:], ContentType.JSON)
     }
 
     @Override
