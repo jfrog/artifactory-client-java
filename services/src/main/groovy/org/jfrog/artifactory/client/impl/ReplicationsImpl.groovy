@@ -44,9 +44,11 @@ class ReplicationsImpl implements Replications {
             def json = artifactory.get(path, [:], ContentType.JSON)
 
             if (repository.rclass == RepositoryTypeImpl.LOCAL) {
+                // For a local repository, the REST service always returns an array of JSON objects
                 return json.collect { new LocalReplicationImpl(it) }
             } else if (repository.rclass == RepositoryTypeImpl.REMOTE) {
-                return json.collect { new RemoteReplicationImpl(it) }
+                // For a remote repository, the REST service returns a JSON object (not an array)
+                return [ new RemoteReplicationImpl(json) ]
             }
         } catch (HttpResponseException e) {
             if (e.statusCode == 404) {
