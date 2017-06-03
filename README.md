@@ -88,7 +88,7 @@ long fileSize = file.getSize();
 String fileUri = file.getDownloadUri();
 String md5Checksum = file.getChecksums().getMd5();
 String sha1Checksum = file.getChecksums().getSha1();
-String sha1Checksum = file.getChecksums().getSha256();
+String sha2Checksum = file.getChecksums().getSha256();
 ```
 
 ##### Folder Info
