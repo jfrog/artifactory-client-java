@@ -258,13 +258,13 @@ public class ItemTests extends ArtifactoryTestsBase {
 
     private void calcSha256ForItem(String repoName, String path) {
         ObjectMapper mapper = new ObjectMapper();
-        Map<String, Object> map = null;
+        Map<String, Object> map;
         try {
             map = mapper.readValue(
                     "{\"repoKey\":\""+ repoName +"\", \"path\":\""+path+"\"}", Map.class
             );
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
 
         ArtifactoryRequest request = new ArtifactoryRequestImpl()
