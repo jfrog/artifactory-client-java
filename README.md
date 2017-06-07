@@ -55,6 +55,16 @@ File deployed = artifactory.repository("RepoName")
     .doUpload();
 ```
 
+##### Copy an Artifact by SHA-1
+```
+java.io.File file = new java.io.File("fileToUpload.txt");
+String sha1 = calcSha1(file)
+
+File deployed = artifactory.repository("RepoName")
+    .copyBySha1("path/to/newName.txt", sha1)
+    .doUpload();
+```
+
 ##### Downloading an Artifact
 ```
 InputStream iStream = artifactory.repository("RepoName")
