@@ -114,4 +114,9 @@ class RepositoryHandleImpl implements RepositoryHandle {
     boolean exists() {
         artifactory.head("${repository.getRepositoriesApi()}${repoKey}")
     }
+
+    @Override
+    Replications getReplications() {
+        return new ReplicationsImpl(artifactory, baseApiPath, repoKey)
+    }
 }
