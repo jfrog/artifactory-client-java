@@ -5,6 +5,7 @@ import org.jfrog.artifactory.client.model.repository.settings.RepositorySettings
 import org.jfrog.artifactory.client.model.repository.settings.XraySettings;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author jbaruch
@@ -21,10 +22,11 @@ public class LocalRepositoryImpl extends NonVirtualRepositoryBase implements Loc
         boolean blackedOut,
         List<String> propertySets,
         String repoLayoutRef,
-        boolean archiveBrowsingEnabled) {
+        boolean archiveBrowsingEnabled,
+        Map otherProperties) {
 
         super(key, settings, xraySettings, description, excludesPattern, includesPattern, notes, blackedOut,
-            propertySets, repoLayoutRef, archiveBrowsingEnabled);
+            propertySets, repoLayoutRef, archiveBrowsingEnabled, otherProperties);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package org.jfrog.artifactory.client.model.impl;
 
 import java.util.List;
+import java.util.Map;
 
 import org.jfrog.artifactory.client.model.NonVirtualRepository;
 import org.jfrog.artifactory.client.model.repository.settings.RepositorySettings;
@@ -24,10 +25,11 @@ public abstract class NonVirtualRepositoryBase extends RepositoryBase implements
         String notes, boolean blackedOut,
         List<String> propertySets,
         String repoLayoutRef,
-        boolean archiveBrowsingEnabled) {
+        boolean archiveBrowsingEnabled,
+        Map otherProperties) {
 
         super(key, settings, xraySettings, description, excludesPattern, includesPattern, notes,
-            repoLayoutRef);
+            repoLayoutRef, otherProperties);
 
         this.blackedOut = blackedOut;
         this.propertySets = propertySets;

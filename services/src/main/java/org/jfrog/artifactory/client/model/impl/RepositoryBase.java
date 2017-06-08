@@ -1,6 +1,9 @@
 package org.jfrog.artifactory.client.model.impl;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import java.util.Map;
+
 import org.jfrog.artifactory.client.model.Repository;
 import org.jfrog.artifactory.client.model.repository.settings.RepositorySettings;
 import org.jfrog.artifactory.client.model.repository.settings.XraySettings;
@@ -21,13 +24,15 @@ public abstract class RepositoryBase implements Repository {
     protected RepositorySettings settings;
     @JsonIgnore
     protected XraySettings xraySettings;
+    @JsonIgnore
+    protected Map otherProperties;
 
     protected RepositoryBase() {
     }
 
     protected RepositoryBase(String key, RepositorySettings settings, XraySettings xraySettings,
         String description, String excludesPattern, String includesPattern,
-        String notes, String repoLayoutRef) {
+        String notes, String repoLayoutRef, Map otherProperties) {
 
         this.key = key;
         this.settings = settings;
@@ -37,13 +42,14 @@ public abstract class RepositoryBase implements Repository {
         this.includesPattern = includesPattern;
         this.notes = notes;
         this.repoLayoutRef = repoLayoutRef;
+        this.otherProperties = otherProperties;
     }
 
     protected RepositoryBase(String key, RepositorySettings settings,
         String description, String excludesPattern, String includesPattern,
-        String notes, String repoLayoutRef) {
+        String notes, String repoLayoutRef, Map properties) {
 
-       this(key,settings, null, description, excludesPattern, includesPattern,  notes, repoLayoutRef);
+       this(key,settings, null, description, excludesPattern, includesPattern,  notes, repoLayoutRef, properties);
     }
 
     @Override
@@ -157,5 +163,10 @@ public abstract class RepositoryBase implements Repository {
 
     public void setXraySettings(XraySettings xraySettings) {
         this.xraySettings = xraySettings;
+    }
+
+    @Override
+    public Map getOtherProperties() {
+        return otherProperties;
     }
 }

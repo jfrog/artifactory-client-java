@@ -1,9 +1,13 @@
 package org.jfrog.artifactory.client.impl.jackson;
 
+import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
+
+import java.util.Map;
+
 import org.jfrog.artifactory.client.model.Repository;
 import org.jfrog.artifactory.client.model.RepositoryType;
 import org.jfrog.artifactory.client.model.impl.LocalRepositoryImpl;
@@ -29,4 +33,6 @@ public interface RepositoryMixIn {
     @JsonIgnore
     RepositoryType getRclass();
 
+    @JsonAnyGetter
+    Map getOtherProperties();
 }

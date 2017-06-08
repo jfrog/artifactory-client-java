@@ -18,7 +18,7 @@ class LocalRepositoryBuilderImpl extends NonVirtualRepositoryBuilderBase<LocalRe
 
     private LocalRepositoryBuilderImpl() {
         super([bower, cocoapods, debian, docker, gems, generic, gitlfs, gradle, ivy, maven, npm, nuget, opkg, pypi,
-               sbt, vagrant, yum, rpm, composer, conan, chef, puppet])
+               sbt, vagrant, yum, rpm, composer, conan, chef, puppet] as Set)
         this.repoLayoutRef = Repository.MAVEN_2_REPO_LAYOUT
     }
 
@@ -28,7 +28,8 @@ class LocalRepositoryBuilderImpl extends NonVirtualRepositoryBuilderBase<LocalRe
             includesPattern, notes, blackedOut,
             propertySets,
             repoLayoutRef,
-            archiveBrowsingEnabled)
+            archiveBrowsingEnabled,
+            otherProperties)
     }
 
     @Override

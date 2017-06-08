@@ -10,6 +10,7 @@ import org.jfrog.artifactory.client.model.repository.settings.RepositorySettings
 import org.jfrog.artifactory.client.model.repository.settings.XraySettings;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author jbaruch
@@ -54,12 +55,12 @@ public class RemoteRepositoryImpl extends NonVirtualRepositoryBase implements Re
                          int retrievalCachePeriodSecs, boolean shareConfiguration, int socketTimeoutMillis, boolean cookieManagementEnabled, boolean allowAnyHostAuth, boolean storeArtifactsLocally, boolean synchronizeProperties,
                          boolean unusedArtifactsCleanupEnabled, int unusedArtifactsCleanupPeriodHours, String url, String username, String repoLayoutRef,
                          long assumedOfflinePeriodSecs, boolean archiveBrowsingEnabled,
-                         boolean listRemoteFolderItems) {
+                         boolean listRemoteFolderItems, Map otherProperties) {
 
         super(key, settings, xraySettings, description, excludesPattern, includesPattern,
             notes, blackedOut,
             propertySets,
-            repoLayoutRef, archiveBrowsingEnabled);
+            repoLayoutRef, archiveBrowsingEnabled, otherProperties);
 
         this.contentSync = contentSync;
         this.failedRetrievalCachePeriodSecs = failedRetrievalCachePeriodSecs;

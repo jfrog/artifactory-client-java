@@ -20,6 +20,7 @@ abstract class RepositoryBuilderBase<B extends RepositoryBuilder, R extends Repo
     protected String repoLayoutRef
     protected RepositorySettings settings
     protected XraySettings xraySettings
+    protected Map otherProperties
 
     public final Set<PackageType> supportedTypes
 
@@ -113,6 +114,12 @@ abstract class RepositoryBuilderBase<B extends RepositoryBuilder, R extends Repo
     @Override
     XraySettings getXraySettings() {
         xraySettings
+    }
+
+    @Override
+    B otherProperties(Map otherProperties) {
+        this.otherProperties = otherProperties
+        this as B
     }
 
     abstract RepositoryType getRepositoryType()

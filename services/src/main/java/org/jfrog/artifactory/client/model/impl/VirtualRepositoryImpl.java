@@ -5,6 +5,7 @@ import org.jfrog.artifactory.client.model.repository.settings.RepositorySettings
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Map;
 
 /**
  * @author jbaruch
@@ -22,9 +23,9 @@ public class VirtualRepositoryImpl extends RepositoryBase implements VirtualRepo
     private VirtualRepositoryImpl(String key, RepositorySettings settings,
         String description, String excludesPattern, String includesPattern, String notes,
         boolean artifactoryRequestsCanRetrieveRemoteArtifacts,
-        Collection<String> repositories, String repoLayoutRef, String deploymentRepo) {
+        Collection<String> repositories, String repoLayoutRef, String deploymentRepo, Map otherProperties) {
 
-        super(key, settings, description, excludesPattern, includesPattern, notes, repoLayoutRef);
+        super(key, settings, description, excludesPattern, includesPattern, notes, repoLayoutRef, otherProperties);
 
         this.artifactoryRequestsCanRetrieveRemoteArtifacts = artifactoryRequestsCanRetrieveRemoteArtifacts;
         this.repositories = repositories;

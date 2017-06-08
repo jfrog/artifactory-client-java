@@ -1,5 +1,7 @@
 package org.jfrog.artifactory.client.model.builder;
 
+import java.util.Map;
+
 import org.jfrog.artifactory.client.model.Repository;
 import org.jfrog.artifactory.client.model.repository.settings.RepositorySettings;
 import org.jfrog.artifactory.client.model.repository.settings.XraySettings;
@@ -46,4 +48,5 @@ public interface RepositoryBuilder<B extends RepositoryBuilder, R extends Reposi
 
     XraySettings getXraySettings();
 
+    B otherProperties(Map otherProperties);
 }
