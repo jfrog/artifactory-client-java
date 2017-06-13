@@ -233,6 +233,7 @@ replication1.cronExp = '0 0 0/2 * * ?'
 replication1.syncDeletes = true
 replication1.syncProperties = true
 replication1.syncStatistics = true
+replication1.pathPrefix = ''
 replication1.repoKey = "RepoName"
 
 def replication2 = new LocalReplicationImpl()
@@ -246,6 +247,7 @@ replication2.cronExp = '0 0 0/4 * * ?'
 replication2.syncDeletes = true
 replication2.syncProperties = true
 replication2.syncStatistics = true
+replication1.pathPrefix = 'pathPrefix'
 replication2.repoKey = "RepoName"
 
 // Create (or replace) one replication

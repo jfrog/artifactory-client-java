@@ -13,4 +13,6 @@ public interface LocalReplication extends Replication {
     boolean isEnableEventReplication();
 
     boolean isSyncStatistics();
+
+    String getPathPrefix();
 }
