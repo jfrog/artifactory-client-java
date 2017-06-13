@@ -58,7 +58,7 @@ public class ReplicationTests extends BaseRepositoryTests {
         replication1.syncDeletes = true
         replication1.syncProperties = true
         replication1.syncStatistics = true
-        replication1.pathPrefix = ''
+        replication1.pathPrefix = 'pathPrefix'
         replication1.repoKey = localRepo.key
 
         replications.createOrReplace(replication1)
@@ -172,7 +172,7 @@ public class ReplicationTests extends BaseRepositoryTests {
         replication1.syncDeletes = true
         replication1.syncProperties = true
         replication1.syncStatistics = true
-        replication1.pathPrefix = ''
+        replication1.pathPrefix = 'pathPrefix'
         replication1.repoKey = localRepo.key
 
         replications.createOrReplace(replication1)
@@ -212,7 +212,7 @@ public class ReplicationTests extends BaseRepositoryTests {
         replication1.syncDeletes = true
         replication1.syncProperties = true
         replication1.syncStatistics = true
-        replication1.pathPrefix = ''
+        replication1.pathPrefix = 'pathPrefix'
         replication1.repoKey = localRepo.key
 
         replications.createOrReplace(replication1)
@@ -258,7 +258,7 @@ public class ReplicationTests extends BaseRepositoryTests {
         replication1.syncDeletes = false
         replication1.syncProperties = false
         replication1.syncStatistics = false
-        replication1.pathPrefix = ''
+        replication1.pathPrefix = 'pathPrefix'
         replication1.repoKey = localRepo.key
 
         def replication2 = new LocalReplicationImpl()
