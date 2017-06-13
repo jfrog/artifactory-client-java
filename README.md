@@ -287,6 +287,22 @@ artifactory.repository("RepoName").replications.createOrReplace(replication)
     String result = artifactory.repositories().update(updatedRepository);
 ```
 
+##### Managing other properties
+```
+    Repository repository = artifactory.repository("RepoName").get();
+    
+    Map otherProperties = repository.getOtherProperties();
+    otherProperties.put("key", "value")
+
+    Repository updatedRepository = artifactory.repositories()
+        .builders()
+        .builderFrom(repository)
+        .description("new_description")
+        .build();
+
+    String result = artifactory.repositories().update(updatedRepository);
+```
+
 ##### Smart Remote Repositories
 
 A [smart remote repository](https://www.jfrog.com/confluence/display/RTF/Smart+Remote+Repositories) is a remote repository that proxies a repository from another instance of Artifactory.
