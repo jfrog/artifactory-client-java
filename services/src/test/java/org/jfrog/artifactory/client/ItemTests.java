@@ -32,12 +32,12 @@ public class ItemTests extends ArtifactoryTestsBase {
     @Test
     public void testFolderInfo() {
         //Get the folder to the cache
-        artifactory.repository(JCENTER).download("junit/junit/4.10/junit-4.10-sources.jar").doDownload();
-        Folder folder = artifactory.repository(JCENTER_CACHE).folder("junit").info();
+        artifactory.repository(getJCenterRepoName()).download("junit/junit/4.10/junit-4.10-sources.jar").doDownload();
+        Folder folder = artifactory.repository(getJcenterCacheName()).folder("junit").info();
         assertNotNull(folder);
         assertTrue(folder.isFolder());
         assertEquals(folder.getChildren().size(), 1);
-        assertEquals(folder.getRepo(), JCENTER_CACHE);
+        assertEquals(folder.getRepo(), getJcenterCacheName());
         assertEquals(folder.getPath(), "/junit");
     }
 
@@ -45,14 +45,14 @@ public class ItemTests extends ArtifactoryTestsBase {
     public void testFileInfo() {
 
         //Get the file to the cache
-        artifactory.repository(JCENTER).download("junit/junit/4.10/junit-4.10-sources.jar").doDownload();
+        artifactory.repository(getJCenterRepoName()).download("junit/junit/4.10/junit-4.10-sources.jar").doDownload();
 
-        File file = artifactory.repository(JCENTER_CACHE).file("junit/junit/4.10/junit-4.10-sources.jar").info();
+        File file = artifactory.repository(getJcenterCacheName()).file("junit/junit/4.10/junit-4.10-sources.jar").info();
         assertNotNull(file);
         assertFalse(file.isFolder());
         assertEquals(file.getSize(), 141185);
         assertEquals(file.getDownloadUri(),
-                url + JCENTER_CACHE + "/junit/junit/4.10/junit-4.10-sources.jar");
+                url + getJcenterCacheName() + "/junit/junit/4.10/junit-4.10-sources.jar");
         assertEquals(file.getChecksums().getMd5(), "8f17d4271b86478a2731deebdab8c846");
         assertEquals(file.getChecksums().getSha1(), "6c98d6766e72d5575f96c9479d1c1d3b865c6e25");
     }
@@ -60,24 +60,24 @@ public class ItemTests extends ArtifactoryTestsBase {
     @Test(dependsOnMethods = "testFileInfo")
     public void testFileInfoWithSha256() {
         String path = "junit/junit/4.10/junit-4.10-sources.jar";
-        calcSha256ForItem(JCENTER_CACHE, path);
-        File file = artifactory.repository(JCENTER_CACHE).file(path).info();
+        calcSha256ForItem(getJcenterCacheName(), path);
+        File file = artifactory.repository(getJcenterCacheName()).file(path).info();
 
         assertNotNull(file);
         assertEquals(file.getDownloadUri(),
-                url + JCENTER_CACHE + "/junit/junit/4.10/junit-4.10-sources.jar");
+                url + getJcenterCacheName() + "/junit/junit/4.10/junit-4.10-sources.jar");
         assertEquals(file.getChecksums().getMd5(), "8f17d4271b86478a2731deebdab8c846");
         assertEquals(file.getChecksums().getSha1(), "6c98d6766e72d5575f96c9479d1c1d3b865c6e25");
         assertEquals(file.getChecksums().getSha256(), "e3a4cb7ac3343265f5663b68857078ae68787450afc6e72dc6826962a1bf5212");
     }
 
-    @Test(groups = "items", dependsOnGroups = "repositoryBasics")
+    @Test(groups = "items")
     public void testSetItemProperties() throws Exception {
         //Upload a clean file
         InputStream content = this.getClass().getResourceAsStream("/sample_props.txt");
         assertNotNull(content);
-        artifactory.repository(NEW_LOCAL).upload(PATH_PROPS, content).doUpload();
-        ItemHandle file = artifactory.repository(NEW_LOCAL).file(PATH_PROPS);
+        artifactory.repository(localRepository.getKey()).upload(PATH_PROPS, content).doUpload();
+        ItemHandle file = artifactory.repository(localRepository.getKey()).file(PATH_PROPS);
         Map<String, ?> resProps = file.getProperties();
         assertTrue(resProps.isEmpty());
         Map<String, String> props = new HashMap<>();
@@ -134,9 +134,9 @@ public class ItemTests extends ArtifactoryTestsBase {
         }
     }
 
-    @Test(groups = "items", dependsOnGroups = "repositoryBasics")
+    @Test(groups = "items")
     public void testSetItemPropertiesOnNonExistingDirectory() throws Exception {
-        ItemHandle folder = artifactory.repository(NEW_LOCAL).folder("x/y/z");
+        ItemHandle folder = artifactory.repository(localRepository.getKey()).folder("x/y/z");
         try {
             folder.info();
             //should fail
@@ -225,7 +225,7 @@ public class ItemTests extends ArtifactoryTestsBase {
         try {
             itemHandle.copy(NEW_LOCAL_TO, PATH);
         } catch (CopyMoveException e) {
-            assertTrue(curl("api/copy/" + NEW_LOCAL_FROM + "/a/a?to=" +  NEW_LOCAL_TO + "/" + PATH, "POST").contains(e.getCopyMoveResultReport().getMessages().get(0).getMessage()));
+            assertTrue(curl("api/copy/" + NEW_LOCAL_FROM + "/a/a?to=" + NEW_LOCAL_TO + "/" + PATH, "POST").contains(e.getCopyMoveResultReport().getMessages().get(0).getMessage()));
         } finally {
             deleteAllRelatedRepos();
         }

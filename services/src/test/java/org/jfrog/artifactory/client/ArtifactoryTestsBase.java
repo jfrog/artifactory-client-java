@@ -1,14 +1,5 @@
 package org.jfrog.artifactory.client;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.Properties;
-import static org.apache.commons.codec.binary.Base64.encodeBase64;
-import static org.apache.commons.lang.StringUtils.isEmpty;
-import static org.apache.commons.lang.StringUtils.remove;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -16,22 +7,35 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import static org.testng.Assert.fail;
+import org.jfrog.artifactory.client.model.LocalRepository;
+import org.jfrog.artifactory.client.model.Repository;
+import org.jfrog.artifactory.client.model.repository.settings.impl.GenericRepositorySettingsImpl;
+import org.jfrog.artifactory.client.model.repository.settings.impl.MavenRepositorySettingsImpl;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
+import java.util.Properties;
+
+import static org.apache.commons.codec.binary.Base64.encodeBase64;
+import static org.apache.commons.lang.StringUtils.isEmpty;
+import static org.apache.commons.lang.StringUtils.remove;
+import static org.testng.Assert.fail;
 
 /**
  * @author jbaruch
  * @since 30/07/12
  */
 public abstract class ArtifactoryTestsBase {
-    protected static final String NEW_LOCAL = "ext-release-local";
     protected static final String PATH = "m/a/b/c.txt";
     protected static final String PATH_PROPS = "m/a/b/p.txt";
-    protected static final String LIBS_RELEASE_LOCAL = "libs-release-local";
-    protected static final String LIBS_RELEASE_VIRTUAL = "libs-release";
-    protected static final String JCENTER = "jcenter";
-    protected static final String JCENTER_CACHE = JCENTER + "-cache";
+    protected static final String JCENTER = "java-client-jcenter";
+    protected static final String JCENTER_URL = "https://jcenter.bintray.com";
     protected static final String LIST_PATH = "api/repositories";
     private static final String CLIENTTESTS_ARTIFACTORY_ENV_VAR_PREFIX = "CLIENTTESTS_ARTIFACTORY_";
     private static final String CLIENTTESTS_ARTIFACTORY_PROPERTIES_PREFIX = "clienttests.artifactory.";
@@ -43,10 +47,11 @@ public abstract class ArtifactoryTestsBase {
     protected long fileSize;
     protected String fileMd5;
     protected String fileSha1;
+    protected LocalRepository localRepository;
 
     @BeforeClass
     public void init() throws IOException {
-
+        String localRepositoryKey = "java-client-" + getClass().getSimpleName();
         Properties props = new Properties();
         // This file is not in GitHub. Create your own in src/test/resources.
         InputStream inputStream = this.getClass().getResourceAsStream("/artifactory-client.properties");
@@ -60,22 +65,40 @@ public abstract class ArtifactoryTestsBase {
         }
         username = readParam(props, "username");
         password = readParam(props, "password");
-
-
         filePath = "a/b";
         fileSize = 141185;
         fileMd5 = "8f17d4271b86478a2731deebdab8c846";
         fileSha1 = "6c98d6766e72d5575f96c9479d1c1d3b865c6e25";
-
-
         artifactory = ArtifactoryClientBuilder.create()
                 .setUrl(url)
                 .setUsername(username)
                 .setPassword(password)
                 .build();
+        deleteRepoIfExists(localRepositoryKey);
+        deleteRepoIfExists(getJCenterRepoName());
+        localRepository = artifactory.repositories().builders().localRepositoryBuilder()
+                .key(localRepositoryKey)
+                .description("new local repository")
+                .repositorySettings(new GenericRepositorySettingsImpl())
+                .propertySets(Arrays.asList("artifactory"))
+                .build();
+
+        if (!artifactory.repository(localRepository.getKey()).exists()) {
+            artifactory.repositories().create(1, localRepository);
+        }
+
+        String jcenterRepoName = getJCenterRepoName();
+        if (!artifactory.repository(jcenterRepoName).exists()) {
+            Repository jcenter = artifactory.repositories().builders().remoteRepositoryBuilder()
+                    .key(jcenterRepoName)
+                    .url(JCENTER_URL)
+                    .repositorySettings(new MavenRepositorySettingsImpl())
+                    .build();
+            artifactory.repositories().create(1, jcenter);
+        }
     }
 
-    private String readParam(Properties props, String paramName) {
+    public static String readParam(Properties props, String paramName) {
         String paramValue = null;
         if (props.size() > 0) {
             paramValue = props.getProperty(CLIENTTESTS_ARTIFACTORY_PROPERTIES_PREFIX + paramName);
@@ -92,7 +115,7 @@ public abstract class ArtifactoryTestsBase {
         return paramValue;
     }
 
-    private void failInit() {
+    private static void failInit() {
         String message =
                 new StringBuilder("Failed to load test Artifactory instance credentials. ")
                         .append("Looking for System properties '")
@@ -112,6 +135,8 @@ public abstract class ArtifactoryTestsBase {
 
     @AfterClass
     public void clean() throws IOException {
+        deleteRepoIfExists(localRepository.getKey());
+        deleteRepoIfExists(getJCenterRepoName());
         artifactory.close();
     }
 
@@ -216,5 +241,13 @@ public abstract class ArtifactoryTestsBase {
         } catch (NoSuchAlgorithmException | IOException e) {
             return null;
         }
+    }
+
+    protected String getJCenterRepoName() {
+        return JCENTER + getClass().getSimpleName();
+    }
+
+    protected String getJcenterCacheName() {
+        return getJCenterRepoName() + "-cache";
     }
 }
