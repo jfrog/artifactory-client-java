@@ -21,6 +21,7 @@ public class RpmPackageTypeRepositoryTests extends BaseRepositoryTests {
             calculateYumMetadata = rnd.nextBoolean()
             groupFileNames = "groups-${rnd.nextInt()}.xml"
             listRemoteFolderItems = rnd.nextBoolean()
+            maintainFilelistsMetadata = rnd.nextBoolean()
 
             // remote
             yumRootDepth = rnd.nextInt()
@@ -45,6 +46,7 @@ public class RpmPackageTypeRepositoryTests extends BaseRepositoryTests {
             // TODO: property is not returned by the artifactory
             // assertThat(groupFileNames, CoreMatchers.is(specRepo.getGroupFileNames()))
             assertThat(groupFileNames, CoreMatchers.is(CoreMatchers.nullValue()))
+            assertThat(maintainFilelistsMetadata, CoreMatchers.is(settings.maintainFilelistsMetadata))
             assertThat(yumRootDepth, CoreMatchers.is(settings.getYumRootDepth()))
 
             // remote
@@ -62,6 +64,7 @@ public class RpmPackageTypeRepositoryTests extends BaseRepositoryTests {
 
             // remote
             assertThat(listRemoteFolderItems, CoreMatchers.is(settings.getListRemoteFolderItems()))
+            assertThat(maintainFilelistsMetadata, CoreMatchers.is(settings.maintainFilelistsMetadata))
 
             // local
             assertThat(calculateYumMetadata, CoreMatchers.is(CoreMatchers.nullValue()))

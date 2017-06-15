@@ -13,6 +13,7 @@ class RpmRepositorySettingsImpl implements RpmRepositorySettings {
     String groupFileNames
     Boolean calculateYumMetadata
     Boolean listRemoteFolderItems
+    Boolean maintainFilelistsMetadata
 
     @Override
     public PackageType getPackageType() {
