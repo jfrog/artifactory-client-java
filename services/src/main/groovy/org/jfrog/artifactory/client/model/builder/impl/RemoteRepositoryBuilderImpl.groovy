@@ -45,6 +45,8 @@ class RemoteRepositoryBuilderImpl extends NonVirtualRepositoryBuilderBase<Remote
     private long assumedOfflinePeriodSecs = 300
     private boolean listRemoteFolderItems
     private ContentSync contentSync
+    private String clientTlsCertificate = ''
+
 
     RemoteRepositoryBuilder url(String url) {
         this.url = url
@@ -262,6 +264,17 @@ class RemoteRepositoryBuilderImpl extends NonVirtualRepositoryBuilderBase<Remote
         contentSync
     }
 
+    @Override
+    RemoteRepositoryBuilder clientTlsCertificate(String clientTlsCertificate) {
+        this.clientTlsCertificate = clientTlsCertificate
+        this
+    }
+
+    @Override
+    String getClientTlsCertificate() {
+        clientTlsCertificate
+    }
+
     @SuppressWarnings("GroovyAccessibility")
     RemoteRepository build() {
         validate()
@@ -273,7 +286,7 @@ class RemoteRepositoryBuilderImpl extends NonVirtualRepositoryBuilderBase<Remote
                 shareConfiguration, socketTimeoutMillis, enableCookieManagement, allowAnyHostAuth,
                 storeArtifactsLocally, synchronizeProperties, unusedArtifactsCleanupEnabled,
                 unusedArtifactsCleanupPeriodHours, url, username, repoLayoutRef,
-                assumedOfflinePeriodSecs, archiveBrowsingEnabled, listRemoteFolderItems)
+                assumedOfflinePeriodSecs, archiveBrowsingEnabled, listRemoteFolderItems, clientTlsCertificate)
     }
 
     @Override

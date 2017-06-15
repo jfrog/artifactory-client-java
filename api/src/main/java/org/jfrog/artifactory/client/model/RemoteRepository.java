@@ -48,4 +48,5 @@ public interface RemoteRepository extends Repository, NonVirtualRepository {
 
     ContentSync getContentSync();
 
+    String getClientTlsCertificate();
 }

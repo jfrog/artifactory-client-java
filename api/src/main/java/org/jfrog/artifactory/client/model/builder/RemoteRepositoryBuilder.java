@@ -93,4 +93,7 @@ public interface RemoteRepositoryBuilder extends NonVirtualRepositoryBuilder<Rem
 
     ContentSync getContentSync();
 
+    RemoteRepositoryBuilder clientTlsCertificate(String clientTlsCertificate);
+
+    String getClientTlsCertificate();
 }
