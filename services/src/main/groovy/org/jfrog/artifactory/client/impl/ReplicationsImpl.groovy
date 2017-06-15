@@ -101,6 +101,7 @@ class ReplicationsImpl implements Replications {
             object.put('syncDeletes', replication.syncDeletes)
             object.put('syncProperties', replication.syncProperties)
             object.put('syncStatistics', replication.syncStatistics)
+            object.put('pathPrefix', replication.pathPrefix)
             object.put('repoKey', replication.repoKey)
 
             array.add(object)

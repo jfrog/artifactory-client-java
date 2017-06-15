@@ -92,7 +92,7 @@ public class ReplicationTests extends BaseRepositoryTests {
         replication1.syncDeletes = false
         replication1.syncProperties = false
         replication1.syncStatistics = false
-        replication1.pathPrefix = null // <-- the test fails when trying to use a non-null value, the server doesn't return the 'pathPrefix' property when listing the replications later
+        replication1.pathPrefix = 'dummy'
         replication1.repoKey = localRepo.key
 
         def replication2 = new LocalReplicationImpl()
@@ -106,7 +106,7 @@ public class ReplicationTests extends BaseRepositoryTests {
         replication2.syncDeletes = true
         replication2.syncProperties = true
         replication2.syncStatistics = true
-        replication2.pathPrefix = null // <-- the test fails when trying to use a non-null value, the server doesn't return the 'pathPrefix' property when listing the replications later
+        replication2.pathPrefix = 'pathPrefix'
         replication2.repoKey = localRepo.key
 
         replications.createOrReplace([ replication1, replication2 ])
@@ -131,7 +131,7 @@ public class ReplicationTests extends BaseRepositoryTests {
         expected.syncDeletes = replication2.syncDeletes
         expected.syncProperties = replication2.syncProperties
         expected.syncStatistics = replication2.syncStatistics
-        expected.pathPrefix = null
+        expected.pathPrefix = replication2.pathPrefix
         expected.repoKey = replication2.repoKey
 
         assertTrue(result.contains(expected))
