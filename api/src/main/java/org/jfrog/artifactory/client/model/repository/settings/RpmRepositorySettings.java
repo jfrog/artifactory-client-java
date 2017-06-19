@@ -13,6 +13,8 @@ public interface RpmRepositorySettings extends RepositorySettings {
 
     Boolean getCalculateYumMetadata();
 
+    Boolean getEnableFileListsIndexing();
+
     // ** remote ** //
 
     Boolean getListRemoteFolderItems();
