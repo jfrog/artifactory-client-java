@@ -12,6 +12,7 @@ class RpmRepositorySettingsImpl implements RpmRepositorySettings {
     Integer yumRootDepth
     String groupFileNames
     Boolean calculateYumMetadata
+    Boolean enableFileListsIndexing
     Boolean listRemoteFolderItems
 
     @Override
