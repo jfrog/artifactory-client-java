@@ -64,9 +64,9 @@ public class RpmPackageTypeRepositoryTests extends BaseRepositoryTests {
 
             // remote
             assertThat(listRemoteFolderItems, CoreMatchers.is(settings.getListRemoteFolderItems()))
-            assertThat(enableFileListsIndexing, CoreMatchers.is(settings.getEnableFileListsIndexing()))
 
             // local
+            assertThat(enableFileListsIndexing, CoreMatchers.is(CoreMatchers.nullValue()))
             assertThat(calculateYumMetadata, CoreMatchers.is(CoreMatchers.nullValue()))
             assertThat(groupFileNames, CoreMatchers.is(CoreMatchers.nullValue()))
             assertThat(yumRootDepth, CoreMatchers.is(CoreMatchers.nullValue()))
