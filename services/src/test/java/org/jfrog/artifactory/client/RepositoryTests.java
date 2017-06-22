@@ -24,22 +24,30 @@ public class RepositoryTests extends ArtifactoryTestsBase {
     private static final String NEW_VIRTUAL = "client-test-release";
 
     private LocalRepository localRepository2;
+    private RemoteRepository remoteRepository;
     private VirtualRepository virtualRepository;
 
     @BeforeClass
     protected void setUp() throws Exception {
         localRepository2 = artifactory.repositories().builders().localRepositoryBuilder()
-                .key(localRepository.getKey() + "2")
-                .build();
+            .key(localRepository.getKey() + "2")
+            .build();
+
+        remoteRepository = artifactory.repositories().builders().remoteRepositoryBuilder()
+            .key("remote-" + localRepository.getKey())
+            .url("http://test.com/")
+            .repositorySettings(new GenericRepositorySettingsImpl())
+            .build();
         virtualRepository = artifactory.repositories().builders().virtualRepositoryBuilder()
-                .key(NEW_VIRTUAL)
-                .repositories(Arrays.asList(localRepository.getKey(), localRepository2.getKey(), getJCenterRepoName()))
-                .build();
+            .key(NEW_VIRTUAL)
+            .repositories(Arrays.asList(localRepository.getKey(), localRepository2.getKey(), getJCenterRepoName()))
+            .build();
     }
 
     @AfterClass
     protected void tearDown() throws Exception {
         deleteRepoIfExists(localRepository2.getKey());
+        deleteRepoIfExists("remote-" + localRepository.getKey());
         deleteRepoIfExists(NEW_VIRTUAL);
     }
 
@@ -95,9 +103,9 @@ public class RepositoryTests extends ArtifactoryTestsBase {
         RepositorySettings genericRepo = new GenericRepositorySettingsImpl();
 
         LocalRepository changedRepository = artifactory.repositories().builders().builderFrom(localRepository)
-                .description("new_description")
-                .repositorySettings(genericRepo)
-                .build();
+            .description("new_description")
+            .repositorySettings(genericRepo)
+            .build();
 
         artifactory.repositories().update(changedRepository);
         assertTrue(curlAndStrip("api/repositories/" + localRepository.getKey()).contains("\"description\":\"new_description\""));
@@ -223,5 +231,25 @@ public class RepositoryTests extends ArtifactoryTestsBase {
         assertTrue(artifactory.repository(localRepository.getKey()).exists());
         String notExistsRepoName = Long.toString(System.currentTimeMillis());
         assertFalse(artifactory.repository(notExistsRepoName).exists());
+    }
+
+    /**
+     * We have not ability to create certificate through java client.
+     * @TODOs Remove `(enabled = false)`. Create certificate with name "clientTlsCertificate".
+     */
+    @Test(enabled = false)
+    public void testClientTlsCertificate() throws Exception {
+        String clientTlsCertificate = "clientTlsCertificate";
+
+        RemoteRepository changedRepository = artifactory.repositories().builders().builderFrom(remoteRepository)
+            .description("create remote repo with clientTlsCertificate")
+            .clientTlsCertificate(clientTlsCertificate)
+            .build();
+
+        artifactory.repositories().create(1, changedRepository);
+        RemoteRepository repository = (RemoteRepository) artifactory.repository(changedRepository.getKey()).get();
+
+        assertNotNull(repository);
+        assertEquals(repository.getClientTlsCertificate(), clientTlsCertificate);
     }
 }
