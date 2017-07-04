@@ -1,5 +1,6 @@
 package org.jfrog.artifactory.client.model.repository.settings.impl
 
+import groovy.transform.EqualsAndHashCode
 import org.jfrog.artifactory.client.model.PackageType
 import org.jfrog.artifactory.client.model.repository.settings.NugetRepositorySettings
 
@@ -8,6 +9,7 @@ import org.jfrog.artifactory.client.model.repository.settings.NugetRepositorySet
  * 
  * @author Ivan Vasylivskyi (ivanvas@jfrog.com)
  */
+@EqualsAndHashCode
 class NugetRepositorySettingsImpl implements NugetRepositorySettings {
     Integer maxUniqueSnapshots
     Boolean forceNugetAuthentication

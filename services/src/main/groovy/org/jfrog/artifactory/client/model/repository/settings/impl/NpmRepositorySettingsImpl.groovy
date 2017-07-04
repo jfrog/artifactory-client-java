@@ -1,5 +1,6 @@
 package org.jfrog.artifactory.client.model.repository.settings.impl
 
+import groovy.transform.EqualsAndHashCode
 import org.jfrog.artifactory.client.model.PackageType
 import org.jfrog.artifactory.client.model.repository.settings.NpmRepositorySettings
 
@@ -8,6 +9,7 @@ import org.jfrog.artifactory.client.model.repository.settings.NpmRepositorySetti
  * 
  * @author Ivan Vasylivskyi (ivanvas@jfrog.com)
  */
+@EqualsAndHashCode
 class NpmRepositorySettingsImpl implements NpmRepositorySettings {
     Boolean listRemoteFolderItems
     Boolean externalDependenciesEnabled

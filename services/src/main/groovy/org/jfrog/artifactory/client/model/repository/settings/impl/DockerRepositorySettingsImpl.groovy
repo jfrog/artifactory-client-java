@@ -1,5 +1,6 @@
 package org.jfrog.artifactory.client.model.repository.settings.impl
 
+import groovy.transform.EqualsAndHashCode
 import org.jfrog.artifactory.client.model.PackageType
 import org.jfrog.artifactory.client.model.repository.settings.DockerRepositorySettings
 import org.jfrog.artifactory.client.model.repository.settings.docker.DockerApiVersion
@@ -9,6 +10,7 @@ import org.jfrog.artifactory.client.model.repository.settings.docker.DockerApiVe
  *
  * @author Ivan Vasylivskyi (ivanvas@jfrog.com)
  */
+@EqualsAndHashCode
 public class DockerRepositorySettingsImpl implements DockerRepositorySettings{
     DockerApiVersion dockerApiVersion
     Boolean enableTokenAuthentication
