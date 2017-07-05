@@ -2,7 +2,11 @@ package org.jfrog.artifactory.client;
 
 import org.jfrog.artifactory.client.model.*;
 import org.jfrog.artifactory.client.model.repository.settings.RepositorySettings;
+import org.jfrog.artifactory.client.model.repository.settings.RpmRepositorySettings;
 import org.jfrog.artifactory.client.model.repository.settings.impl.GenericRepositorySettingsImpl;
+import org.jfrog.artifactory.client.model.repository.settings.impl.RpmRepositorySettingsImpl;
+import org.jfrog.artifactory.client.model.xray.settings.impl.XraySettingsImpl;
+
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -32,7 +36,6 @@ public class RepositoryTests extends ArtifactoryTestsBase {
         localRepository2 = artifactory.repositories().builders().localRepositoryBuilder()
             .key(localRepository.getKey() + "2")
             .build();
-
         remoteRepository = artifactory.repositories().builders().remoteRepositoryBuilder()
             .key("remote-" + localRepository.getKey())
             .url("http://test.com/")
@@ -252,4 +255,42 @@ public class RepositoryTests extends ArtifactoryTestsBase {
         assertNotNull(repository);
         assertEquals(repository.getClientTlsCertificate(), clientTlsCertificate);
     }
+
+    @Test
+    public void equalsTest() {
+        RpmRepositorySettingsImpl expectedSettings = new RpmRepositorySettingsImpl();
+        expectedSettings.setCalculateYumMetadata(true);
+        expectedSettings.setListRemoteFolderItems(true);
+
+        XraySettingsImpl expectedXray = new XraySettingsImpl();
+        expectedXray.setXrayMinimumBlockedSeverity("test");
+
+        LocalRepository expectedRepo = artifactory.repositories().builders().localRepositoryBuilder()
+            .key("key").repositorySettings(expectedSettings).xraySettings(expectedXray).build();
+
+        RpmRepositorySettingsImpl otherSettings = new RpmRepositorySettingsImpl();
+        otherSettings.setCalculateYumMetadata(true);
+        assertFalse(expectedSettings.equals(otherSettings));
+        assertNotEquals(expectedSettings.hashCode(), otherSettings.hashCode());
+
+        otherSettings.setListRemoteFolderItems(true);
+        assertTrue(otherSettings.equals(otherSettings));
+        assertEquals(expectedSettings.hashCode(), otherSettings.hashCode());
+
+        XraySettingsImpl otherXray = new XraySettingsImpl();
+        assertFalse(expectedXray.equals(otherXray));
+        assertNotEquals(expectedXray.hashCode(), otherXray.hashCode());
+
+        otherXray.setXrayMinimumBlockedSeverity("test");
+        assertTrue(expectedXray.equals(otherXray));
+        assertEquals(expectedXray.hashCode(), otherXray.hashCode());
+
+        LocalRepository otherRepo = artifactory.repositories().builders().localRepositoryBuilder()
+            .key("key").repositorySettings(otherSettings).xraySettings(otherXray).build();
+
+        assertTrue(expectedRepo.equals(otherRepo));
+        assertEquals(expectedRepo.hashCode(), otherRepo.hashCode());
+    }
+
+
 }
