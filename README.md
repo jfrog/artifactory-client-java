@@ -551,6 +551,9 @@ List<String> response = artifactory.restCall(repositoryRequest);
 
 ## Building and Testing the Sources
 The code is built using Gradle and includes integration tests.
+
+Since the tests may use features which have been recently added to Artifactory, such as new package types, it is best to run the tests against the latest release of Artifactory. Some tests may therefore fail otherwise. Thhose tests can be manually commented out in that case.
+
 If you'd like to build the code without tests, run:
 ```
 > gradle clean build -x test
