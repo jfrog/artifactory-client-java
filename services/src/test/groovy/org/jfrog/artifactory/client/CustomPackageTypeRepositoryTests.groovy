@@ -1,13 +1,14 @@
 package org.jfrog.artifactory.client
 
 import org.hamcrest.CoreMatchers
-import org.jfrog.artifactory.client.model.PackageType
+import org.jfrog.artifactory.client.model.impl.CustomPackageTypeImpl
+import org.jfrog.artifactory.client.model.impl.PackageTypeImpl
+import org.jfrog.artifactory.client.model.repository.settings.impl.CustomRepositorySettingsImpl
 import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
 
-class UnknownPackageTypeRepositoryTests extends BaseRepositoryTests {
+class CustomPackageTypeRepositoryTests extends BaseRepositoryTests {
 
-    def somePackageType
     def someCalculateYumMetadata
     def someGroupFileNames
     def someListRemoteFolderItems
@@ -15,16 +16,15 @@ class UnknownPackageTypeRepositoryTests extends BaseRepositoryTests {
 
     @BeforeMethod
     protected void setUp() {
-        settings = null
+        CustomPackageTypeImpl customPackageType = new CustomPackageTypeImpl("rpm")
+        settings = new CustomRepositorySettingsImpl(customPackageType)
 
-        somePackageType = "rpm"
         someCalculateYumMetadata = rnd.nextBoolean()
         someGroupFileNames = "groups-${rnd.nextInt()}.xml"
         someListRemoteFolderItems = rnd.nextBoolean()
         someYumRootDepth = rnd.nextInt()
 
         customProperties = [
-            "packageType" : somePackageType,
             "calculateYumMetadata" : someCalculateYumMetadata,
             "groupFileNames" : someGroupFileNames ,
             "yumRootDepth" : someYumRootDepth,
@@ -41,7 +41,7 @@ class UnknownPackageTypeRepositoryTests extends BaseRepositoryTests {
 
         def resp = artifactory.repository(localRepo.getKey()).get()
         resp.getRepositorySettings().with {
-            assertThat(packageType, CoreMatchers.is(PackageType.rpm))
+            assertThat(packageType, CoreMatchers.is(PackageTypeImpl.rpm))
 
             // local
             assertThat(calculateYumMetadata, CoreMatchers.is(someCalculateYumMetadata))
@@ -59,7 +59,7 @@ class UnknownPackageTypeRepositoryTests extends BaseRepositoryTests {
 
         def resp = artifactory.repository(remoteRepo.getKey()).get()
         resp.getRepositorySettings().with {
-            assertThat(packageType, CoreMatchers.is(PackageType.rpm))
+            assertThat(packageType, CoreMatchers.is(PackageTypeImpl.rpm))
 
             // remote
             assertThat(listRemoteFolderItems, CoreMatchers.is(someListRemoteFolderItems))
@@ -77,7 +77,7 @@ class UnknownPackageTypeRepositoryTests extends BaseRepositoryTests {
 
         def resp = artifactory.repository(virtualRepo.getKey()).get()
         resp.getRepositorySettings().with {
-            assertThat(packageType, CoreMatchers.is(PackageType.rpm))
+            assertThat(packageType, CoreMatchers.is(PackageTypeImpl.rpm))
 
             // local
             assertThat(calculateYumMetadata, CoreMatchers.is(CoreMatchers.nullValue()))

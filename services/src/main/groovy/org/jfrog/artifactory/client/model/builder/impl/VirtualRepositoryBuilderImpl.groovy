@@ -6,7 +6,7 @@ import org.jfrog.artifactory.client.model.builder.VirtualRepositoryBuilder
 import org.jfrog.artifactory.client.model.impl.RepositoryTypeImpl
 import org.jfrog.artifactory.client.model.impl.VirtualRepositoryImpl
 
-import static org.jfrog.artifactory.client.model.PackageType.*
+import static org.jfrog.artifactory.client.model.impl.PackageTypeImpl.*
 
 /**
  *

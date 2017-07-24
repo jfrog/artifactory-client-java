@@ -2,6 +2,7 @@ package org.jfrog.artifactory.client.model.repository.settings.impl
 
 import groovy.transform.EqualsAndHashCode
 import org.jfrog.artifactory.client.model.PackageType
+import org.jfrog.artifactory.client.model.impl.PackageTypeImpl
 import org.jfrog.artifactory.client.model.repository.settings.BowerRepositorySettings
 
 /**
@@ -18,6 +19,6 @@ class BowerRepositorySettingsImpl extends VcsRepositorySettingsImpl implements B
 
     @Override
     public PackageType getPackageType() {
-        return PackageType.bower
+        return PackageTypeImpl.bower
     }
 }

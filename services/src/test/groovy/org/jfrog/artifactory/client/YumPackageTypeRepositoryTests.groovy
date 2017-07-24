@@ -1,7 +1,7 @@
 package org.jfrog.artifactory.client
 
 import org.hamcrest.CoreMatchers
-import org.jfrog.artifactory.client.model.PackageType
+import org.jfrog.artifactory.client.model.impl.PackageTypeImpl
 import org.jfrog.artifactory.client.model.repository.settings.impl.YumRepositorySettingsImpl
 import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
@@ -40,7 +40,7 @@ public class YumPackageTypeRepositoryTests extends BaseRepositoryTests {
         def resp = artifactory.repository(localRepo.getKey()).get()
         resp.getRepositorySettings().with {
             // The package type is 'rpm' since Artifactory 5.0.0
-            assertThat(packageType, CoreMatchers.is(PackageType.rpm))
+            assertThat(packageType, CoreMatchers.is(PackageTypeImpl.rpm))
 
             // local
             assertThat(calculateYumMetadata, CoreMatchers.is(settings.getCalculateYumMetadata()))
@@ -61,7 +61,7 @@ public class YumPackageTypeRepositoryTests extends BaseRepositoryTests {
         def resp = artifactory.repository(remoteRepo.getKey()).get()
         resp.getRepositorySettings().with {
             // The package type is 'rpm' since Artifactory 5.0.0
-            assertThat(packageType, CoreMatchers.is(PackageType.rpm))
+            assertThat(packageType, CoreMatchers.is(PackageTypeImpl.rpm))
 
             // remote
             assertThat(listRemoteFolderItems, CoreMatchers.is(settings.getListRemoteFolderItems()))

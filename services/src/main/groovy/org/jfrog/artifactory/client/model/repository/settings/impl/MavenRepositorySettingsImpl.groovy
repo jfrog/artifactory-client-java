@@ -3,6 +3,7 @@ package org.jfrog.artifactory.client.model.repository.settings.impl
 import groovy.transform.EqualsAndHashCode
 import org.jfrog.artifactory.client.model.PackageType
 import org.jfrog.artifactory.client.model.impl.LocalRepoChecksumPolicyTypeImpl
+import org.jfrog.artifactory.client.model.impl.PackageTypeImpl
 import org.jfrog.artifactory.client.model.impl.RemoteRepoChecksumPolicyTypeImpl
 import org.jfrog.artifactory.client.model.impl.SnapshotVersionBehaviorImpl
 import org.jfrog.artifactory.client.model.repository.PomCleanupPolicy
@@ -31,6 +32,6 @@ class MavenRepositorySettingsImpl implements MavenRepositorySettings {
 
     @Override
     public PackageType getPackageType() {
-        return PackageType.maven
+        return PackageTypeImpl.maven
     }
 }

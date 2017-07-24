@@ -2,6 +2,7 @@ package org.jfrog.artifactory.client.model.repository.settings.impl
 
 import groovy.transform.EqualsAndHashCode
 import org.jfrog.artifactory.client.model.PackageType
+import org.jfrog.artifactory.client.model.impl.PackageTypeImpl
 import org.jfrog.artifactory.client.model.repository.settings.NpmRepositorySettings
 
 /**
@@ -18,6 +19,6 @@ class NpmRepositorySettingsImpl implements NpmRepositorySettings {
 
     @Override
     public PackageType getPackageType() {
-        return PackageType.npm
+        return PackageTypeImpl.npm
     }
 }

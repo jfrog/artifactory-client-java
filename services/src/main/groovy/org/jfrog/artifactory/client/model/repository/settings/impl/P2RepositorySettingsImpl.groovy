@@ -2,6 +2,7 @@ package org.jfrog.artifactory.client.model.repository.settings.impl
 
 import groovy.transform.EqualsAndHashCode
 import org.jfrog.artifactory.client.model.PackageType
+import org.jfrog.artifactory.client.model.impl.PackageTypeImpl
 import org.jfrog.artifactory.client.model.repository.settings.P2RepositorySettings
 
 /**
@@ -13,6 +14,6 @@ import org.jfrog.artifactory.client.model.repository.settings.P2RepositorySettin
 class P2RepositorySettingsImpl extends MavenRepositorySettingsImpl implements P2RepositorySettings {
     @Override
     public PackageType getPackageType() {
-        return PackageType.p2
+        return PackageTypeImpl.p2
     }
 }

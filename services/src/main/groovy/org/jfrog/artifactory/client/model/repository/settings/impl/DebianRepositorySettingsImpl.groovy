@@ -2,6 +2,7 @@ package org.jfrog.artifactory.client.model.repository.settings.impl
 
 import groovy.transform.EqualsAndHashCode
 import org.jfrog.artifactory.client.model.PackageType
+import org.jfrog.artifactory.client.model.impl.PackageTypeImpl
 import org.jfrog.artifactory.client.model.repository.settings.DebianRepositorySettings
 
 /**
@@ -16,6 +17,6 @@ class DebianRepositorySettingsImpl implements DebianRepositorySettings {
 
     @Override
     public PackageType getPackageType() {
-        return PackageType.debian
+        return PackageTypeImpl.debian
     }
 }

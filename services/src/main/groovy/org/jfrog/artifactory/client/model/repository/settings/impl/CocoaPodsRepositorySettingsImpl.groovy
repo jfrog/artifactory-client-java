@@ -2,6 +2,7 @@ package org.jfrog.artifactory.client.model.repository.settings.impl
 
 import groovy.transform.EqualsAndHashCode
 import org.jfrog.artifactory.client.model.PackageType
+import org.jfrog.artifactory.client.model.impl.PackageTypeImpl
 import org.jfrog.artifactory.client.model.repository.settings.CocoaPodsRepositorySettings
 
 /**
@@ -15,6 +16,6 @@ class CocoaPodsRepositorySettingsImpl extends VcsRepositorySettingsImpl implemen
 
     @Override
     public PackageType getPackageType() {
-        return PackageType.cocoapods
+        return PackageTypeImpl.cocoapods
     }
 }

@@ -2,6 +2,7 @@ package org.jfrog.artifactory.client.model.repository.settings.impl
 
 import groovy.transform.EqualsAndHashCode
 import org.jfrog.artifactory.client.model.PackageType
+import org.jfrog.artifactory.client.model.impl.PackageTypeImpl
 import org.jfrog.artifactory.client.model.repository.settings.RpmRepositorySettings
 
 /**
@@ -19,6 +20,6 @@ class RpmRepositorySettingsImpl implements RpmRepositorySettings {
 
     @Override
     public PackageType getPackageType() {
-        return PackageType.rpm
+        return PackageTypeImpl.rpm
     }
 }

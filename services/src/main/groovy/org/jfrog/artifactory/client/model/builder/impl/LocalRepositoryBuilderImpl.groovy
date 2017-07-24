@@ -7,7 +7,7 @@ import org.jfrog.artifactory.client.model.builder.LocalRepositoryBuilder
 import org.jfrog.artifactory.client.model.impl.LocalRepositoryImpl
 import org.jfrog.artifactory.client.model.impl.RepositoryTypeImpl
 
-import static org.jfrog.artifactory.client.model.PackageType.*
+import static org.jfrog.artifactory.client.model.impl.PackageTypeImpl.*
 
 /**
  *

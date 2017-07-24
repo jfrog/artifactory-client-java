@@ -2,6 +2,7 @@ package org.jfrog.artifactory.client.model.repository.settings.impl
 
 import groovy.transform.EqualsAndHashCode
 import org.jfrog.artifactory.client.model.PackageType
+import org.jfrog.artifactory.client.model.impl.PackageTypeImpl
 import org.jfrog.artifactory.client.model.repository.settings.PypiRepositorySettings
 
 /**
@@ -15,6 +16,6 @@ class PypiRepositorySettingsImpl implements PypiRepositorySettings {
 
     @Override
     public PackageType getPackageType() {
-        return PackageType.pypi
+        return PackageTypeImpl.pypi
     }
 }
