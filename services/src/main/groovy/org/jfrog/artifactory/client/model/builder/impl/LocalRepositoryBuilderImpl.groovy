@@ -29,7 +29,7 @@ class LocalRepositoryBuilderImpl extends NonVirtualRepositoryBuilderBase<LocalRe
             propertySets,
             repoLayoutRef,
             archiveBrowsingEnabled,
-            otherProperties)
+            customProperties)
     }
 
     @Override

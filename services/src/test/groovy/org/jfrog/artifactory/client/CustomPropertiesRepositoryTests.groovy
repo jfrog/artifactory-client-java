@@ -8,32 +8,32 @@ import static org.hamcrest.CoreMatchers.is
 import static org.hamcrest.CoreMatchers.notNullValue
 import static org.testng.Assert.assertTrue
 
-class OtherPropertiesRepositoryTests extends BaseRepositoryTests {
+class CustomPropertiesRepositoryTests extends BaseRepositoryTests {
 
     @BeforeMethod
     protected void setUp() {
-        otherProperties = [
+        customProperties = [
             "enableComposerSupport" : true
         ]
         super.setUp()
     }
 
-    @Test(groups = "otherProperties")
+    @Test(groups = "customProperties")
     void testDefaultLocalRepo() {
-        localRepo.otherProperties = null
+        localRepo.customProperties = null
         artifactory.repositories().create(0, localRepo)
         assertTrue(curl(LIST_PATH).contains(localRepo.getKey()))
 
         def resp = artifactory.repository(localRepo.getKey()).get()
         resp.with {
             assertThat(rclass, is(RepositoryTypeImpl.LOCAL))
-            assertThat(otherProperties, notNullValue())
-            assertThat(otherProperties.isEmpty(), is(false))
-            assertThat(otherProperties.get("enableComposerSupport"), is(false))
+            assertThat(customProperties, notNullValue())
+            assertThat(customProperties.isEmpty(), is(false))
+            assertThat(customProperties.get("enableComposerSupport"), is(false))
         }
     }
 
-    @Test(groups = "otherProperties")
+    @Test(groups = "customProperties")
     void testLocalRepo() {
         artifactory.repositories().create(0, localRepo)
         assertTrue(curl(LIST_PATH).contains(localRepo.getKey()))
@@ -41,13 +41,13 @@ class OtherPropertiesRepositoryTests extends BaseRepositoryTests {
         def resp = artifactory.repository(localRepo.getKey()).get()
         resp.with {
             assertThat(rclass, is(RepositoryTypeImpl.LOCAL))
-            assertThat(otherProperties, notNullValue())
-            assertThat(otherProperties.isEmpty(), is(false))
-            assertThat(otherProperties.get("enableComposerSupport"), is(true))
+            assertThat(customProperties, notNullValue())
+            assertThat(customProperties.isEmpty(), is(false))
+            assertThat(customProperties.get("enableComposerSupport"), is(true))
         }
     }
 
-    @Test(groups = "otherProperties")
+    @Test(groups = "customProperties")
      void testRemoteRepo() {
         artifactory.repositories().create(0, remoteRepo)
         assertTrue(curl(LIST_PATH).contains(remoteRepo.getKey()))
@@ -55,13 +55,13 @@ class OtherPropertiesRepositoryTests extends BaseRepositoryTests {
         def resp = artifactory.repository(remoteRepo.getKey()).get()
         resp.with {
             assertThat(rclass, is(RepositoryTypeImpl.REMOTE))
-            assertThat(otherProperties, notNullValue())
-            assertThat(otherProperties.isEmpty(), is(false))
-            assertThat(otherProperties.get("enableComposerSupport"), is(true))
+            assertThat(customProperties, notNullValue())
+            assertThat(customProperties.isEmpty(), is(false))
+            assertThat(customProperties.get("enableComposerSupport"), is(true))
         }
     }
 
-    @Test(groups = "otherProperties")
+    @Test(groups = "customProperties")
     void testVirtualRepo() {
         artifactory.repositories().create(0, virtualRepo)
         assertTrue(curl(LIST_PATH).contains(virtualRepo.getKey()))
@@ -69,9 +69,9 @@ class OtherPropertiesRepositoryTests extends BaseRepositoryTests {
         def resp = artifactory.repository(virtualRepo.getKey()).get()
         resp.with {
             assertThat(rclass, is(RepositoryTypeImpl.VIRTUAL))
-            assertThat(otherProperties, notNullValue())
-            assertThat(otherProperties.isEmpty(), is(false))
-            assertThat(otherProperties.get("enableComposerSupport"), is(true))
+            assertThat(customProperties, notNullValue())
+            assertThat(customProperties.isEmpty(), is(false))
+            assertThat(customProperties.get("enableComposerSupport"), is(true))
         }
     }
 }

@@ -287,7 +287,7 @@ class RemoteRepositoryBuilderImpl extends NonVirtualRepositoryBuilderBase<Remote
                 storeArtifactsLocally, synchronizeProperties, unusedArtifactsCleanupEnabled,
                 unusedArtifactsCleanupPeriodHours, url, username, repoLayoutRef,
                 assumedOfflinePeriodSecs, archiveBrowsingEnabled, listRemoteFolderItems, clientTlsCertificate,
-                otherProperties)
+                customProperties)
     }
 
     @Override

@@ -26,10 +26,10 @@ public abstract class NonVirtualRepositoryBase extends RepositoryBase implements
         List<String> propertySets,
         String repoLayoutRef,
         boolean archiveBrowsingEnabled,
-        Map otherProperties) {
+        Map customProperties) {
 
         super(key, settings, xraySettings, description, excludesPattern, includesPattern, notes,
-            repoLayoutRef, otherProperties);
+            repoLayoutRef, customProperties);
 
         this.blackedOut = blackedOut;
         this.propertySets = propertySets;

@@ -58,7 +58,7 @@ class VirtualRepositoryBuilderImpl extends RepositoryBuilderBase<VirtualReposito
         validate()
         new VirtualRepositoryImpl(key, settings, description, excludesPattern,
             includesPattern, notes, artifactoryRequestsCanRetrieveRemoteArtifacts,
-            repositories, repoLayoutRef, defaultDeploymentRepo, otherProperties)
+            repositories, repoLayoutRef, defaultDeploymentRepo, customProperties)
     }
 
     @Override

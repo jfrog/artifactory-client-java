@@ -30,5 +30,5 @@ public interface Repository {
 
     XraySettings getXraySettings();
 
-    Map getOtherProperties();
+    Map getCustomProperties();
 }

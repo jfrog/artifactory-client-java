@@ -267,8 +267,8 @@ artifactory.repository("RepoName").replications.createOrReplace(replication)
 ```
     Repository repository = artifactory.repository("RepoName").get();
     
-    Map otherProperties = repository.getOtherProperties();
-    otherProperties.put("key", "value")
+    Map customProperties = repository.getCustomProperties();
+    customProperties.put("key", "value")
 
     Repository updatedRepository = artifactory.repositories()
         .builders()

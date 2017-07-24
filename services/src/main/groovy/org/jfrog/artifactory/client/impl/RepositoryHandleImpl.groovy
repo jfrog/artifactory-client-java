@@ -69,21 +69,21 @@ class RepositoryHandleImpl implements RepositoryHandle {
 
         repo.setRepositorySettings(settings)
         repo.setXraySettings(xray)
-        repo.otherProperties = getOtherProperties(json, repo)
+        repo.customProperties = getCustomProperties(json, repo)
 
         repo
     }
 
-    def getOtherProperties(String json, Repository repo) {
-        Map otherProperties = artifactory.parseText json, Map
+    def getCustomProperties(String json, Repository repo) {
+        Map customProperties = artifactory.parseText json, Map
 
         def knownKeys = [] as Set
         knownKeys.addAll(extractProperties(repo))
         knownKeys.addAll(extractProperties(repo.xraySettings))
         knownKeys.addAll(extractProperties(repo.repositorySettings))
 
-        otherProperties.keySet().removeAll(knownKeys)
-        otherProperties
+        customProperties.keySet().removeAll(knownKeys)
+        customProperties
     }
 
     static def extractProperties(obj) {

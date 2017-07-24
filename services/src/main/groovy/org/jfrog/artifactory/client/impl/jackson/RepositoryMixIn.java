@@ -34,5 +34,5 @@ public interface RepositoryMixIn {
     RepositoryType getRclass();
 
     @JsonAnyGetter
-    Map getOtherProperties();
+    Map getCustomProperties();
 }

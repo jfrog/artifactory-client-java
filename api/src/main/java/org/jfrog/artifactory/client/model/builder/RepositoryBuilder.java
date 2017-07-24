@@ -48,5 +48,5 @@ public interface RepositoryBuilder<B extends RepositoryBuilder, R extends Reposi
 
     XraySettings getXraySettings();
 
-    B otherProperties(Map otherProperties);
+    B customProperties(Map customProperties);
 }

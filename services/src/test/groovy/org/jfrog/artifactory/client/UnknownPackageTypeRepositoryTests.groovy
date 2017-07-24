@@ -23,7 +23,7 @@ class UnknownPackageTypeRepositoryTests extends BaseRepositoryTests {
         someListRemoteFolderItems = rnd.nextBoolean()
         someYumRootDepth = rnd.nextInt()
 
-        otherProperties = [
+        customProperties = [
             "packageType" : somePackageType,
             "calculateYumMetadata" : someCalculateYumMetadata,
             "groupFileNames" : someGroupFileNames ,
