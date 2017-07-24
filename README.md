@@ -208,64 +208,40 @@ String result = artifactory.repositories().update(updatedRepository);
 String result = artifactory.repository("RepoName").delete();
 ```
 
-##### Listing all Repository Replications
-```
-// Method supported for local and remote repositories
-List<Replication> replications = artifactory.repository("RepoName").replications.list()
-```
-
 ##### Deleting all Repository Replications
 ```
 // Method supported for local and remote repositories
 artifactory.repository("RepoName").replications.delete()
 ```
 
-##### Creating / Updating a Local Repository's Replication(s)
+##### Creating or replacing a replication on a local repository
 ```
-def replication1 = new LocalReplicationImpl()
-replication1.url = "http://hostname1:port/artifactory/RepoName"
-replication1.socketTimeoutMillis = 30000
-replication1.username = 'john.doe'
-replication1.password = 'secret'
-replication1.enableEventReplication = false
-replication1.enabled = false
-replication1.cronExp = '0 0 0/2 * * ?'
-replication1.syncDeletes = true
-replication1.syncProperties = true
-replication1.syncStatistics = true
-replication1.repoKey = "RepoName"
+LocalReplication replication = new LocalReplicationImpl()
+replication.url = "http://hostname1:port/artifactory/RepoName"
+replication.socketTimeoutMillis = 30000
+replication.username = 'john.doe'
+replication.password = 'secret'
+replication.enableEventReplication = false
+replication.enabled = false
+replication.cronExp = '0 0 0/2 * * ?'
+replication.syncDeletes = true
+replication.syncProperties = true
+replication.syncStatistics = true
+replication.pathPrefix = ''
+replication.repoKey = "RepoName"
 
-def replication2 = new LocalReplicationImpl()
-replication2.url = "http://hostname2:port/artifactory/RepoName"
-replication2.socketTimeoutMillis = 60000
-replication2.username = 'jane.doe'
-replication2.password = 'secret2'
-replication2.enableEventReplication = true
-replication2.enabled = true
-replication2.cronExp = '0 0 0/4 * * ?'
-replication2.syncDeletes = true
-replication2.syncProperties = true
-replication2.syncStatistics = true
-replication2.repoKey = "RepoName"
-
-// Create (or replace) one replication
-artifactory.repository("RepoName").replications.createOrReplace(replication1)
-artifactory.repository("RepoName").replications.createOrReplace([ replication1 ])
-
-// Create (or replace) several replications at once
-artifactory.repository("RepoName").replications.createOrReplace([ replication1, replication2 ])
+artifactory.repository("RepoName").replications.createOrReplace(replication)
 ```
 
-##### Creating / Updating a Remote Repository's Replication
+##### Creating or replacing a replication on a remote repository
 ```
-def replication = new RemoteReplicationImpl()
+RemoteReplication replication = new RemoteReplicationImpl()
 replication.enabled = false
 replication.cronExp = '0 0 0/2 * * ?'
 replication.syncDeletes = true
 replication.syncProperties = true
 replication.repoKey = "RepoName"
 
-// Create (or replace) one replication
 artifactory.repository("RepoName").replications.createOrReplace(replication)
 ```
 
@@ -591,6 +567,9 @@ List<String> response = artifactory.restCall(repositoryRequest);
 
 ## Building and Testing the Sources
 The code is built using Gradle and includes integration tests.
+
+Since the tests may use features which have been recently added to Artifactory, such as new package types, it is best to run the tests against the latest release of Artifactory. Some tests may therefore fail otherwise. Thhose tests can be manually commented out in that case.
+
 If you'd like to build the code without tests, run:
 ```
 > gradle clean build -x test

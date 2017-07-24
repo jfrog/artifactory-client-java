@@ -19,6 +19,7 @@ public class RpmPackageTypeRepositoryTests extends BaseRepositoryTests {
         settings.with {
             // local
             calculateYumMetadata = rnd.nextBoolean()
+            enableFileListsIndexing = rnd.nextBoolean()
             groupFileNames = "groups-${rnd.nextInt()}.xml"
             listRemoteFolderItems = rnd.nextBoolean()
 
@@ -42,6 +43,7 @@ public class RpmPackageTypeRepositoryTests extends BaseRepositoryTests {
 
             // local
             assertThat(calculateYumMetadata, CoreMatchers.is(settings.getCalculateYumMetadata()))
+            assertThat(enableFileListsIndexing, CoreMatchers.is(settings.getEnableFileListsIndexing()))
             // TODO: property is not returned by the artifactory
             // assertThat(groupFileNames, CoreMatchers.is(specRepo.getGroupFileNames()))
             assertThat(groupFileNames, CoreMatchers.is(CoreMatchers.nullValue()))
@@ -64,6 +66,7 @@ public class RpmPackageTypeRepositoryTests extends BaseRepositoryTests {
             assertThat(listRemoteFolderItems, CoreMatchers.is(settings.getListRemoteFolderItems()))
 
             // local
+            assertThat(enableFileListsIndexing, CoreMatchers.is(CoreMatchers.nullValue()))
             assertThat(calculateYumMetadata, CoreMatchers.is(CoreMatchers.nullValue()))
             assertThat(groupFileNames, CoreMatchers.is(CoreMatchers.nullValue()))
             assertThat(yumRootDepth, CoreMatchers.is(CoreMatchers.nullValue()))

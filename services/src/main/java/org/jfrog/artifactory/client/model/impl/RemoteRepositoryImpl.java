@@ -41,6 +41,7 @@ public class RemoteRepositoryImpl extends NonVirtualRepositoryBase implements Re
     @JsonDeserialize(as=ContentSyncImpl.class)
     @JsonProperty("contentSynchronisation")
     private ContentSync contentSync;
+    private String clientTlsCertificate;
 
     private RemoteRepositoryImpl() {
         repoLayoutRef = MAVEN_2_REPO_LAYOUT;
@@ -55,7 +56,7 @@ public class RemoteRepositoryImpl extends NonVirtualRepositoryBase implements Re
                          int retrievalCachePeriodSecs, boolean shareConfiguration, int socketTimeoutMillis, boolean cookieManagementEnabled, boolean allowAnyHostAuth, boolean storeArtifactsLocally, boolean synchronizeProperties,
                          boolean unusedArtifactsCleanupEnabled, int unusedArtifactsCleanupPeriodHours, String url, String username, String repoLayoutRef,
                          long assumedOfflinePeriodSecs, boolean archiveBrowsingEnabled,
-                         boolean listRemoteFolderItems, Map otherProperties) {
+                         boolean listRemoteFolderItems, String clientTlsCertificate, Map otherProperties) {
 
         super(key, settings, xraySettings, description, excludesPattern, includesPattern,
             notes, blackedOut,
@@ -83,6 +84,7 @@ public class RemoteRepositoryImpl extends NonVirtualRepositoryBase implements Re
         this.username = username;
         this.assumedOfflinePeriodSecs = assumedOfflinePeriodSecs;
         this.listRemoteFolderItems = listRemoteFolderItems;
+        this.clientTlsCertificate = clientTlsCertificate;
     }
 
     @Override
@@ -280,6 +282,15 @@ public class RemoteRepositoryImpl extends NonVirtualRepositoryBase implements Re
     }
 
     @Override
+    public String getClientTlsCertificate() {
+        return clientTlsCertificate;
+    }
+
+    public void setClientTlsCertificate(String clientTlsCertificate) {
+        this.clientTlsCertificate = clientTlsCertificate;
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -305,6 +316,7 @@ public class RemoteRepositoryImpl extends NonVirtualRepositoryBase implements Re
         if (proxy != null ? !proxy.equals(that.proxy) : that.proxy != null) return false;
         if (url != null ? !url.equals(that.url) : that.url != null) return false;
         if (username != null ? !username.equals(that.username) : that.username != null) return false;
+        if (clientTlsCertificate != null ? !clientTlsCertificate.equals(that.clientTlsCertificate) : that.clientTlsCertificate != null) return false;
 
         return true;
     }
@@ -330,6 +342,7 @@ public class RemoteRepositoryImpl extends NonVirtualRepositoryBase implements Re
         result = 31 * result + unusedArtifactsCleanupPeriodHours;
         result = 31 * result + (shareConfiguration ? 1 : 0);
         result = 31 * result + (synchronizeProperties ? 1 : 0);
+        result = 31 * result + (clientTlsCertificate != null ? clientTlsCertificate.hashCode() : 0);
         return result;
     }
 
@@ -354,6 +367,7 @@ public class RemoteRepositoryImpl extends NonVirtualRepositoryBase implements Re
                 ", unusedArtifactsCleanupPeriodHours=" + unusedArtifactsCleanupPeriodHours +
                 ", shareConfiguration=" + shareConfiguration +
                 ", synchronizeProperties=" + synchronizeProperties +
+                ", clientTlsCertificate=" + clientTlsCertificate +
                 '}';
     }
 }

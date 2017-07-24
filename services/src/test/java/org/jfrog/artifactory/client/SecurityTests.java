@@ -1,25 +1,22 @@
 package org.jfrog.artifactory.client;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertTrue;
-import static org.jfrog.artifactory.client.model.Privilege.ADMIN;
-import static org.jfrog.artifactory.client.model.Privilege.ANNOTATE;
-import static org.jfrog.artifactory.client.model.Privilege.DELETE;
-import static org.jfrog.artifactory.client.model.Privilege.DEPLOY;
-import static org.jfrog.artifactory.client.model.Privilege.READ;
-
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
-
 import groovyx.net.http.HttpResponseException;
 import org.jfrog.artifactory.client.model.*;
 import org.jfrog.artifactory.client.model.builder.GroupBuilder;
 import org.jfrog.artifactory.client.model.builder.PermissionTargetBuilder;
 import org.jfrog.artifactory.client.model.builder.UserBuilder;
-import org.testng.annotations.*;
+import org.testng.Assert;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.Test;
+
+import java.io.InputStream;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
+
+import static junit.framework.Assert.*;
+import static org.jfrog.artifactory.client.model.Privilege.*;
 
 /**
  * @author freds
@@ -152,7 +149,7 @@ public class SecurityTests extends ArtifactoryTestsBase {
 
     }
 
-    @Test(dependsOnGroups = "create")
+    @Test(dependsOnMethods = "testCreatePermissionTarget")
     public void testReplacePermissionTarget() {
         // WARN: This test is using default Artifactory users/groups
         PermissionTarget permissionTarget = artifactory.security().permissionTarget(PERMISSION_Target_NAME);
@@ -162,7 +159,7 @@ public class SecurityTests extends ArtifactoryTestsBase {
         Principals principals = artifactory.security().builders().principalsBuilder().users(userAno).build();
 
         PermissionTargetBuilder permissionBuilder = artifactory.security().builders().permissionTargetBuilder();
-        PermissionTarget permission = permissionBuilder.name(PERMISSION_Target_NAME).repositories("jcenter").principals(principals).build();
+        PermissionTarget permission = permissionBuilder.name(PERMISSION_Target_NAME).repositories(getJCenterRepoName()).principals(principals).build();
 
         try {
             artifactory.security().createOrReplacePermissionTarget(permission);
@@ -176,7 +173,7 @@ public class SecurityTests extends ArtifactoryTestsBase {
         PermissionTarget permissionTargetRes = artifactory.security().permissionTarget(PERMISSION_Target_NAME);
         assertNotNull(permissionTargetRes);
         assertEquals(permissionTargetRes.getName(), PERMISSION_Target_NAME);
-        assertEquals("jcenter", permissionTargetRes.getRepositories().get(0));
+        assertEquals(getJCenterRepoName(), permissionTargetRes.getRepositories().get(0));
         assertNotNull(permissionTargetRes.getPrincipals());
         assertEquals(permissionTargetRes.getPrincipals().getUsers().get(0).getName(), "anonymous");
         assertEquals(permissionTargetRes.getPrincipals().getUsers().get(0).getPrivileges(), userAno.getPrivileges());
@@ -215,9 +212,13 @@ public class SecurityTests extends ArtifactoryTestsBase {
         assertTrue(resp.contains(USER_NAME));
     }
 
-    @Test(groups = "security", dependsOnGroups = "uploadBasics")
+    @Test(groups = "security")
     public void testEffectiveItemPermissions() throws Exception {
-        Set<ItemPermission> itemPermissions = artifactory.repository(NEW_LOCAL).file(PATH).effectivePermissions();
+        InputStream inputStream = this.getClass().getResourceAsStream("/sample.txt");
+        Assert.assertNotNull(inputStream);
+        File deployed = artifactory.repository(localRepository.getKey()).upload(PATH, inputStream).doUpload();
+        Assert.assertNotNull(deployed);
+        Set<ItemPermission> itemPermissions = artifactory.repository(localRepository.getKey()).file(PATH).effectivePermissions();
         assertItemPermissions(itemPermissions);
     }
 
@@ -225,22 +226,22 @@ public class SecurityTests extends ArtifactoryTestsBase {
         for (ItemPermission itemPermission : itemPermissions) {
             Subject subject = itemPermission.getSubject();
             switch (subject.getName()) {
-            case "admin":
-                assertPermissions(itemPermission, false, new Privilege[] { ADMIN, DEPLOY, ANNOTATE, DELETE, READ }, new Privilege[0]);
-                break;
-            case "anonymous":
-                assertPermissions(itemPermission, false, new Privilege[] { READ }, new Privilege[] { DEPLOY });
-                break;
-            case "readers":
-                assertPermissions(itemPermission, true, new Privilege[] { READ }, new Privilege[] { DEPLOY });
-                break;
+                case "admin":
+                    assertPermissions(itemPermission, false, new Privilege[]{ADMIN, DEPLOY, ANNOTATE, DELETE, READ}, new Privilege[0]);
+                    break;
+                case "anonymous":
+                    assertPermissions(itemPermission, false, new Privilege[]{READ}, new Privilege[]{DEPLOY});
+                    break;
+                case "readers":
+                    assertPermissions(itemPermission, true, new Privilege[]{READ}, new Privilege[]{DEPLOY});
+                    break;
             }
         }
     }
 
-    @Test(groups = "security", dependsOnGroups = "repositoryBasics")
+    @Test(groups = "security")
     public void testEffectiveRepoPermissions() {
-        Set<ItemPermission> itemPermissions = artifactory.repository(NEW_LOCAL).effectivePermissions();
+        Set<ItemPermission> itemPermissions = artifactory.repository(localRepository.getKey()).effectivePermissions();
         assertItemPermissions(itemPermissions);
     }
 
@@ -248,7 +249,7 @@ public class SecurityTests extends ArtifactoryTestsBase {
     public void tearDown() {
         try {
             artifactory.security().deletePermissionTarget(PERMISSION_Target_NAME);
-        }catch (Exception ignore) {
+        } catch (Exception ignore) {
         }
     }
 

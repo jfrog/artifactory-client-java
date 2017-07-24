@@ -1,11 +1,9 @@
 String rootName = 'artifactory-java-client'
 String api = 'api'
 String services = 'services'
-String ningServices = 'ning-services'
 
-include api, services, ningServices
+include api, services
 rootProject.name = rootName
 
 project(":$api").name = "$rootName-$api"
 project(":$services").name = "$rootName-$services"
-project(":$ningServices").name = "$rootName-$ningServices"

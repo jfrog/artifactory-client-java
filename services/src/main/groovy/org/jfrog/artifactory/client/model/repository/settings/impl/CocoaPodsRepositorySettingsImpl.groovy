@@ -1,5 +1,6 @@
 package org.jfrog.artifactory.client.model.repository.settings.impl
 
+import groovy.transform.EqualsAndHashCode
 import org.jfrog.artifactory.client.model.PackageType
 import org.jfrog.artifactory.client.model.repository.settings.CocoaPodsRepositorySettings
 
@@ -8,6 +9,7 @@ import org.jfrog.artifactory.client.model.repository.settings.CocoaPodsRepositor
  * 
  * @author Ivan Vasylivskyi (ivanvas@jfrog.com)
  */
+@EqualsAndHashCode
 class CocoaPodsRepositorySettingsImpl extends VcsRepositorySettingsImpl implements CocoaPodsRepositorySettings {
     String podsSpecsRepoUrl
 

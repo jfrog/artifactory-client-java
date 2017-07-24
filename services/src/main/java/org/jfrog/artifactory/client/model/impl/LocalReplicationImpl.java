@@ -14,6 +14,7 @@ public class LocalReplicationImpl implements LocalReplication {
     private String cronExp;
     private boolean syncDeletes;
     private boolean syncProperties;
+    private String pathPrefix;
     private String repoKey;
 
     LocalReplicationImpl() {
@@ -21,7 +22,7 @@ public class LocalReplicationImpl implements LocalReplication {
 
     LocalReplicationImpl(String url, long socketTimeoutMillis, String username, String password,
         boolean enableEventReplication, boolean syncStatistics, boolean enabled, String cronExp, boolean syncDeletes,
-        boolean syncProperties, String repoKey) {
+        boolean syncProperties, String pathPrefix, String repoKey) {
 
         this.url = url;
         this.socketTimeoutMillis = socketTimeoutMillis;
@@ -33,6 +34,7 @@ public class LocalReplicationImpl implements LocalReplication {
         this.cronExp = cronExp;
         this.syncDeletes = syncDeletes;
         this.syncProperties = syncProperties;
+        this.pathPrefix = pathPrefix;
         this.repoKey = repoKey;
     }
 
@@ -87,6 +89,11 @@ public class LocalReplicationImpl implements LocalReplication {
     }
 
     @Override
+    public String getPathPrefix() {
+        return pathPrefix;
+    }
+
+    @Override
     public String getRepoKey() {
         return repoKey;
     }
@@ -108,6 +115,7 @@ public class LocalReplicationImpl implements LocalReplication {
         if (username != null ? !username.equals(that.username) : that.username != null) return false;
         if (password != null ? !password.equals(that.password) : that.password != null) return false;
         if (cronExp != null ? !cronExp.equals(that.cronExp) : that.cronExp != null) return false;
+        if (pathPrefix != null ? !pathPrefix.equals(that.pathPrefix) : that.pathPrefix != null) return false;
 
         return repoKey != null ? repoKey.equals(that.repoKey) : that.repoKey == null;
     }
@@ -124,6 +132,7 @@ public class LocalReplicationImpl implements LocalReplication {
         result = 31 * result + (cronExp != null ? cronExp.hashCode() : 0);
         result = 31 * result + (syncDeletes ? 1 : 0);
         result = 31 * result + (syncProperties ? 1 : 0);
+        result = 31 * result + (pathPrefix != null ? pathPrefix.hashCode() : 0);
         result = 31 * result + (repoKey != null ? repoKey.hashCode() : 0);
 
         return result;
@@ -142,6 +151,7 @@ public class LocalReplicationImpl implements LocalReplication {
                 ", cronExp='" + cronExp + '\'' +
                 ", syncDeletes=" + syncDeletes +
                 ", syncProperties=" + syncProperties +
+                ", pathPrefix='" + pathPrefix + '\'' +
                 ", repoKey='" + repoKey + '\'' +
                 '}';
     }
