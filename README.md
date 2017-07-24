@@ -263,20 +263,24 @@ artifactory.repository("RepoName").replications.createOrReplace(replication)
     String result = artifactory.repositories().update(updatedRepository);
 ```
 
-##### Managing other properties
+##### Custom Package Type and Properties
 ```
-    Repository repository = artifactory.repository("RepoName").get();
-    
-    Map customProperties = repository.getCustomProperties();
-    customProperties.put("key", "value")
+    CustomPackageTypeImpl customPackageType = new CustomPackageTypeImpl("name");
+    CustomRepositorySettingsImpl settings = new CustomRepositorySettingsImpl(customPackageType);
 
-    Repository updatedRepository = artifactory.repositories()
+    Map customProperties = new HashMap();
+    customProperties.put("key", "value");
+
+    Repository repository = artifactory.repositories()
         .builders()
-        .builderFrom(repository)
-        .description("new_description")
+        .localRepositoryBuilder()
+        .key("NewRepoName")
+        .description("new local repository")
+        .repositorySettings(settings)
+        .customProperties(customProperties)
         .build();
-
-    String result = artifactory.repositories().update(updatedRepository);
+    
+    String result = artifactory.repositories().create(2, repository);
 ```
 
 ##### Smart Remote Repositories
