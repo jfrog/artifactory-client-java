@@ -268,7 +268,7 @@ artifactory.repository("RepoName").replications.createOrReplace(replication)
     CustomPackageTypeImpl customPackageType = new CustomPackageTypeImpl("name");
     CustomRepositorySettingsImpl settings = new CustomRepositorySettingsImpl(customPackageType);
 
-    Map customProperties = new HashMap();
+    Map<String, String> customProperties = new HashMap<>();
     customProperties.put("key", "value");
 
     Repository repository = artifactory.repositories()

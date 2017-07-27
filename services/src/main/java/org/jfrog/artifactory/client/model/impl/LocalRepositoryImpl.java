@@ -23,7 +23,7 @@ public class LocalRepositoryImpl extends NonVirtualRepositoryBase implements Loc
         List<String> propertySets,
         String repoLayoutRef,
         boolean archiveBrowsingEnabled,
-        Map customProperties) {
+        Map<String, String> customProperties) {
 
         super(key, settings, xraySettings, description, excludesPattern, includesPattern, notes, blackedOut,
             propertySets, repoLayoutRef, archiveBrowsingEnabled, customProperties);

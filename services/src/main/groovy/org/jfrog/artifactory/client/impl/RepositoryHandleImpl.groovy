@@ -9,6 +9,7 @@ import org.jfrog.artifactory.client.model.Repository
 import org.jfrog.artifactory.client.model.impl.FileImpl
 import org.jfrog.artifactory.client.model.impl.FolderImpl
 import org.jfrog.artifactory.client.model.impl.ReplicationStatusImpl
+import org.jfrog.artifactory.client.model.impl.RepositoryBase
 import org.jfrog.artifactory.client.model.repository.settings.RepositorySettings
 import org.jfrog.artifactory.client.model.xray.settings.impl.XraySettingsImpl
 
@@ -63,8 +64,8 @@ class RepositoryHandleImpl implements RepositoryHandle {
     }
 
     private Repository parseJsonAsRepository(String json) {
-        Repository repo = artifactory.parseText(json, Repository)
-        def settings = artifactory.parseText(json, RepositorySettings)
+        RepositoryBase repo = artifactory.parseText(json, Repository)
+        RepositorySettings settings = artifactory.parseText(json, RepositorySettings)
         XraySettingsImpl xray = artifactory.parseText(json, XraySettingsImpl)
 
         repo.setRepositorySettings(settings)
@@ -74,16 +75,16 @@ class RepositoryHandleImpl implements RepositoryHandle {
         repo
     }
 
-    def getCustomProperties(String json, Repository repo) {
-        Map customProperties = artifactory.parseText json, Map
+    private Map<String, String> getCustomProperties(String json, Repository repo) {
+        Map<String, String> customProperties = artifactory.parseText(json, Map)
 
-        def knownKeys = [] as Set
+        Set<String> knownKeys = new HashSet<>()
         knownKeys.addAll(extractProperties(repo))
         knownKeys.addAll(extractProperties(repo.xraySettings))
         knownKeys.addAll(extractProperties(repo.repositorySettings))
 
         customProperties.keySet().removeAll(knownKeys)
-        customProperties
+        return customProperties
     }
 
     static def extractProperties(obj) {

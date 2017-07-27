@@ -25,14 +25,14 @@ public abstract class RepositoryBase implements Repository {
     @JsonIgnore
     protected XraySettings xraySettings;
     @JsonIgnore
-    protected Map customProperties;
+    protected Map<String, String> customProperties;
 
     protected RepositoryBase() {
     }
 
     protected RepositoryBase(String key, RepositorySettings settings, XraySettings xraySettings,
         String description, String excludesPattern, String includesPattern,
-        String notes, String repoLayoutRef, Map customProperties) {
+        String notes, String repoLayoutRef, Map<String, String> customProperties) {
 
         this.key = key;
         this.settings = settings;
@@ -47,7 +47,7 @@ public abstract class RepositoryBase implements Repository {
 
     protected RepositoryBase(String key, RepositorySettings settings,
         String description, String excludesPattern, String includesPattern,
-        String notes, String repoLayoutRef, Map customProperties) {
+        String notes, String repoLayoutRef, Map<String, String> customProperties) {
 
        this(key,settings, null, description, excludesPattern, includesPattern,  notes, repoLayoutRef,
            customProperties);
@@ -171,7 +171,7 @@ public abstract class RepositoryBase implements Repository {
     }
 
     @Override
-    public Map getCustomProperties() {
+    public Map<String, String> getCustomProperties() {
         return customProperties;
     }
 }

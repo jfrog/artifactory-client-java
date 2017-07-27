@@ -9,20 +9,20 @@ import org.testng.annotations.Test
 
 class CustomPackageTypeRepositoryTests extends BaseRepositoryTests {
 
-    def someCalculateYumMetadata
-    def someGroupFileNames
-    def someListRemoteFolderItems
-    def someYumRootDepth
+    private boolean someCalculateYumMetadata
+    private String someGroupFileNames
+    private boolean someListRemoteFolderItems
+    private int someYumRootDepth
 
     @BeforeMethod
     protected void setUp() {
         CustomPackageTypeImpl customPackageType = new CustomPackageTypeImpl("rpm")
         settings = new CustomRepositorySettingsImpl(customPackageType)
 
-        someCalculateYumMetadata = rnd.nextBoolean()
-        someGroupFileNames = "groups-${rnd.nextInt()}.xml"
-        someListRemoteFolderItems = rnd.nextBoolean()
-        someYumRootDepth = rnd.nextInt()
+        someCalculateYumMetadata = true
+        someGroupFileNames = "groups.xml"
+        someListRemoteFolderItems = true
+        someYumRootDepth = 0
 
         customProperties = [
             "calculateYumMetadata" : someCalculateYumMetadata,
