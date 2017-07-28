@@ -13,6 +13,10 @@ import org.jfrog.artifactory.client.model.impl.RepositoryBase
 import org.jfrog.artifactory.client.model.repository.settings.RepositorySettings
 import org.jfrog.artifactory.client.model.xray.settings.impl.XraySettingsImpl
 
+import java.beans.BeanInfo
+import java.beans.Introspector
+import java.beans.PropertyDescriptor
+
 /**
  *
  * @author jbaruch
@@ -87,8 +91,13 @@ class RepositoryHandleImpl implements RepositoryHandle {
         return customProperties
     }
 
-    static def extractProperties(obj) {
-        obj.getMetaClass().getProperties().name
+    private Set<String> extractProperties(Object obj) {
+        Set<String> props = new HashSet<>()
+        BeanInfo beanInfo = Introspector.getBeanInfo(obj.getClass())
+        for (PropertyDescriptor descriptor : beanInfo.getPropertyDescriptors()) {
+            props.add(descriptor.getName())
+        }
+        return props
     }
 
     @Override
