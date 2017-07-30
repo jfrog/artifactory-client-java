@@ -1,5 +1,7 @@
 package org.jfrog.artifactory.client.model;
 
+import java.util.Map;
+
 import org.jfrog.artifactory.client.model.repository.settings.RepositorySettings;
 import org.jfrog.artifactory.client.model.repository.settings.XraySettings;
 
@@ -27,4 +29,6 @@ public interface Repository {
     RepositorySettings getRepositorySettings();
 
     XraySettings getXraySettings();
+
+    Map<String, String> getCustomProperties();
 }

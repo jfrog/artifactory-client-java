@@ -2,6 +2,7 @@ package org.jfrog.artifactory.client.model.repository.settings.impl
 
 import groovy.transform.EqualsAndHashCode
 import org.jfrog.artifactory.client.model.PackageType
+import org.jfrog.artifactory.client.model.impl.PackageTypeImpl
 import org.jfrog.artifactory.client.model.repository.settings.GradleRepositorySettings
 
 /**
@@ -13,6 +14,6 @@ import org.jfrog.artifactory.client.model.repository.settings.GradleRepositorySe
 class GradleRepositorySettingsImpl extends MavenRepositorySettingsImpl implements GradleRepositorySettings {
     @Override
     public PackageType getPackageType() {
-        return PackageType.gradle
+        return PackageTypeImpl.gradle
     }
 }

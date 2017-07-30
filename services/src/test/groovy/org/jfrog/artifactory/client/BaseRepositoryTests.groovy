@@ -36,6 +36,7 @@ public abstract class BaseRepositoryTests extends ArtifactoryTestsBase {
 
     protected RepositorySettings settings
     protected XraySettings xraySettings
+    protected Map<String, String> customProperties
 
     @BeforeMethod
     protected void setUp() {
@@ -54,6 +55,7 @@ public abstract class BaseRepositoryTests extends ArtifactoryTestsBase {
                     .repoLayoutRef(nextRepoLayout())
                     .repositorySettings(genericSettings)
                     .xraySettings(genericXraySettings)
+                    .customProperties(new HashMap<String, String>())
                     .build();
         }
         if (prepareLocalRepo) {
@@ -69,6 +71,7 @@ public abstract class BaseRepositoryTests extends ArtifactoryTestsBase {
                 .repoLayoutRef(nextRepoLayout())
                 .repositorySettings(settings)
                 .xraySettings(xraySettings)
+                .customProperties(customProperties)
                 .build();
         }
 
@@ -108,6 +111,7 @@ public abstract class BaseRepositoryTests extends ArtifactoryTestsBase {
                 .repositorySettings(settings)
                 .xraySettings(xraySettings)
                 .contentSync(contentSync)
+                .customProperties(customProperties)
                 .build()
         }
 
@@ -126,6 +130,7 @@ public abstract class BaseRepositoryTests extends ArtifactoryTestsBase {
                 .repoLayoutRef(nextRepoLayout())
                 .repositories(repos)
                 .repositorySettings(settings)
+                .customProperties(customProperties)
                 .defaultDeploymentRepo(repos.last())
                 .build()
         }

@@ -2,6 +2,7 @@ package org.jfrog.artifactory.client.model.repository.settings.impl
 
 import groovy.transform.EqualsAndHashCode
 import org.jfrog.artifactory.client.model.PackageType
+import org.jfrog.artifactory.client.model.impl.PackageTypeImpl
 import org.jfrog.artifactory.client.model.repository.settings.DockerRepositorySettings
 import org.jfrog.artifactory.client.model.repository.settings.docker.DockerApiVersion
 
@@ -19,6 +20,6 @@ public class DockerRepositorySettingsImpl implements DockerRepositorySettings{
 
     @Override
     public PackageType getPackageType() {
-        return PackageType.docker
+        return PackageTypeImpl.docker
     }
 }

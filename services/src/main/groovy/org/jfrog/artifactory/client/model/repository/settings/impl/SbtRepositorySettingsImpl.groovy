@@ -2,6 +2,7 @@ package org.jfrog.artifactory.client.model.repository.settings.impl
 
 import groovy.transform.EqualsAndHashCode
 import org.jfrog.artifactory.client.model.PackageType
+import org.jfrog.artifactory.client.model.impl.PackageTypeImpl
 import org.jfrog.artifactory.client.model.repository.settings.SbtRepositorySettings
 
 /**
@@ -13,6 +14,6 @@ import org.jfrog.artifactory.client.model.repository.settings.SbtRepositorySetti
 class SbtRepositorySettingsImpl extends MavenRepositorySettingsImpl implements SbtRepositorySettings {
     @Override
     public PackageType getPackageType() {
-        return PackageType.sbt
+        return PackageTypeImpl.sbt
     }
 }

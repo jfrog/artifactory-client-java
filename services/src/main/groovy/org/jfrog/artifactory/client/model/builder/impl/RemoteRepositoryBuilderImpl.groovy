@@ -7,8 +7,8 @@ import org.jfrog.artifactory.client.model.builder.RemoteRepositoryBuilder
 import org.jfrog.artifactory.client.model.impl.RemoteRepositoryImpl
 import org.jfrog.artifactory.client.model.impl.RepositoryTypeImpl
 
-import static org.jfrog.artifactory.client.model.PackageType.*
 import static org.jfrog.artifactory.client.model.Repository.MAVEN_2_REPO_LAYOUT
+import static org.jfrog.artifactory.client.model.impl.PackageTypeImpl.*
 
 /**
  *
@@ -19,7 +19,7 @@ class RemoteRepositoryBuilderImpl extends NonVirtualRepositoryBuilderBase<Remote
 
     RemoteRepositoryBuilderImpl() {
         super([bower, cocoapods, debian, docker, gems, generic, gitlfs, gradle, ivy, maven, npm, nuget, opkg, p2,
-               pypi, sbt, vcs, yum, rpm, composer, conan, chef, puppet])
+               pypi, sbt, vcs, yum, rpm, composer, conan, chef, puppet] as Set)
         repoLayoutRef = MAVEN_2_REPO_LAYOUT
     }
 
@@ -135,7 +135,7 @@ class RemoteRepositoryBuilderImpl extends NonVirtualRepositoryBuilderBase<Remote
     }
 
     RemoteRepositoryBuilder allowAnyHostAuth(boolean allowAnyHostAuth) {
-        this.allowAnyHostAuth = allowAnyHostAuth;
+        this.allowAnyHostAuth = allowAnyHostAuth
         this
     }
 
@@ -145,7 +145,7 @@ class RemoteRepositoryBuilderImpl extends NonVirtualRepositoryBuilderBase<Remote
     }
 
     RemoteRepositoryBuilder enableCookieManagement(boolean cookieManagementEnabled){
-        this.enableCookieManagement = cookieManagementEnabled;
+        this.enableCookieManagement = cookieManagementEnabled
         this
     }
 
@@ -286,7 +286,8 @@ class RemoteRepositoryBuilderImpl extends NonVirtualRepositoryBuilderBase<Remote
                 shareConfiguration, socketTimeoutMillis, enableCookieManagement, allowAnyHostAuth,
                 storeArtifactsLocally, synchronizeProperties, unusedArtifactsCleanupEnabled,
                 unusedArtifactsCleanupPeriodHours, url, username, repoLayoutRef,
-                assumedOfflinePeriodSecs, archiveBrowsingEnabled, listRemoteFolderItems, clientTlsCertificate)
+                assumedOfflinePeriodSecs, archiveBrowsingEnabled, listRemoteFolderItems, clientTlsCertificate,
+                customProperties)
     }
 
     @Override

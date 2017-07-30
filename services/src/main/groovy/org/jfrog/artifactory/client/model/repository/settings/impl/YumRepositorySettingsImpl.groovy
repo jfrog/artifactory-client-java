@@ -2,6 +2,7 @@ package org.jfrog.artifactory.client.model.repository.settings.impl
 
 import groovy.transform.EqualsAndHashCode
 import org.jfrog.artifactory.client.model.PackageType
+import org.jfrog.artifactory.client.model.impl.PackageTypeImpl
 import org.jfrog.artifactory.client.model.repository.settings.RpmRepositorySettings
 import org.jfrog.artifactory.client.model.repository.settings.YumRepositorySettings
 
@@ -21,6 +22,6 @@ class YumRepositorySettingsImpl implements YumRepositorySettings {
 
     @Override
     public PackageType getPackageType() {
-        return PackageType.yum
+        return PackageTypeImpl.yum
     }
 }

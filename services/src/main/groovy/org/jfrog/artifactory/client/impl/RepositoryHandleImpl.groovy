@@ -9,8 +9,13 @@ import org.jfrog.artifactory.client.model.Repository
 import org.jfrog.artifactory.client.model.impl.FileImpl
 import org.jfrog.artifactory.client.model.impl.FolderImpl
 import org.jfrog.artifactory.client.model.impl.ReplicationStatusImpl
+import org.jfrog.artifactory.client.model.impl.RepositoryBase
 import org.jfrog.artifactory.client.model.repository.settings.RepositorySettings
 import org.jfrog.artifactory.client.model.xray.settings.impl.XraySettingsImpl
+
+import java.beans.BeanInfo
+import java.beans.Introspector
+import java.beans.PropertyDescriptor
 
 /**
  *
@@ -63,14 +68,36 @@ class RepositoryHandleImpl implements RepositoryHandle {
     }
 
     private Repository parseJsonAsRepository(String json) {
-        def repo = artifactory.parseText(json, Repository)
-        def settings = artifactory.parseText(json, RepositorySettings)
+        RepositoryBase repo = artifactory.parseText(json, Repository)
+        RepositorySettings settings = artifactory.parseText(json, RepositorySettings)
         XraySettingsImpl xray = artifactory.parseText(json, XraySettingsImpl)
 
-        repo.setRepositorySettings settings
-        repo.setXraySettings xray
+        repo.setRepositorySettings(settings)
+        repo.setXraySettings(xray)
+        repo.customProperties = getCustomProperties(json, repo)
 
         repo
+    }
+
+    private Map<String, String> getCustomProperties(String json, Repository repo) {
+        Map<String, String> customProperties = artifactory.parseText(json, Map)
+
+        Set<String> knownKeys = new HashSet<>()
+        knownKeys.addAll(extractProperties(repo))
+        knownKeys.addAll(extractProperties(repo.xraySettings))
+        knownKeys.addAll(extractProperties(repo.repositorySettings))
+
+        customProperties.keySet().removeAll(knownKeys)
+        return customProperties
+    }
+
+    private Set<String> extractProperties(Object obj) {
+        Set<String> props = new HashSet<>()
+        BeanInfo beanInfo = Introspector.getBeanInfo(obj.getClass())
+        for (PropertyDescriptor descriptor : beanInfo.getPropertyDescriptors()) {
+            props.add(descriptor.getName())
+        }
+        return props
     }
 
     @Override

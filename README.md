@@ -263,6 +263,26 @@ artifactory.repository("RepoName").replications.createOrReplace(replication)
     String result = artifactory.repositories().update(updatedRepository);
 ```
 
+##### Custom Package Type and Properties
+```
+    CustomPackageTypeImpl customPackageType = new CustomPackageTypeImpl("name");
+    CustomRepositorySettingsImpl settings = new CustomRepositorySettingsImpl(customPackageType);
+
+    Map<String, String> customProperties = new HashMap<>();
+    customProperties.put("key", "value");
+
+    Repository repository = artifactory.repositories()
+        .builders()
+        .localRepositoryBuilder()
+        .key("NewRepoName")
+        .description("new local repository")
+        .repositorySettings(settings)
+        .customProperties(customProperties)
+        .build();
+    
+    String result = artifactory.repositories().create(2, repository);
+```
+
 ##### Smart Remote Repositories
 
 A [smart remote repository](https://www.jfrog.com/confluence/display/RTF/Smart+Remote+Repositories) is a remote repository that proxies a repository from another instance of Artifactory.

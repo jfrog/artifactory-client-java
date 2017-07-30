@@ -6,7 +6,7 @@ import org.jfrog.artifactory.client.model.builder.VirtualRepositoryBuilder
 import org.jfrog.artifactory.client.model.impl.RepositoryTypeImpl
 import org.jfrog.artifactory.client.model.impl.VirtualRepositoryImpl
 
-import static org.jfrog.artifactory.client.model.PackageType.*
+import static org.jfrog.artifactory.client.model.impl.PackageTypeImpl.*
 
 /**
  *
@@ -17,12 +17,12 @@ class VirtualRepositoryBuilderImpl extends RepositoryBuilderBase<VirtualReposito
 
     private VirtualRepositoryBuilderImpl() {
         super([bower, docker, gems, generic, gitlfs, gradle, ivy, maven, npm, nuget, p2, pypi, sbt, yum, rpm, composer,
-               conan, chef, puppet])
+               conan, chef, puppet] as Set)
     }
 
-    private Collection<String> repositories = Collections.emptyList();
+    private Collection<String> repositories = Collections.emptyList()
     private boolean artifactoryRequestsCanRetrieveRemoteArtifacts
-    private String defaultDeploymentRepo;
+    private String defaultDeploymentRepo
 
     VirtualRepositoryBuilder repositories(Collection<String> repositories) {
         this.repositories = repositories
@@ -58,7 +58,7 @@ class VirtualRepositoryBuilderImpl extends RepositoryBuilderBase<VirtualReposito
         validate()
         new VirtualRepositoryImpl(key, settings, description, excludesPattern,
             includesPattern, notes, artifactoryRequestsCanRetrieveRemoteArtifacts,
-            repositories, repoLayoutRef, defaultDeploymentRepo)
+            repositories, repoLayoutRef, defaultDeploymentRepo, customProperties)
     }
 
     @Override

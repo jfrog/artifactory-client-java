@@ -20,6 +20,7 @@ abstract class RepositoryBuilderBase<B extends RepositoryBuilder, R extends Repo
     protected String repoLayoutRef
     protected RepositorySettings settings
     protected XraySettings xraySettings
+    protected Map<String, String> customProperties
 
     public final Set<PackageType> supportedTypes
 
@@ -115,6 +116,12 @@ abstract class RepositoryBuilderBase<B extends RepositoryBuilder, R extends Repo
         xraySettings
     }
 
+    @Override
+    B customProperties(Map<String, String> customProperties) {
+        this.customProperties = customProperties
+        this as B
+    }
+
     abstract RepositoryType getRepositoryType()
 
     @Override
@@ -125,7 +132,8 @@ abstract class RepositoryBuilderBase<B extends RepositoryBuilder, R extends Repo
         if (key.length() > 64) {
             throw new IllegalArgumentException("The 'key' value is limitted to 64 characters.")
         }
-        if (this.settings != null && !supportedTypes.contains(settings.packageType)) {
+        if (this.settings != null && !settings.packageType.isCustom()
+            && !supportedTypes.contains(settings.packageType)) {
             throw new IllegalArgumentException("Package type '${settings.packageType}' is not supported in $repositoryType repositories");
         }
     }
