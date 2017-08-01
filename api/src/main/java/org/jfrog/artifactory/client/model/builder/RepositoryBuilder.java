@@ -48,5 +48,5 @@ public interface RepositoryBuilder<B extends RepositoryBuilder, R extends Reposi
 
     XraySettings getXraySettings();
 
-    B customProperties(Map<String, String> customProperties);
+    B customProperties(Map<String, Object> customProperties);
 }

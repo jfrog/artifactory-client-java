@@ -79,8 +79,8 @@ class RepositoryHandleImpl implements RepositoryHandle {
         repo
     }
 
-    private Map<String, String> getCustomProperties(String json, Repository repo) {
-        Map<String, String> customProperties = artifactory.parseText(json, Map)
+    private Map<String, Object> getCustomProperties(String json, Repository repo) {
+        Map<String, Object> customProperties = artifactory.parseText(json, Map)
 
         Set<String> knownKeys = new HashSet<>()
         knownKeys.addAll(extractProperties(repo))

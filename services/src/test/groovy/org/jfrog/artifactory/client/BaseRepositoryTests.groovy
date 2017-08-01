@@ -36,7 +36,7 @@ public abstract class BaseRepositoryTests extends ArtifactoryTestsBase {
 
     protected RepositorySettings settings
     protected XraySettings xraySettings
-    protected Map<String, String> customProperties
+    protected Map<String, Object> customProperties
 
     @BeforeMethod
     protected void setUp() {
@@ -55,7 +55,7 @@ public abstract class BaseRepositoryTests extends ArtifactoryTestsBase {
                     .repoLayoutRef(nextRepoLayout())
                     .repositorySettings(genericSettings)
                     .xraySettings(genericXraySettings)
-                    .customProperties(new HashMap<String, String>())
+                    .customProperties(new HashMap<String, Object>())
                     .build();
         }
         if (prepareLocalRepo) {

@@ -56,7 +56,7 @@ public class RemoteRepositoryImpl extends NonVirtualRepositoryBase implements Re
                          int retrievalCachePeriodSecs, boolean shareConfiguration, int socketTimeoutMillis, boolean cookieManagementEnabled, boolean allowAnyHostAuth, boolean storeArtifactsLocally, boolean synchronizeProperties,
                          boolean unusedArtifactsCleanupEnabled, int unusedArtifactsCleanupPeriodHours, String url, String username, String repoLayoutRef,
                          long assumedOfflinePeriodSecs, boolean archiveBrowsingEnabled, boolean listRemoteFolderItems,
-                         String clientTlsCertificate, Map<String, String> customProperties) {
+                         String clientTlsCertificate, Map<String, Object> customProperties) {
 
         super(key, settings, xraySettings, description, excludesPattern, includesPattern,
             notes, blackedOut,
