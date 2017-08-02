@@ -23,7 +23,7 @@ public class VirtualRepositoryImpl extends RepositoryBase implements VirtualRepo
     private VirtualRepositoryImpl(String key, RepositorySettings settings,
         String description, String excludesPattern, String includesPattern, String notes,
         boolean artifactoryRequestsCanRetrieveRemoteArtifacts, Collection<String> repositories,
-        String repoLayoutRef, String deploymentRepo, Map<String, String> customProperties) {
+        String repoLayoutRef, String deploymentRepo, Map<String, Object> customProperties) {
 
         super(key, settings, description, excludesPattern, includesPattern, notes, repoLayoutRef, customProperties);
 
