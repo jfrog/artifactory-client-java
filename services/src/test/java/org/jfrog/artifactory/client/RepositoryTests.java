@@ -201,7 +201,7 @@ public class RepositoryTests extends ArtifactoryTestsBase {
         List<String> propertySets = localRepo.getPropertySets();
         assertEquals(propertySets.size(), 1);
         assertEquals(propertySets.get(0), ("artifactory"));
-        assertEquals(localRepo.getRepoLayoutRef(), "maven-2-default");
+        assertEquals(localRepo.getRepoLayoutRef(), "simple-default");
     }
 
     @Test(dependsOnMethods = "testCreate")

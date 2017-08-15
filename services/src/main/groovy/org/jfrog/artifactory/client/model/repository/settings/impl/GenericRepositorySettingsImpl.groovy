@@ -16,6 +16,6 @@ class GenericRepositorySettingsImpl implements GenericRepositorySettings {
 
     @Override
     public PackageType getPackageType() {
-        return PackageTypeImpl.generic;
+        return PackageTypeImpl.generic
     }
 }

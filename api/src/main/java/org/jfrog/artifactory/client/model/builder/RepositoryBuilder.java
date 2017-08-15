@@ -40,6 +40,8 @@ public interface RepositoryBuilder<B extends RepositoryBuilder, R extends Reposi
 
     void validate();
 
+    void setRepoLayout();
+
     B repositorySettings(RepositorySettings settings);
 
     RepositorySettings getRepositorySettings();

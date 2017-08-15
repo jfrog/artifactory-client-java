@@ -137,4 +137,13 @@ abstract class RepositoryBuilderBase<B extends RepositoryBuilder, R extends Repo
             throw new IllegalArgumentException("Package type '${settings.packageType}' is not supported in $repositoryType repositories");
         }
     }
+
+    @Override
+    void setRepoLayout() {
+        if(this.repoLayoutRef == null) {
+            if(settings != null){
+                this.repoLayoutRef = settings.packageType.layout
+            }
+        }
+    }
 }
