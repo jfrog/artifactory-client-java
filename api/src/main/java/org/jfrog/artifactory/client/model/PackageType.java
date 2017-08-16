@@ -7,6 +7,4 @@ public interface PackageType {
     String name();
 
     boolean isCustom();
-
-    String getLayout();
 }

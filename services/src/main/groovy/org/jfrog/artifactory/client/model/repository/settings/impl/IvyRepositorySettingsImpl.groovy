@@ -12,6 +12,11 @@ import org.jfrog.artifactory.client.model.repository.settings.IvyRepositorySetti
  */
 @EqualsAndHashCode
 class IvyRepositorySettingsImpl extends MavenRepositorySettingsImpl implements IvyRepositorySettings {
+
+    public IvyRepositorySettingsImpl() {
+        this.repoLayoutRef = PackageTypeImpl.ivy.layout
+    }
+
     @Override
     public PackageType getPackageType() {
         return PackageTypeImpl.ivy

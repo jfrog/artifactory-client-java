@@ -32,10 +32,6 @@ public interface RepositoryBuilder<B extends RepositoryBuilder, R extends Reposi
 
     String getNotes();
 
-    B repoLayoutRef(String repoLayoutRef);
-
-    String getRepoLayoutRef();
-
     R build();
 
     void validate();

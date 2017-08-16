@@ -1,8 +1,9 @@
 package org.jfrog.artifactory.client
 
 import org.hamcrest.CoreMatchers
-import org.jfrog.artifactory.client.model.*
 import org.jfrog.artifactory.client.model.impl.RepositoryTypeImpl
+import org.jfrog.artifactory.client.model.repository.settings.impl.GenericRepositorySettingsImpl
+import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
 
 import static org.testng.Assert.*
@@ -13,6 +14,12 @@ import static org.testng.Assert.*
  * @author Ivan Vasylivskyi (ivanvas@jfrog.com)
  */
 public class GeneralRepositoryTests extends BaseRepositoryTests {
+
+    @BeforeMethod
+    protected void setUp() {
+        settings = new GenericRepositorySettingsImpl()
+        super.setUp()
+    }
 
     @Test(groups = "generalRepo")
     public void testLocalRepo() {

@@ -14,6 +14,10 @@ import org.jfrog.artifactory.client.model.repository.settings.CocoaPodsRepositor
 class CocoaPodsRepositorySettingsImpl extends VcsRepositorySettingsImpl implements CocoaPodsRepositorySettings {
     String podsSpecsRepoUrl
 
+    public CocoaPodsRepositorySettingsImpl() {
+        this.repoLayoutRef = PackageTypeImpl.cocoapods.layout
+    }
+
     @Override
     public PackageType getPackageType() {
         return PackageTypeImpl.cocoapods

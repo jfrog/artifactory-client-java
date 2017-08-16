@@ -3,6 +3,7 @@ package org.jfrog.artifactory.client.model.repository.settings.impl
 import groovy.transform.EqualsAndHashCode
 import org.jfrog.artifactory.client.model.PackageType
 import org.jfrog.artifactory.client.model.impl.PackageTypeImpl
+import org.jfrog.artifactory.client.model.repository.settings.AbstractRepositorySettings
 import org.jfrog.artifactory.client.model.repository.settings.GemsRepositorySettings
 
 /**
@@ -11,8 +12,12 @@ import org.jfrog.artifactory.client.model.repository.settings.GemsRepositorySett
  * @author Ivan Vasylivskyi (ivanvas@jfrog.com)
  */
 @EqualsAndHashCode
-class GemsRepositorySettingsImpl implements GemsRepositorySettings {
+class GemsRepositorySettingsImpl extends AbstractRepositorySettings implements GemsRepositorySettings {
     Boolean listRemoteFolderItems
+
+    public GemsRepositorySettingsImpl() {
+        this.repoLayoutRef = PackageTypeImpl.gems.layout
+    }
 
     @Override
     public PackageType getPackageType() {

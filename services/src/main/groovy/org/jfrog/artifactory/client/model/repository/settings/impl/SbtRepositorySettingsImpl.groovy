@@ -12,6 +12,11 @@ import org.jfrog.artifactory.client.model.repository.settings.SbtRepositorySetti
  */
 @EqualsAndHashCode
 class SbtRepositorySettingsImpl extends MavenRepositorySettingsImpl implements SbtRepositorySettings {
+
+    public SbtRepositorySettingsImpl() {
+        this.repoLayoutRef = PackageTypeImpl.sbt.layout
+    }
+
     @Override
     public PackageType getPackageType() {
         return PackageTypeImpl.sbt

@@ -10,6 +10,10 @@ class ComposerRepositorySettingsImpl extends VcsRepositorySettingsImpl implement
 
     String composerRegistryUrl
 
+    public ComposerRepositorySettingsImpl() {
+        this.repoLayoutRef = PackageTypeImpl.composer.layout
+    }
+
     @Override
     PackageType getPackageType() {
       return PackageTypeImpl.composer

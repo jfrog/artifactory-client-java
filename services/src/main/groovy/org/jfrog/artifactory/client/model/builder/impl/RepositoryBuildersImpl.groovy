@@ -48,7 +48,7 @@ class RepositoryBuildersImpl implements RepositoryBuilders {
         new LocalRepositoryBuilderImpl().repositorySettings(from.repositorySettings).blackedOut(from.blackedOut).description(from.description)
                 .excludesPattern(from.excludesPattern).includesPattern(from.includesPattern)
                 .key(from.key).notes(from.notes).propertySets(from.propertySets)
-                .repoLayoutRef(from.repoLayoutRef).archiveBrowsingEnabled(from.archiveBrowsingEnabled)
+                .archiveBrowsingEnabled(from.archiveBrowsingEnabled)
     }
 
     VirtualRepositoryBuilder virtualRepositoryBuilder() {
@@ -58,7 +58,6 @@ class RepositoryBuildersImpl implements RepositoryBuilders {
     VirtualRepositoryBuilder builderFrom(VirtualRepository from) {
         new VirtualRepositoryBuilderImpl().repositorySettings(from.repositorySettings).description(from.description).excludesPattern(from.excludesPattern).includesPattern(from.includesPattern).key(from.key)
                 .notes(from.notes)
-                .repoLayoutRef(from.repoLayoutRef)
                 .artifactoryRequestsCanRetrieveRemoteArtifacts(from.artifactoryRequestsCanRetrieveRemoteArtifacts).repositories(from.repositories)
                 .defaultDeploymentRepo(from.defaultDeploymentRepo)
     }

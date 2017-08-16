@@ -17,6 +17,10 @@ class BowerRepositorySettingsImpl extends VcsRepositorySettingsImpl implements B
     Collection<String> externalDependenciesPatterns
     String externalDependenciesRemoteRepo
 
+    public BowerRepositorySettingsImpl() {
+        this.repoLayoutRef = PackageTypeImpl.bower.layout
+    }
+
     @Override
     public PackageType getPackageType() {
         return PackageTypeImpl.bower

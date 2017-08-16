@@ -40,7 +40,6 @@ public enum PackageTypeImpl implements PackageType {
     return false;
   }
 
-  @Override
   public String getLayout() {
     return layout;
   }

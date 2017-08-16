@@ -41,7 +41,9 @@ public abstract class BaseRepositoryTests extends ArtifactoryTestsBase {
     @BeforeMethod
     protected void setUp() {
         if (prepareGenericRepo) {
-            RepositorySettings genericSettings = new GenericRepositorySettingsImpl();
+            RepositorySettings genericSettings = new GenericRepositorySettingsImpl()
+            genericSettings.repoLayout = nextRepoLayout()
+
             XraySettings genericXraySettings = new XraySettingsImpl();
             genericRepo = artifactory.repositories().builders().localRepositoryBuilder()
                     .key("cutsman-repo_${rnd.nextInt()}")
@@ -52,13 +54,13 @@ public abstract class BaseRepositoryTests extends ArtifactoryTestsBase {
                     .excludesPattern("org/${rnd.nextInt()}/**")
                     .includesPattern("org/${rnd.nextInt()}/**")
                     .propertySets(Collections.emptyList()) // no property sets configured
-                    .repoLayoutRef(nextRepoLayout())
                     .repositorySettings(genericSettings)
                     .xraySettings(genericXraySettings)
                     .customProperties(new HashMap<String, Object>())
-                    .build();
+                    .build()
         }
         if (prepareLocalRepo) {
+            settings?.repoLayout = nextRepoLayout()
             localRepo = artifactory.repositories().builders().localRepositoryBuilder()
                 .key("cutsman-repo_${rnd.nextInt()}")
                 .description("description_${rnd.nextInt()}")
@@ -68,14 +70,14 @@ public abstract class BaseRepositoryTests extends ArtifactoryTestsBase {
                 .excludesPattern("org/${rnd.nextInt()}/**")
                 .includesPattern("org/${rnd.nextInt()}/**")
                 .propertySets(Collections.emptyList()) // no property sets configured
-                .repoLayoutRef(nextRepoLayout())
                 .repositorySettings(settings)
                 .xraySettings(xraySettings)
                 .customProperties(customProperties)
-                .build();
+                .build()
         }
 
         if(prepareRemoteRepo) {
+            settings?.repoLayout = nextRepoLayout()
             ContentSync contentSync = new ContentSyncImpl();
             remoteRepo = artifactory.repositories().builders().remoteRepositoryBuilder()
                 .key("cutsman-repo_${rnd.nextInt()}")
@@ -97,7 +99,6 @@ public abstract class BaseRepositoryTests extends ArtifactoryTestsBase {
                 .password("password_${rnd.nextInt()}")
                 .propertySets(Collections.emptyList()) // no property sets configured
                 // .proxy("") // no proxy configured
-                .repoLayoutRef(nextRepoLayout())
                 .retrievalCachePeriodSecs(rnd.nextInt())
                 .shareConfiguration(rnd.nextBoolean())
                 .socketTimeoutMillis(rnd.nextInt())
@@ -116,6 +117,7 @@ public abstract class BaseRepositoryTests extends ArtifactoryTestsBase {
         }
 
         if(prepareVirtualRepo) {
+            settings?.repoLayout = nextRepoLayout()
             artifactory.repositories().create(0, genericRepo)
             def repos = new ArrayList<String>()
             repos.add(genericRepo.getKey())
@@ -127,7 +129,6 @@ public abstract class BaseRepositoryTests extends ArtifactoryTestsBase {
                 .artifactoryRequestsCanRetrieveRemoteArtifacts(rnd.nextBoolean())
                 .excludesPattern("org/${rnd.nextInt()}/**")
                 .includesPattern("org/${rnd.nextInt()}/**")
-                .repoLayoutRef(nextRepoLayout())
                 .repositories(repos)
                 .repositorySettings(settings)
                 .customProperties(customProperties)

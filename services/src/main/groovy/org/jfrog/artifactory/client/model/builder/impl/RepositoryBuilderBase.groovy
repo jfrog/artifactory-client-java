@@ -84,17 +84,6 @@ abstract class RepositoryBuilderBase<B extends RepositoryBuilder, R extends Repo
     }
 
     @Override
-    B repoLayoutRef(String repoLayoutRef) {
-        this.repoLayoutRef = repoLayoutRef
-        this as B
-    }
-
-    @Override
-    String getRepoLayoutRef() {
-        repoLayoutRef
-    }
-
-    @Override
     B repositorySettings(RepositorySettings settings) {
         this.settings = settings
         this as B
@@ -142,7 +131,7 @@ abstract class RepositoryBuilderBase<B extends RepositoryBuilder, R extends Repo
     void setRepoLayout() {
         if(this.repoLayoutRef == null) {
             if(settings != null){
-                this.repoLayoutRef = settings.packageType.layout
+                this.repoLayoutRef = settings.getRepoLayout()
             }
         }
     }

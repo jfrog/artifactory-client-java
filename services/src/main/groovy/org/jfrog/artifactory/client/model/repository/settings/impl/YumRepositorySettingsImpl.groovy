@@ -3,6 +3,7 @@ package org.jfrog.artifactory.client.model.repository.settings.impl
 import groovy.transform.EqualsAndHashCode
 import org.jfrog.artifactory.client.model.PackageType
 import org.jfrog.artifactory.client.model.impl.PackageTypeImpl
+import org.jfrog.artifactory.client.model.repository.settings.AbstractRepositorySettings
 import org.jfrog.artifactory.client.model.repository.settings.RpmRepositorySettings
 import org.jfrog.artifactory.client.model.repository.settings.YumRepositorySettings
 
@@ -14,11 +15,15 @@ import org.jfrog.artifactory.client.model.repository.settings.YumRepositorySetti
  */
 @Deprecated
 @EqualsAndHashCode
-class YumRepositorySettingsImpl implements YumRepositorySettings {
+class YumRepositorySettingsImpl extends AbstractRepositorySettings implements YumRepositorySettings {
     Integer yumRootDepth
     String groupFileNames
     Boolean calculateYumMetadata
     Boolean listRemoteFolderItems
+
+    public YumRepositorySettingsImpl() {
+        this.repoLayoutRef = PackageTypeImpl.yum.layout
+    }
 
     @Override
     public PackageType getPackageType() {

@@ -8,4 +8,8 @@ import org.jfrog.artifactory.client.model.PackageType;
 public interface RepositorySettings {
 
     PackageType getPackageType();
+
+    String getRepoLayout();
+
+    void setRepoLayout(String repoLayout);
 }

@@ -7,6 +7,7 @@ import org.jfrog.artifactory.client.model.impl.PackageTypeImpl
 import org.jfrog.artifactory.client.model.impl.RemoteRepoChecksumPolicyTypeImpl
 import org.jfrog.artifactory.client.model.impl.SnapshotVersionBehaviorImpl
 import org.jfrog.artifactory.client.model.repository.PomCleanupPolicy
+import org.jfrog.artifactory.client.model.repository.settings.AbstractRepositorySettings
 import org.jfrog.artifactory.client.model.repository.settings.MavenRepositorySettings
 
 /**
@@ -15,7 +16,7 @@ import org.jfrog.artifactory.client.model.repository.settings.MavenRepositorySet
  * @author Ivan Vasylivskyi (ivanvas@jfrog.com)
  */
 @EqualsAndHashCode
-class MavenRepositorySettingsImpl implements MavenRepositorySettings {
+class MavenRepositorySettingsImpl extends AbstractRepositorySettings implements MavenRepositorySettings {
     Integer maxUniqueSnapshots
     Boolean handleReleases
     Boolean handleSnapshots
@@ -29,6 +30,10 @@ class MavenRepositorySettingsImpl implements MavenRepositorySettings {
     Boolean rejectInvalidJars
     PomCleanupPolicy pomRepositoryReferencesCleanupPolicy
     String keyPair
+
+    public MavenRepositorySettingsImpl() {
+        this.repoLayoutRef = PackageTypeImpl.maven.layout
+    }
 
     @Override
     public PackageType getPackageType() {
