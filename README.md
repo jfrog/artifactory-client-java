@@ -184,6 +184,16 @@ Repository repository = artifactory.repositories()
 String result = artifactory.repositories().create(2, repository);
 ```
 
+###### Repository Settings
+
+For choosing your repository characteristic, use the right settings, each one of them possess the relevant attributes available in Artifactory.
+
+Example for using generic repository with maven layout:
+```
+RepositorySettings settings = new GenericRepositorySettingsImpl()
+settings.setRepoLayout("maven-2-default")
+```
+
 ##### Updating Repositories
 ```
 Repository repository = artifactory.repository("RepoName").get();
