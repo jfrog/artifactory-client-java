@@ -1,7 +1,9 @@
 package org.jfrog.artifactory.client
 
 import org.hamcrest.CoreMatchers
+import org.jfrog.artifactory.client.model.RepositoryType
 import org.jfrog.artifactory.client.model.impl.RepositoryTypeImpl
+import org.jfrog.artifactory.client.model.repository.settings.RepositorySettings
 import org.jfrog.artifactory.client.model.repository.settings.impl.GenericRepositorySettingsImpl
 import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
@@ -15,9 +17,13 @@ import static org.testng.Assert.*
  */
 public class GeneralRepositoryTests extends BaseRepositoryTests {
 
+    @Override
+    RepositorySettings getRepositorySettings(RepositoryType repositoryType) {
+        return new GenericRepositorySettingsImpl()
+    }
+
     @BeforeMethod
     protected void setUp() {
-        settings = new GenericRepositorySettingsImpl()
         super.setUp()
     }
 

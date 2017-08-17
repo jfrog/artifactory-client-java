@@ -1,7 +1,9 @@
 package org.jfrog.artifactory.client
 
 import org.hamcrest.CoreMatchers
+import org.jfrog.artifactory.client.model.RepositoryType
 import org.jfrog.artifactory.client.model.VirtualRepository
+import org.jfrog.artifactory.client.model.repository.settings.RepositorySettings
 import org.jfrog.artifactory.client.model.repository.settings.impl.MavenRepositorySettingsImpl
 import org.jfrog.artifactory.client.model.xray.settings.impl.XraySettingsImpl
 import org.testng.annotations.BeforeMethod
@@ -11,9 +13,13 @@ import org.testng.annotations.Test
  * @author Ihor Banadiga (ihorb@jfrog.com)
  */
 class XrayPropertiesRepositoryTests extends BaseRepositoryTests {
+  @Override
+  RepositorySettings getRepositorySettings(RepositoryType repositoryType) {
+    return new MavenRepositorySettingsImpl()
+  }
+
   @BeforeMethod
   protected void setUp() {
-    settings = new MavenRepositorySettingsImpl()
     xraySettings = new XraySettingsImpl()
 
     xraySettings.with {

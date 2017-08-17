@@ -5,10 +5,11 @@ import org.hamcrest.Matcher
 import org.hamcrest.StringDescription
 import org.jfrog.artifactory.client.model.ContentSync
 import org.jfrog.artifactory.client.model.Repository
+import org.jfrog.artifactory.client.model.RepositoryType
 import org.jfrog.artifactory.client.model.impl.ContentSyncImpl
+import org.jfrog.artifactory.client.model.impl.RepositoryTypeImpl
 import org.jfrog.artifactory.client.model.repository.settings.RepositorySettings
 import org.jfrog.artifactory.client.model.repository.settings.XraySettings
-import org.jfrog.artifactory.client.model.repository.settings.impl.GenericRepositorySettingsImpl
 import org.jfrog.artifactory.client.model.xray.settings.impl.XraySettingsImpl
 import org.testng.annotations.AfterMethod
 import org.testng.annotations.BeforeMethod
@@ -34,15 +35,16 @@ public abstract class BaseRepositoryTests extends ArtifactoryTestsBase {
     protected Repository remoteRepo
     protected Repository virtualRepo
 
-    protected RepositorySettings settings
     protected XraySettings xraySettings
     protected Map<String, Object> customProperties
+
+    abstract RepositorySettings getRepositorySettings(RepositoryType repositoryType)
 
     @BeforeMethod
     protected void setUp() {
         if (prepareGenericRepo) {
-            RepositorySettings genericSettings = new GenericRepositorySettingsImpl()
-            genericSettings.repoLayout = nextRepoLayout()
+            RepositorySettings settings = getRepositorySettings(RepositoryTypeImpl.LOCAL)
+            settings?.repoLayout = nextRepoLayout()
 
             XraySettings genericXraySettings = new XraySettingsImpl();
             genericRepo = artifactory.repositories().builders().localRepositoryBuilder()
@@ -54,12 +56,13 @@ public abstract class BaseRepositoryTests extends ArtifactoryTestsBase {
                     .excludesPattern("org/${rnd.nextInt()}/**")
                     .includesPattern("org/${rnd.nextInt()}/**")
                     .propertySets(Collections.emptyList()) // no property sets configured
-                    .repositorySettings(genericSettings)
+                    .repositorySettings(settings)
                     .xraySettings(genericXraySettings)
                     .customProperties(new HashMap<String, Object>())
                     .build()
         }
         if (prepareLocalRepo) {
+            RepositorySettings settings = getRepositorySettings()
             settings?.repoLayout = nextRepoLayout()
             localRepo = artifactory.repositories().builders().localRepositoryBuilder()
                 .key("cutsman-repo_${rnd.nextInt()}")
@@ -77,6 +80,7 @@ public abstract class BaseRepositoryTests extends ArtifactoryTestsBase {
         }
 
         if(prepareRemoteRepo) {
+            RepositorySettings settings = getRepositorySettings()
             settings?.repoLayout = nextRepoLayout()
             ContentSync contentSync = new ContentSyncImpl();
             remoteRepo = artifactory.repositories().builders().remoteRepositoryBuilder()
@@ -117,6 +121,7 @@ public abstract class BaseRepositoryTests extends ArtifactoryTestsBase {
         }
 
         if(prepareVirtualRepo) {
+            RepositorySettings settings = getRepositorySettings()
             settings?.repoLayout = nextRepoLayout()
             artifactory.repositories().create(0, genericRepo)
             def repos = new ArrayList<String>()
@@ -148,16 +153,16 @@ public abstract class BaseRepositoryTests extends ArtifactoryTestsBase {
 
     private String nextRepoLayout() {
         def layouts = [
-            //'bower-default',
-            //'gradle-default',
-            //'ivy-default',
-            //'maven-1-default',
-            'maven-2-default'
-            //'npm-default',
-            //'nuget-default',
-            //'sbt-default',
-            //'simple-default',
-            //'vcs-default'
+            'bower-default',
+            'gradle-default',
+            'ivy-default',
+            'maven-1-default',
+            'maven-2-default',
+            'npm-default',
+            'nuget-default',
+            'sbt-default',
+            'simple-default',
+            'vcs-default'
         ]
 
         layouts.getAt(rnd.nextInt(layouts.size()))

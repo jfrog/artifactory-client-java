@@ -2,6 +2,7 @@ package org.jfrog.artifactory.client
 
 import org.hamcrest.CoreMatchers
 import org.jfrog.artifactory.client.model.*
+import org.jfrog.artifactory.client.model.repository.settings.RepositorySettings
 import org.jfrog.artifactory.client.model.repository.settings.impl.DebianRepositorySettingsImpl
 import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
@@ -13,9 +14,9 @@ import org.testng.annotations.Test
  */
 public class DebianPackageTypeRepositoryTests extends BaseRepositoryTests {
 
-    @BeforeMethod
-    protected void setUp() {
-        settings = new DebianRepositorySettingsImpl()
+    @Override
+    RepositorySettings getRepositorySettings(RepositoryType repositoryType) {
+        def settings = new DebianRepositorySettingsImpl()
 
         settings.with {
             // local
@@ -25,6 +26,11 @@ public class DebianPackageTypeRepositoryTests extends BaseRepositoryTests {
             listRemoteFolderItems = rnd.nextBoolean()
         }
 
+        return settings
+    }
+
+    @BeforeMethod
+    protected void setUp() {
         // only local and remote repository supported
         prepareVirtualRepo = false
 
@@ -34,13 +40,14 @@ public class DebianPackageTypeRepositoryTests extends BaseRepositoryTests {
     @Test(groups = "debianPackageTypeRepo")
     public void testDebianLocalRepo() {
         artifactory.repositories().create(0, localRepo)
+        def expectedSettings = localRepo.repositorySettings
 
         def resp = artifactory.repository(localRepo.getKey()).get()
         resp.getRepositorySettings().with {
-            assertThat(packageType, CoreMatchers.is(settings.getPackageType()))
+            assertThat(packageType, CoreMatchers.is(expectedSettings.getPackageType()))
 
             // local
-            assertThat(debianTrivialLayout, CoreMatchers.is(settings.getDebianTrivialLayout()))
+            assertThat(debianTrivialLayout, CoreMatchers.is(expectedSettings.getDebianTrivialLayout()))
 
             // remote
             assertThat(listRemoteFolderItems, CoreMatchers.is(CoreMatchers.nullValue()))
@@ -50,16 +57,17 @@ public class DebianPackageTypeRepositoryTests extends BaseRepositoryTests {
     @Test(groups = "debianPackageTypeRepo")
     public void testDebianRemoteRepo() {
         artifactory.repositories().create(0, remoteRepo)
+        def expectedSettings = remoteRepo.repositorySettings
 
         def resp = artifactory.repository(remoteRepo.getKey()).get()
         resp.getRepositorySettings().with {
-            assertThat(packageType, CoreMatchers.is(settings.getPackageType()))
+            assertThat(packageType, CoreMatchers.is(expectedSettings.getPackageType()))
 
             // local
             assertThat(debianTrivialLayout, CoreMatchers.is(Boolean.FALSE)) // always in resp payload
 
             // remote
-            assertThat(listRemoteFolderItems, CoreMatchers.is(settings.getListRemoteFolderItems()))
+            assertThat(listRemoteFolderItems, CoreMatchers.is(expectedSettings.getListRemoteFolderItems()))
         }
     }
 

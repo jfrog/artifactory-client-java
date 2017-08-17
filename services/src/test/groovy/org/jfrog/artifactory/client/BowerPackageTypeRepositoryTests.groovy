@@ -1,6 +1,8 @@
 package org.jfrog.artifactory.client
 
 import org.hamcrest.CoreMatchers
+import org.jfrog.artifactory.client.model.RepositoryType
+import org.jfrog.artifactory.client.model.repository.settings.RepositorySettings
 import org.jfrog.artifactory.client.model.repository.settings.impl.BowerRepositorySettingsImpl
 import org.jfrog.artifactory.client.model.repository.settings.vcs.VcsGitProvider
 import org.jfrog.artifactory.client.model.repository.settings.vcs.VcsType
@@ -14,9 +16,9 @@ import org.testng.annotations.Test
  */
 public class BowerPackageTypeRepositoryTests extends BaseRepositoryTests {
 
-    @BeforeMethod
-    protected void setUp() {
-        settings = new BowerRepositorySettingsImpl()
+    @Override
+    RepositorySettings getRepositorySettings(RepositoryType repositoryType) {
+        def settings = new BowerRepositorySettingsImpl()
 
         settings.with {
             // remote
@@ -34,20 +36,26 @@ public class BowerPackageTypeRepositoryTests extends BaseRepositoryTests {
             // externalDependenciesRemoteRepo
         }
 
+        return settings
+    }
+
+    @BeforeMethod
+    protected void setUp() {
         super.setUp()
     }
 
     @Test(groups = "bowerPackageTypeRepo")
     public void testBowerLocalRepo() {
         artifactory.repositories().create(0, localRepo)
+        def expectedSettings = localRepo.repositorySettings
 
         def resp = artifactory.repository(localRepo.getKey()).get()
         resp.getRepositorySettings().with {
-            assertThat(packageType, CoreMatchers.is(settings.getPackageType()))
+            assertThat(packageType, CoreMatchers.is(expectedSettings.getPackageType()))
 
             // remote
             assertThat(listRemoteFolderItems, CoreMatchers.nullValue())
-            assertThat(maxUniqueSnapshots, CoreMatchers.is(settings.getMaxUniqueSnapshots())) // always in resp payload
+            assertThat(maxUniqueSnapshots, CoreMatchers.is(expectedSettings.getMaxUniqueSnapshots())) // always in resp payload
             assertThat(bowerRegistryUrl, CoreMatchers.nullValue())
             assertThat(vcsGitDownloadUrl, CoreMatchers.nullValue())
             assertThat(vcsGitProvider, CoreMatchers.nullValue())
@@ -63,18 +71,19 @@ public class BowerPackageTypeRepositoryTests extends BaseRepositoryTests {
     @Test(groups = "bowerPackageTypeRepo")
     public void testBowerRemoteRepo() {
         artifactory.repositories().create(0, remoteRepo)
+        def expectedSettings = remoteRepo.repositorySettings
 
         def resp = artifactory.repository(remoteRepo.getKey()).get()
         resp.getRepositorySettings().with {
-            assertThat(packageType, CoreMatchers.is(settings.getPackageType()))
+            assertThat(packageType, CoreMatchers.is(expectedSettings.getPackageType()))
 
             // remote
-            assertThat(listRemoteFolderItems, CoreMatchers.is(settings.getListRemoteFolderItems()))
-            assertThat(maxUniqueSnapshots, CoreMatchers.is(settings.getMaxUniqueSnapshots()))
-            assertThat(bowerRegistryUrl, CoreMatchers.is(settings.getBowerRegistryUrl()))
-            assertThat(vcsGitDownloadUrl, CoreMatchers.is(settings.getVcsGitDownloadUrl()))
-            assertThat(vcsGitProvider, CoreMatchers.is(settings.getVcsGitProvider()))
-            assertThat(vcsType, CoreMatchers.is(settings.getVcsType()))
+            assertThat(listRemoteFolderItems, CoreMatchers.is(expectedSettings.getListRemoteFolderItems()))
+            assertThat(maxUniqueSnapshots, CoreMatchers.is(expectedSettings.getMaxUniqueSnapshots()))
+            assertThat(bowerRegistryUrl, CoreMatchers.is(expectedSettings.getBowerRegistryUrl()))
+            assertThat(vcsGitDownloadUrl, CoreMatchers.is(expectedSettings.getVcsGitDownloadUrl()))
+            assertThat(vcsGitProvider, CoreMatchers.is(expectedSettings.getVcsGitProvider()))
+            assertThat(vcsType, CoreMatchers.is(expectedSettings.getVcsType()))
 
             // virtual
             assertThat(externalDependenciesEnabled, CoreMatchers.nullValue())
@@ -86,10 +95,11 @@ public class BowerPackageTypeRepositoryTests extends BaseRepositoryTests {
     @Test(groups = "bowerPackageTypeRepo")
     public void testBowerVirtualRepo() {
         artifactory.repositories().create(0, virtualRepo)
+        def expectedSettings = virtualRepo.repositorySettings
 
         def resp = artifactory.repository(virtualRepo.getKey()).get()
         resp.getRepositorySettings().with {
-            assertThat(packageType, CoreMatchers.is(settings.getPackageType()))
+            assertThat(packageType, CoreMatchers.is(expectedSettings.getPackageType()))
 
             // remote
             assertThat(listRemoteFolderItems, CoreMatchers.nullValue())
@@ -100,9 +110,9 @@ public class BowerPackageTypeRepositoryTests extends BaseRepositoryTests {
             assertThat(vcsType, CoreMatchers.nullValue())
 
             // virtual
-            assertThat(externalDependenciesEnabled, CoreMatchers.is(settings.getExternalDependenciesEnabled()))
-            assertThat(externalDependenciesPatterns, CoreMatchers.is(settings.getExternalDependenciesPatterns()))
-            assertThat(externalDependenciesRemoteRepo, CoreMatchers.is(settings.getExternalDependenciesRemoteRepo()))
+            assertThat(externalDependenciesEnabled, CoreMatchers.is(expectedSettings.getExternalDependenciesEnabled()))
+            assertThat(externalDependenciesPatterns, CoreMatchers.is(expectedSettings.getExternalDependenciesPatterns()))
+            assertThat(externalDependenciesRemoteRepo, CoreMatchers.is(expectedSettings.getExternalDependenciesRemoteRepo()))
         }
     }
 
