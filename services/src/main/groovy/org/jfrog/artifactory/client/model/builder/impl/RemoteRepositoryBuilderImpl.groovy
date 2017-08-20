@@ -278,6 +278,7 @@ class RemoteRepositoryBuilderImpl extends NonVirtualRepositoryBuilderBase<Remote
     @SuppressWarnings("GroovyAccessibility")
     RemoteRepository build() {
         validate()
+        setRepoLayout()
 
         new RemoteRepositoryImpl(key, settings, xraySettings, contentSync, description, excludesPattern,
                 includesPattern, notes, blackedOut, propertySets, failedRetrievalCachePeriodSecs,

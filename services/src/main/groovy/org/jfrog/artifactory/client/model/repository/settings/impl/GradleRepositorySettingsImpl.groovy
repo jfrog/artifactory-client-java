@@ -12,8 +12,19 @@ import org.jfrog.artifactory.client.model.repository.settings.GradleRepositorySe
  */
 @EqualsAndHashCode
 class GradleRepositorySettingsImpl extends MavenRepositorySettingsImpl implements GradleRepositorySettings {
+    static String defaultLayout = "gradle-default"
+
+    GradleRepositorySettingsImpl() {
+        this.repoLayoutRef = defaultLayout
+    }
+
     @Override
     public PackageType getPackageType() {
         return PackageTypeImpl.gradle
+    }
+
+    @Override
+    public String getRepoLayout() {
+        return this.repoLayoutRef
     }
 }

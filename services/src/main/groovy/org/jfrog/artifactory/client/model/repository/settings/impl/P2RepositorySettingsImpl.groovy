@@ -12,6 +12,10 @@ import org.jfrog.artifactory.client.model.repository.settings.P2RepositorySettin
  */
 @EqualsAndHashCode
 class P2RepositorySettingsImpl extends MavenRepositorySettingsImpl implements P2RepositorySettings {
+    public P2RepositorySettingsImpl() {
+        this.repoLayoutRef = defaultLayout
+    }
+
     @Override
     public PackageType getPackageType() {
         return PackageTypeImpl.p2

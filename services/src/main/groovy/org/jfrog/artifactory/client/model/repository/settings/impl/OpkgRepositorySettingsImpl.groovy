@@ -3,6 +3,7 @@ package org.jfrog.artifactory.client.model.repository.settings.impl
 import groovy.transform.EqualsAndHashCode
 import org.jfrog.artifactory.client.model.PackageType
 import org.jfrog.artifactory.client.model.impl.PackageTypeImpl
+import org.jfrog.artifactory.client.model.repository.settings.AbstractRepositorySettings
 import org.jfrog.artifactory.client.model.repository.settings.OpkgRepositorySettings
 
 /**
@@ -11,8 +12,14 @@ import org.jfrog.artifactory.client.model.repository.settings.OpkgRepositorySett
  * @author Ivan Vasylivskyi (ivanvas@jfrog.com)
  */
 @EqualsAndHashCode
-class OpkgRepositorySettingsImpl implements OpkgRepositorySettings {
+class OpkgRepositorySettingsImpl extends AbstractRepositorySettings implements OpkgRepositorySettings {
+    static String defaultLayout = "simple-default"
+
     Boolean listRemoteFolderItems
+
+    public OpkgRepositorySettingsImpl() {
+        this.repoLayoutRef = defaultLayout
+    }
 
     @Override
     public PackageType getPackageType() {

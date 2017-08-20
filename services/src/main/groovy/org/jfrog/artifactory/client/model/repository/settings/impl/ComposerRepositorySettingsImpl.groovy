@@ -7,8 +7,13 @@ import org.jfrog.artifactory.client.model.repository.settings.ComposerRepository
 
 @EqualsAndHashCode
 class ComposerRepositorySettingsImpl extends VcsRepositorySettingsImpl implements ComposerRepositorySettings {
+    static defaultLayout = "composer-default"
 
     String composerRegistryUrl
+
+    public ComposerRepositorySettingsImpl() {
+        this.repoLayoutRef = defaultLayout
+    }
 
     @Override
     PackageType getPackageType() {

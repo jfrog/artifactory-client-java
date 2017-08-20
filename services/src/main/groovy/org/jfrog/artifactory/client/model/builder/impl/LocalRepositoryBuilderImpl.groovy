@@ -1,7 +1,6 @@
 package org.jfrog.artifactory.client.model.builder.impl
 
 import org.jfrog.artifactory.client.model.LocalRepository
-import org.jfrog.artifactory.client.model.Repository
 import org.jfrog.artifactory.client.model.RepositoryType
 import org.jfrog.artifactory.client.model.builder.LocalRepositoryBuilder
 import org.jfrog.artifactory.client.model.impl.LocalRepositoryImpl
@@ -19,11 +18,12 @@ class LocalRepositoryBuilderImpl extends NonVirtualRepositoryBuilderBase<LocalRe
     private LocalRepositoryBuilderImpl() {
         super([bower, cocoapods, debian, docker, gems, generic, gitlfs, gradle, ivy, maven, npm, nuget, opkg, pypi,
                sbt, vagrant, yum, rpm, composer, conan, chef, puppet] as Set)
-        this.repoLayoutRef = Repository.MAVEN_2_REPO_LAYOUT
     }
 
     LocalRepository build() {
         validate()
+        setRepoLayout()
+
         return new LocalRepositoryImpl(key, settings, xraySettings, description, excludesPattern,
             includesPattern, notes, blackedOut,
             propertySets,

@@ -1,7 +1,9 @@
 package org.jfrog.artifactory.client
 
 import org.hamcrest.CoreMatchers
+import org.jfrog.artifactory.client.model.RepositoryType
 import org.jfrog.artifactory.client.model.impl.PackageTypeImpl
+import org.jfrog.artifactory.client.model.repository.settings.RepositorySettings
 import org.jfrog.artifactory.client.model.repository.settings.impl.YumRepositorySettingsImpl
 import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
@@ -13,9 +15,9 @@ import org.testng.annotations.Test
  */
 public class YumPackageTypeRepositoryTests extends BaseRepositoryTests {
 
-    @BeforeMethod
-    protected void setUp() {
-        settings = new YumRepositorySettingsImpl()
+    @Override
+    RepositorySettings getRepositorySettings(RepositoryType repositoryType) {
+        def settings = new YumRepositorySettingsImpl()
 
         settings.with {
             // local
@@ -27,6 +29,11 @@ public class YumPackageTypeRepositoryTests extends BaseRepositoryTests {
             yumRootDepth = rnd.nextInt()
         }
 
+        return settings
+    }
+
+    @BeforeMethod
+    protected void setUp() {
         // only local and remote repository supported
         prepareVirtualRepo = false
 
@@ -36,6 +43,7 @@ public class YumPackageTypeRepositoryTests extends BaseRepositoryTests {
     @Test(groups = "yumPackageTypeRepo")
     public void testYumLocalRepo() {
         artifactory.repositories().create(0, localRepo)
+        def expectedSettings = localRepo.repositorySettings
 
         def resp = artifactory.repository(localRepo.getKey()).get()
         resp.getRepositorySettings().with {
@@ -43,11 +51,11 @@ public class YumPackageTypeRepositoryTests extends BaseRepositoryTests {
             assertThat(packageType, CoreMatchers.is(PackageTypeImpl.rpm))
 
             // local
-            assertThat(calculateYumMetadata, CoreMatchers.is(settings.getCalculateYumMetadata()))
+            assertThat(calculateYumMetadata, CoreMatchers.is(expectedSettings.getCalculateYumMetadata()))
             // TODO: property is not returned by the artifactory
             // assertThat(groupFileNames, CoreMatchers.is(specRepo.getGroupFileNames()))
             assertThat(groupFileNames, CoreMatchers.is(CoreMatchers.nullValue()))
-            assertThat(yumRootDepth, CoreMatchers.is(settings.getYumRootDepth()))
+            assertThat(yumRootDepth, CoreMatchers.is(expectedSettings.getYumRootDepth()))
 
             // remote
             assertThat(listRemoteFolderItems, CoreMatchers.is(CoreMatchers.nullValue()))
@@ -57,6 +65,7 @@ public class YumPackageTypeRepositoryTests extends BaseRepositoryTests {
     @Test(groups = "yumPackageTypeRepo")
     public void testYumRemoteRepo() {
         artifactory.repositories().create(0, remoteRepo)
+        def expectedSettings = remoteRepo.repositorySettings
 
         def resp = artifactory.repository(remoteRepo.getKey()).get()
         resp.getRepositorySettings().with {
@@ -64,7 +73,7 @@ public class YumPackageTypeRepositoryTests extends BaseRepositoryTests {
             assertThat(packageType, CoreMatchers.is(PackageTypeImpl.rpm))
 
             // remote
-            assertThat(listRemoteFolderItems, CoreMatchers.is(settings.getListRemoteFolderItems()))
+            assertThat(listRemoteFolderItems, CoreMatchers.is(expectedSettings.getListRemoteFolderItems()))
 
             // local
             assertThat(calculateYumMetadata, CoreMatchers.is(CoreMatchers.nullValue()))

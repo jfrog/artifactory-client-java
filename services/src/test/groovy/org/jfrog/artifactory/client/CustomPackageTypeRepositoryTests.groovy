@@ -1,8 +1,10 @@
 package org.jfrog.artifactory.client
 
 import org.hamcrest.CoreMatchers
+import org.jfrog.artifactory.client.model.RepositoryType
 import org.jfrog.artifactory.client.model.impl.CustomPackageTypeImpl
 import org.jfrog.artifactory.client.model.impl.PackageTypeImpl
+import org.jfrog.artifactory.client.model.repository.settings.RepositorySettings
 import org.jfrog.artifactory.client.model.repository.settings.impl.CustomRepositorySettingsImpl
 import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
@@ -14,23 +16,26 @@ class CustomPackageTypeRepositoryTests extends BaseRepositoryTests {
     private boolean someListRemoteFolderItems
     private int someYumRootDepth
 
+    @Override
+    RepositorySettings getRepositorySettings(RepositoryType repositoryType) {
+        CustomPackageTypeImpl customPackageType = new CustomPackageTypeImpl("rpm")
+        return new CustomRepositorySettingsImpl(customPackageType)
+    }
+
     @BeforeMethod
     protected void setUp() {
-        CustomPackageTypeImpl customPackageType = new CustomPackageTypeImpl("rpm")
-        settings = new CustomRepositorySettingsImpl(customPackageType)
-
         someCalculateYumMetadata = true
         someGroupFileNames = "groups.xml"
         someListRemoteFolderItems = true
         someYumRootDepth = 0
 
         customProperties = [
-            "calculateYumMetadata" : someCalculateYumMetadata,
-            "groupFileNames" : someGroupFileNames ,
-            "yumRootDepth" : someYumRootDepth,
+                "calculateYumMetadata" : someCalculateYumMetadata,
+                "groupFileNames"       : someGroupFileNames,
+                "yumRootDepth"         : someYumRootDepth,
 
-            // remote
-            "listRemoteFolderItems" : someListRemoteFolderItems
+                // remote
+                "listRemoteFolderItems": someListRemoteFolderItems
         ]
         super.setUp()
     }

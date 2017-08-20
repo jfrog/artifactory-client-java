@@ -3,6 +3,7 @@ package org.jfrog.artifactory.client.model.repository.settings.impl
 import groovy.transform.EqualsAndHashCode
 import org.jfrog.artifactory.client.model.PackageType
 import org.jfrog.artifactory.client.model.impl.PackageTypeImpl
+import org.jfrog.artifactory.client.model.repository.settings.AbstractRepositorySettings
 import org.jfrog.artifactory.client.model.repository.settings.VcsRepositorySettings
 import org.jfrog.artifactory.client.model.repository.settings.vcs.VcsGitProvider
 import org.jfrog.artifactory.client.model.repository.settings.vcs.VcsType
@@ -13,12 +14,18 @@ import org.jfrog.artifactory.client.model.repository.settings.vcs.VcsType
  * @author Ivan Vasylivskyi (ivanvas@jfrog.com)
  */
 @EqualsAndHashCode
-class VcsRepositorySettingsImpl implements VcsRepositorySettings {
+class VcsRepositorySettingsImpl extends AbstractRepositorySettings implements VcsRepositorySettings {
+    static defaultLayout = "vcs-default"
+
     VcsGitProvider vcsGitProvider
     VcsType vcsType
     Integer maxUniqueSnapshots
     String vcsGitDownloadUrl
     Boolean listRemoteFolderItems
+
+    public VcsRepositorySettingsImpl() {
+        this.repoLayoutRef = defaultLayout
+    }
 
     @Override
     public PackageType getPackageType() {

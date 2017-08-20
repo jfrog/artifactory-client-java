@@ -3,6 +3,7 @@ package org.jfrog.artifactory.client.model.repository.settings.impl
 import groovy.transform.EqualsAndHashCode
 import org.jfrog.artifactory.client.model.PackageType
 import org.jfrog.artifactory.client.model.impl.PackageTypeImpl
+import org.jfrog.artifactory.client.model.repository.settings.AbstractRepositorySettings
 import org.jfrog.artifactory.client.model.repository.settings.DebianRepositorySettings
 
 /**
@@ -11,9 +12,15 @@ import org.jfrog.artifactory.client.model.repository.settings.DebianRepositorySe
  * @author Ivan Vasylivskyi (ivanvas@jfrog.com)
  */
 @EqualsAndHashCode
-class DebianRepositorySettingsImpl implements DebianRepositorySettings {
+class DebianRepositorySettingsImpl extends AbstractRepositorySettings implements DebianRepositorySettings {
+    static String defaultLayout = "simple-default"
+
     Boolean debianTrivialLayout
     Boolean listRemoteFolderItems
+
+    public DebianRepositorySettingsImpl() {
+        this.repoLayoutRef = defaultLayout
+    }
 
     @Override
     public PackageType getPackageType() {

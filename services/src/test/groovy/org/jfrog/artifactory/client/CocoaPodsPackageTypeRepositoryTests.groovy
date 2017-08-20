@@ -2,6 +2,7 @@ package org.jfrog.artifactory.client
 
 import org.hamcrest.CoreMatchers
 import org.jfrog.artifactory.client.model.*
+import org.jfrog.artifactory.client.model.repository.settings.RepositorySettings
 import org.jfrog.artifactory.client.model.repository.settings.impl.CocoaPodsRepositorySettingsImpl
 import org.jfrog.artifactory.client.model.repository.settings.vcs.VcsGitProvider
 import org.jfrog.artifactory.client.model.repository.settings.vcs.VcsType
@@ -15,9 +16,9 @@ import org.testng.annotations.Test
  */
 public class CocoaPodsPackageTypeRepositoryTests extends BaseRepositoryTests {
 
-    @BeforeMethod
-    protected void setUp() {
-        settings = new CocoaPodsRepositorySettingsImpl()
+    @Override
+    RepositorySettings getRepositorySettings(RepositoryType repositoryType) {
+        def settings = new CocoaPodsRepositorySettingsImpl()
 
         settings.with {
             // remote
@@ -29,6 +30,11 @@ public class CocoaPodsPackageTypeRepositoryTests extends BaseRepositoryTests {
             vcsType = VcsType.values()[rnd.nextInt(VcsType.values().length)]
         }
 
+        return settings
+    }
+
+    @BeforeMethod
+    protected void setUp() {
         // only local and remote repository supported
         prepareVirtualRepo = false
 
@@ -38,14 +44,15 @@ public class CocoaPodsPackageTypeRepositoryTests extends BaseRepositoryTests {
     @Test(groups = "cocoapodsPackageTypeRepo")
     public void testCocoaPodsLocalRepo() {
         artifactory.repositories().create(0, localRepo)
+        def expectedSettings = localRepo.repositorySettings
 
         def resp = artifactory.repository(localRepo.getKey()).get()
         resp.getRepositorySettings().with {
-            assertThat(packageType, CoreMatchers.is(settings.getPackageType()))
+            assertThat(packageType, CoreMatchers.is(expectedSettings.getPackageType()))
 
             // remote
             assertThat(listRemoteFolderItems, CoreMatchers.nullValue())
-            assertThat(maxUniqueSnapshots, CoreMatchers.is(settings.getMaxUniqueSnapshots())) // always in resp payload
+            assertThat(maxUniqueSnapshots, CoreMatchers.is(expectedSettings.getMaxUniqueSnapshots())) // always in resp payload
             assertThat(podsSpecsRepoUrl, CoreMatchers.nullValue())
             assertThat(vcsGitDownloadUrl, CoreMatchers.nullValue())
             assertThat(vcsGitProvider, CoreMatchers.nullValue())
@@ -56,18 +63,19 @@ public class CocoaPodsPackageTypeRepositoryTests extends BaseRepositoryTests {
     @Test(groups = "cocoapodsPackageTypeRepo")
     public void testCocoaPodsRemoteRepo() {
         artifactory.repositories().create(0, remoteRepo)
+        def expectedSettings = remoteRepo.repositorySettings
 
         def resp = artifactory.repository(remoteRepo.getKey()).get()
         resp.getRepositorySettings().with {
-            assertThat(packageType, CoreMatchers.is(settings.getPackageType()))
+            assertThat(packageType, CoreMatchers.is(expectedSettings.getPackageType()))
 
             // remote
-            assertThat(listRemoteFolderItems, CoreMatchers.is(settings.getListRemoteFolderItems()))
-            assertThat(maxUniqueSnapshots, CoreMatchers.is(settings.getMaxUniqueSnapshots()))
-            assertThat(podsSpecsRepoUrl, CoreMatchers.is(settings.getPodsSpecsRepoUrl()))
-            assertThat(vcsGitDownloadUrl, CoreMatchers.is(settings.getVcsGitDownloadUrl()))
-            assertThat(vcsGitProvider, CoreMatchers.is(settings.getVcsGitProvider()))
-            assertThat(vcsType, CoreMatchers.is(settings.getVcsType()))
+            assertThat(listRemoteFolderItems, CoreMatchers.is(expectedSettings.getListRemoteFolderItems()))
+            assertThat(maxUniqueSnapshots, CoreMatchers.is(expectedSettings.getMaxUniqueSnapshots()))
+            assertThat(podsSpecsRepoUrl, CoreMatchers.is(expectedSettings.getPodsSpecsRepoUrl()))
+            assertThat(vcsGitDownloadUrl, CoreMatchers.is(expectedSettings.getVcsGitDownloadUrl()))
+            assertThat(vcsGitProvider, CoreMatchers.is(expectedSettings.getVcsGitProvider()))
+            assertThat(vcsType, CoreMatchers.is(expectedSettings.getVcsType()))
         }
     }
 

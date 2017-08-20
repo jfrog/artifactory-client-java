@@ -1,6 +1,8 @@
 package org.jfrog.artifactory.client
 
+import org.jfrog.artifactory.client.model.RepositoryType
 import org.jfrog.artifactory.client.model.impl.RepositoryTypeImpl
+import org.jfrog.artifactory.client.model.repository.settings.RepositorySettings
 import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
 
@@ -10,10 +12,15 @@ import static org.testng.Assert.assertTrue
 
 class CustomPropertiesRepositoryTests extends BaseRepositoryTests {
 
+    @Override
+    RepositorySettings getRepositorySettings(RepositoryType repositoryType) {
+        return null
+    }
+
     @BeforeMethod
     protected void setUp() {
         customProperties = [
-            "enableComposerSupport" : true
+                "enableComposerSupport": true
         ]
         super.setUp()
     }
@@ -48,7 +55,7 @@ class CustomPropertiesRepositoryTests extends BaseRepositoryTests {
     }
 
     @Test(groups = "customProperties")
-     void testRemoteRepo() {
+    void testRemoteRepo() {
         artifactory.repositories().create(0, remoteRepo)
         assertTrue(curl(LIST_PATH).contains(remoteRepo.getKey()))
 

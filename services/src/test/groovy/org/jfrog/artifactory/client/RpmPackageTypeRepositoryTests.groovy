@@ -1,6 +1,8 @@
 package org.jfrog.artifactory.client
 
 import org.hamcrest.CoreMatchers
+import org.jfrog.artifactory.client.model.RepositoryType
+import org.jfrog.artifactory.client.model.repository.settings.RepositorySettings
 import org.jfrog.artifactory.client.model.repository.settings.impl.RpmRepositorySettingsImpl
 import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
@@ -12,9 +14,9 @@ import org.testng.annotations.Test
  */
 public class RpmPackageTypeRepositoryTests extends BaseRepositoryTests {
 
-    @BeforeMethod
-    protected void setUp() {
-        settings = new RpmRepositorySettingsImpl()
+    @Override
+    RepositorySettings getRepositorySettings(RepositoryType repositoryType) {
+        def settings = new RpmRepositorySettingsImpl()
 
         settings.with {
             // local
@@ -27,6 +29,11 @@ public class RpmPackageTypeRepositoryTests extends BaseRepositoryTests {
             yumRootDepth = rnd.nextInt()
         }
 
+        return settings
+    }
+
+    @BeforeMethod
+    protected void setUp() {
         // only local and remote repository supported
         prepareVirtualRepo = false
 
@@ -36,18 +43,19 @@ public class RpmPackageTypeRepositoryTests extends BaseRepositoryTests {
     @Test(groups = "rpmPackageTypeRepo")
     public void testRpmLocalRepo() {
         artifactory.repositories().create(0, localRepo)
+        def expectedSettings = localRepo.repositorySettings
 
         def resp = artifactory.repository(localRepo.getKey()).get()
         resp.getRepositorySettings().with {
-            assertThat(packageType, CoreMatchers.is(settings.getPackageType()))
+            assertThat(packageType, CoreMatchers.is(expectedSettings.getPackageType()))
 
             // local
-            assertThat(calculateYumMetadata, CoreMatchers.is(settings.getCalculateYumMetadata()))
-            assertThat(enableFileListsIndexing, CoreMatchers.is(settings.getEnableFileListsIndexing()))
+            assertThat(calculateYumMetadata, CoreMatchers.is(expectedSettings.getCalculateYumMetadata()))
+            assertThat(enableFileListsIndexing, CoreMatchers.is(expectedSettings.getEnableFileListsIndexing()))
             // TODO: property is not returned by the artifactory
             // assertThat(groupFileNames, CoreMatchers.is(specRepo.getGroupFileNames()))
             assertThat(groupFileNames, CoreMatchers.is(CoreMatchers.nullValue()))
-            assertThat(yumRootDepth, CoreMatchers.is(settings.getYumRootDepth()))
+            assertThat(yumRootDepth, CoreMatchers.is(expectedSettings.getYumRootDepth()))
 
             // remote
             assertThat(listRemoteFolderItems, CoreMatchers.is(CoreMatchers.nullValue()))
@@ -57,13 +65,14 @@ public class RpmPackageTypeRepositoryTests extends BaseRepositoryTests {
     @Test(groups = "rpmPackageTypeRepo")
     public void testRpmRemoteRepo() {
         artifactory.repositories().create(0, remoteRepo)
+        def expectedSettings = remoteRepo.repositorySettings
 
         def resp = artifactory.repository(remoteRepo.getKey()).get()
         resp.getRepositorySettings().with {
-            assertThat(packageType, CoreMatchers.is(settings.getPackageType()))
+            assertThat(packageType, CoreMatchers.is(expectedSettings.getPackageType()))
 
             // remote
-            assertThat(listRemoteFolderItems, CoreMatchers.is(settings.getListRemoteFolderItems()))
+            assertThat(listRemoteFolderItems, CoreMatchers.is(expectedSettings.getListRemoteFolderItems()))
 
             // local
             assertThat(enableFileListsIndexing, CoreMatchers.is(CoreMatchers.nullValue()))

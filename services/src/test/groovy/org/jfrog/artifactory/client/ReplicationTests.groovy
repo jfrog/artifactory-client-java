@@ -1,12 +1,18 @@
 package org.jfrog.artifactory.client
 
 import groovyx.net.http.HttpResponseException
+import org.jfrog.artifactory.client.model.RepositoryType
 import org.jfrog.artifactory.client.model.impl.LocalReplicationImpl
-import org.jfrog.artifactory.client.model.impl.RemoteReplicationImpl
+import org.jfrog.artifactory.client.model.repository.settings.RepositorySettings
 import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
 
 public class ReplicationTests extends BaseRepositoryTests {
+
+    @Override
+    RepositorySettings getRepositorySettings(RepositoryType repositoryType) {
+        return null
+    }
 
     @BeforeMethod
     protected void setUp() {
