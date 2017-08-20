@@ -13,6 +13,8 @@ import org.jfrog.artifactory.client.model.repository.settings.NugetRepositorySet
  */
 @EqualsAndHashCode
 class NugetRepositorySettingsImpl extends AbstractRepositorySettings implements NugetRepositorySettings {
+    static String defaultLayout = "nuget-default"
+
     Integer maxUniqueSnapshots
     Boolean forceNugetAuthentication
     String feedContextPath
@@ -20,7 +22,7 @@ class NugetRepositorySettingsImpl extends AbstractRepositorySettings implements 
     Boolean listRemoteFolderItems
 
     public NugetRepositorySettingsImpl() {
-        this.repoLayoutRef = PackageTypeImpl.nuget.layout
+        this.repoLayoutRef = defaultLayout
     }
 
     @Override

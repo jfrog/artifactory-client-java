@@ -13,13 +13,15 @@ import org.jfrog.artifactory.client.model.repository.settings.NpmRepositorySetti
  */
 @EqualsAndHashCode
 class NpmRepositorySettingsImpl extends AbstractRepositorySettings implements NpmRepositorySettings {
+    static String defaultLayout = "npm-default"
+
     Boolean listRemoteFolderItems
     Boolean externalDependenciesEnabled
     Collection<String> externalDependenciesPatterns
     String externalDependenciesRemoteRepo
 
     public NpmRepositorySettingsImpl() {
-        this.repoLayoutRef = PackageTypeImpl.npm.layout
+        this.repoLayoutRef = defaultLayout
     }
 
     @Override

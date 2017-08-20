@@ -13,10 +13,12 @@ import org.jfrog.artifactory.client.model.repository.settings.GemsRepositorySett
  */
 @EqualsAndHashCode
 class GemsRepositorySettingsImpl extends AbstractRepositorySettings implements GemsRepositorySettings {
+    static String defaultLayout = "simple-default"
+
     Boolean listRemoteFolderItems
 
     public GemsRepositorySettingsImpl() {
-        this.repoLayoutRef = PackageTypeImpl.gems.layout
+        this.repoLayoutRef = defaultLayout
     }
 
     @Override

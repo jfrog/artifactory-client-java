@@ -13,10 +13,12 @@ import org.jfrog.artifactory.client.model.repository.settings.PypiRepositorySett
  */
 @EqualsAndHashCode
 class PypiRepositorySettingsImpl extends AbstractRepositorySettings implements PypiRepositorySettings {
+    static String defaultLayout = "simple-default"
+
     Boolean listRemoteFolderItems
 
     public PypiRepositorySettingsImpl() {
-        this.repoLayoutRef = PackageTypeImpl.pypi.layout
+        this.repoLayoutRef = defaultLayout
     }
 
     @Override

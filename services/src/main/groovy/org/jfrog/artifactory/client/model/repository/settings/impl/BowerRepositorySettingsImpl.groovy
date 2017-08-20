@@ -12,13 +12,15 @@ import org.jfrog.artifactory.client.model.repository.settings.BowerRepositorySet
  */
 @EqualsAndHashCode
 class BowerRepositorySettingsImpl extends VcsRepositorySettingsImpl implements BowerRepositorySettings {
+    static defaultLayout = "bower-default"
+
     String bowerRegistryUrl
     Boolean externalDependenciesEnabled
     Collection<String> externalDependenciesPatterns
     String externalDependenciesRemoteRepo
 
     public BowerRepositorySettingsImpl() {
-        this.repoLayoutRef = PackageTypeImpl.bower.layout
+        this.repoLayoutRef = defaultLayout
     }
 
     @Override

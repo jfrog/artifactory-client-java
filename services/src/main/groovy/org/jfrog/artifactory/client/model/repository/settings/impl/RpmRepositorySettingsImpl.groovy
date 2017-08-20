@@ -13,6 +13,8 @@ import org.jfrog.artifactory.client.model.repository.settings.RpmRepositorySetti
  */
 @EqualsAndHashCode
 class RpmRepositorySettingsImpl extends AbstractRepositorySettings implements RpmRepositorySettings {
+    static String defaultLayout = "simple-default"
+
     Integer yumRootDepth
     String groupFileNames
     Boolean calculateYumMetadata
@@ -20,7 +22,7 @@ class RpmRepositorySettingsImpl extends AbstractRepositorySettings implements Rp
     Boolean listRemoteFolderItems
 
     public RpmRepositorySettingsImpl() {
-        this.repoLayoutRef = PackageTypeImpl.rpm.layout
+        this.repoLayoutRef = defaultLayout
     }
 
     @Override

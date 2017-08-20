@@ -13,10 +13,12 @@ import org.jfrog.artifactory.client.model.repository.settings.OpkgRepositorySett
  */
 @EqualsAndHashCode
 class OpkgRepositorySettingsImpl extends AbstractRepositorySettings implements OpkgRepositorySettings {
+    static String defaultLayout = "simple-default"
+
     Boolean listRemoteFolderItems
 
     public OpkgRepositorySettingsImpl() {
-        this.repoLayoutRef = PackageTypeImpl.opkg.layout
+        this.repoLayoutRef = defaultLayout
     }
 
     @Override

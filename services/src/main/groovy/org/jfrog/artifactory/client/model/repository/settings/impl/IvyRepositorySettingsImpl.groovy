@@ -12,9 +12,10 @@ import org.jfrog.artifactory.client.model.repository.settings.IvyRepositorySetti
  */
 @EqualsAndHashCode
 class IvyRepositorySettingsImpl extends MavenRepositorySettingsImpl implements IvyRepositorySettings {
+    static String defaultLayout = "ivy-default"
 
     public IvyRepositorySettingsImpl() {
-        this.repoLayoutRef = PackageTypeImpl.ivy.layout
+        this.repoLayoutRef = defaultLayout
     }
 
     @Override

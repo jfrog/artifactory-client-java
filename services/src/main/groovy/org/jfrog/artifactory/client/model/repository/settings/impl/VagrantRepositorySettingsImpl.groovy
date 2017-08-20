@@ -13,9 +13,10 @@ import org.jfrog.artifactory.client.model.repository.settings.VagrantRepositoryS
  */
 @EqualsAndHashCode
 class VagrantRepositorySettingsImpl extends AbstractRepositorySettings implements VagrantRepositorySettings {
+    static String defaultLayout = "simple-default"
 
     public VagrantRepositorySettingsImpl() {
-        this.repoLayoutRef = PackageTypeImpl.vagrant.layout
+        this.repoLayoutRef = defaultLayout
     }
 
     @Override

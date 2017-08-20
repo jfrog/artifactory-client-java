@@ -15,6 +15,8 @@ import org.jfrog.artifactory.client.model.repository.settings.vcs.VcsType
  */
 @EqualsAndHashCode
 class VcsRepositorySettingsImpl extends AbstractRepositorySettings implements VcsRepositorySettings {
+    static defaultLayout = "vcs-default"
+
     VcsGitProvider vcsGitProvider
     VcsType vcsType
     Integer maxUniqueSnapshots
@@ -22,7 +24,7 @@ class VcsRepositorySettingsImpl extends AbstractRepositorySettings implements Vc
     Boolean listRemoteFolderItems
 
     public VcsRepositorySettingsImpl() {
-        this.repoLayoutRef = PackageTypeImpl.vcs.layout
+        this.repoLayoutRef = defaultLayout
     }
 
     @Override

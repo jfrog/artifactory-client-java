@@ -8,9 +8,10 @@ import org.jfrog.artifactory.client.model.repository.settings.PuppetRepositorySe
 
 @EqualsAndHashCode
 class PuppetRepositorySettingsImpl extends AbstractRepositorySettings implements PuppetRepositorySettings {
+    static String defaultLayout = "puppet-default"
 
     public PuppetRepositorySettingsImpl() {
-        this.repoLayoutRef = PackageTypeImpl.puppet.layout
+        this.repoLayoutRef = defaultLayout
     }
 
     @Override

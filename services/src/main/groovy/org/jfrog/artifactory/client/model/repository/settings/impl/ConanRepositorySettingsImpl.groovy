@@ -8,9 +8,10 @@ import org.jfrog.artifactory.client.model.repository.settings.ConanRepositorySet
 
 @EqualsAndHashCode
 class ConanRepositorySettingsImpl extends AbstractRepositorySettings implements ConanRepositorySettings {
+    static String defaultLayout = "conan-default"
 
     public ConanRepositorySettingsImpl() {
-        this.repoLayoutRef = PackageTypeImpl.conan.layout
+        this.repoLayoutRef = defaultLayout
     }
 
     @Override

@@ -16,13 +16,15 @@ import org.jfrog.artifactory.client.model.repository.settings.YumRepositorySetti
 @Deprecated
 @EqualsAndHashCode
 class YumRepositorySettingsImpl extends AbstractRepositorySettings implements YumRepositorySettings {
+    static String defaultLayout = "simple-default"
+
     Integer yumRootDepth
     String groupFileNames
     Boolean calculateYumMetadata
     Boolean listRemoteFolderItems
 
     public YumRepositorySettingsImpl() {
-        this.repoLayoutRef = PackageTypeImpl.yum.layout
+        this.repoLayoutRef = defaultLayout
     }
 
     @Override

@@ -14,13 +14,15 @@ import org.jfrog.artifactory.client.model.repository.settings.docker.DockerApiVe
  */
 @EqualsAndHashCode
 public class DockerRepositorySettingsImpl extends AbstractRepositorySettings implements DockerRepositorySettings{
+    static String defaultLayout = "simple-default"
+
     DockerApiVersion dockerApiVersion
     Boolean enableTokenAuthentication
     Boolean listRemoteFolderItems
     Integer maxUniqueTags
 
     public DockerRepositorySettingsImpl() {
-        this.repoLayoutRef = PackageTypeImpl.docker.layout
+        this.repoLayoutRef = defaultLayout
     }
 
     @Override

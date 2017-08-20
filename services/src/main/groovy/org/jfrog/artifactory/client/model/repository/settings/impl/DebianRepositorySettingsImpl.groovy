@@ -13,11 +13,13 @@ import org.jfrog.artifactory.client.model.repository.settings.DebianRepositorySe
  */
 @EqualsAndHashCode
 class DebianRepositorySettingsImpl extends AbstractRepositorySettings implements DebianRepositorySettings {
+    static String defaultLayout = "simple-default"
+
     Boolean debianTrivialLayout
     Boolean listRemoteFolderItems
 
     public DebianRepositorySettingsImpl() {
-        this.repoLayoutRef = PackageTypeImpl.debian.layout
+        this.repoLayoutRef = defaultLayout
     }
 
     @Override
