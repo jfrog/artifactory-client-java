@@ -19,7 +19,7 @@ public class VcsPackageTypeRepositoryTests extends BaseRepositoryTests {
 
     @Override
     RepositorySettings getRepositorySettings(RepositoryType repositoryType) {
-        if(repositoryType == RepositoryTypeImpl.LOCAL) {
+        if (repositoryType == RepositoryTypeImpl.LOCAL) {
             return null
         }
 

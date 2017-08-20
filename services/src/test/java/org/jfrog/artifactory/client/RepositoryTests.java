@@ -4,6 +4,7 @@ import org.jfrog.artifactory.client.model.*;
 import org.jfrog.artifactory.client.model.repository.settings.RepositorySettings;
 import org.jfrog.artifactory.client.model.repository.settings.RpmRepositorySettings;
 import org.jfrog.artifactory.client.model.repository.settings.impl.GenericRepositorySettingsImpl;
+import org.jfrog.artifactory.client.model.repository.settings.impl.MavenRepositorySettingsImpl;
 import org.jfrog.artifactory.client.model.repository.settings.impl.RpmRepositorySettingsImpl;
 import org.jfrog.artifactory.client.model.xray.settings.impl.XraySettingsImpl;
 
@@ -103,7 +104,7 @@ public class RepositoryTests extends ArtifactoryTestsBase {
 
     @Test(dependsOnMethods = "testCreate")
     public void testUpdate() throws Exception {
-        RepositorySettings genericRepo = new GenericRepositorySettingsImpl();
+        RepositorySettings genericRepo = new MavenRepositorySettingsImpl();
 
         LocalRepository changedRepository = artifactory.repositories().builders().builderFrom(localRepository)
             .description("new_description")
@@ -201,7 +202,7 @@ public class RepositoryTests extends ArtifactoryTestsBase {
         List<String> propertySets = localRepo.getPropertySets();
         assertEquals(propertySets.size(), 1);
         assertEquals(propertySets.get(0), ("artifactory"));
-        assertEquals(localRepo.getRepoLayoutRef(), "simple-default");
+        assertEquals(localRepo.getRepoLayoutRef(), localRepository.getRepoLayoutRef());
     }
 
     @Test(dependsOnMethods = "testCreate")

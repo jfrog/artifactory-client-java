@@ -19,7 +19,7 @@ public enum Privilege {
 
     public static Privilege fromAbbreviation(char abbreviation){
         for (Privilege privilege : values()) {
-            if(privilege.abbreviation == abbreviation){
+            if (privilege.abbreviation == abbreviation) {
                 return privilege;
             }
         }

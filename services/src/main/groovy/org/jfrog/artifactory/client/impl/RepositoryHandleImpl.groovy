@@ -113,7 +113,7 @@ class RepositoryHandleImpl implements RepositoryHandle {
 
     @Override
     UploadableArtifact copyBySha1(String targetPath, String sha1) {
-        if(sha1 == null) {
+        if (sha1 == null) {
             throw new IllegalArgumentException("Sha1 is mandatory - can't be null")
         }
         new UploadableArtifactImpl(repoKey, targetPath, sha1, artifactory)

@@ -43,7 +43,7 @@ public class GeneralRepositoryTests extends BaseRepositoryTests {
             assertThat(excludesPattern, CoreMatchers.is(localRepo.getExcludesPattern()))
             assertThat(includesPattern, CoreMatchers.is(localRepo.getIncludesPattern()))
             assertThat(propertySets, CoreMatchers.is(localRepo.getPropertySets()))
-            assertThat(repoLayoutRef, CoreMatchers.is(localRepo.getRepoLayoutRef()))
+            assertThat(localRepo.getRepoLayoutRef(), CoreMatchers.is(localRepo.getRepoLayoutRef()))
         }
     }
 
@@ -75,7 +75,7 @@ public class GeneralRepositoryTests extends BaseRepositoryTests {
             assertThat(password, CoreMatchers.is(remoteRepo.getPassword()))
             assertThat(propertySets, CoreMatchers.is(remoteRepo.getPropertySets()))
             assertThat(proxy, CoreMatchers.is(remoteRepo.getProxy()))
-            assertThat(repoLayoutRef, CoreMatchers.is(remoteRepo.getRepoLayoutRef()))
+            assertThat(remoteRepo.getRepoLayoutRef(), CoreMatchers.is(remoteRepo.getRepoLayoutRef()))
             assertThat(retrievalCachePeriodSecs, CoreMatchers.is(remoteRepo.getRetrievalCachePeriodSecs()))
             assertThat(shareConfiguration, CoreMatchers.is(remoteRepo.isShareConfiguration()))
             assertThat(socketTimeoutMillis, CoreMatchers.is(remoteRepo.getSocketTimeoutMillis()))
@@ -103,7 +103,7 @@ public class GeneralRepositoryTests extends BaseRepositoryTests {
             assertThat(artifactoryRequestsCanRetrieveRemoteArtifacts, CoreMatchers.is(virtualRepo.isArtifactoryRequestsCanRetrieveRemoteArtifacts()))
             assertThat(excludesPattern, CoreMatchers.is(virtualRepo.getExcludesPattern()))
             assertThat(includesPattern, CoreMatchers.is(virtualRepo.getIncludesPattern()))
-            assertThat(repoLayoutRef, CoreMatchers.is(virtualRepo.getRepoLayoutRef()))
+            assertThat(virtualRepo.getRepoLayoutRef(), CoreMatchers.is(virtualRepo.getRepoLayoutRef()))
             assertThat(repositories.last(), CoreMatchers.is(virtualRepo.getRepositories().last()))
             assertThat(defaultDeploymentRepo, CoreMatchers.is(virtualRepo.getDefaultDeploymentRepo()))
         }

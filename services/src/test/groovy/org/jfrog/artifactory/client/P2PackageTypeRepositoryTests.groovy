@@ -21,7 +21,7 @@ public class P2PackageTypeRepositoryTests extends BaseRepositoryTests {
 
     @Override
     RepositorySettings getRepositorySettings(RepositoryType repositoryType) {
-        if(repositoryType == RepositoryTypeImpl.LOCAL) {
+        if (repositoryType == RepositoryTypeImpl.LOCAL) {
             return null
         }
 

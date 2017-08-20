@@ -44,7 +44,7 @@ public abstract class BaseRepositoryTests extends ArtifactoryTestsBase {
     protected void setUp() {
         if (prepareGenericRepo) {
             RepositorySettings settings = getRepositorySettings(RepositoryTypeImpl.LOCAL)
-            settings?.repoLayout = nextRepoLayout()
+            settings?.repoLayout = "maven-2-default"
 
             XraySettings genericXraySettings = new XraySettingsImpl();
             genericRepo = artifactory.repositories().builders().localRepositoryBuilder()
@@ -63,7 +63,7 @@ public abstract class BaseRepositoryTests extends ArtifactoryTestsBase {
         }
         if (prepareLocalRepo) {
             RepositorySettings settings = getRepositorySettings()
-            settings?.repoLayout = nextRepoLayout()
+            settings?.repoLayout = "maven-2-default"
             localRepo = artifactory.repositories().builders().localRepositoryBuilder()
                 .key("cutsman-repo_${rnd.nextInt()}")
                 .description("description_${rnd.nextInt()}")
@@ -79,9 +79,9 @@ public abstract class BaseRepositoryTests extends ArtifactoryTestsBase {
                 .build()
         }
 
-        if(prepareRemoteRepo) {
+        if (prepareRemoteRepo) {
             RepositorySettings settings = getRepositorySettings()
-            settings?.repoLayout = nextRepoLayout()
+            settings?.repoLayout = "maven-2-default"
             ContentSync contentSync = new ContentSyncImpl();
             remoteRepo = artifactory.repositories().builders().remoteRepositoryBuilder()
                 .key("cutsman-repo_${rnd.nextInt()}")
@@ -120,9 +120,9 @@ public abstract class BaseRepositoryTests extends ArtifactoryTestsBase {
                 .build()
         }
 
-        if(prepareVirtualRepo) {
+        if (prepareVirtualRepo) {
             RepositorySettings settings = getRepositorySettings()
-            settings?.repoLayout = nextRepoLayout()
+            settings?.repoLayout = "maven-2-default"
             artifactory.repositories().create(0, genericRepo)
             def repos = new ArrayList<String>()
             repos.add(genericRepo.getKey())
@@ -149,23 +149,6 @@ public abstract class BaseRepositoryTests extends ArtifactoryTestsBase {
         deleteRepoIfExists(virtualRepo?.getKey())
         //Invoking sequence is important!
         deleteRepoIfExists(genericRepo?.getKey())
-    }
-
-    private String nextRepoLayout() {
-        def layouts = [
-            'bower-default',
-            'gradle-default',
-            'ivy-default',
-            'maven-1-default',
-            'maven-2-default',
-            'npm-default',
-            'nuget-default',
-            'sbt-default',
-            'simple-default',
-            'vcs-default'
-        ]
-
-        layouts.getAt(rnd.nextInt(layouts.size()))
     }
 
     private Collection<String> nextRepos() {

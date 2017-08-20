@@ -79,7 +79,7 @@ public abstract class ArtifactoryTestsBase {
         localRepository = artifactory.repositories().builders().localRepositoryBuilder()
                 .key(localRepositoryKey)
                 .description("new local repository")
-                .repositorySettings(new GenericRepositorySettingsImpl())
+                .repositorySettings(new MavenRepositorySettingsImpl())
                 .propertySets(Arrays.asList("artifactory"))
                 .build();
 

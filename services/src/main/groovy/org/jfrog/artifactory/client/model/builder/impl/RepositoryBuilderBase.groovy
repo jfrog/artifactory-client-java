@@ -129,10 +129,8 @@ abstract class RepositoryBuilderBase<B extends RepositoryBuilder, R extends Repo
 
     @Override
     void setRepoLayout() {
-        if(this.repoLayoutRef == null) {
-            if(settings != null){
-                this.repoLayoutRef = settings.getRepoLayout()
-            }
+        if (this.repoLayoutRef == null && settings != null) {
+            this.repoLayoutRef = settings.getRepoLayout()
         }
     }
 }
