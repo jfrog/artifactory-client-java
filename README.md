@@ -422,7 +422,7 @@ for (String userName : userNames) {
 ##### Creating or Updating Users
 ```
 UserBuilder userBuilder = artifactory.security().builders().userBuilder();
-User user = userBuilder.name("userName)
+User user = userBuilder.name("userName")
     .email("user@mail.com")
     .admin(false)
     .profileUpdatable(true)
