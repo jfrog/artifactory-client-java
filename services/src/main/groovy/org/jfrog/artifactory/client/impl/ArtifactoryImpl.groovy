@@ -115,7 +115,7 @@ class ArtifactoryImpl implements Artifactory {
      * @return artifactory response as per to the request sent
      */
     @Override
-    def <T> T restCall(ArtifactoryRequest request) {
+    <T> T restCall(ArtifactoryRequest request, Class responseClass = null) {
 
         def responseType = Enum.valueOf(ContentType.class, request.getResponseType().getText())
         def requestType = Enum.valueOf(ContentType.class, request.getRequestType().getText())
@@ -123,18 +123,18 @@ class ArtifactoryImpl implements Artifactory {
 
         switch (request.getMethod()) {
             case (ArtifactoryRequest.Method.GET):
-                get(requestPath, request.getQueryParams(), responseType, null, request.getHeaders())
+                get(requestPath, request.getQueryParams(), responseType, responseClass, request.getHeaders())
                 break
             case (ArtifactoryRequest.Method.POST):
-                post(requestPath, request.getQueryParams(), responseType, null, requestType, request.getBody(),
+                post(requestPath, request.getQueryParams(), responseType, responseClass, requestType, request.getBody(),
                         request.getHeaders())
                 break
             case (ArtifactoryRequest.Method.PUT):
-                put(requestPath, request.getQueryParams(), responseType, null, requestType, request.getBody(),
+                put(requestPath, request.getQueryParams(), responseType, responseClass, requestType, request.getBody(),
                         request.getHeaders())
                 break
             case (ArtifactoryRequest.Method.DELETE):
-                delete(requestPath, request.getQueryParams(), responseType, null, request.getHeaders())
+                delete(requestPath, request.getQueryParams(), responseType, responseClass, request.getHeaders())
                 break
             default:
                 throw new IllegalArgumentException("HTTP method invalid.")
