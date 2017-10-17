@@ -30,6 +30,8 @@ public interface Artifactory extends ApiInterface {
 
     ArtifactorySystem system();
 
+    <T> T restCall(ArtifactoryRequest request, Class responseClass);
+
     <T> T restCall(ArtifactoryRequest request);
 
     void close();

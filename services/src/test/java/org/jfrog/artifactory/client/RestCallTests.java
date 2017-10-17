@@ -51,6 +51,19 @@ public class RestCallTests extends ArtifactoryTestsBase {
     }
 
     @Test
+    public void testRequestWithResponseClass() {
+        ArtifactoryRequest versionRequest = new ArtifactoryRequestImpl()
+                .apiUrl("api/system/version")
+                .responseType(ArtifactoryRequest.ContentType.JSON)
+                .method(ArtifactoryRequest.Method.GET);
+        Object versionRequestResponse = artifactory.restCall(versionRequest, Map.class);
+        assertNotNull(versionRequestResponse);
+        assertTrue(versionRequestResponse instanceof Map);
+        assertTrue(((Map)versionRequestResponse).containsKey("version"));
+        assertTrue(((Map)versionRequestResponse).containsKey("revision"));
+    }
+
+    @Test
     public void testRequestWithTextBody() throws Exception {
         ArtifactoryRequest gpgRequest = new ArtifactoryRequestImpl()
                 .method(ArtifactoryRequest.Method.PUT)
