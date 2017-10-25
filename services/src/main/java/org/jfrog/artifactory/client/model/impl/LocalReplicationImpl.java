@@ -17,10 +17,10 @@ public class LocalReplicationImpl implements LocalReplication {
     private String pathPrefix;
     private String repoKey;
 
-    public LocalReplicationImpl() {
+    private LocalReplicationImpl() {
     }
 
-    LocalReplicationImpl(String url, long socketTimeoutMillis, String username, String password,
+    public LocalReplicationImpl(String url, long socketTimeoutMillis, String username, String password,
         boolean enableEventReplication, boolean syncStatistics, boolean enabled, String cronExp, boolean syncDeletes,
         boolean syncProperties, String pathPrefix, String repoKey) {
 
