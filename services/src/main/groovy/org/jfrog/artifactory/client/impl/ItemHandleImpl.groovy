@@ -1,12 +1,13 @@
 package org.jfrog.artifactory.client.impl
 
+import com.fasterxml.jackson.core.type.TypeReference
 import groovyx.net.http.HttpResponseException
+import org.apache.http.entity.ContentType
 import org.jfrog.artifactory.client.ItemHandle
 import org.jfrog.artifactory.client.PropertiesHandler
+import org.jfrog.artifactory.client.impl.util.Util
 import org.jfrog.artifactory.client.model.*
 import org.jfrog.artifactory.client.model.impl.*
-
-import static groovyx.net.http.ContentType.JSON
 import static java.util.Collections.unmodifiableSet
 /**
  *
@@ -20,7 +21,7 @@ class ItemHandleImpl implements ItemHandle {
     private ArtifactoryImpl artifactory
     private String repo
     private String path
-    private Class<? extends Item>  itemType
+    private Class<? extends Item> itemType
 
     ItemHandleImpl(ArtifactoryImpl artifactory, String baseApiPath, String repo, String path, Class itemType) {
         this.artifactory = artifactory
@@ -34,7 +35,10 @@ class ItemHandleImpl implements ItemHandle {
         assert artifactory
         assert repo
         assert path
-        artifactory.get(baseApiPath + "/storage/$repo/$path", JSON, itemType)
+        if (itemType.getName().contains("Folder")) {
+            return artifactory.get(baseApiPath + "/storage/$repo/$path", FolderImpl, Folder);
+        }
+        return artifactory.get(baseApiPath + "/storage/$repo/$path", FileImpl, File)
     }
 
     public Map<String, List<String>> getProperties(String... properties) {
@@ -42,7 +46,11 @@ class ItemHandleImpl implements ItemHandle {
         assert repo
         assert path
         try {
-            artifactory.get(baseApiPath + "/storage/$repo/$path", [properties: properties.join(',')], JSON, Map.class)?.properties
+            String queryPath = buildParams(properties);
+            String result = artifactory.get(baseApiPath + "/storage/$repo/$path" + queryPath, String, null);
+            Map<String, List<String>> map = Util.parseObjectWithTypeReference(result, new TypeReference<Map<String, Object>>() {
+            });
+            return map.get("properties");
         } catch (HttpResponseException e) {
             if (e.statusCode == 404) {
                 return [:]
@@ -70,7 +78,8 @@ class ItemHandleImpl implements ItemHandle {
         assert repo
         assert path
         try {
-            artifactory.delete(baseApiPath + "/storage/$repo/$path", [properties: properties.join(',')])?.properties
+            String queryPath = buildParams(properties)
+            artifactory.delete(baseApiPath + "/storage/$repo/$path" + queryPath)?.properties;
         } catch (HttpResponseException e) {
             if (e.statusCode == 404) {
                 return [:]
@@ -81,8 +90,16 @@ class ItemHandleImpl implements ItemHandle {
 
     @Override
     Set<ItemPermission> effectivePermissions() {
-        Map json = artifactory.get(baseApiPath + "/storage/${repo}/${path}", ['permissions': null], JSON, Map) as Map
+        Map json = artifactory.get(baseApiPath + "/storage/${repo}/${path}?permissions", HashMap, Map);
         unmodifiableSet(mapToItemPermissions(json.principals.users, User) + mapToItemPermissions(json.principals.groups, Group) as Set<? extends ItemPermission>) as Set<ItemPermission>
+    }
+
+    private String buildParams(String... properties) {
+        StringBuilder queryPath = new StringBuilder("?properties=");
+        for (String property : properties) {
+            queryPath.append(Util.encodeParams(property)).append(",");
+        }
+        queryPath.toString()
     }
 
 
@@ -101,7 +118,8 @@ class ItemHandleImpl implements ItemHandle {
         assert repo
         assert path
         try {
-            artifactory.delete(baseApiPath + "/storage/$repo/$path", [properties: property])?.properties
+            String queryPath = "?properties=" + property;
+            artifactory.delete(baseApiPath + "/storage/$repo/$path" + queryPath.toString())?.properties;
         } catch (HttpResponseException e) {
             if (e.statusCode == 404) {
                 return [:]
@@ -122,15 +140,17 @@ class ItemHandleImpl implements ItemHandle {
 
     @Override
     Folder create() {
-        Folder folder = artifactory.put("/$repo/$path/", [:], JSON, FolderImpl)
+        Folder folder = artifactory.put("/$repo/$path/", ContentType.APPLICATION_JSON, null, new HashMap<String, String>(), null, -1, FolderImpl, Folder )
         folder.createdBy = artifactory.username
         folder
-
     }
 
     private ItemHandle moveOrCopy(String toRepo, String toPath, String operation) {
-        CopyMoveResultReport message = artifactory.post(baseApiPath + "/$operation/$repo/$path", [to: "$toRepo/$toPath"], JSON, CopyMoveResultReportImpl) as CopyMoveResultReport
-        if (!message.getMessages().get(0).getLevel().equals('INFO')) {
+        StringBuilder queryPath = new StringBuilder("?to=");
+        queryPath.append(toRepo).append("/").append(toPath);
+        CopyMoveResultReportImpl message = (CopyMoveResultReportImpl)artifactory.post(baseApiPath + "/$operation/$repo/$path" + queryPath.toString(),
+                                                    ContentType.APPLICATION_JSON, null, null, CopyMoveResultReportImpl, CopyMoveResultReport)
+        if (!message.getMessages().get(0).getLevel().contains('INFO')) {
             throw new CopyMoveException(message)
         }
         new ItemHandleImpl(artifactory, baseApiPath, toRepo, toPath, folder ? FolderImpl : FileImpl)

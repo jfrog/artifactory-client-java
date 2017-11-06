@@ -1,11 +1,13 @@
 package org.jfrog.artifactory.client.model.impl;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.jfrog.artifactory.client.model.Subject;
 
 /**
  * @author jbaruch
  * @since 26/11/12
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public abstract class SubjectImpl implements Subject {
 
     private final String name;

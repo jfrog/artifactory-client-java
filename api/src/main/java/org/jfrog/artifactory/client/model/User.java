@@ -1,5 +1,6 @@
 package org.jfrog.artifactory.client.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.Collection;
 import java.util.Date;
 
@@ -9,11 +10,14 @@ import java.util.Date;
  *
  * @author freds
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public interface User extends Subject {
 
     String getEmail();
 
     boolean isAdmin();
+
+    boolean isGroupAdmin();
 
     boolean isProfileUpdatable();
 

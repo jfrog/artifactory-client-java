@@ -1,7 +1,7 @@
 package org.jfrog.artifactory.client.model.builder;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.jfrog.artifactory.client.model.Plugin;
-
 import java.util.List;
 import java.util.Map;
 
@@ -9,6 +9,7 @@ import java.util.Map;
  * @author jbaruch
  * @since 11/12/12
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public interface PluginBuilder {
     PluginBuilder name(String name);
 

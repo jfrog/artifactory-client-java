@@ -24,7 +24,8 @@ public class SystemTests extends ArtifactoryTestsBase {
         assertNotNull(version.getVersion());
         assertTrue(version.getVersion().contains("."));
         String revision = version.getRevision();
-        if (revision.equals("${buildNumber.prop}")) {
+        // From version 5.5.0, running a snapshot produced also dev revision.
+        if (revision.equals("${buildNumber.prop}") || revision.equals("dev") ) {
             assertTrue(version.getVersion().contains("-SNAPSHOT"));
         } else {
             int rev = Integer.parseInt(revision);

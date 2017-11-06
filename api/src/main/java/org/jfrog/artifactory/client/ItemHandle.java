@@ -1,5 +1,6 @@
 package org.jfrog.artifactory.client;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.jfrog.artifactory.client.model.Folder;
 import org.jfrog.artifactory.client.model.Item;
 import org.jfrog.artifactory.client.model.ItemPermission;
@@ -12,6 +13,7 @@ import java.util.Set;
  * @author jbaruch
  * @since 12/08/12
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public interface ItemHandle {
 
     <T extends Item> T info();

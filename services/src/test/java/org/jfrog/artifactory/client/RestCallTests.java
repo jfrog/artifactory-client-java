@@ -8,7 +8,6 @@ import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -29,7 +28,7 @@ public class RestCallTests extends ArtifactoryTestsBase {
     }
 
     @Test
-    public void testRequestWithTextResponse() {
+    public void testRequestWithTextResponse() throws Exception {
         ArtifactoryRequest systemInfo = new ArtifactoryRequestImpl()
                 .method(ArtifactoryRequest.Method.GET)
                 .apiUrl("api/system/ping")
@@ -39,7 +38,7 @@ public class RestCallTests extends ArtifactoryTestsBase {
     }
 
     @Test
-    public void testRequestWithJsonResponse() {
+    public void testRequestWithJsonResponse() throws Exception {
         ArtifactoryRequest versionRequest = new ArtifactoryRequestImpl()
                 .apiUrl("api/system/version")
                 .responseType(ArtifactoryRequest.ContentType.JSON)
@@ -63,7 +62,7 @@ public class RestCallTests extends ArtifactoryTestsBase {
     }
 
     @Test
-    public void testRequestWithJsonArrayResponse() {
+    public void testRequestWithJsonArrayResponse() throws Exception {
         ArtifactoryRequest repositoryRequest = new ArtifactoryRequestImpl()
                 .apiUrl("api/repositories")
                 .method(ArtifactoryRequest.Method.GET)
@@ -72,23 +71,23 @@ public class RestCallTests extends ArtifactoryTestsBase {
         assertNotNull(response);
     }
 
-    @Test(dependsOnMethods = {"testGetBuildInfo"})
-    public void testPostRequestNoBody() {
-        String name = (String) buildBody.get("name");
-        String response = renameBuild(name, "new-name");
-        assertTrue(response.contains("Build renaming of '" + name + "' to 'new-name' was successfully started."));
+    @Test
+    public void testPostRequestNoBody() throws Exception {
+        String response = executeApi("block");
+        assertTrue(response.contains("Successfully blocked all replications, no replication will be triggered."));
+        response = executeApi("unblock");
+        assertTrue(response.contains("Successfully unblocked all replications."));
     }
 
-    private String renameBuild(String oldName, String newName) {
+    private String executeApi(String command) throws Exception {
         ArtifactoryRequest renameRequest = new ArtifactoryRequestImpl()
                 .method(ArtifactoryRequest.Method.POST)
-                .apiUrl("api/build/rename/" + oldName)
-                .responseType(ArtifactoryRequest.ContentType.TEXT)
-                .addQueryParam("to", newName);
+                .apiUrl("api/system/replications/" + command)
+                .responseType(ArtifactoryRequest.ContentType.TEXT);
         return artifactory.restCall(renameRequest);
     }
 
-    private void uploadBuild() {
+    private void uploadBuild() throws Exception {
         ArtifactoryRequest buildRequest = new ArtifactoryRequestImpl()
                 .method(ArtifactoryRequest.Method.PUT)
                 .requestType(ArtifactoryRequest.ContentType.JSON)
@@ -99,7 +98,7 @@ public class RestCallTests extends ArtifactoryTestsBase {
     }
 
     @Test
-    public void testGetBuildInfo() {
+    public void testGetBuildInfo() throws Exception {
         uploadBuild();
         ArtifactoryRequest buildInfoRequest = new ArtifactoryRequestImpl()
                 .method(ArtifactoryRequest.Method.GET)
@@ -113,20 +112,19 @@ public class RestCallTests extends ArtifactoryTestsBase {
         assertTrue(buildInfo.containsKey("number"));
     }
 
-    @Test(dependsOnMethods = {"testPostRequestNoBody"})
-    public void testDeleteBuild() {
-        String deleteResponse = deleteBuild("new-name");
-        assertTrue(deleteResponse.contains("All 'new-name' builds have been deleted successfully"));
+    @Test(dependsOnMethods = {"testGetBuildInfo"})
+    public void testDeleteBuild() throws Exception {
+        String deleteResponse = deleteBuild("TestBuild");
+        assertTrue(deleteResponse.contains("All 'TestBuild' builds have been deleted successfully"));
     }
-
     @Test
-    public void testGetPermissionTargets() {
+    public void testGetPermissionTargets() throws Exception {
         List response = getPermissionTargets();
         assertNotNull(response);
     }
 
     @Test
-    public void testCreateDeletePermissionTarget() throws IOException {
+    public void testCreateDeletePermissionTarget() throws Exception {
         final String permissionName = "java-client-tests-permission";
         Map<String, Object> map = createPermissionTargetBody(permissionName);
 
@@ -153,7 +151,7 @@ public class RestCallTests extends ArtifactoryTestsBase {
         assertFalse(findPermissionInLiat(permissions, permissionName));
     }
 
-    private String deleteBuild(String name) {
+    private String deleteBuild(String name) throws Exception {
         ArtifactoryRequest deleteBuild = new ArtifactoryRequestImpl()
                 .apiUrl("api/build/" + name)
                 .method(ArtifactoryRequest.Method.DELETE)
@@ -164,7 +162,7 @@ public class RestCallTests extends ArtifactoryTestsBase {
         return artifactory.restCall(deleteBuild);
     }
 
-    private List getPermissionTargets() {
+    private List getPermissionTargets() throws Exception {
         ArtifactoryRequest req = new ArtifactoryRequestImpl()
                 .method(ArtifactoryRequest.Method.GET)
                 .apiUrl("api/security/permissions")

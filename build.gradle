@@ -39,6 +39,12 @@ subprojects {
     targetCompatibility = 1.7
 
     final env = getenv()
+    dependencies {
+        compile(group: 'org.jfrog.common', name: 'jfrog-http-client', version: '1.2.9')
+        compile 'com.fasterxml.jackson.core:jackson-core:2.9.0.pr3'
+        compile 'com.fasterxml.jackson.core:jackson-databind:2.4.6'
+        compile 'com.fasterxml.jackson.core:jackson-annotations:2.4.6'
+    }
 
     artifactory {
         contextUrl = 'https://oss.jfrog.org'
@@ -73,7 +79,7 @@ subprojects {
 
     // add javadoc/source jar tasks as artifacts
     artifacts {
-        archives sourcesJar, 
+        archives sourcesJar,
 			javadocJar,
 			jar
     }

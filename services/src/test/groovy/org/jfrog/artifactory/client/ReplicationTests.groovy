@@ -6,6 +6,7 @@ import org.jfrog.artifactory.client.model.impl.LocalReplicationImpl
 import org.jfrog.artifactory.client.model.repository.settings.RepositorySettings
 import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
+import static junit.framework.Assert.assertTrue
 
 public class ReplicationTests extends BaseRepositoryTests {
 
@@ -46,7 +47,7 @@ public class ReplicationTests extends BaseRepositoryTests {
         replications.createOrReplace(replication1)
     }
 
-    @Test(groups = "replication", expectedExceptions = [ HttpResponseException ], expectedExceptionsMessageRegExp = "Bad Request")
+    @Test(groups = "replication")
     void localRepositoryWithNoReplication_DeleteReplications() {
 
         // === Setup === //
@@ -58,6 +59,11 @@ public class ReplicationTests extends BaseRepositoryTests {
         def replications = artifactory.repository(localRepo.getKey()).replications
 
         // This call throws a groovyx.net.http.HttpResponseException with the message "Bad Request"
-        replications.delete()
+        try {
+            replications.delete()
+        } catch (Exception e) {
+            assertTrue(e instanceof HttpResponseException);
+            assertTrue(((HttpResponseException) e).getStatusCode() == 400);
+        }
     }
 }

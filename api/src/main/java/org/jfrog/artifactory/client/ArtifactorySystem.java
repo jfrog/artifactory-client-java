@@ -1,5 +1,6 @@
 package org.jfrog.artifactory.client;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.jfrog.artifactory.client.model.SystemInfo;
 import org.jfrog.artifactory.client.model.Version;
 
@@ -10,6 +11,7 @@ import org.jfrog.artifactory.client.model.Version;
  *
  * @author quidryan
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public interface ArtifactorySystem {
 
     boolean ping();

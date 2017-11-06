@@ -1,11 +1,13 @@
 package org.jfrog.artifactory.client.impl
 
-import groovyx.net.http.ContentType
 import groovyx.net.http.HttpResponseException
 import org.jfrog.artifactory.client.Artifactory
 import org.jfrog.artifactory.client.PropertyFilters
 import org.jfrog.artifactory.client.Searches
 import org.jfrog.artifactory.client.model.RepoPath
+import org.jfrog.artifactory.client.model.SearchResult
+import org.jfrog.artifactory.client.model.SearchResultImpl
+import org.jfrog.artifactory.client.model.SearchResultReport
 import org.jfrog.artifactory.client.model.impl.RepoPathImpl
 
 /**
@@ -112,12 +114,21 @@ class SearchesImpl implements Searches {
             query.repos = reposFilter.join(',')
         }
         try {
-            def result = artifactory.get("${getSearcherApi()}$url", query, ContentType.JSON)
-            result.results.collect {
-                String path = it.uri.split(baseApiPath + '/storage/')[1]
-                String repo = path.split('/')[0]
-                new RepoPathImpl(repo, path - (repo + '/'))
+            StringBuilder path = new StringBuilder();
+            path.append("?");
+            for (Map.Entry<String, Object> entry : query.entrySet()) {
+                path.append(entry.getKey()).append("=").append(entry.getValue()).append("&")
             }
+            SearchResultImpl searchResults = artifactory.get("${getSearcherApi()}$url/$path", SearchResultImpl, SearchResult)
+            List<RepoPath> pathList = new ArrayList<>();
+            for (SearchResultReport searchResultReport : searchResults.getResults()) {
+                String uri = searchResultReport.getUri();
+                String fullPath = uri.split(baseApiPath + '/storage/')[1]
+                String repo = fullPath.substring(0,fullPath.indexOf('/'))
+                pathList.add(new RepoPathImpl(repo, fullPath - (repo + '/')))
+            }
+
+            return pathList;
         } catch (HttpResponseException e) {
             return []
         }
@@ -128,12 +139,12 @@ class SearchesImpl implements Searches {
             query.repos = reposFilter.join(',')
         }
         try {
-            def contentType = ContentType.JSON
-            if (url.equals("latestVersion")) {
-                contentType = ContentType.TEXT
+            StringBuilder path = new StringBuilder();
+            path.append("?");
+            for (Map.Entry<String, Object> entry : query.entrySet()) {
+                path.append(entry.getKey()).append("=").append(entry.getValue()).append("&")
             }
-            def result = artifactory.get("${getSearcherApi()}$url", query, contentType)
-            result
+            return artifactory.get("${getSearcherApi()}$url/$path", String, null)
         } catch (HttpResponseException e) {
             return ""
         }

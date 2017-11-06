@@ -1,8 +1,11 @@
 package org.jfrog.artifactory.client.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 /**
  * Created by Ivan Verhun on 18/12/2015.
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public interface SystemInfo {
 
     long getCommittedVirtualMemorySize();

@@ -1,5 +1,6 @@
 package org.jfrog.artifactory.client.model.repository.settings;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.jfrog.artifactory.client.model.SnapshotVersionBehavior;
 import org.jfrog.artifactory.client.model.repository.LocalRepoChecksumPolicyType;
 import org.jfrog.artifactory.client.model.repository.PomCleanupPolicy;
@@ -8,6 +9,7 @@ import org.jfrog.artifactory.client.model.repository.RemoteRepoChecksumPolicyTyp
 /**
  * @author Ivan Vasylivskyi (ivanvas@jfrog.com)
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public interface MavenRepositorySettings extends RepositorySettings {
 
     // ** local ** //

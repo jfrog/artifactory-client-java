@@ -1,9 +1,9 @@
 package org.jfrog.artifactory.client.model.impl;
 
+import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
+import com.fasterxml.jackson.annotation.JsonInclude;
 import java.util.Map;
-
 import org.jfrog.artifactory.client.model.Repository;
 import org.jfrog.artifactory.client.model.repository.settings.RepositorySettings;
 import org.jfrog.artifactory.client.model.repository.settings.XraySettings;
@@ -21,10 +21,11 @@ public abstract class RepositoryBase implements Repository {
     private String excludesPattern;
     protected String repoLayoutRef;
     @JsonIgnore
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     protected RepositorySettings settings;
     @JsonIgnore
     protected XraySettings xraySettings;
-    @JsonIgnore
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     protected Map<String, Object> customProperties;
 
     protected RepositoryBase() {
@@ -153,6 +154,7 @@ public abstract class RepositoryBase implements Repository {
         this.repoLayoutRef = repoLayoutRef;
     }
 
+    @Override
     public RepositorySettings getRepositorySettings() {
         return settings;
     }
@@ -171,6 +173,7 @@ public abstract class RepositoryBase implements Repository {
     }
 
     @Override
+    @JsonAnyGetter
     public Map<String, Object> getCustomProperties() {
         return customProperties;
     }

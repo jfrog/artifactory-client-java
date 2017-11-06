@@ -1,10 +1,12 @@
 package org.jfrog.artifactory.client.model.builder;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.jfrog.artifactory.client.model.Group;
 
 /**
  * Created by Jeka on 06/12/13.
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public interface GroupBuilder {
 
     GroupBuilder name(String name);
