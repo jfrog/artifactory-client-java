@@ -3,6 +3,7 @@ apply plugin: 'eu.appsatori.fatjar'
 
 dependencies {
     compile project(':artifactory-java-client-api')
+    compile project(':artifactory-java-client-httpClient')
     compile addGroovy('groovy')
     compile addGroovy('groovy-json')
     compile addGroovy('groovy-xml')

@@ -3,9 +3,9 @@ package org.jfrog.artifactory.client;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.jfrog.artifactory.client.httpClient.http.HttpBuilderBase;
 import org.jfrog.artifactory.client.impl.ArtifactoryImpl;
 import org.jfrog.artifactory.client.impl.util.ArtifactoryHttpClient;
-import org.jfrog.client.http.HttpBuilderBase;
 
 import java.io.IOException;
 import java.io.InputStream;

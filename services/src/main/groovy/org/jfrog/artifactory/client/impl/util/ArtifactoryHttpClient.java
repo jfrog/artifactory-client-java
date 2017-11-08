@@ -1,7 +1,7 @@
 package org.jfrog.artifactory.client.impl.util;
 
-import org.jfrog.client.http.HttpBuilder;
-import org.jfrog.client.http.auth.PreemptiveAuthInterceptor;
+import org.jfrog.artifactory.client.httpClient.http.HttpBuilder;
+import org.jfrog.artifactory.client.httpClient.http.auth.PreemptiveAuthInterceptor;
 
 /**
  * @author Alexei Vainshtein
