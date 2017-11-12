@@ -35,7 +35,11 @@ This section includes a few usage examples of the Java client APIs from your app
 
 #### Setting up Artifactory
 ```
-Artifactory artifactory = ArtifactoryClient.create("ArtifactoryUrl", "username", "password");
+Artifactory artifactory = ArtifactoryClientBuilder.create()
+    .setUrl("ArtifactoryUrl")
+    .setUsername("username")
+    .setPassword("password")
+    .build();
 ```
 #### Uploading and downloading artifacts
 
