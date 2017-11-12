@@ -1,5 +1,6 @@
 package org.jfrog.artifactory.client.model.builder;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.jfrog.artifactory.client.model.ContentSync;
 import org.jfrog.artifactory.client.model.RemoteRepository;
 
@@ -7,6 +8,7 @@ import org.jfrog.artifactory.client.model.RemoteRepository;
  * @author jbaruch
  * @since 13/08/12
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public interface RemoteRepositoryBuilder extends NonVirtualRepositoryBuilder<RemoteRepositoryBuilder, RemoteRepository> {
 
     RemoteRepositoryBuilder url(String url);

@@ -1,5 +1,6 @@
 package org.jfrog.artifactory.client.model.impl;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.jfrog.artifactory.client.model.Folder;
 import org.jfrog.artifactory.client.model.Item;
@@ -15,6 +16,7 @@ public class FolderImpl extends ItemImpl implements Folder {
 
     private Date created;
     private String createdBy;
+    @JsonIgnore
     private List<Item> children;
 
     public FolderImpl(String uri, String metadataUri, Date lastModified, String modifiedBy, Date lastUpdated, Date created, String createdBy, List<Item> children) {

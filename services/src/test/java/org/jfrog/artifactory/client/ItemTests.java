@@ -1,6 +1,5 @@
 package org.jfrog.artifactory.client;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import groovyx.net.http.HttpResponseException;
 import org.jfrog.artifactory.client.impl.ArtifactoryRequestImpl;
 import org.jfrog.artifactory.client.impl.CopyMoveException;
@@ -58,7 +57,7 @@ public class ItemTests extends ArtifactoryTestsBase {
     }
 
     @Test(dependsOnMethods = "testFileInfo")
-    public void testFileInfoWithSha256() {
+    public void testFileInfoWithSha256() throws Exception {
         String path = "junit/junit/4.10/junit-4.10-sources.jar";
         calcSha256ForItem(getJcenterCacheName(), path);
         File file = artifactory.repository(getJcenterCacheName()).file(path).info();
@@ -102,12 +101,12 @@ public class ItemTests extends ArtifactoryTestsBase {
         assertEquals(multi.size(), 2);
         assertTrue(multi.contains("a") && multi.contains("b"));
 
-        file.properties().addProperty("label", "<label for=\"male\">Male, | And Female = Love</label>").doSet();
+        file.properties().addProperty("label", "<label for\\=\"male\">Male\\, \\| And Female \\= Love</label>").doSet();
         List<String> specialChars = file.getPropertyValues("label");
         assertEquals(specialChars.size(), 1);
         assertTrue(specialChars.contains("<label for=\"male\">Male, | And Female = Love</label>"));
 
-        file.properties().addProperty("testName", "<b>NetApp FAS/V-Series Storage Replication Adapter</b><br/>Version 2.0.1 | Released 09/10/2012").doSet();
+        file.properties().addProperty("testName", "<b>NetApp FAS/V-Series Storage Replication Adapter</b><br/>Version 2.0.1 \\| Released 09/10/2012").doSet();
         List<String> pipeTestValues = file.getPropertyValues("testName");
         assertEquals(pipeTestValues.size(), 1);
         assertTrue(pipeTestValues.contains("<b>NetApp FAS/V-Series Storage Replication Adapter</b><br/>Version 2.0.1 | Released 09/10/2012"));
@@ -256,22 +255,14 @@ public class ItemTests extends ArtifactoryTestsBase {
         deleteRepoIfExists(NEW_LOCAL_TO);
     }
 
-    private void calcSha256ForItem(String repoName, String path) {
-        ObjectMapper mapper = new ObjectMapper();
-        Map<String, Object> map;
-        try {
-            map = mapper.readValue(
-                    "{\"repoKey\":\""+ repoName +"\", \"path\":\""+path+"\"}", Map.class
-            );
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    private void calcSha256ForItem(String repoName, String path) throws Exception {
+        String content = "{\"repoKey\":\""+ repoName +"\", \"path\":\""+path+"\"}";
 
         ArtifactoryRequest request = new ArtifactoryRequestImpl()
                 .apiUrl("api/checksum/sha256")
                 .method(ArtifactoryRequest.Method.POST)
                 .requestType(ArtifactoryRequest.ContentType.JSON)
-                .requestBody(map);
+                .requestBody(content);
 
         artifactory.restCall(request);
     }

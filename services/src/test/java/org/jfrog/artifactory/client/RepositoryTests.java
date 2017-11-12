@@ -1,8 +1,8 @@
 package org.jfrog.artifactory.client;
 
+import groovyx.net.http.HttpResponseException;
 import org.jfrog.artifactory.client.model.*;
 import org.jfrog.artifactory.client.model.repository.settings.RepositorySettings;
-import org.jfrog.artifactory.client.model.repository.settings.RpmRepositorySettings;
 import org.jfrog.artifactory.client.model.repository.settings.impl.GenericRepositorySettingsImpl;
 import org.jfrog.artifactory.client.model.repository.settings.impl.MavenRepositorySettingsImpl;
 import org.jfrog.artifactory.client.model.repository.settings.impl.RpmRepositorySettingsImpl;
@@ -98,7 +98,8 @@ public class RepositoryTests extends ArtifactoryTestsBase {
         try {
             artifactory.repository(localRepository.getKey()).folder("myFolder?").create();
         } catch (Exception e) {
-            assertTrue(e.getMessage().contains("Internal Server Error"));
+            assertTrue(e instanceof HttpResponseException);
+            assertTrue(((HttpResponseException)e).getStatusCode() == 500);
         }
     }
 

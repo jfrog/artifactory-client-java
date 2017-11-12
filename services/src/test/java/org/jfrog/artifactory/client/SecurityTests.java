@@ -17,6 +17,7 @@ import java.util.Set;
 
 import static junit.framework.Assert.*;
 import static org.jfrog.artifactory.client.model.Privilege.*;
+import static org.testng.Assert.assertTrue;
 
 /**
  * @author freds
@@ -63,7 +64,8 @@ public class SecurityTests extends ArtifactoryTestsBase {
         try {
             artifactory.security().user("blablabla");
         } catch (Exception e) {
-            assertEquals("Not Found", e.getMessage());
+            assertTrue(e instanceof HttpResponseException);
+            assertTrue(((HttpResponseException) e).getStatusCode() == 404);
         }
     }
 
@@ -78,7 +80,8 @@ public class SecurityTests extends ArtifactoryTestsBase {
         try {
             artifactory.security().group("blalbabla");
         } catch (Exception e) {
-            assertEquals("Not Found", e.getMessage());
+            assertTrue(e instanceof HttpResponseException);
+            assertTrue(((HttpResponseException) e).getStatusCode() == 404);
         }
     }
 
@@ -187,7 +190,7 @@ public class SecurityTests extends ArtifactoryTestsBase {
         artifactory.security().createOrUpdateGroup(group);
         Group group1 = artifactory.security().group(GROUP_NAME);
         assertEquals(group.getDescription(), group1.getDescription());
-        assertEquals("group should be internal by default", "artifactory", group1.getRealm());
+        assertEquals("group should be internal by default", "internal", group1.getRealm());
     }
 
     @Test

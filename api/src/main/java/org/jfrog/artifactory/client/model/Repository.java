@@ -1,7 +1,9 @@
 package org.jfrog.artifactory.client.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import java.util.Map;
-
 import org.jfrog.artifactory.client.model.repository.settings.RepositorySettings;
 import org.jfrog.artifactory.client.model.repository.settings.XraySettings;
 
@@ -9,6 +11,12 @@ import org.jfrog.artifactory.client.model.repository.settings.XraySettings;
  * @author jbaruch
  * @since 30/07/12
  */
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "rclass")
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = LocalRepository.class, name = "local"),
+        @JsonSubTypes.Type(value = RemoteRepository.class, name = "remote"),
+        @JsonSubTypes.Type(value = VirtualRepository.class, name = "virtual") })
+@JsonIgnoreProperties(ignoreUnknown = true)
 public interface Repository {
     String MAVEN_2_REPO_LAYOUT = "maven-2-default";
 

@@ -1,13 +1,10 @@
 package org.jfrog.artifactory.client.impl
 
-import com.fasterxml.jackson.core.type.TypeReference
-import groovyx.net.http.ContentType
-import org.jfrog.artifactory.client.model.SystemInfo
-import org.jfrog.artifactory.client.model.impl.SystemInfoImpl
-
-import static groovyx.net.http.ContentType.*
+import org.apache.http.entity.ContentType
 import org.jfrog.artifactory.client.ArtifactorySystem
+import org.jfrog.artifactory.client.model.SystemInfo
 import org.jfrog.artifactory.client.model.Version
+import org.jfrog.artifactory.client.model.impl.SystemInfoImpl
 import org.jfrog.artifactory.client.model.impl.VersionImpl
 
 /**
@@ -28,32 +25,31 @@ class ArtifactorySystemImpl implements ArtifactorySystem {
     @Override
     boolean ping() {
         try {
-            artifactory.get(getSystemPingApi(), [:], TEXT)
+            artifactory.get(getSystemPingApi(), String, null);
             return true // No Exception thrown
-        } catch(IOException ioe) {
+        } catch (IOException ioe) {
             return false
         }
     }
 
     @Override
     String configuration() {
-        def reader = artifactory.get(getSystemConfirmationApi(), [:], ContentType.XML, String)
-        return reader
+        return artifactory.get(getSystemConfirmationApi(), String, null);
     }
 
     @Override
     void configuration(String xml) {
-        artifactory.post(getSystemConfirmationApi(), [:], ContentType.TEXT, null, ContentType.XML, xml)
+        artifactory.post(getSystemConfirmationApi(), ContentType.APPLICATION_XML, xml, null, String, null)
     }
 
     @Override
     Version version() {
-        artifactory.get(getSystemVersionApi(), JSON, new TypeReference<VersionImpl>() {})
+        return artifactory.get(getSystemVersionApi(), VersionImpl, Version);
     }
 
     @Override
     SystemInfo info() {
-        artifactory.get(getSystemInfoApi(), JSON, new TypeReference<SystemInfoImpl>() {})
+        return artifactory.get(getSystemInfoApi(), SystemInfoImpl, SystemInfo);
     }
 
     private String getSystemVersionApi() {

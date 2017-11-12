@@ -1,5 +1,6 @@
 package org.jfrog.artifactory.client;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.Map;
 
 /**
@@ -7,6 +8,7 @@ import java.util.Map;
  *
  * @author Aviad Shikloshi
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public interface ArtifactoryRequest {
 
     enum Method { GET, POST, PUT, DELETE }

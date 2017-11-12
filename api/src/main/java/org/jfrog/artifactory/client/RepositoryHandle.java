@@ -1,9 +1,9 @@
 package org.jfrog.artifactory.client;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.jfrog.artifactory.client.model.ItemPermission;
 import org.jfrog.artifactory.client.model.ReplicationStatus;
 import org.jfrog.artifactory.client.model.Repository;
-
 import java.io.File;
 import java.io.InputStream;
 import java.util.Set;
@@ -12,6 +12,7 @@ import java.util.Set;
  * @author jbaruch
  * @since 12/08/12
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public interface RepositoryHandle {
 
     ItemHandle folder(String folderName);

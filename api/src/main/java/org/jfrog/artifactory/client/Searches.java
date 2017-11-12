@@ -1,7 +1,7 @@
 package org.jfrog.artifactory.client;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.jfrog.artifactory.client.model.RepoPath;
-
 import java.util.List;
 
 /**
@@ -9,6 +9,7 @@ import java.util.List;
  * @author rnaegele
  * @since 13/08/12
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public interface Searches {
 
     Searches repositories(String... repositories);

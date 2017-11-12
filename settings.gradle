@@ -1,9 +1,12 @@
 String rootName = 'artifactory-java-client'
 String api = 'api'
 String services = 'services'
+String httpClient = 'httpClient'
 
-include api, services
+include api, services, httpClient
 rootProject.name = rootName
 
 project(":$api").name = "$rootName-$api"
 project(":$services").name = "$rootName-$services"
+project(":$httpClient").name = "$rootName-$httpClient"
+

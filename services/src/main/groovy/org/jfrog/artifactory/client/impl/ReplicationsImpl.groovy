@@ -1,14 +1,8 @@
 package org.jfrog.artifactory.client.impl
 
-import groovyx.net.http.ContentType
-import groovyx.net.http.HttpResponseException
-import net.sf.json.JSONArray
-import net.sf.json.JSONObject
 import org.jfrog.artifactory.client.Replications
-import org.jfrog.artifactory.client.model.LocalReplication
+import org.jfrog.artifactory.client.impl.util.Util
 import org.jfrog.artifactory.client.model.Replication
-import org.jfrog.artifactory.client.model.impl.LocalReplicationImpl
-import org.jfrog.artifactory.client.model.impl.RemoteReplicationImpl
 import org.jfrog.artifactory.client.model.impl.RepositoryTypeImpl
 
 class ReplicationsImpl implements Replications {
@@ -16,7 +10,6 @@ class ReplicationsImpl implements Replications {
     private String baseApiPath
 
     private ArtifactoryImpl artifactory
-
     private String repoKey
 
     ReplicationsImpl(ArtifactoryImpl artifactory, String baseApiPath, String repoKey) {
@@ -27,7 +20,8 @@ class ReplicationsImpl implements Replications {
 
     @Override
     void createOrReplace(Replication replication) {
-        artifactory.put("${getReplicationsApi()}${repoKey}", [:], ContentType.ANY, null, ContentType.JSON, replication)
+        artifactory.put("${getReplicationsApi()}${repoKey}", null, Util.getStringFromObject(replication), new HashMap<String, String>(),
+                      null, -1, String, null      );
     }
 
     @Override
@@ -44,7 +38,7 @@ class ReplicationsImpl implements Replications {
 
         def path = "${getReplicationsApi()}${repoKey}"
 
-        artifactory.delete(path, [:], ContentType.JSON)
+        artifactory.delete(path)
     }
 
     @Override

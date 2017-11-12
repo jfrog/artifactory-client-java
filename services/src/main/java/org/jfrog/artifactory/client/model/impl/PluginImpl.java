@@ -97,6 +97,14 @@ public class PluginImpl implements Plugin {
         return httpMethod;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setHttpMethod(String httpMethod) {
+        this.httpMethod = httpMethod;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

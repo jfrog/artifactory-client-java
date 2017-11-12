@@ -1,14 +1,15 @@
 package org.jfrog.artifactory.client.impl
 
-import com.fasterxml.jackson.core.type.TypeReference
-import groovyx.net.http.ContentType
 import org.apache.commons.collections.CollectionUtils
+import org.apache.http.entity.ContentType
 import org.jfrog.artifactory.client.Security
+import org.jfrog.artifactory.client.impl.util.Util
 import org.jfrog.artifactory.client.model.Group
 import org.jfrog.artifactory.client.model.PermissionTarget
 import org.jfrog.artifactory.client.model.User
 import org.jfrog.artifactory.client.model.builder.SecurityBuilders
 import org.jfrog.artifactory.client.model.builder.impl.SecurityBuildersImpl
+import org.jfrog.artifactory.client.model.builder.impl.UserBuilderImpl
 import org.jfrog.artifactory.client.model.impl.GroupImpl
 import org.jfrog.artifactory.client.model.impl.PermissionTargetImpl
 import org.jfrog.artifactory.client.model.impl.UserImpl
@@ -38,48 +39,54 @@ class SecurityImpl implements Security {
 
     @Override
     Collection<String> userNames() {
-        def users = artifactory.get(getSecurityUsersApi(), ContentType.JSON)
+        UserBuilderImpl[] users = artifactory.get(getSecurityUsersApi(), UserBuilderImpl[], null)
         users.collect { it.name }
     }
 
     @Override
     User user(String name) {
-        artifactory.get("${getSecurityUsersApi()}/$name", ContentType.JSON, new TypeReference<UserImpl>() {})
+        name = Util.encodeParams(name);
+        return artifactory.get("${getSecurityUsersApi()}/$name", UserImpl, User)
     }
 
     @Override
     Group group(String name) {
-        artifactory.get("${getSecurityUserGroupsApi()}/$name", ContentType.JSON, new TypeReference<GroupImpl>() {})
+        name = Util.encodeParams(name);
+        artifactory.get("${getSecurityUserGroupsApi()}/$name", GroupImpl, Group)
     }
 
     @Override
     PermissionTarget permissionTarget(String name) {
-        artifactory.get("${getSecurityPermissionsApi()}/$name", ContentType.JSON, new TypeReference<PermissionTargetImpl>() {})
-
+        name = Util.encodeParams(name);
+        return artifactory.get("${getSecurityPermissionsApi()}/$name", PermissionTargetImpl, PermissionTarget)
     }
 
     @Override
     List<String> groupNames() {
-        def groups = artifactory.get("${getSecurityUserGroupsApi()}", ContentType.JSON)
+        GroupImpl[] groups = artifactory.get("${getSecurityUserGroupsApi()}", GroupImpl[], null)
         def groupNames = groups.collect { it.name }
         groupNames
     }
 
     @Override
     List<String> permissionTargets() {
-        def permissionTargets = artifactory.get("${getSecurityPermissionsApi()}", ContentType.JSON)
+        ArrayList permissionTargets = artifactory.get("${getSecurityPermissionsApi()}", ArrayList, List)
         def permissionTargetNames = permissionTargets.collect { it.name }
         return permissionTargetNames
     }
 
     @Override
     void createOrUpdate(User user) {
-        artifactory.put("${getSecurityUsersApi()}/${user.name}", [:], ContentType.ANY, null, ContentType.JSON, user)
+        String name = Util.encodeParams(user.name);
+        artifactory.put("${getSecurityUsersApi()}/$name", ContentType.APPLICATION_JSON, Util.getStringFromObject(user),
+                new HashMap<String, String>(), null, -1, String, null)
     }
 
     @Override
     void createOrUpdateGroup(Group group) {
-        artifactory.put("${getSecurityUserGroupsApi()}/${group.name}", [:], ContentType.ANY, null, ContentType.JSON, group)
+        String name = Util.encodeParams(group.name);
+        artifactory.put("${getSecurityUserGroupsApi()}/$name", ContentType.APPLICATION_JSON, Util.getStringFromObject(group),
+                new HashMap<String, String>(), null, -1, String, null)
     }
 
     @Override
@@ -87,21 +94,26 @@ class SecurityImpl implements Security {
         if (CollectionUtils.isEmpty(permissionTarget.getRepositories())) {
             throw new UnsupportedOperationException("At least 1 repository is required in permission target (could be 'ANY', 'ANY LOCAL', 'ANY REMOTE')")
         }
-        artifactory.put("${getSecurityPermissionsApi()}/${permissionTarget.name}", [:], ContentType.ANY, null, ContentType.JSON, permissionTarget)
+        String name = Util.encodeParams(permissionTarget.name);
+        artifactory.put("${getSecurityPermissionsApi()}/$name", ContentType.APPLICATION_JSON, Util.getStringFromObject(permissionTarget),
+                new HashMap<String, String>(), null, -1, String, null)
     }
 
     @Override
     String deleteUser(String name) {
+        name = Util.encodeParams(name);
         artifactory.delete("${getSecurityUsersApi()}/$name")
     }
 
     @Override
     String deleteGroup(String name) {
+        name = Util.encodeParams(name);
         artifactory.delete("${getSecurityUserGroupsApi()}/$name")
     }
 
     @Override
     String deletePermissionTarget(String name) {
+        name = Util.encodeParams(name);
         artifactory.delete("${getSecurityPermissionsApi()}/$name")
     }
 

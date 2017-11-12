@@ -1,5 +1,6 @@
 package org.jfrog.artifactory.client.model.builder;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.jfrog.artifactory.client.model.PermissionTarget;
 import org.jfrog.artifactory.client.model.User;
 
@@ -9,6 +10,7 @@ import org.jfrog.artifactory.client.model.User;
  *
  * @author freds
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public interface SecurityBuilders {
     UserBuilder userBuilder();
 
