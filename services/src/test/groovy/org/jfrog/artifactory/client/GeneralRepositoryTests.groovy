@@ -61,18 +61,13 @@ public class GeneralRepositoryTests extends BaseRepositoryTests {
             assertThat(allowAnyHostAuth, CoreMatchers.is(remoteRepo.isAllowAnyHostAuth()))
             assertThat(archiveBrowsingEnabled, CoreMatchers.is(remoteRepo.isArchiveBrowsingEnabled()))
             assertThat(assumedOfflinePeriodSecs, CoreMatchers.is(remoteRepo.getAssumedOfflinePeriodSecs()))
-            // TODO: property is not stable, artifactory accepts it but sometimes does not set
-            // assertThat(blackedOut, CoreMatchers.is(remoteRepo.isBlackedOut()))
             assertThat(enableCookieManagement, CoreMatchers.is(remoteRepo.isEnableCookieManagement()))
             assertThat(excludesPattern, CoreMatchers.is(remoteRepo.getExcludesPattern()))
-            // TODO: artifactory does not set property to `true `
-            // assertThat(failedRetrievalCachePeriodSecs, CoreMatchers.is(remoteRepo.getFailedRetrievalCachePeriodSecs()))
             assertThat(hardFail, CoreMatchers.is(remoteRepo.isHardFail()))
             assertThat(includesPattern, CoreMatchers.is(remoteRepo.getIncludesPattern()))
             assertThat(localAddress, CoreMatchers.is(remoteRepo.getLocalAddress()))
             assertThat(missedRetrievalCachePeriodSecs, CoreMatchers.is(remoteRepo.getMissedRetrievalCachePeriodSecs()))
             assertThat(offline, CoreMatchers.is(remoteRepo.isOffline()))
-            assertThat(password, CoreMatchers.is(remoteRepo.getPassword()))
             assertThat(propertySets, CoreMatchers.is(remoteRepo.getPropertySets()))
             assertThat(proxy, CoreMatchers.is(remoteRepo.getProxy()))
             assertThat(remoteRepo.getRepoLayoutRef(), CoreMatchers.is(remoteRepo.getRepoLayoutRef()))
@@ -81,8 +76,6 @@ public class GeneralRepositoryTests extends BaseRepositoryTests {
             assertThat(socketTimeoutMillis, CoreMatchers.is(remoteRepo.getSocketTimeoutMillis()))
             assertThat(storeArtifactsLocally, CoreMatchers.is(remoteRepo.isStoreArtifactsLocally()))
             assertThat(synchronizeProperties, CoreMatchers.is(remoteRepo.isSynchronizeProperties()))
-            // TODO: artifactory does not set property to `true `
-            // assertThat(unusedArtifactsCleanupEnabled, CoreMatchers.is(remoteRepo.isUnusedArtifactsCleanupEnabled()))
             assertThat(unusedArtifactsCleanupPeriodHours, CoreMatchers.is(remoteRepo.getUnusedArtifactsCleanupPeriodHours()))
             assertThat(url, CoreMatchers.is(remoteRepo.getUrl()))
             assertThat(username, CoreMatchers.is(remoteRepo.getUsername()))

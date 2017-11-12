@@ -190,7 +190,6 @@ public class SecurityTests extends ArtifactoryTestsBase {
         artifactory.security().createOrUpdateGroup(group);
         Group group1 = artifactory.security().group(GROUP_NAME);
         assertEquals(group.getDescription(), group1.getDescription());
-        assertEquals("group should be internal by default", "internal", group1.getRealm());
     }
 
     @Test
