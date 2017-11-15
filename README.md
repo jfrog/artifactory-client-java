@@ -225,38 +225,40 @@ String result = artifactory.repository("RepoName").delete();
 ##### Deleting all Repository Replications
 ```
 // Method supported for local and remote repositories
-artifactory.repository("RepoName").replications.delete()
+artifactory.repository("RepoName").getReplications().delete();
 ```
 
 ##### Creating or replacing a replication on a local repository
 ```
-LocalReplication replication = new LocalReplicationImpl()
-replication.url = "http://hostname1:port/artifactory/RepoName"
-replication.socketTimeoutMillis = 30000
-replication.username = 'john.doe'
-replication.password = 'secret'
-replication.enableEventReplication = false
-replication.enabled = false
-replication.cronExp = '0 0 0/2 * * ?'
-replication.syncDeletes = true
-replication.syncProperties = true
-replication.syncStatistics = true
-replication.pathPrefix = ''
-replication.repoKey = "RepoName"
+String url = "http://hostname1:port/artifactory/RepoName";
+long socketTimeoutMillis = 30000;
+String username = "john.doe";
+String password = "secret";
+boolean enableEventReplication = false;
+boolean enabled = false;
+String cronExp = "0 0 0/2 * * ?";
+boolean syncDeletes = true;
+boolean syncProperties = true;
+boolean syncStatistics = true;
+String pathPrefix = "";
+String repoKey = "RepoName";
 
-artifactory.repository("RepoName").replications.createOrReplace(replication)
+LocalReplication replication = new LocalReplicationImpl(url, socketTimeoutMillis, username, password, enableEventReplication, enabled, cronExp, syncDeletes, syncProperties, syncStatistics, pathPrefix, repoKey);
+
+artifactory.repository("RepoName").getReplications().createOrReplace(replication);
 ```
 
 ##### Creating or replacing a replication on a remote repository
 ```
-RemoteReplication replication = new RemoteReplicationImpl()
-replication.enabled = false
-replication.cronExp = '0 0 0/2 * * ?'
-replication.syncDeletes = true
-replication.syncProperties = true
-replication.repoKey = "RepoName"
+boolean enabled = false;
+String cronExp = "0 0 0/2 * * ?";
+boolean syncDeletes = true;
+boolean syncProperties = true;
+String repoKey = "RepoName";
 
-artifactory.repository("RepoName").replications.createOrReplace(replication)
+RemoteReplication replication = new RemoteReplicationImpl(enabled, cronExp, syncDeletes, syncProperties, repoKey);
+
+artifactory.repository("RepoName").getReplications().createOrReplace(replication);
 ```
 
 ##### Managing Xray properties

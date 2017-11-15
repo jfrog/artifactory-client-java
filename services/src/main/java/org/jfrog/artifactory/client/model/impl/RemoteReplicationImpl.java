@@ -10,10 +10,10 @@ public class RemoteReplicationImpl implements RemoteReplication {
     private boolean syncProperties;
     private String repoKey;
 
-    public RemoteReplicationImpl() {
+    private RemoteReplicationImpl() {
     }
 
-    RemoteReplicationImpl(boolean enabled, String cronExp, boolean syncDeletes, boolean syncProperties, String repoKey) {
+    public RemoteReplicationImpl(boolean enabled, String cronExp, boolean syncDeletes, boolean syncProperties, String repoKey) {
         this.enabled = enabled;
         this.cronExp = cronExp;
         this.syncDeletes = syncDeletes;
