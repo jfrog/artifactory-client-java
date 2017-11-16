@@ -37,7 +37,9 @@ public interface RepositoryBuilder<B extends RepositoryBuilder, R extends Reposi
 
     void validate();
 
-    void setRepoLayout();
+    B repoLayoutRef(String repoLayoutRef);
+
+    void setRepoLayoutFromSettings();
 
     B repositorySettings(RepositorySettings settings);
 

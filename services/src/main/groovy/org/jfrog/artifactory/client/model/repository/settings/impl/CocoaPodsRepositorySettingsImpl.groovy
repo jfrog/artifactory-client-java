@@ -16,12 +16,12 @@ class CocoaPodsRepositorySettingsImpl extends VcsRepositorySettingsImpl implemen
 
     String podsSpecsRepoUrl
 
-    public CocoaPodsRepositorySettingsImpl() {
-        this.repoLayoutRef = defaultLayout
+  CocoaPodsRepositorySettingsImpl() {
+        super(defaultLayout)
     }
 
     @Override
-    public PackageType getPackageType() {
+    PackageType getPackageType() {
         return PackageTypeImpl.cocoapods
     }
 }

@@ -13,7 +13,7 @@ import org.jfrog.artifactory.client.model.repository.settings.docker.DockerApiVe
  * @author Ivan Vasylivskyi (ivanvas@jfrog.com)
  */
 @EqualsAndHashCode
-public class DockerRepositorySettingsImpl extends AbstractRepositorySettings implements DockerRepositorySettings{
+class DockerRepositorySettingsImpl extends AbstractRepositorySettings implements DockerRepositorySettings{
     static String defaultLayout = "simple-default"
 
     DockerApiVersion dockerApiVersion
@@ -21,12 +21,12 @@ public class DockerRepositorySettingsImpl extends AbstractRepositorySettings imp
     Boolean listRemoteFolderItems
     Integer maxUniqueTags
 
-    public DockerRepositorySettingsImpl() {
-        this.repoLayoutRef = defaultLayout
+  DockerRepositorySettingsImpl() {
+        super(defaultLayout)
     }
 
     @Override
-    public PackageType getPackageType() {
+    PackageType getPackageType() {
         return PackageTypeImpl.docker
     }
 }
