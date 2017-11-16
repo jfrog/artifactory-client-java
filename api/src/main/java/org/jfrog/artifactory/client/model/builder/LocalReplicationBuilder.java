@@ -4,17 +4,7 @@ package org.jfrog.artifactory.client.model.builder;
 import org.jfrog.artifactory.client.model.LocalReplication;
 import org.jfrog.artifactory.client.model.Principal;
 
-public interface LocalReplicationBuilder {
-
-    LocalReplicationBuilder enabled(boolean enabled);
-
-    LocalReplicationBuilder cronExp(String cronExp);
-
-    LocalReplicationBuilder syncDeletes(boolean syncDeletes);
-
-    LocalReplicationBuilder syncProperties(boolean syncProperties);
-
-    LocalReplicationBuilder repoKey(String repoKey);
+public interface LocalReplicationBuilder extends ReplicationBuilder<LocalReplicationBuilder> {
 
     LocalReplicationBuilder url(String url);
 
