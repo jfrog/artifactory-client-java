@@ -22,7 +22,7 @@ class LocalRepositoryBuilderImpl extends NonVirtualRepositoryBuilderBase<LocalRe
 
     LocalRepository build() {
         validate()
-        setRepoLayout()
+        setRepoLayoutFromSettings()
 
         return new LocalRepositoryImpl(key, settings, xraySettings, description, excludesPattern,
             includesPattern, notes, blackedOut,

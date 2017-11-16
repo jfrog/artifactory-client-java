@@ -1,4 +1,4 @@
-package org.jfrog.artifactory.client;
+package org.jfrog.artifactory.client
 
 import org.hamcrest.Description
 import org.hamcrest.Matcher
@@ -17,7 +17,7 @@ import org.testng.annotations.BeforeMethod
 /**
  * @author Ivan Vasylivskyi (ivanvas@jfrog.com)
  */
-public abstract class BaseRepositoryTests extends ArtifactoryTestsBase {
+abstract class BaseRepositoryTests extends ArtifactoryTestsBase {
 
     /**
      * used to generate test values ( especially boolean ones ) to be sure that we are sending
@@ -44,9 +44,9 @@ public abstract class BaseRepositoryTests extends ArtifactoryTestsBase {
     protected void setUp() {
         if (prepareGenericRepo) {
             RepositorySettings settings = getRepositorySettings(RepositoryTypeImpl.LOCAL)
-            settings?.repoLayout = "maven-2-default"
+            settings?.repoLayoutRef = "maven-2-default"
 
-            XraySettings genericXraySettings = new XraySettingsImpl();
+            XraySettings genericXraySettings = new XraySettingsImpl()
             genericRepo = artifactory.repositories().builders().localRepositoryBuilder()
                     .key("cutsman-repo_${rnd.nextInt()}")
                     .description("description_${rnd.nextInt()}")
@@ -63,7 +63,7 @@ public abstract class BaseRepositoryTests extends ArtifactoryTestsBase {
         }
         if (prepareLocalRepo) {
             RepositorySettings settings = getRepositorySettings()
-            settings?.repoLayout = "maven-2-default"
+            settings?.repoLayoutRef = "maven-2-default"
             localRepo = artifactory.repositories().builders().localRepositoryBuilder()
                 .key("cutsman-repo_${rnd.nextInt()}")
                 .description("description_${rnd.nextInt()}")
@@ -81,8 +81,8 @@ public abstract class BaseRepositoryTests extends ArtifactoryTestsBase {
 
         if (prepareRemoteRepo) {
             RepositorySettings settings = getRepositorySettings()
-            settings?.repoLayout = "maven-2-default"
-            ContentSync contentSync = new ContentSyncImpl();
+            settings?.repoLayoutRef = "maven-2-default"
+            ContentSync contentSync = new ContentSyncImpl()
             remoteRepo = artifactory.repositories().builders().remoteRepositoryBuilder()
                 .key("cutsman-repo_${rnd.nextInt()}")
                 .description("description_${rnd.nextInt()}")
@@ -122,7 +122,7 @@ public abstract class BaseRepositoryTests extends ArtifactoryTestsBase {
 
         if (prepareVirtualRepo) {
             RepositorySettings settings = getRepositorySettings()
-            settings?.repoLayout = "maven-2-default"
+            settings?.repoLayoutRef = "maven-2-default"
             artifactory.repositories().create(0, genericRepo)
             def repos = new ArrayList<String>()
             repos.add(genericRepo.getKey())

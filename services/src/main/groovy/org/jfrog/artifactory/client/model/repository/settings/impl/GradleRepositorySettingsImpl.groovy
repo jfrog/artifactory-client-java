@@ -19,12 +19,7 @@ class GradleRepositorySettingsImpl extends MavenRepositorySettingsImpl implement
     }
 
     @Override
-    public PackageType getPackageType() {
+    PackageType getPackageType() {
         return PackageTypeImpl.gradle
-    }
-
-    @Override
-    public String getRepoLayout() {
-        return this.repoLayoutRef
     }
 }
