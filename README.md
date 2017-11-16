@@ -230,33 +230,35 @@ artifactory.repository("RepoName").replications.delete()
 
 ##### Creating or replacing a replication on a local repository
 ```
-LocalReplication replication = new LocalReplicationImpl()
-replication.url = "http://hostname1:port/artifactory/RepoName"
-replication.socketTimeoutMillis = 30000
-replication.username = 'john.doe'
-replication.password = 'secret'
-replication.enableEventReplication = false
-replication.enabled = false
-replication.cronExp = '0 0 0/2 * * ?'
-replication.syncDeletes = true
-replication.syncProperties = true
-replication.syncStatistics = true
-replication.pathPrefix = ''
-replication.repoKey = "RepoName"
+LocalReplication replication = new LocalReplicationBuilderImpl()
+    .url("http://hostname1:port/artifactory/RepoName")
+    .socketTimeoutMillis(30000)
+    .username("john.doe")
+    .password("secret")
+    .enableEventReplication(false)
+    .enabled(false)
+    .cronExp("0 0 0/2 * * ?")
+    .syncDeletes(true)
+    .syncProperties(true)
+    .syncStatistics(true)
+    .pathPrefix("")
+    .repoKey("RepoName")
+    .build();
 
-artifactory.repository("RepoName").replications.createOrReplace(replication)
+artifactory.repository("RepoName").getReplications().createOrReplace(replication);
 ```
 
 ##### Creating or replacing a replication on a remote repository
 ```
-RemoteReplication replication = new RemoteReplicationImpl()
-replication.enabled = false
-replication.cronExp = '0 0 0/2 * * ?'
-replication.syncDeletes = true
-replication.syncProperties = true
-replication.repoKey = "RepoName"
+RemoteReplication replication = new RemoteReplicationBuilderImpl()
+    .enabled(false)
+    .cronExp("0 0 0/2 * * ?")
+    .syncDeletes(true)
+    .syncProperties(true)
+    .repoKey("RepoName")
+    .build();
 
-artifactory.repository("RepoName").replications.createOrReplace(replication)
+artifactory.repository("RepoName").getReplications().createOrReplace(replication)
 ```
 
 ##### Managing Xray properties
