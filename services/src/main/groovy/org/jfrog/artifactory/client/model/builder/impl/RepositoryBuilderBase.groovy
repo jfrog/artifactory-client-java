@@ -123,12 +123,18 @@ abstract class RepositoryBuilderBase<B extends RepositoryBuilder, R extends Repo
         }
         if (this.settings != null && !settings.packageType.isCustom()
             && !supportedTypes.contains(settings.packageType)) {
-            throw new IllegalArgumentException("Package type '${settings.packageType}' is not supported in $repositoryType repositories");
+            throw new IllegalArgumentException("Package type '${settings.packageType}' is not supported in $repositoryType repositories")
         }
     }
 
     @Override
-    void setRepoLayout() {
+    B repoLayoutRef(String repoLayoutRef) {
+        this.repoLayoutRef = repoLayoutRef
+        this as B
+    }
+
+    @Override
+    void setRepoLayoutFromSettings() {
         if (this.repoLayoutRef == null && settings != null) {
             this.repoLayoutRef = settings.getRepoLayout()
         }

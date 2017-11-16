@@ -33,12 +33,16 @@ class MavenRepositorySettingsImpl extends AbstractRepositorySettings implements 
     PomCleanupPolicy pomRepositoryReferencesCleanupPolicy
     String keyPair
 
-    public MavenRepositorySettingsImpl() {
-        this.repoLayoutRef = defaultLayout
+    MavenRepositorySettingsImpl() {
+        this(defaultLayout)
+    }
+
+    MavenRepositorySettingsImpl(String repoLayout) {
+        super(repoLayout)
     }
 
     @Override
-    public PackageType getPackageType() {
+    PackageType getPackageType() {
         return PackageTypeImpl.maven
     }
 }
