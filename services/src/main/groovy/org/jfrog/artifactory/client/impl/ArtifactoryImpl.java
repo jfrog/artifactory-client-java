@@ -242,7 +242,7 @@ public class ArtifactoryImpl implements Artifactory {
 
     private HttpRequestBase addAccessTokenHeaderIfNeeded(HttpRequestBase httpRequestBase) {
         if (StringUtils.isNotEmpty(accessToken)) {
-            httpRequestBase.addHeader("Authorization", "Bearer $accessToken");
+            httpRequestBase.addHeader("Authorization", "Bearer " + accessToken);
         }
         return httpRequestBase;
     }
