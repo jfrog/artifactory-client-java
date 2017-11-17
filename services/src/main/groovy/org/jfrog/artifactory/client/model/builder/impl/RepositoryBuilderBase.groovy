@@ -128,15 +128,15 @@ abstract class RepositoryBuilderBase<B extends RepositoryBuilder, R extends Repo
     }
 
     @Override
-    B repoLayoutRef(String repoLayout) {
-        this.repoLayoutRef = repoLayout
+    B repoLayoutRef(String repoLayoutRef) {
+        this.repoLayoutRef = repoLayoutRef
         this as B
     }
 
     @Override
     void setRepoLayoutFromSettings() {
         if (this.repoLayoutRef == null && settings != null) {
-            this.repoLayoutRef = settings.getRepoLayoutRef()
+            this.repoLayoutRef = settings.getRepoLayout()
         }
     }
 }

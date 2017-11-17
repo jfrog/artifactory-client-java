@@ -14,12 +14,12 @@ import org.jfrog.artifactory.client.model.repository.settings.SbtRepositorySetti
 class SbtRepositorySettingsImpl extends MavenRepositorySettingsImpl implements SbtRepositorySettings {
     static String defaultLayout = "sbt-default"
 
-    public SbtRepositorySettingsImpl() {
-        this.repoLayoutRef = defaultLayout
+    SbtRepositorySettingsImpl() {
+        super(defaultLayout)
     }
 
     @Override
-    public PackageType getPackageType() {
+    PackageType getPackageType() {
         return PackageTypeImpl.sbt
     }
 }

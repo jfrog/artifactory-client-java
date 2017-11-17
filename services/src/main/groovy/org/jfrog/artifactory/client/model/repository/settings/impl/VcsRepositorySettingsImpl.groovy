@@ -23,12 +23,16 @@ class VcsRepositorySettingsImpl extends AbstractRepositorySettings implements Vc
     String vcsGitDownloadUrl
     Boolean listRemoteFolderItems
 
-    public VcsRepositorySettingsImpl() {
-        this.repoLayoutRef = defaultLayout
+    VcsRepositorySettingsImpl() {
+        this(defaultLayout)
+    }
+
+    VcsRepositorySettingsImpl(String repoLayout){
+        super(repoLayout)
     }
 
     @Override
-    public PackageType getPackageType() {
+    PackageType getPackageType() {
         return PackageTypeImpl.vcs
     }
 }

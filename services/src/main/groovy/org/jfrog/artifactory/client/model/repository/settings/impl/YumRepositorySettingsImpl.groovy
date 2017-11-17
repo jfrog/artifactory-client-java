@@ -23,12 +23,12 @@ class YumRepositorySettingsImpl extends AbstractRepositorySettings implements Yu
     Boolean calculateYumMetadata
     Boolean listRemoteFolderItems
 
-    public YumRepositorySettingsImpl() {
-        this.repoLayoutRef = defaultLayout
+    YumRepositorySettingsImpl() {
+        super(defaultLayout)
     }
 
     @Override
-    public PackageType getPackageType() {
+    PackageType getPackageType() {
         return PackageTypeImpl.yum
     }
 }

@@ -17,12 +17,12 @@ class PypiRepositorySettingsImpl extends AbstractRepositorySettings implements P
 
     Boolean listRemoteFolderItems
 
-    public PypiRepositorySettingsImpl() {
-        this.repoLayoutRef = defaultLayout
+  PypiRepositorySettingsImpl() {
+        super(defaultLayout)
     }
 
     @Override
-    public PackageType getPackageType() {
+    PackageType getPackageType() {
         return PackageTypeImpl.pypi
     }
 }

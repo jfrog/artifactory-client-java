@@ -4,13 +4,17 @@ package org.jfrog.artifactory.client.model.repository.settings;
  * @author Lior Hasson
  */
 public abstract class AbstractRepositorySettings implements RepositorySettings {
-    protected String repoLayoutRef;
+    private String repoLayout;
 
-    public String getRepoLayoutRef() {
-        return this.repoLayoutRef;
+    public AbstractRepositorySettings(String repoLayout) {
+        this.repoLayout = repoLayout;
     }
 
-    public void setRepoLayoutRef(String repoLayout) {
-        this.repoLayoutRef = repoLayout;
+    public String getRepoLayout() {
+        return this.repoLayout;
+    }
+
+    public void setRepoLayout(String repoLayout) {
+        this.repoLayout = repoLayout;
     }
 }

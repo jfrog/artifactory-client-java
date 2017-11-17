@@ -9,7 +9,7 @@ public interface RepositorySettings {
 
     PackageType getPackageType();
 
-    String getRepoLayoutRef();
+    String getRepoLayout();
 
-    void setRepoLayoutRef(String repoLayout);
+    void setRepoLayout(String repoLayout);
 }

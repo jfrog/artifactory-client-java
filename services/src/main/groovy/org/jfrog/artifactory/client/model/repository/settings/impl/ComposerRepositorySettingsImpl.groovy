@@ -11,8 +11,8 @@ class ComposerRepositorySettingsImpl extends VcsRepositorySettingsImpl implement
 
     String composerRegistryUrl
 
-    public ComposerRepositorySettingsImpl() {
-        this.repoLayoutRef = defaultLayout
+  ComposerRepositorySettingsImpl() {
+        super(defaultLayout)
     }
 
     @Override
