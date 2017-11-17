@@ -1,5 +1,6 @@
 package org.jfrog.artifactory.client.model.builder.impl
 
+import org.jfrog.artifactory.client.model.Replication
 import org.jfrog.artifactory.client.model.builder.ReplicationBuilder
 
 abstract class ReplicationBuilderBase<B extends ReplicationBuilder> implements ReplicationBuilder<B> {
@@ -13,6 +14,21 @@ abstract class ReplicationBuilderBase<B extends ReplicationBuilder> implements R
     protected boolean syncProperties;
 
     protected String repoKey;
+
+    protected ReplicationBuilderBase() {
+    }
+
+    protected ReplicationBuilderBase(Replication replication) {
+        if (!replication) {
+            throw new IllegalArgumentException("The given replication is null")
+        }
+
+        this.enabled = replication.enabled;
+        this.cronExp = replication.cronExp;
+        this.syncDeletes = replication.syncDeletes;
+        this.syncProperties = replication.syncProperties;
+        this.repoKey = replication.repoKey;
+    }
 
     @Override
     B enabled(boolean enabled) {

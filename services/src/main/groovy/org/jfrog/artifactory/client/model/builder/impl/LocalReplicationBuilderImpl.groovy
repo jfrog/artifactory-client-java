@@ -20,6 +20,21 @@ class LocalReplicationBuilderImpl extends ReplicationBuilderBase<LocalReplicatio
 
     private String pathPrefix;
 
+    LocalReplicationBuilderImpl() {
+    }
+
+    LocalReplicationBuilderImpl(LocalReplication replication) {
+        super(replication);
+
+        this.url = replication.url;
+        this.socketTimeoutMillis = replication.socketTimeoutMillis;
+        this.username = replication.username;
+        this.password = replication.password;
+        this.enableEventReplication = replication.enableEventReplication;
+        this.syncStatistics = replication.syncStatistics;
+        this.pathPrefix = replication.pathPrefix;
+    }
+
     LocalReplicationBuilder url(String url) {
         this.url = url;
 
