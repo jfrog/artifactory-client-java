@@ -1,7 +1,10 @@
 package org.jfrog.artifactory.client.impl;
 
+import groovyx.net.http.HttpResponseDecorator;
+import groovyx.net.http.HttpResponseException;
+
 import com.fasterxml.jackson.core.type.TypeReference;
-import groovyx.net.http.*;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -15,17 +18,26 @@ import org.apache.http.entity.ContentType;
 import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.jfrog.artifactory.client.*;
-import org.jfrog.artifactory.client.impl.util.Util;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.jfrog.artifactory.client.Artifactory;
+import org.jfrog.artifactory.client.ArtifactoryRequest;
+import org.jfrog.artifactory.client.ArtifactorySystem;
+import org.jfrog.artifactory.client.Plugins;
+import org.jfrog.artifactory.client.Repositories;
+import org.jfrog.artifactory.client.RepositoryHandle;
+import org.jfrog.artifactory.client.Searches;
+import org.jfrog.artifactory.client.Security;
+import org.jfrog.artifactory.client.Storage;
+import org.jfrog.artifactory.client.impl.util.Util;
+
+import static org.jfrog.artifactory.client.impl.util.Util.createUrl;
 
 /**
  * @author jbaruch
@@ -63,8 +75,8 @@ public class ArtifactoryImpl implements Artifactory {
         return httpClient;
     }
 
-    public String getUri() throws MalformedURLException {
-        URL url = new URL(this.url);
+    public String getUri() {
+        URL url = createUrl(this.url);
         String uri = url.getProtocol() + "://" + url.getHost();
         if (url.getPort() == -1) {
             return uri;
@@ -72,14 +84,13 @@ public class ArtifactoryImpl implements Artifactory {
         return uri + ":" + url.getPort();
     }
 
-    public String getContextName() throws MalformedURLException {
-        URL url = new URL(this.url);
+    public String getContextName() {
+        URL url = createUrl(this.url);
         String urlContext = url.getPath();
         if (urlContext.startsWith("/")) {
             return urlContext.substring(1);
         }
         return urlContext;
-
     }
 
     @Override
@@ -131,7 +142,7 @@ public class ArtifactoryImpl implements Artifactory {
      * @return artifactory response as per to the request sent
      */
     @Override
-    public <T> T restCall(ArtifactoryRequest request) throws Exception {
+    public <T> T restCall(ArtifactoryRequest request) throws IOException {
 
         String requestPath = "/" + request.getApiUrl();
         String queryPath;
@@ -185,7 +196,7 @@ public class ArtifactoryImpl implements Artifactory {
         }
     }
 
-    protected InputStream getInputStream(String path) throws IOException, URISyntaxException {
+    protected InputStream getInputStream(String path) throws IOException {
         HttpResponse httpResponse = get(path, null, null);
         if (httpResponse.getStatusLine().getStatusCode() == 200) {
             return httpResponse.getEntity().getContent();
@@ -202,11 +213,9 @@ public class ArtifactoryImpl implements Artifactory {
         throw new HttpResponseException(new HttpResponseDecorator(httpResponse, null));
     }
 
-    public <T> T get(String path, Class<? extends T> object, Class<T> interfaceObject) throws URISyntaxException, IOException {
-
+    public <T> T get(String path, Class<? extends T> object, Class<T> interfaceObject) throws IOException {
         HttpGet httpGet = new HttpGet();
-
-        httpGet.setURI(new URI(url + path));
+        httpGet.setURI(URI.create(url + path));
         httpGet = (HttpGet) addAccessTokenHeaderIfNeeded(httpGet);
 
         HttpResponse httpResponse = httpClient.execute(httpGet);
@@ -227,10 +236,9 @@ public class ArtifactoryImpl implements Artifactory {
 
     }
 
-    public String delete(String path) throws URISyntaxException, IOException {
+    public String delete(String path) throws IOException {
         HttpDelete httpDelete = new HttpDelete();
-
-        httpDelete.setURI(new URI(url + path));
+        httpDelete.setURI(URI.create(url + path));
         httpDelete = (HttpDelete) addAccessTokenHeaderIfNeeded(httpDelete);
         HttpResponse httpResponse = httpClient.execute(httpDelete);
         int status = httpResponse.getStatusLine().getStatusCode();
@@ -247,9 +255,9 @@ public class ArtifactoryImpl implements Artifactory {
         return httpRequestBase;
     }
 
-    protected Boolean head(String path) throws URISyntaxException, IOException {
+    protected Boolean head(String path) throws IOException {
         HttpHead httpHead = new HttpHead();
-        httpHead.setURI(new URI(url + path));
+        httpHead.setURI(URI.create(url + path));
         httpHead = (HttpHead) addAccessTokenHeaderIfNeeded(httpHead);
         HttpResponse httpResponse = httpClient.execute(httpHead);
         int status = httpResponse.getStatusLine().getStatusCode();
@@ -257,11 +265,10 @@ public class ArtifactoryImpl implements Artifactory {
         return (status >= 100 && status < 400);
     }
 
-    public <T> T post(String path, org.apache.http.entity.ContentType contentType, String content, Map<String, String> headers, Class<? extends T> object, Class<T> interfaceObject) throws URISyntaxException, IOException {
+    public <T> T post(String path, org.apache.http.entity.ContentType contentType, String content, Map<String, String> headers, Class<? extends T> object, Class<T> interfaceObject) throws IOException {
 
         HttpPost httpPost = new HttpPost();
-
-        httpPost.setURI(new URI(url + path));
+        httpPost.setURI(URI.create(url + path));
         httpPost = (HttpPost) addAccessTokenHeaderIfNeeded(httpPost);
 
         httpPost.setHeader("Content-type", contentType.getMimeType());
@@ -281,11 +288,10 @@ public class ArtifactoryImpl implements Artifactory {
 
     }
 
-    public <T> T put(String path, org.apache.http.entity.ContentType contentType, String content, Map<String, String> headers, InputStream inputStream, long length, Class<? extends T> object, Class<T> interfaceObject) throws IOException, URISyntaxException {
+    public <T> T put(String path, org.apache.http.entity.ContentType contentType, String content, Map<String, String> headers, InputStream inputStream, long length, Class<? extends T> object, Class<T> interfaceObject) throws IOException {
 
         HttpPut httpPut = new HttpPut();
-
-        httpPut.setURI(new URI(url + path));
+        httpPut.setURI(URI.create(url + path));
         httpPut = (HttpPut) addAccessTokenHeaderIfNeeded(httpPut);
 
         if (contentType != null) {

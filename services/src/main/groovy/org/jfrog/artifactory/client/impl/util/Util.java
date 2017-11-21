@@ -5,23 +5,32 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.*;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleAbstractTypeResolver;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.NullArgumentException;
 import org.apache.http.HttpResponse;
 import org.apache.http.entity.ContentType;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+
 import org.jfrog.artifactory.client.ArtifactoryRequest;
 import org.jfrog.artifactory.client.impl.jackson.RepositoryMixIn;
 import org.jfrog.artifactory.client.impl.jackson.RepositorySettingsMixIn;
 import org.jfrog.artifactory.client.model.Repository;
 import org.jfrog.artifactory.client.model.repository.settings.RepositorySettings;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.util.*;
 
 import static com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS;
 import static com.fasterxml.jackson.databind.introspect.VisibilityChecker.Std.defaultInstance;
@@ -84,26 +93,22 @@ public class Util {
         return objectMapper.writeValueAsString(object);
     }
 
-    public static ContentType getContentType(ArtifactoryRequest.ContentType contentType) throws Exception {
-
-        if (contentType.equals(ArtifactoryRequest.ContentType.JSON)) {
-            return ContentType.APPLICATION_JSON;
+    public static ContentType getContentType(ArtifactoryRequest.ContentType contentType) {
+        if(contentType == null) {
+            throw new NullArgumentException("contentType");
         }
-
-        if (contentType.equals(ArtifactoryRequest.ContentType.TEXT)) {
-            return ContentType.TEXT_PLAIN;
+        switch (contentType) {
+            case JSON:
+                return ContentType.APPLICATION_JSON;
+            case TEXT:
+                return ContentType.TEXT_PLAIN;
+            case URLENC:
+                return ContentType.APPLICATION_FORM_URLENCODED;
+            case ANY:
+                return ContentType.WILDCARD;
+            default:
+                throw new IllegalArgumentException("Invalid Content Type: " + contentType);
         }
-
-        if (contentType.equals(ArtifactoryRequest.ContentType.URLENC)) {
-            return ContentType.APPLICATION_FORM_URLENCODED;
-        }
-
-        if (contentType.equals(ArtifactoryRequest.ContentType.ANY)) {
-            return ContentType.WILDCARD;
-        }
-
-        throw new Exception("Non valid Content Type");
-
     }
 
     public static <T> T parseText(String text, Class<? extends T> target) throws IOException {
@@ -133,5 +138,16 @@ public class Util {
         }
 
         return queryPath.toString();
+    }
+
+    public static URL createUrl(String url) {
+        if (url == null) {
+            throw new NullArgumentException("url");
+        }
+        try {
+            return new URL(url);
+        } catch (MalformedURLException ex) {
+            throw new IllegalArgumentException(ex.getMessage(), ex);
+        }
     }
 }

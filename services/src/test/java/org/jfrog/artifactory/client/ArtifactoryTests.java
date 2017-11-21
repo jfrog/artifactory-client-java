@@ -1,9 +1,10 @@
 package org.jfrog.artifactory.client;
 
-import java.io.IOException;
-import static junit.framework.Assert.assertEquals;
-import static org.jfrog.artifactory.client.ArtifactoryClient.create;
 import org.testng.annotations.Test;
+
+import static junit.framework.Assert.assertEquals;
+
+import static org.jfrog.artifactory.client.ArtifactoryClient.create;
 
 /**
  * @author yoavl
@@ -12,7 +13,7 @@ import org.testng.annotations.Test;
 public class ArtifactoryTests {
 
     @Test
-    public void urlsTest() throws IOException {
+    public void urlsTest() {
         Artifactory artifactory;
         artifactory = create("http://myhost.com/clienttests", "", "");
         assertEquals("http://myhost.com", artifactory.getUri());
@@ -49,7 +50,7 @@ public class ArtifactoryTests {
     }
 
     @Test
-    public void urlsBuilderTest() throws IOException {
+    public void urlsBuilderTest() {
         Artifactory artifactory;
         artifactory = ArtifactoryClientBuilder.create().setUrl("http://myhost.com/clienttests").build();
 
