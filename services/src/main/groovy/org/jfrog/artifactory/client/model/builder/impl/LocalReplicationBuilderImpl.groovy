@@ -4,7 +4,7 @@ import org.jfrog.artifactory.client.model.LocalReplication
 import org.jfrog.artifactory.client.model.builder.LocalReplicationBuilder
 import org.jfrog.artifactory.client.model.impl.LocalReplicationImpl
 
-class LocalReplicationBuilderImpl extends ReplicationBuilderBase<LocalReplicationBuilder> {
+class LocalReplicationBuilderImpl extends ReplicationBuilderBase<LocalReplicationBuilder> implements LocalReplicationBuilder {
 
     private String url;
 
