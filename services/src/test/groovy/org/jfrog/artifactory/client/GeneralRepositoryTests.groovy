@@ -8,7 +8,7 @@ import org.jfrog.artifactory.client.model.repository.settings.impl.GenericReposi
 import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
 
-import static org.testng.Assert.*
+import static org.testng.Assert.assertTrue
 
 /**
  * test that client correctly sends and receives general repository configuration
@@ -33,6 +33,7 @@ public class GeneralRepositoryTests extends BaseRepositoryTests {
         assertTrue(curl(LIST_PATH).contains(localRepo.getKey()))
 
         def resp = artifactory.repository(localRepo.getKey()).get()
+        assertThat(resp, CoreMatchers.notNullValue())
         resp.with {
             assertThat(rclass, CoreMatchers.is(RepositoryTypeImpl.LOCAL))
             assertThat(key, CoreMatchers.is(localRepo.getKey()))
@@ -43,7 +44,7 @@ public class GeneralRepositoryTests extends BaseRepositoryTests {
             assertThat(excludesPattern, CoreMatchers.is(localRepo.getExcludesPattern()))
             assertThat(includesPattern, CoreMatchers.is(localRepo.getIncludesPattern()))
             assertThat(propertySets, CoreMatchers.is(localRepo.getPropertySets()))
-            assertThat(localRepo.getRepoLayoutRef(), CoreMatchers.is(localRepo.getRepoLayoutRef()))
+            assertThat(repoLayoutRef, CoreMatchers.is(localRepo.getRepoLayoutRef()))
         }
     }
 
@@ -53,6 +54,7 @@ public class GeneralRepositoryTests extends BaseRepositoryTests {
         assertTrue(curl(LIST_PATH).contains(remoteRepo.getKey()))
 
         def resp = artifactory.repository(remoteRepo.getKey()).get()
+        assertThat(resp, CoreMatchers.notNullValue())
         resp.with {
             assertThat(rclass, CoreMatchers.is(RepositoryTypeImpl.REMOTE))
             assertThat(key, CoreMatchers.is(remoteRepo.getKey()))
@@ -75,7 +77,7 @@ public class GeneralRepositoryTests extends BaseRepositoryTests {
             assertThat(password, CoreMatchers.is(remoteRepo.getPassword()))
             assertThat(propertySets, CoreMatchers.is(remoteRepo.getPropertySets()))
             assertThat(proxy, CoreMatchers.is(remoteRepo.getProxy()))
-            assertThat(remoteRepo.getRepoLayoutRef(), CoreMatchers.is(remoteRepo.getRepoLayoutRef()))
+            assertThat(repoLayoutRef, CoreMatchers.is(remoteRepo.getRepoLayoutRef()))
             assertThat(retrievalCachePeriodSecs, CoreMatchers.is(remoteRepo.getRetrievalCachePeriodSecs()))
             assertThat(shareConfiguration, CoreMatchers.is(remoteRepo.isShareConfiguration()))
             assertThat(socketTimeoutMillis, CoreMatchers.is(remoteRepo.getSocketTimeoutMillis()))
@@ -95,6 +97,7 @@ public class GeneralRepositoryTests extends BaseRepositoryTests {
         assertTrue(curl(LIST_PATH).contains(virtualRepo.getKey()))
 
         def resp = artifactory.repository(virtualRepo.getKey()).get()
+        assertThat(resp, CoreMatchers.notNullValue())
         resp.with {
             assertThat(rclass, CoreMatchers.is(RepositoryTypeImpl.VIRTUAL))
             assertThat(key, CoreMatchers.is(virtualRepo.getKey()))
@@ -106,7 +109,7 @@ public class GeneralRepositoryTests extends BaseRepositoryTests {
             assertThat(virtualRepo.getRepoLayoutRef(), CoreMatchers.is(virtualRepo.getRepoLayoutRef()))
             assertThat(repositories.last(), CoreMatchers.is(virtualRepo.getRepositories().last()))
             assertThat(defaultDeploymentRepo, CoreMatchers.is(virtualRepo.getDefaultDeploymentRepo()))
+            assertThat(repoLayoutRef, CoreMatchers.is(remoteRepo.getRepoLayoutRef()))
         }
     }
-
 }
