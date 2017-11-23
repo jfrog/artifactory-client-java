@@ -1,7 +1,7 @@
 package org.jfrog.artifactory.client
 
 import org.hamcrest.CoreMatchers
-import org.jfrog.artifactory.client.model.*
+import org.jfrog.artifactory.client.model.RepositoryType
 import org.jfrog.artifactory.client.model.repository.settings.RepositorySettings
 import org.jfrog.artifactory.client.model.repository.settings.impl.CocoaPodsRepositorySettingsImpl
 import org.jfrog.artifactory.client.model.repository.settings.vcs.VcsGitProvider
@@ -47,8 +47,11 @@ public class CocoaPodsPackageTypeRepositoryTests extends BaseRepositoryTests {
         def expectedSettings = localRepo.repositorySettings
 
         def resp = artifactory.repository(localRepo.getKey()).get()
+        assertThat(resp, CoreMatchers.notNullValue())
+        assertThat(resp.repoLayoutRef, CoreMatchers.is(CocoaPodsRepositorySettingsImpl.defaultLayout))
         resp.getRepositorySettings().with {
             assertThat(packageType, CoreMatchers.is(expectedSettings.getPackageType()))
+            assertThat(repoLayout, CoreMatchers.is(expectedSettings.getRepoLayout()))
 
             // remote
             assertThat(listRemoteFolderItems, CoreMatchers.nullValue())
@@ -66,8 +69,11 @@ public class CocoaPodsPackageTypeRepositoryTests extends BaseRepositoryTests {
         def expectedSettings = remoteRepo.repositorySettings
 
         def resp = artifactory.repository(remoteRepo.getKey()).get()
+        assertThat(resp, CoreMatchers.notNullValue())
+        assertThat(resp.repoLayoutRef, CoreMatchers.is(CocoaPodsRepositorySettingsImpl.defaultLayout))
         resp.getRepositorySettings().with {
             assertThat(packageType, CoreMatchers.is(expectedSettings.getPackageType()))
+            assertThat(repoLayout, CoreMatchers.is(expectedSettings.getRepoLayout()))
 
             // remote
             assertThat(listRemoteFolderItems, CoreMatchers.is(expectedSettings.getListRemoteFolderItems()))

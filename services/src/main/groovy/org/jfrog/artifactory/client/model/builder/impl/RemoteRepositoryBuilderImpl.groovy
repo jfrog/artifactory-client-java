@@ -7,7 +7,6 @@ import org.jfrog.artifactory.client.model.builder.RemoteRepositoryBuilder
 import org.jfrog.artifactory.client.model.impl.RemoteRepositoryImpl
 import org.jfrog.artifactory.client.model.impl.RepositoryTypeImpl
 
-import static org.jfrog.artifactory.client.model.Repository.MAVEN_2_REPO_LAYOUT
 import static org.jfrog.artifactory.client.model.impl.PackageTypeImpl.*
 
 /**

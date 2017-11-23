@@ -27,8 +27,11 @@ public class ConanPackageTypeRepositoryTests extends BaseRepositoryTests {
         def expectedSettings = localRepo.repositorySettings
 
         def resp = artifactory.repository(localRepo.getKey()).get()
+        assertThat(resp, CoreMatchers.notNullValue())
+        assertThat(resp.repoLayoutRef, CoreMatchers.is(ConanRepositorySettingsImpl.defaultLayout))
         resp.getRepositorySettings().with {
             assertThat(packageType, CoreMatchers.is(expectedSettings.getPackageType()))
+            assertThat(repoLayout, CoreMatchers.is(expectedSettings.getRepoLayout()))
         }
     }
 
@@ -38,8 +41,11 @@ public class ConanPackageTypeRepositoryTests extends BaseRepositoryTests {
         def expectedSettings = remoteRepo.repositorySettings
 
         def resp = artifactory.repository(remoteRepo.getKey()).get()
+        assertThat(resp, CoreMatchers.notNullValue())
+        assertThat(resp.repoLayoutRef, CoreMatchers.is(ConanRepositorySettingsImpl.defaultLayout))
         resp.getRepositorySettings().with {
             assertThat(packageType, CoreMatchers.is(expectedSettings.getPackageType()))
+            assertThat(repoLayout, CoreMatchers.is(expectedSettings.getRepoLayout()))
         }
     }
 
@@ -49,8 +55,11 @@ public class ConanPackageTypeRepositoryTests extends BaseRepositoryTests {
         def expectedSettings = virtualRepo.repositorySettings
 
         def resp = artifactory.repository(virtualRepo.getKey()).get()
+        assertThat(resp, CoreMatchers.notNullValue())
+        assertThat(resp.repoLayoutRef, CoreMatchers.is(ConanRepositorySettingsImpl.defaultLayout))
         resp.getRepositorySettings().with {
             assertThat(packageType, CoreMatchers.is(expectedSettings.getPackageType()))
+            assertThat(repoLayout, CoreMatchers.is(expectedSettings.getRepoLayout()))
         }
     }
 }
