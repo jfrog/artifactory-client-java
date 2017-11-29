@@ -13,6 +13,7 @@ class GroupBuilderImpl implements GroupBuilder {
     String realm
     String realmAttributes
     boolean autoJoin
+    boolean admin
 
     @Override
     GroupBuilder name(String name) {
@@ -23,6 +24,12 @@ class GroupBuilderImpl implements GroupBuilder {
     @Override
     GroupBuilder autoJoin(boolean autoJoin) {
         this.autoJoin = autoJoin
+        return this
+    }
+
+    @Override
+    GroupBuilder admin(boolean admin) {
+        this.admin = admin
         return this
     }
 
@@ -46,6 +53,6 @@ class GroupBuilderImpl implements GroupBuilder {
 
     @Override
     Group build() {
-        new GroupImpl(name, autoJoin, description, realm, realmAttributes)
+        new GroupImpl(name, autoJoin, description, realm, realmAttributes, admin)
     }
 }

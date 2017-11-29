@@ -27,6 +27,7 @@ public class SecurityTests extends ArtifactoryTestsBase {
 
     private static final String USER_NAME = "test" + ("" + System.currentTimeMillis()).substring(5);
     private static final String GROUP_NAME = "test_group" + ("" + System.currentTimeMillis()).substring(5);
+    private static final String GROUP_ADMIN_NAME = "test_admin_group" + ("" + System.currentTimeMillis()).substring(5);
     private static final String GROUP_EXTERNAL_NAME = "test_group_external" + ("" + System.currentTimeMillis()).substring(5);
     private static final String PERMISSION_Target_NAME = "test_permission" + ("" + System.currentTimeMillis()).substring(5);
 
@@ -190,6 +191,15 @@ public class SecurityTests extends ArtifactoryTestsBase {
         artifactory.security().createOrUpdateGroup(group);
         Group group1 = artifactory.security().group(GROUP_NAME);
         assertEquals(group.getDescription(), group1.getDescription());
+    }
+
+    @Test
+    public void testCreateAdminGroup() {
+        GroupBuilder groupBuilder = artifactory.security().builders().groupBuilder();
+        Group group = groupBuilder.name(GROUP_ADMIN_NAME).autoJoin(true).description("new test admin group").build();
+        artifactory.security().createOrUpdateGroup(group);
+        Group group1 = artifactory.security().group(GROUP_ADMIN_NAME);
+        assertEquals(group.isAdmin(), group1.isAdmin());
     }
 
     @Test

@@ -448,6 +448,7 @@ String result = artifactory.security().deleteUser("userName");
 Group group = artifactory.security().group("groupName");
 String description = group.getDescription();
 boolean isAutoJoin = group.isAutoJoin();
+boolean isAdmin = group.isAdmin();
 ```
 
 ##### List all User Groups
@@ -463,6 +464,7 @@ for (String groupName : groupNames) {
 Group group = artifactory.security().builders().groupBuilder()
     .name("groupName")
     .autoJoin(true)
+    .admin(true)
     .description("new group")
     .build();
 
