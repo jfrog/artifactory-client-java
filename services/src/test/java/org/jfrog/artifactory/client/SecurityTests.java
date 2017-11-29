@@ -191,15 +191,16 @@ public class SecurityTests extends ArtifactoryTestsBase {
         artifactory.security().createOrUpdateGroup(group);
         Group group1 = artifactory.security().group(GROUP_NAME);
         assertEquals(group.getDescription(), group1.getDescription());
+        assertEquals(group.isAdminPrivileges(), group1.isAdminPrivileges());
     }
 
     @Test
     public void testCreateAdminGroup() {
         GroupBuilder groupBuilder = artifactory.security().builders().groupBuilder();
-        Group group = groupBuilder.name(GROUP_ADMIN_NAME).autoJoin(true).description("new test admin group").build();
+        Group group = groupBuilder.name(GROUP_ADMIN_NAME).autoJoin(false).adminPrivileges(true).description("new test admin group").build();
         artifactory.security().createOrUpdateGroup(group);
         Group group1 = artifactory.security().group(GROUP_ADMIN_NAME);
-        assertEquals(group.isAdmin(), group1.isAdmin());
+        assertEquals(group.isAdminPrivileges(), group1.isAdminPrivileges());
     }
 
     @Test

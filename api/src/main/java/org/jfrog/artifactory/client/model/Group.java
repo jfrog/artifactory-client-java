@@ -13,5 +13,5 @@ public interface Group extends Subject {
 
     boolean isAutoJoin();
 
-    boolean isAdmin();
+    boolean isAdminPrivileges();
 }
