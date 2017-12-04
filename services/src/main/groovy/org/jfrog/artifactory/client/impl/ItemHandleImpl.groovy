@@ -139,7 +139,7 @@ class ItemHandleImpl implements ItemHandle {
     }
 
     @Override
-    Folder create() {
+    Folder create() throws IOException {
         Folder folder = artifactory.put("/$repo/$path/", ContentType.APPLICATION_JSON, null, new HashMap<String, String>(), null, -1, FolderImpl, Folder )
         folder.createdBy = artifactory.username
         folder
