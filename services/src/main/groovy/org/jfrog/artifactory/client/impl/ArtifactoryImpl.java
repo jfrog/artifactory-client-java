@@ -150,9 +150,7 @@ public class ArtifactoryImpl implements Artifactory {
         switch (((ArtifactoryRequestImpl) request).getMethod().toString()) {
             case ("GET"):
                 String text = get(requestPath, String.class, null);
-                if (request.getResponseType() == ArtifactoryRequest.ContentType.TEXT) {
-                    return (T) text;
-                } else {
+                if (request.getResponseType() == ArtifactoryRequest.ContentType.JSON) {
                     if (text.startsWith("[")) {
                         // create a valid json to parse for objectMapper
                         StringBuilder stringBuilder = new StringBuilder();
@@ -164,6 +162,7 @@ public class ArtifactoryImpl implements Artifactory {
                     return (T) Util.parseObjectWithTypeReference(text,new TypeReference<HashMap<String, Object>>() {
                     });
                 }
+                return (T) text;
             case ("POST"):
                 contentType = Util.getContentType(request.getRequestType());
                 queryPath = "";
@@ -171,6 +170,9 @@ public class ArtifactoryImpl implements Artifactory {
                     queryPath = Util.getQueryPath("?", request.getQueryParams().entrySet());
                 }
                 String body = ((ArtifactoryRequestImpl) request).getBody();
+                if (request.getResponseType() == ArtifactoryRequest.ContentType.JSON) {
+                    return (T) post(requestPath + queryPath, contentType, body, request.getHeaders(), Map.class, null);
+                }
                 return (T) post(requestPath + queryPath, contentType, body, request.getHeaders(), String.class, null);
             case ("PUT"):
                 contentType = Util.getContentType(request.getRequestType());
@@ -181,15 +183,13 @@ public class ArtifactoryImpl implements Artifactory {
 
                 if (((ArtifactoryRequestImpl) request).getBody() instanceof InputStream) {
                     return (T) put(requestPath + queryPath, contentType, null, request.getHeaders(), (InputStream) ((ArtifactoryRequestImpl) request).getBody(), -1, String.class, null);
-                } else {
-                    return (T) put(requestPath + queryPath, contentType, Util.getStringFromObject(((ArtifactoryRequestImpl) request).getBody()), request.getHeaders(), null, -1, String.class, null);
                 }
+                return (T) put(requestPath + queryPath, contentType, Util.getStringFromObject(((ArtifactoryRequestImpl) request).getBody()), request.getHeaders(), null, -1, String.class, null);
             case "DELETE":
                 queryPath = "";
                 if (!request.getQueryParams().isEmpty()) {
                     queryPath = Util.getQueryPath("?", request.getQueryParams().entrySet());
                 }
-
                 return (T) delete(requestPath + queryPath);
             default:
                 throw new IllegalArgumentException("HTTP method invalid.");
@@ -281,11 +281,11 @@ public class ArtifactoryImpl implements Artifactory {
             httpPost.setEntity(new StringEntity(content, contentType));
         }
         HttpResponse httpResponse = httpClient.execute(httpPost);
-        if (object.getName().equals("java.lang.String")) {
+        if (object == String.class) {
             return (T) Util.responseToString(httpResponse);
         }
-        return Util.responseToObject(httpResponse, object, interfaceObject);
 
+        return Util.responseToObject(httpResponse, object, interfaceObject);
     }
 
     public <T> T put(String path, org.apache.http.entity.ContentType contentType, String content, Map<String, String> headers, InputStream inputStream, long length, Class<? extends T> object, Class<T> interfaceObject) throws IOException {
@@ -317,11 +317,12 @@ public class ArtifactoryImpl implements Artifactory {
         HttpResponse httpResponse = httpClient.execute(httpPut);
         int status = httpResponse.getStatusLine().getStatusCode();
         if (status == HttpStatus.SC_OK || status == HttpStatus.SC_NO_CONTENT || status == HttpStatus.SC_ACCEPTED || status == HttpStatus.SC_CREATED) {
-            if (object.getName().equals("java.lang.String")) {
+            if (object == String.class) {
                 return (T) Util.responseToString(httpResponse);
             }
             return Util.responseToObject(httpResponse, object, interfaceObject);
         }
+
         throwException(httpResponse);
         return null;
     }

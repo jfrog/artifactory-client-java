@@ -12,4 +12,6 @@ public interface Group extends Subject {
     String getDescription();
 
     boolean isAutoJoin();
+
+    boolean isAdminPrivileges();
 }

@@ -13,6 +13,8 @@ public interface GroupBuilder {
 
     GroupBuilder autoJoin(boolean autoJoin);
 
+    GroupBuilder adminPrivileges(boolean adminPrivileges);
+
     GroupBuilder description(String description);
 
     /**
