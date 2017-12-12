@@ -32,7 +32,6 @@ import static com.fasterxml.jackson.databind.introspect.VisibilityChecker.Std.de
 public class Util {
 
     public static <T> T responseToObject(HttpResponse httpResponse, Class<? extends T> object, Class<T> interfaceClass) throws IOException {
-
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.addMixIn(Repository.class, RepositoryMixIn.class);
         objectMapper.addMixIn(RepositorySettings.class, RepositorySettingsMixIn.class);
@@ -46,17 +45,13 @@ public class Util {
 
         if (interfaceClass != null) {
             SimpleModule module = new SimpleModule("CustomModel", Version.unknownVersion());
-
             SimpleAbstractTypeResolver resolver = new SimpleAbstractTypeResolver();
             resolver.addMapping(interfaceClass, object);
-
             module.setAbstractTypes(resolver);
-
             objectMapper.registerModule(module);
         }
 
         return objectMapper.readValue(httpResponse.getEntity().getContent(), object);
-
     }
 
     public static String responseToString(HttpResponse httpResponse) throws IOException {

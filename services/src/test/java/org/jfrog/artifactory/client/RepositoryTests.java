@@ -1,6 +1,7 @@
 package org.jfrog.artifactory.client;
 
 import groovyx.net.http.HttpResponseException;
+import org.apache.http.HttpStatus;
 import org.jfrog.artifactory.client.model.*;
 import org.jfrog.artifactory.client.model.repository.settings.RepositorySettings;
 import org.jfrog.artifactory.client.model.repository.settings.impl.GenericRepositorySettingsImpl;
@@ -88,8 +89,8 @@ public class RepositoryTests extends ArtifactoryTestsBase {
         Artifactory anonymousArtifactory = ArtifactoryClient.create(url);
         try {
             anonymousArtifactory.repository(localRepository.getKey()).folder("myFolder").create();
-        } catch (Exception e) {
-            assertTrue(e.getMessage().contains("Unauthorized"));
+        } catch (HttpResponseException e) {
+            assertTrue(e.getStatusCode() == HttpStatus.SC_UNAUTHORIZED);
         }
     }
 
