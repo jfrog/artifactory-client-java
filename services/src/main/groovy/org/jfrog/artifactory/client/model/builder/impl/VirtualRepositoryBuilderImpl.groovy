@@ -56,7 +56,7 @@ class VirtualRepositoryBuilderImpl extends RepositoryBuilderBase<VirtualReposito
 
     VirtualRepository build() {
         validate()
-        setRepoLayout()
+        setRepoLayoutFromSettings()
 
         new VirtualRepositoryImpl(key, settings, description, excludesPattern,
             includesPattern, notes, artifactoryRequestsCanRetrieveRemoteArtifacts,

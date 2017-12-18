@@ -17,12 +17,12 @@ class GenericRepositorySettingsImpl extends AbstractRepositorySettings implement
 
     Boolean listRemoteFolderItems
 
-    public GenericRepositorySettingsImpl() {
-        this.repoLayoutRef = defaultLayout
+  GenericRepositorySettingsImpl() {
+        super(defaultLayout)
     }
 
     @Override
-    public PackageType getPackageType() {
+    PackageType getPackageType() {
         return PackageTypeImpl.generic
     }
 }

@@ -15,16 +15,11 @@ class GradleRepositorySettingsImpl extends MavenRepositorySettingsImpl implement
     static String defaultLayout = "gradle-default"
 
     GradleRepositorySettingsImpl() {
-        this.repoLayoutRef = defaultLayout
+        super(defaultLayout)
     }
 
     @Override
-    public PackageType getPackageType() {
+    PackageType getPackageType() {
         return PackageTypeImpl.gradle
-    }
-
-    @Override
-    public String getRepoLayout() {
-        return this.repoLayoutRef
     }
 }

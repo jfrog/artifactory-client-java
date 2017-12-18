@@ -10,8 +10,8 @@ import org.jfrog.artifactory.client.model.repository.settings.ChefRepositorySett
 class ChefRepositorySettingsImpl extends AbstractRepositorySettings implements ChefRepositorySettings {
     static defaultLayout = "simple-default"
 
-    public ChefRepositorySettingsImpl() {
-        this.repoLayoutRef = defaultLayout
+  ChefRepositorySettingsImpl() {
+        super(defaultLayout)
     }
 
     @Override
