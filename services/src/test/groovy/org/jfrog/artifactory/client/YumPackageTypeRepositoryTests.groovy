@@ -4,6 +4,7 @@ import org.hamcrest.CoreMatchers
 import org.jfrog.artifactory.client.model.RepositoryType
 import org.jfrog.artifactory.client.model.impl.PackageTypeImpl
 import org.jfrog.artifactory.client.model.repository.settings.RepositorySettings
+import org.jfrog.artifactory.client.model.repository.settings.impl.RpmRepositorySettingsImpl
 import org.jfrog.artifactory.client.model.repository.settings.impl.YumRepositorySettingsImpl
 import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
@@ -46,9 +47,12 @@ public class YumPackageTypeRepositoryTests extends BaseRepositoryTests {
         def expectedSettings = localRepo.repositorySettings
 
         def resp = artifactory.repository(localRepo.getKey()).get()
+        assertThat(resp, CoreMatchers.notNullValue())
+        assertThat(resp.repoLayoutRef, CoreMatchers.is(RpmRepositorySettingsImpl.defaultLayout))
         resp.getRepositorySettings().with {
             // The package type is 'rpm' since Artifactory 5.0.0
             assertThat(packageType, CoreMatchers.is(PackageTypeImpl.rpm))
+            assertThat(repoLayout, CoreMatchers.is(expectedSettings.getRepoLayout()))
 
             // local
             assertThat(calculateYumMetadata, CoreMatchers.is(expectedSettings.getCalculateYumMetadata()))
@@ -68,9 +72,12 @@ public class YumPackageTypeRepositoryTests extends BaseRepositoryTests {
         def expectedSettings = remoteRepo.repositorySettings
 
         def resp = artifactory.repository(remoteRepo.getKey()).get()
+        assertThat(resp, CoreMatchers.notNullValue())
+        assertThat(resp.repoLayoutRef, CoreMatchers.is(RpmRepositorySettingsImpl.defaultLayout))
         resp.getRepositorySettings().with {
             // The package type is 'rpm' since Artifactory 5.0.0
             assertThat(packageType, CoreMatchers.is(PackageTypeImpl.rpm))
+            assertThat(repoLayout, CoreMatchers.is(expectedSettings.getRepoLayout()))
 
             // remote
             assertThat(listRemoteFolderItems, CoreMatchers.is(expectedSettings.getListRemoteFolderItems()))

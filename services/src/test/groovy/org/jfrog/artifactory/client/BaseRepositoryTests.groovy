@@ -44,7 +44,6 @@ abstract class BaseRepositoryTests extends ArtifactoryTestsBase {
     protected void setUp() {
         if (prepareGenericRepo) {
             RepositorySettings settings = getRepositorySettings(RepositoryTypeImpl.LOCAL)
-            settings?.repoLayout = "maven-2-default"
 
             XraySettings genericXraySettings = new XraySettingsImpl()
             genericRepo = artifactory.repositories().builders().localRepositoryBuilder()
@@ -63,7 +62,6 @@ abstract class BaseRepositoryTests extends ArtifactoryTestsBase {
         }
         if (prepareLocalRepo) {
             RepositorySettings settings = getRepositorySettings()
-            settings?.repoLayout = "maven-2-default"
             localRepo = artifactory.repositories().builders().localRepositoryBuilder()
                 .key("cutsman-repo_${rnd.nextInt()}")
                 .description("description_${rnd.nextInt()}")
@@ -81,7 +79,6 @@ abstract class BaseRepositoryTests extends ArtifactoryTestsBase {
 
         if (prepareRemoteRepo) {
             RepositorySettings settings = getRepositorySettings()
-            settings?.repoLayout = "maven-2-default"
             ContentSync contentSync = new ContentSyncImpl()
             remoteRepo = artifactory.repositories().builders().remoteRepositoryBuilder()
                 .key("cutsman-repo_${rnd.nextInt()}")
@@ -122,7 +119,6 @@ abstract class BaseRepositoryTests extends ArtifactoryTestsBase {
 
         if (prepareVirtualRepo) {
             RepositorySettings settings = getRepositorySettings()
-            settings?.repoLayout = "maven-2-default"
             artifactory.repositories().create(0, genericRepo)
             def repos = new ArrayList<String>()
             repos.add(genericRepo.getKey())

@@ -7,7 +7,6 @@ import org.jfrog.artifactory.client.model.builder.RemoteRepositoryBuilder
 import org.jfrog.artifactory.client.model.impl.RemoteRepositoryImpl
 import org.jfrog.artifactory.client.model.impl.RepositoryTypeImpl
 
-import static org.jfrog.artifactory.client.model.Repository.MAVEN_2_REPO_LAYOUT
 import static org.jfrog.artifactory.client.model.impl.PackageTypeImpl.*
 
 /**
@@ -20,7 +19,6 @@ class RemoteRepositoryBuilderImpl extends NonVirtualRepositoryBuilderBase<Remote
     RemoteRepositoryBuilderImpl() {
         super([bower, cocoapods, debian, docker, gems, generic, gitlfs, gradle, ivy, maven, npm, nuget, opkg, p2,
                pypi, sbt, vcs, yum, rpm, composer, conan, chef, puppet] as Set)
-        repoLayoutRef = MAVEN_2_REPO_LAYOUT
     }
 
     private String url
