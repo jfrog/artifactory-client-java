@@ -74,7 +74,6 @@ public class GeneralRepositoryTests extends BaseRepositoryTests {
             assertThat(localAddress, CoreMatchers.is(remoteRepo.getLocalAddress()))
             assertThat(missedRetrievalCachePeriodSecs, CoreMatchers.is(remoteRepo.getMissedRetrievalCachePeriodSecs()))
             assertThat(offline, CoreMatchers.is(remoteRepo.isOffline()))
-            assertThat(password, CoreMatchers.is(remoteRepo.getPassword()))
             assertThat(propertySets, CoreMatchers.is(remoteRepo.getPropertySets()))
             assertThat(proxy, CoreMatchers.is(remoteRepo.getProxy()))
             assertThat(repoLayoutRef, CoreMatchers.is(remoteRepo.getRepoLayoutRef()))
