@@ -1,7 +1,7 @@
 package org.jfrog.artifactory.client
 
 import org.hamcrest.CoreMatchers
-import org.jfrog.artifactory.client.model.*
+import org.jfrog.artifactory.client.model.RepositoryType
 import org.jfrog.artifactory.client.model.impl.LocalRepoChecksumPolicyTypeImpl
 import org.jfrog.artifactory.client.model.impl.RemoteRepoChecksumPolicyTypeImpl
 import org.jfrog.artifactory.client.model.impl.SnapshotVersionBehaviorImpl
@@ -57,8 +57,11 @@ public class MavenPackageTypeRepositoryTests extends BaseRepositoryTests {
         def expectedSettings = localRepo.repositorySettings
 
         def resp = artifactory.repository(localRepo.getKey()).get()
+        assertThat(resp, CoreMatchers.notNullValue())
+        assertThat(resp.repoLayoutRef, CoreMatchers.is(MavenRepositorySettingsImpl.defaultLayout))
         resp.getRepositorySettings().with {
             assertThat(packageType, CoreMatchers.is(expectedSettings.getPackageType()))
+            assertThat(repoLayout, CoreMatchers.is(expectedSettings.getRepoLayout()))
 
             // local
             assertThat(checksumPolicyType, CoreMatchers.is(expectedSettings.getChecksumPolicyType()))
@@ -87,8 +90,11 @@ public class MavenPackageTypeRepositoryTests extends BaseRepositoryTests {
         def expectedSettings = remoteRepo.repositorySettings
 
         def resp = artifactory.repository(remoteRepo.getKey()).get()
+        assertThat(resp, CoreMatchers.notNullValue())
+        assertThat(resp.repoLayoutRef, CoreMatchers.is(MavenRepositorySettingsImpl.defaultLayout))
         resp.getRepositorySettings().with {
             assertThat(packageType, CoreMatchers.is(expectedSettings.getPackageType()))
+            assertThat(repoLayout, CoreMatchers.is(expectedSettings.getRepoLayout()))
 
             // local
             assertThat(checksumPolicyType, CoreMatchers.nullValue())
@@ -119,8 +125,11 @@ public class MavenPackageTypeRepositoryTests extends BaseRepositoryTests {
         def expectedSettings = virtualRepo.repositorySettings
 
         def resp = artifactory.repository(virtualRepo.getKey()).get()
+        assertThat(resp, CoreMatchers.notNullValue())
+        assertThat(resp.repoLayoutRef, CoreMatchers.is(MavenRepositorySettingsImpl.defaultLayout))
         resp.getRepositorySettings().with {
             assertThat(packageType, CoreMatchers.is(expectedSettings.getPackageType()))
+            assertThat(repoLayout, CoreMatchers.is(expectedSettings.getRepoLayout()))
 
             // local
             assertThat(checksumPolicyType, CoreMatchers.nullValue())
