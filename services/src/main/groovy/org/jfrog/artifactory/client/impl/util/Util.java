@@ -86,7 +86,11 @@ public class Util {
             return ContentType.APPLICATION_JSON;
         }
 
-        if (contentType.equals(ArtifactoryRequest.ContentType.JSON)) {
+        if (contentType.equals(ArtifactoryRequest.ContentType.JOSE)) {
+            return ContentType.create("application/jose", Consts.UTF_8);
+        }
+
+        if (contentType.equals(ArtifactoryRequest.ContentType.JOSE_JSON)) {
             return ContentType.create("application/jose+json", Consts.ISO_8859_1);
         }
 
