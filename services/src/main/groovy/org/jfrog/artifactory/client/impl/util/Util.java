@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.module.SimpleAbstractTypeResolver;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import org.apache.commons.io.IOUtils;
+import org.apache.http.Consts;
 import org.apache.http.HttpResponse;
 import org.apache.http.entity.ContentType;
 import org.jfrog.artifactory.client.ArtifactoryRequest;
@@ -83,6 +84,10 @@ public class Util {
 
         if (contentType.equals(ArtifactoryRequest.ContentType.JSON)) {
             return ContentType.APPLICATION_JSON;
+        }
+
+        if (contentType.equals(ArtifactoryRequest.ContentType.JSON)) {
+            return ContentType.create("application/jose+json", Consts.ISO_8859_1);
         }
 
         if (contentType.equals(ArtifactoryRequest.ContentType.TEXT)) {
