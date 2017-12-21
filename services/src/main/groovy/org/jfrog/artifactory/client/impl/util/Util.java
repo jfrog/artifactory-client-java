@@ -87,11 +87,11 @@ public class Util {
         }
 
         if (contentType.equals(ArtifactoryRequest.ContentType.JOSE)) {
-            return ContentType.create("application/jose", Consts.UTF_8);
+            return ContentType.create("application/jose", Consts.ISO_8859_1);
         }
 
         if (contentType.equals(ArtifactoryRequest.ContentType.JOSE_JSON)) {
-            return ContentType.create("application/jose+json", Consts.ISO_8859_1);
+            return ContentType.create("application/jose+json", Consts.UTF_8);
         }
 
         if (contentType.equals(ArtifactoryRequest.ContentType.TEXT)) {
