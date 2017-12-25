@@ -6,6 +6,7 @@ import org.jfrog.artifactory.client.model.impl.CustomPackageTypeImpl
 import org.jfrog.artifactory.client.model.impl.PackageTypeImpl
 import org.jfrog.artifactory.client.model.repository.settings.RepositorySettings
 import org.jfrog.artifactory.client.model.repository.settings.impl.CustomRepositorySettingsImpl
+import org.jfrog.artifactory.client.model.repository.settings.impl.RpmRepositorySettingsImpl
 import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
 
@@ -19,7 +20,9 @@ class CustomPackageTypeRepositoryTests extends BaseRepositoryTests {
     @Override
     RepositorySettings getRepositorySettings(RepositoryType repositoryType) {
         CustomPackageTypeImpl customPackageType = new CustomPackageTypeImpl("rpm")
-        return new CustomRepositorySettingsImpl(customPackageType)
+        CustomRepositorySettingsImpl repositorySettings = new CustomRepositorySettingsImpl(customPackageType)
+        repositorySettings.setRepoLayout(RpmRepositorySettingsImpl.defaultLayout)
+        return repositorySettings
     }
 
     @BeforeMethod
@@ -45,8 +48,11 @@ class CustomPackageTypeRepositoryTests extends BaseRepositoryTests {
         artifactory.repositories().create(0, localRepo)
 
         def resp = artifactory.repository(localRepo.getKey()).get()
+        assertThat(resp, CoreMatchers.notNullValue())
+        assertThat(resp.repoLayoutRef, CoreMatchers.is(RpmRepositorySettingsImpl.defaultLayout))
         resp.getRepositorySettings().with {
             assertThat(packageType, CoreMatchers.is(PackageTypeImpl.rpm))
+            assertThat(repoLayout, CoreMatchers.is(RpmRepositorySettingsImpl.defaultLayout))
 
             // local
             assertThat(calculateYumMetadata, CoreMatchers.is(someCalculateYumMetadata))
@@ -63,8 +69,11 @@ class CustomPackageTypeRepositoryTests extends BaseRepositoryTests {
         artifactory.repositories().create(0, remoteRepo)
 
         def resp = artifactory.repository(remoteRepo.getKey()).get()
+        assertThat(resp, CoreMatchers.notNullValue())
+        assertThat(resp.repoLayoutRef, CoreMatchers.is(RpmRepositorySettingsImpl.defaultLayout))
         resp.getRepositorySettings().with {
             assertThat(packageType, CoreMatchers.is(PackageTypeImpl.rpm))
+            assertThat(repoLayout, CoreMatchers.is(RpmRepositorySettingsImpl.defaultLayout))
 
             // remote
             assertThat(listRemoteFolderItems, CoreMatchers.is(someListRemoteFolderItems))
@@ -81,8 +90,11 @@ class CustomPackageTypeRepositoryTests extends BaseRepositoryTests {
         artifactory.repositories().create(0, virtualRepo)
 
         def resp = artifactory.repository(virtualRepo.getKey()).get()
+        assertThat(resp, CoreMatchers.notNullValue())
+        assertThat(resp.repoLayoutRef, CoreMatchers.is(RpmRepositorySettingsImpl.defaultLayout))
         resp.getRepositorySettings().with {
             assertThat(packageType, CoreMatchers.is(PackageTypeImpl.rpm))
+            assertThat(repoLayout, CoreMatchers.is(RpmRepositorySettingsImpl.defaultLayout))
 
             // local
             assertThat(calculateYumMetadata, CoreMatchers.is(CoreMatchers.nullValue()))
