@@ -17,12 +17,12 @@ class GemsRepositorySettingsImpl extends AbstractRepositorySettings implements G
 
     Boolean listRemoteFolderItems
 
-    public GemsRepositorySettingsImpl() {
-        this.repoLayoutRef = defaultLayout
+  GemsRepositorySettingsImpl() {
+        super(defaultLayout)
     }
 
     @Override
-    public PackageType getPackageType() {
+    PackageType getPackageType() {
         return PackageTypeImpl.gems
     }
 }
