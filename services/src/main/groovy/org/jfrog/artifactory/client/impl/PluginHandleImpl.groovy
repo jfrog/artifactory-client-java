@@ -1,9 +1,8 @@
 package org.jfrog.artifactory.client.impl
 
-import groovyx.net.http.ContentType
 import org.jfrog.artifactory.client.PluginHandle
 import org.jfrog.artifactory.client.Plugins
-import org.jfrog.artifactory.client.impl.util.QueryUtil
+import org.jfrog.artifactory.client.impl.util.Util
 
 /**
  *
@@ -46,12 +45,20 @@ class PluginHandleImpl implements PluginHandle {
     }
 
     String doExecute(boolean async) {
-        def query = [:]
+        StringBuilder queryPath = new StringBuilder("?params=");
         if (params) {
-            query.params = QueryUtil.getQueryList(params)
+            for (String key : params.keySet()) {
+                String[] values = params.get(key);
+                queryPath.append(Util.encodeParams(key)).append("=");
+                for (String value : values) {
+                    queryPath.append(Util.encodeParams(value)).append(",")
+                }
+                queryPath.replace(queryPath.length()-1, queryPath.length(), ";");
+            }
         }
-        query.async = async ? 1 : 0
-        artifactory.post("${plugins.getPluginsApi()}/execute/$name", query, ContentType.TEXT, Class)
+        int asyncValue = async ? 1 : 0;
+        queryPath.append("async&=").append(asyncValue);
+        artifactory.post("${plugins.getPluginsApi()}/execute/$name" + queryPath.toString(), org.apache.http.entity.ContentType.TEXT_PLAIN, null, new HashMap<String, String>(), String, null )
     }
 
 }

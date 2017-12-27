@@ -17,6 +17,7 @@ import java.util.Set;
 
 import static junit.framework.Assert.*;
 import static org.jfrog.artifactory.client.model.Privilege.*;
+import static org.testng.Assert.assertTrue;
 
 /**
  * @author freds
@@ -26,6 +27,7 @@ public class SecurityTests extends ArtifactoryTestsBase {
 
     private static final String USER_NAME = "test" + ("" + System.currentTimeMillis()).substring(5);
     private static final String GROUP_NAME = "test_group" + ("" + System.currentTimeMillis()).substring(5);
+    private static final String GROUP_ADMIN_NAME = "test_admin_group" + ("" + System.currentTimeMillis()).substring(5);
     private static final String GROUP_EXTERNAL_NAME = "test_group_external" + ("" + System.currentTimeMillis()).substring(5);
     private static final String PERMISSION_Target_NAME = "test_permission" + ("" + System.currentTimeMillis()).substring(5);
 
@@ -63,7 +65,8 @@ public class SecurityTests extends ArtifactoryTestsBase {
         try {
             artifactory.security().user("blablabla");
         } catch (Exception e) {
-            assertEquals("Not Found", e.getMessage());
+            assertTrue(e instanceof HttpResponseException);
+            assertTrue(((HttpResponseException) e).getStatusCode() == 404);
         }
     }
 
@@ -78,7 +81,8 @@ public class SecurityTests extends ArtifactoryTestsBase {
         try {
             artifactory.security().group("blalbabla");
         } catch (Exception e) {
-            assertEquals("Not Found", e.getMessage());
+            assertTrue(e instanceof HttpResponseException);
+            assertTrue(((HttpResponseException) e).getStatusCode() == 404);
         }
     }
 
@@ -187,7 +191,16 @@ public class SecurityTests extends ArtifactoryTestsBase {
         artifactory.security().createOrUpdateGroup(group);
         Group group1 = artifactory.security().group(GROUP_NAME);
         assertEquals(group.getDescription(), group1.getDescription());
-        //assertEquals("group should be internal by default", "artifactory", group1.getRealm());
+        assertEquals(group.isAdminPrivileges(), group1.isAdminPrivileges());
+    }
+
+    @Test
+    public void testCreateAdminGroup() {
+        GroupBuilder groupBuilder = artifactory.security().builders().groupBuilder();
+        Group group = groupBuilder.name(GROUP_ADMIN_NAME).autoJoin(false).adminPrivileges(true).description("new test admin group").build();
+        artifactory.security().createOrUpdateGroup(group);
+        Group group1 = artifactory.security().group(GROUP_ADMIN_NAME);
+        assertEquals(group.isAdminPrivileges(), group1.isAdminPrivileges());
     }
 
     @Test

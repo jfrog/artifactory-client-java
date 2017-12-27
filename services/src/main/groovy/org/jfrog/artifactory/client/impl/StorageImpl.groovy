@@ -1,7 +1,5 @@
 package org.jfrog.artifactory.client.impl
 
-import com.fasterxml.jackson.core.type.TypeReference
-import groovyx.net.http.ContentType
 import org.jfrog.artifactory.client.Storage
 import org.jfrog.artifactory.client.model.StorageInfo
 import org.jfrog.artifactory.client.model.impl.StorageInfoImpl
@@ -18,7 +16,6 @@ class StorageImpl implements Storage {
 
     @Override
     public StorageInfo getStorageInfo() {
-        return artifactory.get("/api/storageinfo",
-            ContentType.JSON, new TypeReference<StorageInfoImpl>() {})
+        return artifactory.get("/api/storageinfo",StorageInfoImpl, StorageInfo)
     }
 }

@@ -2,7 +2,7 @@ package org.jfrog.artifactory.client.impl
 
 import groovyx.net.http.HttpResponseException
 import org.jfrog.artifactory.client.PropertiesHandler
-import org.jfrog.artifactory.client.impl.util.QueryUtil
+import org.jfrog.artifactory.client.impl.util.Util
 
 /**
  *
@@ -59,16 +59,38 @@ class PropertiesHandlerImpl implements PropertiesHandler {
         if (!props) {
             throw new IllegalStateException("Please add some properties first using add* methods")
         }
-        def propList = QueryUtil.getQueryList(props)
         try {
-            artifactory.put(baseApiPath + "/storage/$repo/$path", [properties: propList, recursive: recursive ? 1 : 0])
+            StringBuilder queryPath = getQueryPath("?properties=");
+            queryPath.append("&recursive=");
+            if (recursive) {
+                queryPath.append("1");
+            } else
+                queryPath.append("0");
+
+            artifactory.put(baseApiPath + "/storage/$repo/$path" + queryPath.toString(), null, null, new HashMap<String, String>(), null, -1, String, null)
         } catch (HttpResponseException e) {
             if (e.statusCode == 404) {
-                artifactory.put("/$repo/$path/;${propList.replaceAll(/\|/, ';')}")
+                StringBuilder queryPath = getQueryPath("")
+                artifactory.put("/$repo/$path/;" + queryPath.toString(), null, null, new HashMap<String, String>(), null, -1, String, null)
             } else {
                 throw e
             }
         }
+    }
+
+    private StringBuilder getQueryPath(String prefix) {
+        StringBuilder queryPath = new StringBuilder(prefix);
+        if (props) {
+            for (String key : props.keySet()) {
+                String[] values = props.get(key);
+                queryPath.append(Util.encodeParams(key)).append("=");
+                for (String value : values) {
+                    queryPath.append(Util.encodeParams(value)).append(",")
+                }
+                queryPath.replace(queryPath.length() - 1, queryPath.length(), ";");
+            }
+        }
+        queryPath
     }
 
 }

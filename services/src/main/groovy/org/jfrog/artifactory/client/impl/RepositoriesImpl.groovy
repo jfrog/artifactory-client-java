@@ -1,9 +1,10 @@
 package org.jfrog.artifactory.client.impl
 
 import com.fasterxml.jackson.core.type.TypeReference
-import groovyx.net.http.ContentType
+import org.apache.http.entity.ContentType
 import org.jfrog.artifactory.client.Repositories
 import org.jfrog.artifactory.client.RepositoryHandle
+import org.jfrog.artifactory.client.impl.util.Util
 import org.jfrog.artifactory.client.model.LightweightRepository
 import org.jfrog.artifactory.client.model.Repository
 import org.jfrog.artifactory.client.model.RepositoryType
@@ -22,7 +23,6 @@ class RepositoriesImpl implements Repositories {
     private String baseApiPath
 
     private ArtifactoryImpl artifactory
-
     static private RepositoryBuilders builders = RepositoryBuildersImpl.create()
 
     RepositoriesImpl(ArtifactoryImpl artifactory, String baseApiPath) {
@@ -32,12 +32,15 @@ class RepositoriesImpl implements Repositories {
 
     @Override
     String create(int position, Repository configuration) {
-        artifactory.put("${getRepositoriesApi()}${configuration.getKey()}", [pos: position], ContentType.TEXT, null, ContentType.JSON, configuration)
+        String result = Util.getStringFromObject(configuration);
+        String queryPath = "?pos=" + position;
+        artifactory.put("${getRepositoriesApi()}${configuration.getKey()}" + queryPath, ContentType.APPLICATION_JSON, result, new HashMap<String, String>(), null, -1, String, null )
     }
 
     @Override
     String update(Repository configuration) {
-        artifactory.post("${getRepositoriesApi()}${configuration.getKey()}", [:], ContentType.TEXT, null, ContentType.JSON, configuration)
+        String toString = Util.getStringFromObject(configuration);
+        artifactory.post("${getRepositoriesApi()}${configuration.getKey()}", ContentType.APPLICATION_JSON, toString, null, String, null)
     }
 
     @Override
@@ -52,7 +55,13 @@ class RepositoriesImpl implements Repositories {
 
     @Override
     List<LightweightRepository> list(RepositoryType repositoryType) {
-        artifactory.get(getRepositoriesApi(), [type: repositoryType.toString()], ContentType.JSON, new TypeReference<List<LightweightRepositoryImpl>>() {})
+        StringBuilder queryPath = new StringBuilder("?type=");
+        if (repositoryType != null) {
+            queryPath.append(repositoryType.toString());
+        }
+        String result = artifactory.get(getRepositoriesApi() + queryPath.toString(), String, null);
+        return Util.parseObjectWithTypeReference(result, new TypeReference<List<LightweightRepositoryImpl>>() {
+        });
     }
 
     @Override

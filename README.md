@@ -35,7 +35,11 @@ This section includes a few usage examples of the Java client APIs from your app
 
 #### Setting up Artifactory
 ```
-Artifactory artifactory = ArtifactoryClient.create("ArtifactoryUrl", "username", "password");
+Artifactory artifactory = ArtifactoryClientBuilder.create()
+    .setUrl("ArtifactoryUrl")
+    .setUsername("username")
+    .setPassword("password")
+    .build();
 ```
 #### Uploading and downloading artifacts
 
@@ -226,33 +230,35 @@ artifactory.repository("RepoName").replications.delete()
 
 ##### Creating or replacing a replication on a local repository
 ```
-LocalReplication replication = new LocalReplicationImpl()
-replication.url = "http://hostname1:port/artifactory/RepoName"
-replication.socketTimeoutMillis = 30000
-replication.username = 'john.doe'
-replication.password = 'secret'
-replication.enableEventReplication = false
-replication.enabled = false
-replication.cronExp = '0 0 0/2 * * ?'
-replication.syncDeletes = true
-replication.syncProperties = true
-replication.syncStatistics = true
-replication.pathPrefix = ''
-replication.repoKey = "RepoName"
+LocalReplication replication = new LocalReplicationBuilderImpl()
+    .url("http://hostname1:port/artifactory/RepoName")
+    .socketTimeoutMillis(30000)
+    .username("john.doe")
+    .password("secret")
+    .enableEventReplication(false)
+    .enabled(false)
+    .cronExp("0 0 0/2 * * ?")
+    .syncDeletes(true)
+    .syncProperties(true)
+    .syncStatistics(true)
+    .pathPrefix("")
+    .repoKey("RepoName")
+    .build();
 
-artifactory.repository("RepoName").replications.createOrReplace(replication)
+artifactory.repository("RepoName").getReplications().createOrReplace(replication);
 ```
 
 ##### Creating or replacing a replication on a remote repository
 ```
-RemoteReplication replication = new RemoteReplicationImpl()
-replication.enabled = false
-replication.cronExp = '0 0 0/2 * * ?'
-replication.syncDeletes = true
-replication.syncProperties = true
-replication.repoKey = "RepoName"
+RemoteReplication replication = new RemoteReplicationBuilderImpl()
+    .enabled(false)
+    .cronExp("0 0 0/2 * * ?")
+    .syncDeletes(true)
+    .syncProperties(true)
+    .repoKey("RepoName")
+    .build();
 
-artifactory.repository("RepoName").replications.createOrReplace(replication)
+artifactory.repository("RepoName").getReplications().createOrReplace(replication)
 ```
 
 ##### Managing Xray properties
@@ -422,7 +428,7 @@ for (String userName : userNames) {
 ##### Creating or Updating Users
 ```
 UserBuilder userBuilder = artifactory.security().builders().userBuilder();
-User user = userBuilder.name("userName)
+User user = userBuilder.name("userName")
     .email("user@mail.com")
     .admin(false)
     .profileUpdatable(true)
@@ -444,6 +450,7 @@ String result = artifactory.security().deleteUser("userName");
 Group group = artifactory.security().group("groupName");
 String description = group.getDescription();
 boolean isAutoJoin = group.isAutoJoin();
+boolean isAdminPrivileges = group.isAdminPrivileges();
 ```
 
 ##### List all User Groups
@@ -459,6 +466,7 @@ for (String groupName : groupNames) {
 Group group = artifactory.security().builders().groupBuilder()
     .name("groupName")
     .autoJoin(true)
+    .adminPrivileges(true)
     .description("new group")
     .build();
 

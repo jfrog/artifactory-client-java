@@ -1,12 +1,11 @@
 package org.jfrog.artifactory.client.impl
 
-import groovyx.net.http.ContentType
 import groovyx.net.http.HttpResponseException
+import org.apache.http.entity.ContentType
 import org.jfrog.artifactory.client.Artifactory
 import org.jfrog.artifactory.client.UploadListener
 import org.jfrog.artifactory.client.UploadableArtifact
 import org.jfrog.artifactory.client.model.impl.FileImpl
-
 import java.security.MessageDigest
 
 /**
@@ -45,10 +44,10 @@ class UploadableArtifactImpl extends ArtifactBase<UploadableArtifact> implements
     org.jfrog.artifactory.client.model.File doUpload() {
         def params = parseParams(props, '=')
         if (sha1) {
-            def headers = ['X-Checksum-Deploy': true, 'X-Checksum-Sha1': sha1]
+            Map<String, String> headers = ['X-Checksum-Deploy': "true", 'X-Checksum-Sha1': sha1]
             try {
-                artifactory.put("/$repo/$path${params}", [:], ContentType.JSON, FileImpl, ContentType.BINARY, null,
-                        headers, file ? file.length() : -1)
+                int size = file ? file.length() : -1;
+                artifactory.put("/$repo/$path${params}", ContentType.DEFAULT_BINARY, null, headers, null, size , FileImpl, org.jfrog.artifactory.client.model.File)
             } catch (HttpResponseException e) {
                 if (e.statusCode == 404 && content != null) {
                     headers = ['X-Checksum-Sha1': sha1]
@@ -65,23 +64,21 @@ class UploadableArtifactImpl extends ArtifactBase<UploadableArtifact> implements
     @Override
     String doUploadAndExplode() {
         def params = parseParams(props, "=")
-        def headers = ['X-Explode-Archive': true]
-
-        artifactory.put("/$repo/$path${params}", [:], ContentType.TEXT, FileImpl, ContentType.BINARY, content,
-                headers, file ? file.length() : -1)
+        Map<String, String>  headers = ['X-Explode-Archive': true]
+        int size = file ? file.size() : -1;
+        return artifactory.put("/$repo/$path${params}", ContentType.APPLICATION_OCTET_STREAM, null, headers, content, size, String, null);
     }
 
     private uploadContent(params) {
         uploadContent(params, null)
     }
 
-    private uploadContent(params, headers) {
+    private uploadContent(String params, Map<String, String>  headers) {
         if (listener) {
             content = new ProgressInputStream(content, file.size(), listener)
         }
-        content.withStream {
-            artifactory.put("/$repo/$path${params}", [:], ContentType.JSON, FileImpl, ContentType.BINARY, content, headers, file ? file.size() : -1)
-        } as org.jfrog.artifactory.client.model.File
+        int size =  file ? file.size() : -1;
+        return (org.jfrog.artifactory.client.model.File)artifactory.put("/$repo/$path${params}", ContentType.APPLICATION_OCTET_STREAM, null, headers, content, size, FileImpl, org.jfrog.artifactory.client.model.File);
     }
 
     @Override

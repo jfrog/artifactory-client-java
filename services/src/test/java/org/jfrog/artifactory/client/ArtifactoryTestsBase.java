@@ -1,5 +1,6 @@
 package org.jfrog.artifactory.client;
 
+import groovyx.net.http.HttpResponseException;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -9,7 +10,6 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.jfrog.artifactory.client.model.LocalRepository;
 import org.jfrog.artifactory.client.model.Repository;
-import org.jfrog.artifactory.client.model.repository.settings.impl.GenericRepositorySettingsImpl;
 import org.jfrog.artifactory.client.model.repository.settings.impl.MavenRepositorySettingsImpl;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -134,7 +134,7 @@ public abstract class ArtifactoryTestsBase {
     }
 
     @AfterClass
-    public void clean() throws IOException {
+    public void clean() {
         deleteRepoIfExists(localRepository.getKey());
         deleteRepoIfExists(getJCenterRepoName());
         artifactory.close();
@@ -201,16 +201,16 @@ public abstract class ArtifactoryTestsBase {
         }
     }
 
-    protected String deleteRepoIfExists(String repoName) throws IOException {
+    protected String deleteRepoIfExists(String repoName) {
         if (isEmpty(repoName)) {
             return null;
         }
 
         try {
-            String result = artifactory.repository(repoName).delete();
-            return result;
+            return artifactory.repository(repoName).delete();
         } catch (Exception e) {
-            if (e.getMessage().equals("Not Found")) { //if repo wasn't found - that's ok.
+            if (e instanceof HttpResponseException && ((HttpResponseException)e).getStatusCode() == 404) {
+                  //if repo wasn't found - that's ok.
                 return e.getMessage();
             } else {
                 throw e;

@@ -1,5 +1,6 @@
 package org.jfrog.artifactory.client.model.builder;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.jfrog.artifactory.client.model.User;
 
 import java.util.Collection;
@@ -10,6 +11,7 @@ import java.util.Collection;
  *
  * @author freds
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public interface UserBuilder {
     UserBuilder name(String name);
 

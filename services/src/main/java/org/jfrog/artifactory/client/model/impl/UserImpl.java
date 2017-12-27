@@ -1,7 +1,8 @@
 package org.jfrog.artifactory.client.model.impl;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.jfrog.artifactory.client.model.User;
-
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 
@@ -11,14 +12,16 @@ import java.util.Date;
  *
  * @author freds
  */
-class UserImpl extends SubjectImpl implements User {
+public class UserImpl extends SubjectImpl implements User {
     private String email;
     private String password;
     private boolean admin;
     private boolean profileUpdatable;
     private boolean internalPasswordDisabled;
     private Date lastLoggedIn;
-    private Collection<String> groups;
+    private boolean groupAdmin;
+    @JsonProperty("groups")
+    private Collection<String> groups = new ArrayList<>();
 
     private UserImpl(String name, String email, String password, boolean admin, boolean profileUpdatable, boolean internalPasswordDisabled, Date lastLoggedIn, Collection<String> groups) {
         super(name);
@@ -58,6 +61,15 @@ class UserImpl extends SubjectImpl implements User {
 
     public boolean isAdmin() {
         return admin;
+    }
+
+    @Override
+    public boolean isGroupAdmin() {
+        return groupAdmin;
+    }
+
+    public void setGroupAdmin(boolean groupAdmin) {
+        this.groupAdmin = groupAdmin;
     }
 
     public void setAdmin(boolean admin) {

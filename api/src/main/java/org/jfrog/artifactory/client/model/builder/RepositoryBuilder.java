@@ -1,7 +1,7 @@
 package org.jfrog.artifactory.client.model.builder;
 
 import java.util.Map;
-
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.jfrog.artifactory.client.model.Repository;
 import org.jfrog.artifactory.client.model.repository.settings.RepositorySettings;
 import org.jfrog.artifactory.client.model.repository.settings.XraySettings;
@@ -10,6 +10,7 @@ import org.jfrog.artifactory.client.model.repository.settings.XraySettings;
  * @author jbaruch
  * @since 13/08/12
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public interface RepositoryBuilder<B extends RepositoryBuilder, R extends Repository> {
 
     B description(String description);

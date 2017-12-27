@@ -1,9 +1,9 @@
 package org.jfrog.artifactory.client.impl
 
 import groovy.json.JsonSlurper
-import groovyx.net.http.ContentType
 import org.jfrog.artifactory.client.*
 import org.jfrog.artifactory.client.model.ItemPermission
+import org.jfrog.artifactory.client.impl.util.Util
 import org.jfrog.artifactory.client.model.ReplicationStatus
 import org.jfrog.artifactory.client.model.Repository
 import org.jfrog.artifactory.client.model.impl.FileImpl
@@ -48,29 +48,29 @@ class RepositoryHandleImpl implements RepositoryHandle {
 
     @Override
     ReplicationStatus replicationStatus() {
-        artifactory.get("${repository.getReplicationApi()}${repoKey}", ContentType.JSON, ReplicationStatusImpl.class)
+        artifactory.get("${repository.getReplicationApi()}${repoKey}", ReplicationStatusImpl.class, ReplicationStatus)
     }
 
     @Override
     String delete() {
-        artifactory.delete("${repository.getRepositoriesApi()}${repoKey}", [:], ContentType.TEXT)
+        artifactory.delete("${repository.getRepositoriesApi()}${repoKey}")
     }
 
     @Override
     String delete(String path) {
-        artifactory.delete("/${repoKey}/${path}", [:], ContentType.TEXT)
+        artifactory.delete("/${repoKey}/${path}")
     }
 
     @Override
     Repository get() {
-        String json = artifactory.get("${repository.getRepositoriesApi()}${repoKey}", ContentType.JSON, String)
+        String json = artifactory.get("${repository.getRepositoriesApi()}${repoKey}", String, null);
         parseJsonAsRepository(json)
     }
 
     private Repository parseJsonAsRepository(String json) {
-        RepositoryBase repo = artifactory.parseText(json, Repository)
-        RepositorySettings settings = artifactory.parseText(json, RepositorySettings)
-        XraySettingsImpl xray = artifactory.parseText(json, XraySettingsImpl)
+        RepositoryBase repo = Util.parseText(json, Repository)
+        RepositorySettings settings = Util.parseText(json, RepositorySettings)
+        XraySettingsImpl xray = Util.parseText(json, XraySettingsImpl)
 
         repo.setRepositorySettings(settings)
         repo.setXraySettings(xray)
@@ -80,7 +80,7 @@ class RepositoryHandleImpl implements RepositoryHandle {
     }
 
     private Map<String, Object> getCustomProperties(String json, Repository repo) {
-        Map<String, Object> customProperties = artifactory.parseText(json, Map)
+        Map<String, Object> customProperties = Util.parseText(json, Map)
 
         Set<String> knownKeys = new HashSet<>()
         knownKeys.addAll(extractProperties(repo))
@@ -131,7 +131,7 @@ class RepositoryHandleImpl implements RepositoryHandle {
 
     @Override
     boolean isFolder(String path) {
-        String itemInfoJson = artifactory.get("/api/storage/${repoKey}/${path}", ContentType.JSON, String)
+        String itemInfoJson = artifactory.get("/api/storage/${repoKey}/${path}", String, null)
         JsonSlurper slurper = new JsonSlurper()
         def itemInfo = slurper.parseText(itemInfoJson)
         return itemInfo.children != null;

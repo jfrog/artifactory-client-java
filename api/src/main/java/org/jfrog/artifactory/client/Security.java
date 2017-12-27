@@ -1,5 +1,6 @@
 package org.jfrog.artifactory.client;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.jfrog.artifactory.client.model.Group;
 import org.jfrog.artifactory.client.model.PermissionTarget;
 import org.jfrog.artifactory.client.model.User;
@@ -14,6 +15,7 @@ import java.util.List;
  *
  * @author freds
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public interface Security {
 
     SecurityBuilders builders();

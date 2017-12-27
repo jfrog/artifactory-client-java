@@ -1,11 +1,9 @@
 package org.jfrog.artifactory.client;
 
-import org.jfrog.artifactory.client.model.LocalReplication;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.jfrog.artifactory.client.model.Replication;
 
-import java.util.Collection;
-import java.util.List;
-
+@JsonIgnoreProperties(ignoreUnknown = true)
 public interface Replications {
 
     // Supports local and remote repositories
