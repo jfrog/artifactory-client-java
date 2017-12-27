@@ -1,7 +1,8 @@
 package org.jfrog.artifactory.client;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import java.net.MalformedURLException;
+
+import java.io.IOException;
 
 /**
  * @author jbaruch
@@ -12,9 +13,9 @@ public interface Artifactory extends ApiInterface {
 
     static final String API_BASE = "/api";
 
-    String getUri() throws MalformedURLException;
+    String getUri();
 
-    String getContextName() throws MalformedURLException;
+    String getContextName();
 
     String getUsername();
 
@@ -34,7 +35,7 @@ public interface Artifactory extends ApiInterface {
 
     ArtifactorySystem system();
 
-    <T> T restCall(ArtifactoryRequest request) throws Exception;
+    <T> T restCall(ArtifactoryRequest request) throws IOException;
 
     void close();
 }
