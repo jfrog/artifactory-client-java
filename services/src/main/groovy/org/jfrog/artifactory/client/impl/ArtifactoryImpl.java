@@ -137,7 +137,8 @@ public class ArtifactoryImpl implements Artifactory {
         switch (((ArtifactoryRequestImpl) request).getMethod().toString()) {
             case ("GET"):
                 String text = get(requestPath, String.class, null);
-                if (request.getResponseType() == ArtifactoryRequest.ContentType.JSON) {
+                if (request.getResponseType() == ArtifactoryRequest.ContentType.JSON
+                        || request.getResponseType() == ArtifactoryRequest.ContentType.JOSE_JSON) {
                     if (text.startsWith("[")) {
                         // create a valid json to parse for objectMapper
                         StringBuilder stringBuilder = new StringBuilder();
@@ -146,7 +147,7 @@ public class ArtifactoryImpl implements Artifactory {
                         });
                         return (T) hashMap.get("test");
                     }
-                    return (T) Util.parseObjectWithTypeReference(text,new TypeReference<HashMap<String, Object>>() {
+                    return (T) Util.parseObjectWithTypeReference(text, new TypeReference<HashMap<String, Object>>() {
                     });
                 }
                 return (T) text;
@@ -157,7 +158,8 @@ public class ArtifactoryImpl implements Artifactory {
                     queryPath = Util.getQueryPath("?", request.getQueryParams().entrySet());
                 }
                 String body = ((ArtifactoryRequestImpl) request).getBody();
-                if (request.getResponseType() == ArtifactoryRequest.ContentType.JSON) {
+                if (request.getResponseType() == ArtifactoryRequest.ContentType.JSON
+                        || request.getResponseType() == ArtifactoryRequest.ContentType.JOSE_JSON) {
                     return (T) post(requestPath + queryPath, contentType, body, request.getHeaders(), Map.class, null);
                 }
                 return (T) post(requestPath + queryPath, contentType, body, request.getHeaders(), String.class, null);
