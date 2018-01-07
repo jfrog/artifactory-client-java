@@ -590,7 +590,7 @@ List<String> response = artifactory.restCall(repositoryRequest);
 ## Building and Testing the Sources
 The code is built using Gradle and includes integration tests.
 
-Since the tests may use features which have been recently added to Artifactory, such as new package types, it is best to run the tests against the latest release of Artifactory. Some tests may therefore fail otherwise. Thhose tests can be manually commented out in that case.
+Since the tests may use features which have been recently added to Artifactory, such as new package types, it is best to run the tests against the latest release of Artifactory. Some tests may therefore fail otherwise. Those tests can be manually commented out in that case.
 
 If you'd like to build the code without tests, run:
 ```
@@ -604,6 +604,9 @@ Please follow these steps to build and test the code:
 ```
 > gradle clean build
 ```
+
+## Example Projects
+As an example, we have created sample projects demonstrating the usage of the Artifactory Java Client, both for Maven and Gradle projects, which are located [here](https://github.com/JFrogDev/project-examples/artifactory-client-java-examples).
 
 ## Contributing Code
 We welcome community contribution through pull requests.
