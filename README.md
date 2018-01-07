@@ -606,7 +606,7 @@ Please follow these steps to build and test the code:
 ```
 
 ## Example Projects
-As an example, we have created sample projects demonstrating the usage of the Artifactory Java Client, both for Maven and Gradle projects, which are located [here](https://github.com/JFrogDev/project-examples/artifactory-client-java-examples).
+We created [sample projects](https://github.com/JFrogDev/project-examples/tree/master/artifactory-client-java-examples) demonstrating how to use the Artifactory Java Client.
 
 ## Contributing Code
 We welcome community contribution through pull requests.
