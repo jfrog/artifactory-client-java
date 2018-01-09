@@ -1,4 +1,4 @@
-package org.jfrog.artifactory.client;
+package org.jfrog.artifactory.client
 
 import org.hamcrest.Description
 import org.hamcrest.Matcher
@@ -17,7 +17,7 @@ import org.testng.annotations.BeforeMethod
 /**
  * @author Ivan Vasylivskyi (ivanvas@jfrog.com)
  */
-public abstract class BaseRepositoryTests extends ArtifactoryTestsBase {
+abstract class BaseRepositoryTests extends ArtifactoryTestsBase {
 
     /**
      * used to generate test values ( especially boolean ones ) to be sure that we are sending
@@ -45,7 +45,7 @@ public abstract class BaseRepositoryTests extends ArtifactoryTestsBase {
         if (prepareGenericRepo) {
             RepositorySettings settings = getRepositorySettings(RepositoryTypeImpl.LOCAL)
 
-            XraySettings genericXraySettings = new XraySettingsImpl();
+            XraySettings genericXraySettings = new XraySettingsImpl()
             genericRepo = artifactory.repositories().builders().localRepositoryBuilder()
                     .key("cutsman-repo_${rnd.nextInt()}")
                     .description("description_${rnd.nextInt()}")
@@ -79,7 +79,7 @@ public abstract class BaseRepositoryTests extends ArtifactoryTestsBase {
 
         if (prepareRemoteRepo) {
             RepositorySettings settings = getRepositorySettings()
-            ContentSync contentSync = new ContentSyncImpl();
+            ContentSync contentSync = new ContentSyncImpl()
             remoteRepo = artifactory.repositories().builders().remoteRepositoryBuilder()
                 .key("cutsman-repo_${rnd.nextInt()}")
                 .description("description_${rnd.nextInt()}")

@@ -17,12 +17,12 @@ class GitLfsRepositorySettingsImpl extends AbstractRepositorySettings implements
 
     Boolean listRemoteFolderItems
 
-    public GitLfsRepositorySettingsImpl() {
-        this.repoLayoutRef = defaultLayout
+  GitLfsRepositorySettingsImpl() {
+        super(defaultLayout)
     }
 
     @Override
-    public PackageType getPackageType() {
+    PackageType getPackageType() {
         return PackageTypeImpl.gitlfs
     }
 }

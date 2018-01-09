@@ -18,12 +18,12 @@ class DebianRepositorySettingsImpl extends AbstractRepositorySettings implements
     Boolean debianTrivialLayout
     Boolean listRemoteFolderItems
 
-    public DebianRepositorySettingsImpl() {
-        this.repoLayoutRef = defaultLayout
+  DebianRepositorySettingsImpl() {
+        super(defaultLayout)
     }
 
     @Override
-    public PackageType getPackageType() {
+    PackageType getPackageType() {
         return PackageTypeImpl.debian
     }
 }

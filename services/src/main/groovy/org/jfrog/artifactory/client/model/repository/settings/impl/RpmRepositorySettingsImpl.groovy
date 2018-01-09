@@ -21,12 +21,12 @@ class RpmRepositorySettingsImpl extends AbstractRepositorySettings implements Rp
     Boolean enableFileListsIndexing
     Boolean listRemoteFolderItems
 
-    public RpmRepositorySettingsImpl() {
-        this.repoLayoutRef = defaultLayout
+  RpmRepositorySettingsImpl() {
+        super(defaultLayout)
     }
 
     @Override
-    public PackageType getPackageType() {
+    PackageType getPackageType() {
         return PackageTypeImpl.rpm
     }
 }
