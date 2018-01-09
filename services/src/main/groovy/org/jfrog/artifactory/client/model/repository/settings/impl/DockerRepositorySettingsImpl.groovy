@@ -21,7 +21,7 @@ class DockerRepositorySettingsImpl extends AbstractRepositorySettings implements
     Boolean listRemoteFolderItems
     Integer maxUniqueTags
 
-  DockerRepositorySettingsImpl() {
+    DockerRepositorySettingsImpl() {
         super(defaultLayout)
     }
 

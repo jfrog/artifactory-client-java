@@ -21,7 +21,7 @@ class NugetRepositorySettingsImpl extends AbstractRepositorySettings implements 
     String downloadContextPath
     Boolean listRemoteFolderItems
 
-  NugetRepositorySettingsImpl() {
+    NugetRepositorySettingsImpl() {
         super(defaultLayout)
     }
 

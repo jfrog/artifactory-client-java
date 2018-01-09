@@ -14,7 +14,7 @@ import org.jfrog.artifactory.client.model.repository.settings.IvyRepositorySetti
 class IvyRepositorySettingsImpl extends MavenRepositorySettingsImpl implements IvyRepositorySettings {
     static String defaultLayout = "ivy-default"
 
-  IvyRepositorySettingsImpl() {
+    IvyRepositorySettingsImpl() {
         super(defaultLayout)
     }
 

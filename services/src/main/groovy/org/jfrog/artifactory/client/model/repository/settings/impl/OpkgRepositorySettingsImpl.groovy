@@ -17,7 +17,7 @@ class OpkgRepositorySettingsImpl extends AbstractRepositorySettings implements O
 
     Boolean listRemoteFolderItems
 
-  OpkgRepositorySettingsImpl() {
+    OpkgRepositorySettingsImpl() {
         super(defaultLayout)
     }
 

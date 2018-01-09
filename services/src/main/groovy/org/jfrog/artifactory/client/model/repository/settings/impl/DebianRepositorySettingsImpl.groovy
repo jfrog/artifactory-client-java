@@ -18,7 +18,7 @@ class DebianRepositorySettingsImpl extends AbstractRepositorySettings implements
     Boolean debianTrivialLayout
     Boolean listRemoteFolderItems
 
-  DebianRepositorySettingsImpl() {
+    DebianRepositorySettingsImpl() {
         super(defaultLayout)
     }
 

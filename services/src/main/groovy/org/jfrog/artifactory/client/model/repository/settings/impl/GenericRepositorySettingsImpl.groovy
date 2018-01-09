@@ -17,7 +17,7 @@ class GenericRepositorySettingsImpl extends AbstractRepositorySettings implement
 
     Boolean listRemoteFolderItems
 
-  GenericRepositorySettingsImpl() {
+    GenericRepositorySettingsImpl() {
         super(defaultLayout)
     }
 

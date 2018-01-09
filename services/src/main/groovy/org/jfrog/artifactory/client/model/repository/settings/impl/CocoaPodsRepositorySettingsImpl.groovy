@@ -16,7 +16,7 @@ class CocoaPodsRepositorySettingsImpl extends VcsRepositorySettingsImpl implemen
 
     String podsSpecsRepoUrl
 
-  CocoaPodsRepositorySettingsImpl() {
+    CocoaPodsRepositorySettingsImpl() {
         super(defaultLayout)
     }
 

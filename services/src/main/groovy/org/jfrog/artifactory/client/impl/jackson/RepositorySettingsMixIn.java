@@ -5,30 +5,7 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 import org.jfrog.artifactory.client.model.repository.settings.RepositorySettings;
-import org.jfrog.artifactory.client.model.repository.settings.impl.BowerRepositorySettingsImpl;
-import org.jfrog.artifactory.client.model.repository.settings.impl.ChefRepositorySettingsImpl;
-import org.jfrog.artifactory.client.model.repository.settings.impl.CocoaPodsRepositorySettingsImpl;
-import org.jfrog.artifactory.client.model.repository.settings.impl.ComposerRepositorySettingsImpl;
-import org.jfrog.artifactory.client.model.repository.settings.impl.ConanRepositorySettingsImpl;
-import org.jfrog.artifactory.client.model.repository.settings.impl.DebianRepositorySettingsImpl;
-import org.jfrog.artifactory.client.model.repository.settings.impl.DockerRepositorySettingsImpl;
-import org.jfrog.artifactory.client.model.repository.settings.impl.GemsRepositorySettingsImpl;
-import org.jfrog.artifactory.client.model.repository.settings.impl.GenericRepositorySettingsImpl;
-import org.jfrog.artifactory.client.model.repository.settings.impl.GitLfsRepositorySettingsImpl;
-import org.jfrog.artifactory.client.model.repository.settings.impl.GradleRepositorySettingsImpl;
-import org.jfrog.artifactory.client.model.repository.settings.impl.IvyRepositorySettingsImpl;
-import org.jfrog.artifactory.client.model.repository.settings.impl.MavenRepositorySettingsImpl;
-import org.jfrog.artifactory.client.model.repository.settings.impl.NpmRepositorySettingsImpl;
-import org.jfrog.artifactory.client.model.repository.settings.impl.NugetRepositorySettingsImpl;
-import org.jfrog.artifactory.client.model.repository.settings.impl.OpkgRepositorySettingsImpl;
-import org.jfrog.artifactory.client.model.repository.settings.impl.P2RepositorySettingsImpl;
-import org.jfrog.artifactory.client.model.repository.settings.impl.PuppetRepositorySettingsImpl;
-import org.jfrog.artifactory.client.model.repository.settings.impl.PypiRepositorySettingsImpl;
-import org.jfrog.artifactory.client.model.repository.settings.impl.RpmRepositorySettingsImpl;
-import org.jfrog.artifactory.client.model.repository.settings.impl.SbtRepositorySettingsImpl;
-import org.jfrog.artifactory.client.model.repository.settings.impl.VagrantRepositorySettingsImpl;
-import org.jfrog.artifactory.client.model.repository.settings.impl.VcsRepositorySettingsImpl;
-import org.jfrog.artifactory.client.model.repository.settings.impl.YumRepositorySettingsImpl;
+import org.jfrog.artifactory.client.model.repository.settings.impl.*;
 
 /**
  * special serialization / deserialization handling for {@link RepositorySettings}

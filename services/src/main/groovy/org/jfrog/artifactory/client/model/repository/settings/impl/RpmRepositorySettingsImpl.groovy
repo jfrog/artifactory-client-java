@@ -21,7 +21,7 @@ class RpmRepositorySettingsImpl extends AbstractRepositorySettings implements Rp
     Boolean enableFileListsIndexing
     Boolean listRemoteFolderItems
 
-  RpmRepositorySettingsImpl() {
+    RpmRepositorySettingsImpl() {
         super(defaultLayout)
     }
 

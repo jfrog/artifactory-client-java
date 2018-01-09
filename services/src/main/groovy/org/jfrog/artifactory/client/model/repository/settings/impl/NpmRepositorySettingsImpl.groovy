@@ -20,7 +20,7 @@ class NpmRepositorySettingsImpl extends AbstractRepositorySettings implements Np
     Collection<String> externalDependenciesPatterns
     String externalDependenciesRemoteRepo
 
-  NpmRepositorySettingsImpl() {
+    NpmRepositorySettingsImpl() {
         super(defaultLayout)
     }
 
