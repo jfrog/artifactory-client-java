@@ -1,16 +1,21 @@
 package org.jfrog.artifactory.client.impl
 
+import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.databind.node.ObjectNode
 import groovy.json.JsonSlurper
 import groovyx.net.http.ContentType
 import org.jfrog.artifactory.client.*
 import org.jfrog.artifactory.client.model.ItemPermission
 import org.jfrog.artifactory.client.model.ReplicationStatus
 import org.jfrog.artifactory.client.model.Repository
+import org.jfrog.artifactory.client.model.impl.CustomPackageTypeImpl
 import org.jfrog.artifactory.client.model.impl.FileImpl
 import org.jfrog.artifactory.client.model.impl.FolderImpl
+import org.jfrog.artifactory.client.model.impl.PackageTypeImpl
 import org.jfrog.artifactory.client.model.impl.ReplicationStatusImpl
 import org.jfrog.artifactory.client.model.impl.RepositoryBase
 import org.jfrog.artifactory.client.model.repository.settings.RepositorySettings
+import org.jfrog.artifactory.client.model.repository.settings.impl.CustomRepositorySettingsImpl
 import org.jfrog.artifactory.client.model.xray.settings.impl.XraySettingsImpl
 
 import java.beans.BeanInfo
@@ -69,7 +74,10 @@ class RepositoryHandleImpl implements RepositoryHandle {
 
     private Repository parseJsonAsRepository(String json) {
         RepositoryBase repo = artifactory.parseText(json, Repository)
+
         RepositorySettings settings = artifactory.parseText(json, RepositorySettings)
+        settings = validateRepositorySettings(json, settings)
+
         XraySettingsImpl xray = artifactory.parseText(json, XraySettingsImpl)
 
         repo.setRepositorySettings(settings)
@@ -145,5 +153,16 @@ class RepositoryHandleImpl implements RepositoryHandle {
     @Override
     Replications getReplications() {
         return new ReplicationsImpl(artifactory, baseApiPath, repoKey)
+    }
+
+    private RepositorySettings validateRepositorySettings(String json, RepositorySettings settings) {
+        if (PackageTypeImpl.generic == settings.getPackageType()) {
+            ObjectNode objectNode = artifactory.parseText(json, ObjectNode)
+            JsonNode jsonNode = objectNode.get("packageType")
+            if (jsonNode != null && PackageTypeImpl.generic.name() != jsonNode.asText()) {
+                settings = new CustomRepositorySettingsImpl(new CustomPackageTypeImpl(jsonNode.asText()))
+            }
+        }
+        settings
     }
 }
