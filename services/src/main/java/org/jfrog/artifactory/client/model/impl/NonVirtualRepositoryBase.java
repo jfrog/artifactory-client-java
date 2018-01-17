@@ -36,7 +36,6 @@ public abstract class NonVirtualRepositoryBase extends RepositoryBase implements
         this.archiveBrowsingEnabled = archiveBrowsingEnabled;
     }
 
-    @Override
     public boolean isBlackedOut() {
         return blackedOut;
     }
@@ -45,7 +44,6 @@ public abstract class NonVirtualRepositoryBase extends RepositoryBase implements
         this.blackedOut = blackedOut;
     }
 
-    @Override
     public List<String> getPropertySets() {
         return propertySets;
     }
@@ -56,24 +54,14 @@ public abstract class NonVirtualRepositoryBase extends RepositoryBase implements
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        if (!super.equals(o)) {
-            return false;
-        }
+        if (this == o) return true;
+        if (!(o instanceof NonVirtualRepositoryBase)) return false;
+        if (!super.equals(o)) return false;
 
         NonVirtualRepositoryBase that = (NonVirtualRepositoryBase) o;
 
-        if (blackedOut != that.blackedOut) {
-            return false;
-        }
-        if (propertySets != null ? !propertySets.equals(that.propertySets) : that.propertySets != null) {
-            return false;
-        }
+        if (blackedOut != that.blackedOut) return false;
+        if (propertySets != null ? !propertySets.equals(that.propertySets) : that.propertySets != null) return false;
 
         return true;
     }
@@ -94,7 +82,6 @@ public abstract class NonVirtualRepositoryBase extends RepositoryBase implements
                 '}';
     }
 
-    @Override
     public boolean isArchiveBrowsingEnabled() {
         return archiveBrowsingEnabled;
     }
@@ -103,7 +90,6 @@ public abstract class NonVirtualRepositoryBase extends RepositoryBase implements
         this.archiveBrowsingEnabled = archiveBrowsingEnabled;
     }
 
-    @Override
     public Boolean getXrayIndex() {
         if (xraySettings != null) {
             return xraySettings.getXrayIndex();
@@ -111,14 +97,12 @@ public abstract class NonVirtualRepositoryBase extends RepositoryBase implements
         return null;
     }
 
-    @Override
     public void setXrayIndex(Boolean xrayIndex) {
         if (xraySettings != null) {
             xraySettings.setXrayIndex(xrayIndex);
         }
     }
 
-    @Override
     public Boolean getBlockXrayUnscannedArtifacts() {
         if (xraySettings != null) {
             return xraySettings.getBlockXrayUnscannedArtifacts();
@@ -126,14 +110,12 @@ public abstract class NonVirtualRepositoryBase extends RepositoryBase implements
         return null;
     }
 
-    @Override
     public void setBlockXrayUnscannedArtifacts(Boolean blockXrayUnscannedArtifacts) {
         if (xraySettings != null) {
             xraySettings.setBlockXrayUnscannedArtifacts(blockXrayUnscannedArtifacts);
         }
     }
 
-    @Override
     public String getXrayMinimumBlockedSeverity() {
         if (xraySettings != null) {
             return xraySettings.getXrayMinimumBlockedSeverity();
@@ -141,7 +123,6 @@ public abstract class NonVirtualRepositoryBase extends RepositoryBase implements
         return null;
     }
 
-    @Override
     public void setXrayMinimumBlockedSeverity(String xrayMinimumBlockedSeverity) {
         if (xraySettings != null) {
             xraySettings.setXrayMinimumBlockedSeverity(xrayMinimumBlockedSeverity);

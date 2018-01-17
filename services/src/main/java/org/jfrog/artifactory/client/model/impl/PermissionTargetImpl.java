@@ -21,11 +21,12 @@ public class PermissionTargetImpl implements PermissionTarget {
     @JsonDeserialize(as = PrincipalsImpl.class)
     private Principals principals;
 
-    public PermissionTargetImpl() {
+    //Required for JSON parsing of PermissionTargetImpl
+    private PermissionTargetImpl() {
         super();
     }
 
-    public PermissionTargetImpl(String name, String includesPattern, String excludesPattern, List<String> repositories, Principals principals) {
+    protected PermissionTargetImpl(String name, String includesPattern, String excludesPattern, List<String> repositories, Principals principals) {
         this.name = name;
         this.includesPattern = includesPattern;
         this.excludesPattern = excludesPattern;
@@ -33,7 +34,6 @@ public class PermissionTargetImpl implements PermissionTarget {
         this.principals = principals;
     }
 
-    @Override
     public String getName() {
         return name;
     }
@@ -50,7 +50,6 @@ public class PermissionTargetImpl implements PermissionTarget {
         return repositories;
     }
 
-    @Override
     public Principals getPrincipals() {
         return principals;
     }

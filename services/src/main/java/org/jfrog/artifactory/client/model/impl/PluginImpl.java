@@ -22,32 +22,37 @@ public class PluginImpl implements Plugin {
     private Map<String, String> params;
     private String httpMethod;
 
-    public PluginImpl() {
+    //Required for JSON parsing of PluginImpl
+    private PluginImpl() {
         users = new ArrayList<>();
         groups = new ArrayList<>();
         params = new HashMap<>();
     }
 
+    //Required for JSON parsing of PluginImpl
     private PluginImpl(String name) {
         this.name = name;
     }
 
+    //Required for JSON parsing of PluginImpl
     private PluginImpl(String name, String version, String description, List<String> users, List<String> groups, Map<String, String> params, String httpMethod) {
+        this(name, version, description, users, groups, params);
+        this.httpMethod = httpMethod;
+    }
+
+    protected PluginImpl(String name, String version, String description, List<String> users, List<String> groups, Map<String, String> params) {
         this.name = name;
         this.version = version;
         this.description = description;
         this.users = users;
         this.groups = groups;
         this.params = params;
-        this.httpMethod = httpMethod;
     }
 
-    @Override
     public String getName() {
         return name;
     }
 
-    @Override
     public String getVersion() {
         return version;
     }
@@ -56,7 +61,6 @@ public class PluginImpl implements Plugin {
         this.version = version;
     }
 
-    @Override
     public String getDescription() {
         return description;
     }
@@ -65,7 +69,6 @@ public class PluginImpl implements Plugin {
         this.description = description;
     }
 
-    @Override
     public List<String> getUsers() {
         return unmodifiableList(users);
     }
@@ -74,7 +77,6 @@ public class PluginImpl implements Plugin {
         this.users.addAll(users);
     }
 
-    @Override
     public List<String> getGroups() {
         return unmodifiableList(groups);
     }
@@ -83,7 +85,6 @@ public class PluginImpl implements Plugin {
         this.groups.addAll(groups);
     }
 
-    @Override
     public Map<String, String> getParams() {
         return params;
     }
@@ -92,7 +93,6 @@ public class PluginImpl implements Plugin {
         this.params.putAll(params);
     }
 
-    @Override
     public String getHttpMethod() {
         return httpMethod;
     }

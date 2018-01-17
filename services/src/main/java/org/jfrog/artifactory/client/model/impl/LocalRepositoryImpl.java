@@ -17,7 +17,7 @@ public class LocalRepositoryImpl extends NonVirtualRepositoryBase implements Loc
         repoLayoutRef = MAVEN_2_REPO_LAYOUT;
     }
 
-    public LocalRepositoryImpl(String key, RepositorySettings settings, XraySettings xraySettings,
+    protected LocalRepositoryImpl(String key, RepositorySettings settings, XraySettings xraySettings,
         String description, String excludesPattern, String includesPattern, String notes,
         boolean blackedOut,
         List<String> propertySets,
@@ -29,29 +29,8 @@ public class LocalRepositoryImpl extends NonVirtualRepositoryBase implements Loc
             propertySets, repoLayoutRef, archiveBrowsingEnabled, customProperties);
     }
 
-    @Override
     public RepositoryTypeImpl getRclass() {
         return RepositoryTypeImpl.LOCAL;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        if (!super.equals(o)) {
-            return false;
-        }
-
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        return super.hashCode();
     }
 
     @Override
