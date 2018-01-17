@@ -17,4 +17,9 @@ public abstract class AbstractRepositorySettings implements RepositorySettings {
     public void setRepoLayout(String repoLayout) {
         this.repoLayout = repoLayout;
     }
+
+    @Override
+    public int hashCode() {
+        return repoLayout != null ? repoLayout.hashCode() : 0;
+    }
 }

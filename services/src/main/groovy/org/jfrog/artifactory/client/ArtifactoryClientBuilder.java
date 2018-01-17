@@ -26,7 +26,7 @@ public class ArtifactoryClientBuilder {
     private String password;
     private Integer connectionTimeout;
     private Integer socketTimeout;
-    private ArtifactoryClient.ProxyConfig proxy;
+    private ProxyConfig proxy;
     private String userAgent;
     private boolean ignoreSSLIssues;
     private String accessToken;
@@ -67,7 +67,7 @@ public class ArtifactoryClientBuilder {
         return this;
     }
 
-    public ArtifactoryClientBuilder setProxy(ArtifactoryClient.ProxyConfig proxy) {
+    public ArtifactoryClientBuilder setProxy(ProxyConfig proxy) {
         this.proxy = proxy;
         return this;
     }
@@ -149,7 +149,7 @@ public class ArtifactoryClientBuilder {
         return "";
     }
 
-    public ArtifactoryClient.ProxyConfig getProxy() {
+    public ProxyConfig getProxy() {
         return proxy;
     }
 

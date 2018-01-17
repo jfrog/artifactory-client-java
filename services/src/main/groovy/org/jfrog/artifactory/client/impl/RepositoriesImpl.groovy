@@ -9,7 +9,7 @@ import org.jfrog.artifactory.client.model.LightweightRepository
 import org.jfrog.artifactory.client.model.Repository
 import org.jfrog.artifactory.client.model.RepositoryType
 import org.jfrog.artifactory.client.model.builder.RepositoryBuilders
-import org.jfrog.artifactory.client.model.builder.impl.RepositoryBuildersImpl
+import org.jfrog.artifactory.client.model.impl.RepositoryBuildersImpl
 import org.jfrog.artifactory.client.model.impl.LightweightRepositoryImpl
 
 /**

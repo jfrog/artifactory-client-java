@@ -8,8 +8,8 @@ import org.jfrog.artifactory.client.model.Group
 import org.jfrog.artifactory.client.model.PermissionTarget
 import org.jfrog.artifactory.client.model.User
 import org.jfrog.artifactory.client.model.builder.SecurityBuilders
-import org.jfrog.artifactory.client.model.builder.impl.SecurityBuildersImpl
-import org.jfrog.artifactory.client.model.builder.impl.UserBuilderImpl
+import org.jfrog.artifactory.client.model.impl.SecurityBuildersImpl
+import org.jfrog.artifactory.client.model.impl.UserBuilderImpl
 import org.jfrog.artifactory.client.model.impl.GroupImpl
 import org.jfrog.artifactory.client.model.impl.PermissionTargetImpl
 import org.jfrog.artifactory.client.model.impl.UserImpl

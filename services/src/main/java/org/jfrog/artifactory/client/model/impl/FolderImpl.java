@@ -19,7 +19,7 @@ public class FolderImpl extends ItemImpl implements Folder {
     @JsonIgnore
     private List<Item> children;
 
-    public FolderImpl(String uri, String metadataUri, Date lastModified, String modifiedBy, Date lastUpdated, Date created, String createdBy, List<Item> children) {
+    protected FolderImpl(String uri, String metadataUri, Date lastModified, String modifiedBy, Date lastUpdated, Date created, String createdBy, List<Item> children) {
         super(true, uri, metadataUri, lastModified, modifiedBy, lastUpdated);
         this.created = created;
         this.createdBy = createdBy;
@@ -34,7 +34,6 @@ public class FolderImpl extends ItemImpl implements Folder {
         return true;
     }
 
-    @Override
     public List<Item> getChildren() {
         return children;
     }
@@ -45,7 +44,6 @@ public class FolderImpl extends ItemImpl implements Folder {
         //TODO: [by yl] Use a childItem class since children ItemImpl lacks a lot of data
     }
 
-    @Override
     public Date getCreated() {
         return created;
     }
@@ -54,7 +52,6 @@ public class FolderImpl extends ItemImpl implements Folder {
         this.created = created;
     }
 
-    @Override
     public String getCreatedBy() {
         return createdBy;
     }
@@ -63,7 +60,6 @@ public class FolderImpl extends ItemImpl implements Folder {
         this.createdBy = createdBy;
     }
 
-    @Override
     public String toString() {
         return "Folder{" +
                 "children=" + children +

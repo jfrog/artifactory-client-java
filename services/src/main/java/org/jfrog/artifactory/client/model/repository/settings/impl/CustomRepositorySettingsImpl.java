@@ -19,4 +19,12 @@ public class CustomRepositorySettingsImpl extends AbstractRepositorySettings imp
     public PackageType getPackageType() {
         return packageType;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof CustomRepositorySettingsImpl)) return false;
+
+        return true;
+    }
 }

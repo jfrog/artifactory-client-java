@@ -32,7 +32,6 @@ public class VirtualRepositoryImpl extends RepositoryBase implements VirtualRepo
         this.deploymentRepo = deploymentRepo;
     }
 
-    @Override
     public Collection<String> getRepositories() {
         return repositories;
     }
@@ -41,7 +40,6 @@ public class VirtualRepositoryImpl extends RepositoryBase implements VirtualRepo
         this.repositories = repositories;
     }
 
-    @Override
     public boolean isArtifactoryRequestsCanRetrieveRemoteArtifacts() {
         return artifactoryRequestsCanRetrieveRemoteArtifacts;
     }
@@ -50,7 +48,6 @@ public class VirtualRepositoryImpl extends RepositoryBase implements VirtualRepo
         this.artifactoryRequestsCanRetrieveRemoteArtifacts = artifactoryRequestsCanRetrieveRemoteArtifacts;
     }
 
-    @Override
     public String getDefaultDeploymentRepo() {
         return deploymentRepo;
     }
@@ -59,7 +56,6 @@ public class VirtualRepositoryImpl extends RepositoryBase implements VirtualRepo
         this.deploymentRepo = deploymentRepo;
     }
 
-    @Override
     public RepositoryTypeImpl getRclass() {
         return RepositoryTypeImpl.VIRTUAL;
     }
