@@ -1,16 +1,12 @@
 package org.jfrog.artifactory.client.impl;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import groovyx.net.http.*;
+import groovyx.net.http.HttpResponseDecorator;
+import groovyx.net.http.HttpResponseException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
-import org.apache.http.client.methods.HttpDelete;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpHead;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpPut;
-import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.http.client.methods.*;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.entity.StringEntity;
@@ -121,6 +117,80 @@ public class ArtifactoryImpl implements Artifactory {
     @Override
     public ArtifactorySystem system() {
         return new ArtifactorySystemImpl(this, API_BASE);
+    }
+
+    /**
+     * Create a REST call to artifactory with a generic request
+     *
+     * @param artifactoryRequest that should be sent to artifactory
+     * @return {@link ArtifactoryResponse} artifactory response as per to the request sent
+     */
+    public ArtifactoryResponse restCallFullResponse(ArtifactoryRequest artifactoryRequest) throws Exception {
+        HttpRequestBase httpRequest;
+
+        String requestPath = "/" + artifactoryRequest.getApiUrl();
+        ContentType contentType = Util.getContentType(artifactoryRequest.getRequestType());
+
+        String queryPath = "";
+        if (!artifactoryRequest.getQueryParams().isEmpty()) {
+            queryPath = Util.getQueryPath("?", artifactoryRequest.getQueryParams().entrySet());
+        }
+
+        switch (artifactoryRequest.getMethod()) {
+            case GET:
+                httpRequest = new HttpGet();
+                break;
+
+            case POST:
+                httpRequest = new HttpPost();
+
+                String bodyText = Util.getStringFromObject(artifactoryRequest.getBody());
+                if (StringUtils.isNotBlank(bodyText)) {
+                    ((HttpPost) httpRequest).setEntity(new StringEntity(bodyText, contentType));
+                }
+
+                break;
+
+            case PUT:
+                httpRequest = new HttpPut();
+
+                if (artifactoryRequest.getBody() instanceof InputStream) {
+                    ((HttpPut) httpRequest).setEntity(new InputStreamEntity((InputStream) artifactoryRequest.getBody()));
+                }
+                else {
+                    bodyText = Util.getStringFromObject(artifactoryRequest.getBody());
+
+                    if (StringUtils.isNotBlank(bodyText)) {
+                        ((HttpPut) httpRequest).setEntity(new StringEntity(bodyText, contentType));
+                    }
+                }
+
+                break;
+
+            case DELETE:
+                httpRequest = new HttpDelete();
+                break;
+
+            default:
+                throw new IllegalArgumentException("Unsupported request method.");
+        }
+
+        httpRequest.setURI(new URI(url + requestPath + queryPath));
+        addAccessTokenHeaderIfNeeded(httpRequest);
+
+        if (contentType != null) {
+            httpRequest.setHeader("Content-type", contentType.getMimeType());
+        }
+
+        Map<String, String> headers = artifactoryRequest.getHeaders();
+        if (!headers.isEmpty()) {
+            for (String key : headers.keySet()) {
+                httpRequest.setHeader(key, headers.get(key));
+            }
+        }
+
+        HttpResponse httpResponse = httpClient.execute(httpRequest);
+        return new ArtifactoryResponseImpl(httpResponse);
     }
 
     /**
