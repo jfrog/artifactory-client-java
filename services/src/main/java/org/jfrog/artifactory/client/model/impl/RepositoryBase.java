@@ -114,6 +114,7 @@ public abstract class RepositoryBase implements Repository {
         if (notes != null ? !notes.equals(that.notes) : that.notes != null) return false;
         if (getRclass() != that.getRclass()) return false;
         if (settings != null ? !settings.equals(that.settings) : that.settings != null) return false;
+        if (customProperties != null ? !customProperties.equals(that.customProperties) : that.customProperties != null) return false;
         if (xraySettings != null ? !xraySettings.equals(that.xraySettings) : that.xraySettings != null) return false;
 
         return true;
