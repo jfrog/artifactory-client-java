@@ -42,7 +42,7 @@ public class RemoteRepositoryBuilderImpl extends NonVirtualRepositoryBuilderBase
     private boolean shareConfiguration;
     private boolean synchronizeProperties;
     private long assumedOfflinePeriodSecs = 300;
-    private boolean listRemoteFolderItems;
+    private boolean listRemoteFolderItems = true;
     private ContentSync contentSync;
     private String clientTlsCertificate = "";
 
