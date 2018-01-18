@@ -125,6 +125,7 @@ public class ArtifactoryImpl implements Artifactory {
      * @param artifactoryRequest that should be sent to artifactory
      * @return {@link ArtifactoryResponse} artifactory response as per to the request sent
      */
+    @Override
     public ArtifactoryResponse restCallFullResponse(ArtifactoryRequest artifactoryRequest) throws Exception {
         HttpRequestBase httpRequest;
 

@@ -34,6 +34,8 @@ public interface Artifactory extends ApiInterface {
 
     ArtifactorySystem system();
 
+    ArtifactoryResponse restCallFullResponse(ArtifactoryRequest artifactoryRequest) throws Exception;
+
     <T> T restCall(ArtifactoryRequest request) throws Exception;
 
     void close();

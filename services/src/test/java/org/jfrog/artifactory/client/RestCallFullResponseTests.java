@@ -2,27 +2,26 @@ package org.jfrog.artifactory.client;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.http.HttpStatus;
 import org.jfrog.artifactory.client.impl.ArtifactoryRequestImpl;
+import org.jfrog.artifactory.client.utils.RestCallTestUtils;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Map;
 
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.*;
 
 public class RestCallFullResponseTests extends ArtifactoryTestsBase {
 
     private Map<String, Object> buildBody;
+    private RestCallTestUtils utils = new RestCallTestUtils();
 
     @BeforeTest
     public void setUp() throws IOException {
-        buildBody = createBuildBody();
+        buildBody = utils.createBuildBody();
     }
 
     @Test
@@ -31,8 +30,8 @@ public class RestCallFullResponseTests extends ArtifactoryTestsBase {
                 .method(ArtifactoryRequest.Method.GET)
                 .apiUrl("api/system/ping")
                 .responseType(ArtifactoryRequest.ContentType.TEXT);
-        String response = artifactory.restCall(systemInfo);
-        assertTrue(response.equals("OK"));
+        ArtifactoryResponse response = artifactory.restCallFullResponse(systemInfo);
+        assertTrue(response.getStatusLine().getStatusCode() == HttpStatus.SC_OK);
     }
 
     @Test
@@ -41,7 +40,9 @@ public class RestCallFullResponseTests extends ArtifactoryTestsBase {
                 .apiUrl("api/system/version")
                 .responseType(ArtifactoryRequest.ContentType.JSON)
                 .method(ArtifactoryRequest.Method.GET);
-        Map<String, Object> versionRequestResponse = artifactory.restCall(versionRequest);
+        ArtifactoryResponse response = artifactory.restCallFullResponse(versionRequest);
+
+        Map<String, Object> versionRequestResponse = new ObjectMapper().readValue(response.getBody(), Map.class);
         assertTrue(versionRequestResponse.containsKey("version"));
         assertTrue(versionRequestResponse.containsKey("revision"));
         assertTrue(versionRequestResponse.containsKey("addons"));
@@ -55,7 +56,7 @@ public class RestCallFullResponseTests extends ArtifactoryTestsBase {
                 .requestType(ArtifactoryRequest.ContentType.TEXT)
                 .requestBody(IOUtils.toString(this.getClass().getResourceAsStream("/public.key"), "UTF-8"))
                 .responseType(ArtifactoryRequest.ContentType.TEXT);
-        String gpgResponse = artifactory.restCall(gpgRequest);
+        String gpgResponse = artifactory.restCallFullResponse(gpgRequest).getBody();
         assertTrue(gpgResponse.contains("Successfully configured the gpg public key"));
     }
 
@@ -65,8 +66,10 @@ public class RestCallFullResponseTests extends ArtifactoryTestsBase {
                 .apiUrl("api/repositories")
                 .method(ArtifactoryRequest.Method.GET)
                 .responseType(ArtifactoryRequest.ContentType.JSON);
-        List<String> response = artifactory.restCall(repositoryRequest);
-        assertNotNull(response);
+        ArtifactoryResponse response = artifactory.restCallFullResponse(repositoryRequest);
+
+        List<String> responseBody = new ObjectMapper().readValue(response.getBody(), List.class);
+        assertNotNull(responseBody);
     }
 
     @Test
@@ -82,7 +85,7 @@ public class RestCallFullResponseTests extends ArtifactoryTestsBase {
                 .method(ArtifactoryRequest.Method.POST)
                 .apiUrl("api/system/replications/" + command)
                 .responseType(ArtifactoryRequest.ContentType.TEXT);
-        return artifactory.restCall(renameRequest);
+        return artifactory.restCallFullResponse(renameRequest).getBody();
     }
 
     private void uploadBuild() throws Exception {
@@ -92,7 +95,7 @@ public class RestCallFullResponseTests extends ArtifactoryTestsBase {
                 .responseType(ArtifactoryRequest.ContentType.JSON)
                 .apiUrl("api/build")
                 .requestBody(buildBody);
-        artifactory.restCall(buildRequest);
+        artifactory.restCallFullResponse(buildRequest);
     }
 
     @Test
@@ -102,7 +105,9 @@ public class RestCallFullResponseTests extends ArtifactoryTestsBase {
                 .method(ArtifactoryRequest.Method.GET)
                 .apiUrl("api/build/" + buildBody.get("name") + "/" + buildBody.get("number"))
                 .responseType(ArtifactoryRequest.ContentType.JSON);
-        Map<String, Object> buildInfoResponse = artifactory.restCall(buildInfoRequest);
+        ArtifactoryResponse response = artifactory.restCallFullResponse(buildInfoRequest);
+
+        Map<String, Object> buildInfoResponse = new ObjectMapper().readValue(response.getBody(), Map.class);
         assertNotNull(buildInfoResponse);
         Map<String, Object> buildInfo = (Map<String, Object>) buildInfoResponse.get("buildInfo");
         assertTrue(buildInfo.containsKey("version"));
@@ -124,7 +129,7 @@ public class RestCallFullResponseTests extends ArtifactoryTestsBase {
     @Test
     public void testCreateDeletePermissionTarget() throws Exception {
         final String permissionName = "java-client-tests-permission";
-        Map<String, Object> map = createPermissionTargetBody(permissionName);
+        Map<String, Object> map = utils.createPermissionTargetBody(permissionName);
 
         // Create permission target:
         ArtifactoryRequest req = new ArtifactoryRequestImpl()
@@ -132,21 +137,21 @@ public class RestCallFullResponseTests extends ArtifactoryTestsBase {
                 .apiUrl("api/security/permissions/" + permissionName)
                 .requestType(ArtifactoryRequest.ContentType.JSON)
                 .requestBody(map);
-        artifactory.restCall(req);
+        artifactory.restCallFullResponse(req);
 
         // Verify permission target created:
         List permissions = getPermissionTargets();
-        assertTrue(findPermissionInLiat(permissions, permissionName));
+        assertTrue(utils.findPermissionInList(permissions, permissionName));
 
         // Delete permission target:
         req = new ArtifactoryRequestImpl()
                 .method(ArtifactoryRequest.Method.DELETE)
                 .apiUrl("api/security/permissions/" + permissionName);
-        artifactory.restCall(req);
+        artifactory.restCallFullResponse(req);
 
         // Verify permission target deleted:
         permissions = getPermissionTargets();
-        assertFalse(findPermissionInLiat(permissions, permissionName));
+        assertFalse(utils.findPermissionInList(permissions, permissionName));
     }
 
     private String deleteBuild(String name) throws Exception {
@@ -157,7 +162,7 @@ public class RestCallFullResponseTests extends ArtifactoryTestsBase {
                 .addQueryParam("buildNumbers", (String) buildBody.get("number"))
                 .addQueryParam("deleteAll", "1")
                 .addQueryParam("artifacts", "1");
-        return artifactory.restCall(deleteBuild);
+        return artifactory.restCallFullResponse(deleteBuild).getBody();
     }
 
     private List getPermissionTargets() throws Exception {
@@ -165,45 +170,9 @@ public class RestCallFullResponseTests extends ArtifactoryTestsBase {
                 .method(ArtifactoryRequest.Method.GET)
                 .apiUrl("api/security/permissions")
                 .responseType(ArtifactoryRequest.ContentType.JSON);
+        ArtifactoryResponse response = artifactory.restCallFullResponse(req);
 
-        return artifactory.restCall(req);
-    }
-
-    private Map<String, Object> createPermissionTargetBody(String permissionName) throws IOException {
-        String json =
-                "{" +
-                        "\"name\" : \"" + permissionName + "\"," +
-                        "\"includesPattern\" : \"**\"," +
-                        "\"excludesPattern\" : \"\"," +
-                        "\"repositories\" : [ \"ANY\" ]," +
-                        "\"principals\" : {" +
-                        "\"users\" : {" +
-                        "\"anonymous\" : [ \"r\" ]" +
-                        "}," +
-                        "\"groups\" : {" +
-                        "\"readers\" : [ \"r\" ]" +
-                        "}" +
-                        "}" +
-                        "}";
-
-        return new ObjectMapper().readValue(json, Map.class);
-    }
-
-    private boolean findPermissionInLiat(List list, String permissionName) {
-        for(Object permission : list) {
-            Object name = ((Map)permission).get("name");
-            if (permissionName.equals(name)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private Map<String, Object> createBuildBody() throws IOException {
-        String buildStarted = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(System.currentTimeMillis());
-        String buildInfoJson = IOUtils.toString(this.getClass().getResourceAsStream("/build.json"), "UTF-8");
-        buildInfoJson = StringUtils.replace(buildInfoJson, "{build.start.time}", buildStarted);
-        ObjectMapper mapper = new ObjectMapper();
-        return mapper.readValue(buildInfoJson, Map.class);
+        List<String> responseBody = new ObjectMapper().readValue(response.getBody(), List.class);
+        return responseBody;
     }
 }

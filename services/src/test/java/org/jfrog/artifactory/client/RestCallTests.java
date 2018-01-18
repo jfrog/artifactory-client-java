@@ -1,19 +1,16 @@
 package org.jfrog.artifactory.client;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
 import org.jfrog.artifactory.client.impl.ArtifactoryRequestImpl;
+import org.jfrog.artifactory.client.utils.RestCallTestUtils;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
+
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Map;
 
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.*;
 
 /**
  * @author Aviad Shikloshi
@@ -21,10 +18,11 @@ import static org.testng.Assert.assertTrue;
 public class RestCallTests extends ArtifactoryTestsBase {
 
     private Map<String, Object> buildBody;
+    private RestCallTestUtils utils = new RestCallTestUtils();
 
     @BeforeTest
     public void setUp() throws IOException {
-        buildBody = createBuildBody();
+        buildBody = utils.createBuildBody();
     }
 
     @Test
@@ -126,7 +124,7 @@ public class RestCallTests extends ArtifactoryTestsBase {
     @Test
     public void testCreateDeletePermissionTarget() throws Exception {
         final String permissionName = "java-client-tests-permission";
-        Map<String, Object> map = createPermissionTargetBody(permissionName);
+        Map<String, Object> map = utils.createPermissionTargetBody(permissionName);
 
         // Create permission target:
         ArtifactoryRequest req = new ArtifactoryRequestImpl()
@@ -138,7 +136,7 @@ public class RestCallTests extends ArtifactoryTestsBase {
 
         // Verify permission target created:
         List permissions = getPermissionTargets();
-        assertTrue(findPermissionInLiat(permissions, permissionName));
+        assertTrue(utils.findPermissionInList(permissions, permissionName));
 
         // Delete permission target:
         req = new ArtifactoryRequestImpl()
@@ -148,7 +146,7 @@ public class RestCallTests extends ArtifactoryTestsBase {
 
         // Verify permission target deleted:
         permissions = getPermissionTargets();
-        assertFalse(findPermissionInLiat(permissions, permissionName));
+        assertFalse(utils.findPermissionInList(permissions, permissionName));
     }
 
     private String deleteBuild(String name) throws Exception {
@@ -169,43 +167,5 @@ public class RestCallTests extends ArtifactoryTestsBase {
                 .responseType(ArtifactoryRequest.ContentType.JSON);
 
         return artifactory.restCall(req);
-    }
-
-    private Map<String, Object> createPermissionTargetBody(String permissionName) throws IOException {
-        String json =
-            "{" +
-                "\"name\" : \"" + permissionName + "\"," +
-                "\"includesPattern\" : \"**\"," +
-                "\"excludesPattern\" : \"\"," +
-                "\"repositories\" : [ \"ANY\" ]," +
-                "\"principals\" : {" +
-                    "\"users\" : {" +
-                        "\"anonymous\" : [ \"r\" ]" +
-                    "}," +
-                    "\"groups\" : {" +
-                        "\"readers\" : [ \"r\" ]" +
-                    "}" +
-                "}" +
-            "}";
-
-        return new ObjectMapper().readValue(json, Map.class);
-    }
-
-    private boolean findPermissionInLiat(List list, String permissionName) {
-        for(Object permission : list) {
-            Object name = ((Map)permission).get("name");
-            if (permissionName.equals(name)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private Map<String, Object> createBuildBody() throws IOException {
-        String buildStarted = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(System.currentTimeMillis());
-        String buildInfoJson = IOUtils.toString(this.getClass().getResourceAsStream("/build.json"), "UTF-8");
-        buildInfoJson = StringUtils.replace(buildInfoJson, "{build.start.time}", buildStarted);
-        ObjectMapper mapper = new ObjectMapper();
-        return mapper.readValue(buildInfoJson, Map.class);
     }
 }
