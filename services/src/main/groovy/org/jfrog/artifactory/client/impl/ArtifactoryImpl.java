@@ -1,6 +1,5 @@
 package org.jfrog.artifactory.client.impl;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import groovyx.net.http.HttpResponseDecorator;
 import groovyx.net.http.HttpResponseException;
 import org.apache.commons.lang.StringUtils;
@@ -20,7 +19,6 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -126,7 +124,7 @@ public class ArtifactoryImpl implements Artifactory {
      * @return {@link ArtifactoryResponse} artifactory response as per to the request sent
      */
     @Override
-    public ArtifactoryResponse restCallFullResponse(ArtifactoryRequest artifactoryRequest) throws Exception {
+    public ArtifactoryResponse restCall(ArtifactoryRequest artifactoryRequest) throws Exception {
         HttpRequestBase httpRequest;
 
         String requestPath = "/" + artifactoryRequest.getApiUrl();
@@ -157,8 +155,7 @@ public class ArtifactoryImpl implements Artifactory {
 
                 if (artifactoryRequest.getBody() instanceof InputStream) {
                     ((HttpPut) httpRequest).setEntity(new InputStreamEntity((InputStream) artifactoryRequest.getBody()));
-                }
-                else {
+                } else {
                     bodyText = Util.getStringFromObject(artifactoryRequest.getBody());
 
                     if (StringUtils.isNotBlank(bodyText)) {
@@ -192,70 +189,6 @@ public class ArtifactoryImpl implements Artifactory {
 
         HttpResponse httpResponse = httpClient.execute(httpRequest);
         return new ArtifactoryResponseImpl(httpResponse);
-    }
-
-    /**
-     * Create a REST call to artifactory with a generic request
-     *
-     * @param request that should be sent to artifactory
-     * @return artifactory response as per to the request sent
-     */
-    @Override
-    public <T> T restCall(ArtifactoryRequest request) throws Exception {
-        String requestPath = "/" + request.getApiUrl();
-        String queryPath;
-        ContentType contentType;
-        switch (((ArtifactoryRequestImpl) request).getMethod().toString()) {
-            case ("GET"):
-                String text = get(requestPath, String.class, null);
-                if (request.getResponseType() == ArtifactoryRequest.ContentType.JSON
-                        || request.getResponseType() == ArtifactoryRequest.ContentType.JOSE_JSON) {
-                    if (text.startsWith("[")) {
-                        // create a valid json to parse for objectMapper
-                        StringBuilder stringBuilder = new StringBuilder();
-                        String res = stringBuilder.append("{\"test\": ").append(text).append("}").toString();
-                        HashMap<String, Object> hashMap = Util.parseObjectWithTypeReference(res, new TypeReference<HashMap<String, Object>>() {
-                        });
-                        return (T) hashMap.get("test");
-                    }
-                    return (T) Util.parseObjectWithTypeReference(text, new TypeReference<HashMap<String, Object>>() {
-                    });
-                }
-                return (T) text;
-            case ("POST"):
-                contentType = Util.getContentType(request.getRequestType());
-                queryPath = "";
-                if (!request.getQueryParams().isEmpty()) {
-                    queryPath = Util.getQueryPath("?", request.getQueryParams().entrySet());
-                }
-                String body = ((ArtifactoryRequestImpl) request).getBody();
-                if (request.getResponseType() == ArtifactoryRequest.ContentType.JSON
-                        || request.getResponseType() == ArtifactoryRequest.ContentType.JOSE_JSON) {
-                    return (T) post(requestPath + queryPath, contentType, body, request.getHeaders(), Map.class, null);
-                }
-                return (T) post(requestPath + queryPath, contentType, body, request.getHeaders(), String.class, null);
-            case ("PUT"):
-                contentType = Util.getContentType(request.getRequestType());
-                queryPath = "";
-                if (!request.getQueryParams().isEmpty()) {
-                    queryPath = Util.getQueryPath("?", request.getQueryParams().entrySet());
-                }
-                T requestBody = ((ArtifactoryRequestImpl)request).getBody();
-                if (requestBody instanceof InputStream) {
-                    return (T) put(requestPath + queryPath, contentType, null, request.getHeaders(), (InputStream) requestBody, -1, String.class, null);
-                } else if (requestBody instanceof String) {
-                    return (T) put(requestPath + queryPath, contentType, (String)requestBody, request.getHeaders(), null, -1, String.class, null);
-                }
-                return (T) put(requestPath + queryPath, contentType, Util.getStringFromObject(requestBody), request.getHeaders(), null, -1, String.class, null);
-            case "DELETE":
-                queryPath = "";
-                if (!request.getQueryParams().isEmpty()) {
-                    queryPath = Util.getQueryPath("?", request.getQueryParams().entrySet());
-                }
-                return (T) delete(requestPath + queryPath);
-            default:
-                throw new IllegalArgumentException("HTTP method invalid.");
-        }
     }
 
     protected InputStream getInputStream(String path) throws IOException, URISyntaxException {

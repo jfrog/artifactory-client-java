@@ -1,5 +1,6 @@
 package org.jfrog.artifactory.client.impl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -11,22 +12,24 @@ import java.io.IOException;
 
 public class ArtifactoryResponseImpl implements ArtifactoryResponse {
 
+    private static final ObjectMapper objectMapper = new ObjectMapper();
+
     private HttpResponse httpResponse;
-    private String body;
+    private String rawBody;
 
     ArtifactoryResponseImpl(HttpResponse httpResponse) throws IOException {
         this.httpResponse = httpResponse;
 
         HttpEntity entity = httpResponse.getEntity();
 
-        try {
-            this.body = EntityUtils.toString(entity);
-        }
-        catch (IOException e) {
-            throw new IOException("Failed reading from response stream.");
-        }
-        finally {
-            EntityUtils.consumeQuietly(entity);
+        if (entity != null) {
+            try {
+                this.rawBody = EntityUtils.toString(entity, "UTF-8");
+            } catch (IOException e) {
+                throw new IOException("Failed reading from response stream.");
+            } finally {
+                EntityUtils.consumeQuietly(entity);
+            }
         }
     }
 
@@ -41,7 +44,16 @@ public class ArtifactoryResponseImpl implements ArtifactoryResponse {
     }
 
     @Override
-    public String getBody() {
-        return this.body;
+    public String getRawBody() {
+        return this.rawBody;
+    }
+
+    @Override
+    public <T> T parseBody(Class<T> toType) throws IOException {
+        try {
+            return objectMapper.readValue(rawBody, toType);
+        } catch (IOException e) {
+            throw new IOException("Failed casting response entity to " + toType.toString() + ". response status: " + getStatusLine().toString() + ". raw entity: " + this.rawBody);
+        }
     }
 }

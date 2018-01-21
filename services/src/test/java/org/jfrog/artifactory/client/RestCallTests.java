@@ -1,6 +1,7 @@
 package org.jfrog.artifactory.client;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.http.HttpStatus;
 import org.jfrog.artifactory.client.impl.ArtifactoryRequestImpl;
 import org.jfrog.artifactory.client.utils.RestCallTestUtils;
 import org.testng.annotations.BeforeTest;
@@ -31,8 +32,8 @@ public class RestCallTests extends ArtifactoryTestsBase {
                 .method(ArtifactoryRequest.Method.GET)
                 .apiUrl("api/system/ping")
                 .responseType(ArtifactoryRequest.ContentType.TEXT);
-        String response = artifactory.restCall(systemInfo);
-        assertTrue(response.equals("OK"));
+        ArtifactoryResponse response = artifactory.restCall(systemInfo);
+        assertTrue(response.getStatusLine().getStatusCode() == HttpStatus.SC_OK);
     }
 
     @Test
@@ -41,7 +42,10 @@ public class RestCallTests extends ArtifactoryTestsBase {
                 .apiUrl("api/system/version")
                 .responseType(ArtifactoryRequest.ContentType.JSON)
                 .method(ArtifactoryRequest.Method.GET);
-        Map<String, Object> versionRequestResponse = artifactory.restCall(versionRequest);
+
+        ArtifactoryResponse response = artifactory.restCall(versionRequest);
+        Map<String, Object> versionRequestResponse = response.parseBody(Map.class);
+
         assertTrue(versionRequestResponse.containsKey("version"));
         assertTrue(versionRequestResponse.containsKey("revision"));
         assertTrue(versionRequestResponse.containsKey("addons"));
@@ -55,7 +59,7 @@ public class RestCallTests extends ArtifactoryTestsBase {
                 .requestType(ArtifactoryRequest.ContentType.TEXT)
                 .requestBody(IOUtils.toString(this.getClass().getResourceAsStream("/public.key"), "UTF-8"))
                 .responseType(ArtifactoryRequest.ContentType.TEXT);
-        String gpgResponse = artifactory.restCall(gpgRequest);
+        String gpgResponse = artifactory.restCall(gpgRequest).getRawBody();
         assertTrue(gpgResponse.contains("Successfully configured the gpg public key"));
     }
 
@@ -65,8 +69,10 @@ public class RestCallTests extends ArtifactoryTestsBase {
                 .apiUrl("api/repositories")
                 .method(ArtifactoryRequest.Method.GET)
                 .responseType(ArtifactoryRequest.ContentType.JSON);
-        List<String> response = artifactory.restCall(repositoryRequest);
-        assertNotNull(response);
+        ArtifactoryResponse response = artifactory.restCall(repositoryRequest);
+
+        List<String> responseBody = response.parseBody(List.class);
+        assertNotNull(responseBody);
     }
 
     @Test
@@ -82,7 +88,7 @@ public class RestCallTests extends ArtifactoryTestsBase {
                 .method(ArtifactoryRequest.Method.POST)
                 .apiUrl("api/system/replications/" + command)
                 .responseType(ArtifactoryRequest.ContentType.TEXT);
-        return artifactory.restCall(renameRequest);
+        return artifactory.restCall(renameRequest).getRawBody();
     }
 
     private void uploadBuild() throws Exception {
@@ -102,7 +108,9 @@ public class RestCallTests extends ArtifactoryTestsBase {
                 .method(ArtifactoryRequest.Method.GET)
                 .apiUrl("api/build/" + buildBody.get("name") + "/" + buildBody.get("number"))
                 .responseType(ArtifactoryRequest.ContentType.JSON);
-        Map<String, Object> buildInfoResponse = artifactory.restCall(buildInfoRequest);
+        ArtifactoryResponse response = artifactory.restCall(buildInfoRequest);
+
+        Map<String, Object> buildInfoResponse = response.parseBody(Map.class);
         assertNotNull(buildInfoResponse);
         Map<String, Object> buildInfo = (Map<String, Object>) buildInfoResponse.get("buildInfo");
         assertTrue(buildInfo.containsKey("version"));
@@ -128,10 +136,10 @@ public class RestCallTests extends ArtifactoryTestsBase {
 
         // Create permission target:
         ArtifactoryRequest req = new ArtifactoryRequestImpl()
-            .method(ArtifactoryRequest.Method.PUT)
-            .apiUrl("api/security/permissions/" + permissionName)
-            .requestType(ArtifactoryRequest.ContentType.JSON)
-            .requestBody(map);
+                .method(ArtifactoryRequest.Method.PUT)
+                .apiUrl("api/security/permissions/" + permissionName)
+                .requestType(ArtifactoryRequest.ContentType.JSON)
+                .requestBody(map);
         artifactory.restCall(req);
 
         // Verify permission target created:
@@ -140,8 +148,8 @@ public class RestCallTests extends ArtifactoryTestsBase {
 
         // Delete permission target:
         req = new ArtifactoryRequestImpl()
-            .method(ArtifactoryRequest.Method.DELETE)
-            .apiUrl("api/security/permissions/" + permissionName);
+                .method(ArtifactoryRequest.Method.DELETE)
+                .apiUrl("api/security/permissions/" + permissionName);
         artifactory.restCall(req);
 
         // Verify permission target deleted:
@@ -157,7 +165,7 @@ public class RestCallTests extends ArtifactoryTestsBase {
                 .addQueryParam("buildNumbers", (String) buildBody.get("number"))
                 .addQueryParam("deleteAll", "1")
                 .addQueryParam("artifacts", "1");
-        return artifactory.restCall(deleteBuild);
+        return artifactory.restCall(deleteBuild).getRawBody();
     }
 
     private List getPermissionTargets() throws Exception {
@@ -165,7 +173,9 @@ public class RestCallTests extends ArtifactoryTestsBase {
                 .method(ArtifactoryRequest.Method.GET)
                 .apiUrl("api/security/permissions")
                 .responseType(ArtifactoryRequest.ContentType.JSON);
+        ArtifactoryResponse response = artifactory.restCall(req);
 
-        return artifactory.restCall(req);
+        List<String> responseBody = response.parseBody(List.class);
+        return responseBody;
     }
 }

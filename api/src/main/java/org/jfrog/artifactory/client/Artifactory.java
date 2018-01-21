@@ -1,6 +1,7 @@
 package org.jfrog.artifactory.client;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import java.net.MalformedURLException;
 
 /**
@@ -10,7 +11,7 @@ import java.net.MalformedURLException;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public interface Artifactory extends ApiInterface {
 
-    static final String API_BASE = "/api";
+    String API_BASE = "/api";
 
     String getUri() throws MalformedURLException;
 
@@ -34,9 +35,7 @@ public interface Artifactory extends ApiInterface {
 
     ArtifactorySystem system();
 
-    ArtifactoryResponse restCallFullResponse(ArtifactoryRequest artifactoryRequest) throws Exception;
-
-    <T> T restCall(ArtifactoryRequest request) throws Exception;
+    ArtifactoryResponse restCall(ArtifactoryRequest artifactoryRequest) throws Exception;
 
     void close();
 }
