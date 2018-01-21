@@ -34,7 +34,7 @@ public class RestCallTests extends ArtifactoryTestsBase {
                 .apiUrl("api/system/ping")
                 .responseType(ArtifactoryRequest.ContentType.TEXT);
         ArtifactoryResponse response = artifactory.restCall(systemInfo);
-        assertTrue(response.getStatusLine().getStatusCode() == HttpStatus.SC_OK);
+        assertTrue(response.isSuccessResponse());
     }
 
     @Test

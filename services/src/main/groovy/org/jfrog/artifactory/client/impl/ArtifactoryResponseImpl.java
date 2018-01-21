@@ -56,4 +56,11 @@ public class ArtifactoryResponseImpl implements ArtifactoryResponse {
             throw new IOException("Failed casting response entity to " + toType.toString() + ". response status: " + getStatusLine().toString() + ". raw entity: " + this.rawBody);
         }
     }
+
+    @Override
+    public boolean isSuccessResponse() {
+        int status = getStatusLine().getStatusCode();
+
+        return status >= 200 && status < 300;
+    }
 }

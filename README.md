@@ -592,6 +592,9 @@ org.apache.http.Header[] headers = response.getAllHeaders();
 // get response status info
 org.apache.http.StatusLine statusLine = response.getStatusLine();
   
+// convenience method for verifying success
+assert response.isSuccessResponse()
+  
 // get raw response body
 String rawBody = response.rawBody();
   

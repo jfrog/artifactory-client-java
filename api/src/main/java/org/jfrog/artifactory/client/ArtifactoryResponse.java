@@ -18,4 +18,6 @@ public interface ArtifactoryResponse {
     String getRawBody();
 
     <T> T parseBody(Class<T> toType) throws IOException;
+
+    boolean isSuccessResponse();
 }
