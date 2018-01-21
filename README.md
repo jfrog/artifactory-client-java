@@ -584,7 +584,30 @@ Executing an Artifactory REST API
 ArtifactoryRequest repositoryRequest = new ArtifactoryRequestImpl().apiUrl("api/repositories")
     .method(ArtifactoryRequest.Method.GET)
     .responseType(ArtifactoryRequest.ContentType.JSON);
-List<String> response = artifactory.restCall(repositoryRequest);
+ArtifactoryResponse response = artifactory.restCall(repositoryRequest);
+  
+// get response headers
+org.apache.http.Header[] headers = response.getAllHeaders();
+  
+// get response status info
+org.apache.http.StatusLine statusLine = response.getStatusLine();
+  
+// get raw response body
+String rawBody = response.rawBody();
+  
+assert rawBody == "[ {
+                           "key" : "example-repo-local",
+                           "description" : "Example artifactory repository",
+                           "type" : "LOCAL",
+                           "url" : "http://localhost:8081/artifactory/example-repo-local"
+                         }, 
+                         ... 
+                       ]";
+  
+// convenience method for parsing the raw response body
+List<Map<String, String>> parsedBody = response.parseBody(List.class);
+  
+assert parsedBody.get("key") == "example-repo-local";
 ```
 
 ## Building and Testing the Sources

@@ -71,8 +71,13 @@ public class RestCallTests extends ArtifactoryTestsBase {
                 .responseType(ArtifactoryRequest.ContentType.JSON);
         ArtifactoryResponse response = artifactory.restCall(repositoryRequest);
 
-        List<String> responseBody = response.parseBody(List.class);
+        List<Map<String, String>> responseBody = response.parseBody(List.class);
         assertNotNull(responseBody);
+
+        Map<String, String> firstRepo = responseBody.get(0);
+        assertTrue(firstRepo.get("key").equals("example-repo-local"));
+        assertTrue(firstRepo.get("description").equals("Example artifactory repository"));
+        assertTrue(firstRepo.get("type").equals("LOCAL"));
     }
 
     @Test
