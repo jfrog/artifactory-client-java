@@ -115,6 +115,7 @@ public abstract class RepositoryBase implements Repository {
         if (getRclass() != that.getRclass()) return false;
         if (settings != null ? !settings.equals(that.settings) : that.settings != null) return false;
         if (xraySettings != null ? !xraySettings.equals(that.xraySettings) : that.xraySettings != null) return false;
+        if (customProperties != null ? !customProperties.equals(that.customProperties) : that.customProperties != null) return false;
 
         return true;
     }
@@ -129,6 +130,7 @@ public abstract class RepositoryBase implements Repository {
         result = 31 * result + (excludesPattern != null ? excludesPattern.hashCode() : 0);
         result = 31 * result + (settings != null ? settings.hashCode() : 0);
         result = 31 * result + (xraySettings != null ? xraySettings.hashCode() : 0);
+        result = 31 * result + (customProperties != null ? customProperties.hashCode() : 0);
         return result;
     }
 
