@@ -168,10 +168,13 @@ public class ArtifactoryImpl implements Artifactory {
                     queryPath = Util.getQueryPath("?", request.getQueryParams().entrySet());
                 }
 
-                if (((ArtifactoryRequestImpl) request).getBody() instanceof InputStream) {
-                    return (T) put(requestPath + queryPath, contentType, null, request.getHeaders(), (InputStream) ((ArtifactoryRequestImpl) request).getBody(), -1, String.class, null);
+                T requestBody = ((ArtifactoryRequestImpl) request).getBody();
+                if (requestBody instanceof InputStream) {
+                    return (T) put(requestPath + queryPath, contentType, null, request.getHeaders(), (InputStream) requestBody, -1, String.class, null);
+                } else if (requestBody instanceof String) {
+                    return (T) put(requestPath + queryPath, contentType, (String) requestBody, request.getHeaders(), null, -1, String.class, null);
                 } else {
-                    return (T) put(requestPath + queryPath, contentType, Util.getStringFromObject(((ArtifactoryRequestImpl) request).getBody()), request.getHeaders(), null, -1, String.class, null);
+                    return (T) put(requestPath + queryPath, contentType, Util.getStringFromObject(requestBody), request.getHeaders(), null, -1, String.class, null);
                 }
             case "DELETE":
                 queryPath = "";
