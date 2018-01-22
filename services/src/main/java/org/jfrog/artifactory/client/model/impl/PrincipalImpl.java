@@ -12,26 +12,22 @@ import static java.util.Collections.unmodifiableSet;
  * @since 22/11/12
  */
 public class PrincipalImpl implements Principal {
-
     private final String name;
     private final Set<Privilege> privileges;
 
-    public PrincipalImpl(String name, Set<Privilege> privileges) {
+    protected PrincipalImpl(String name, Set<Privilege> privileges) {
         this.name = name;
         this.privileges = unmodifiableSet(privileges);
     }
 
-    @Override
     public String getName() {
         return name;
     }
 
-    @Override
     public Set<Privilege> getPrivileges() {
         return privileges;
     }
 
-    @Override
     public boolean isAllowedTo(Privilege... privileges) {
         for (Privilege privilege : privileges) {
             if (!this.privileges.contains(privilege)) {

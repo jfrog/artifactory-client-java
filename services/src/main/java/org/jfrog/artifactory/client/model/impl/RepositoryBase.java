@@ -54,7 +54,6 @@ public abstract class RepositoryBase implements Repository {
            customProperties);
     }
 
-    @Override
     public String getKey() {
         return key;
     }
@@ -63,7 +62,6 @@ public abstract class RepositoryBase implements Repository {
         this.key = key;
     }
 
-    @Override
     public String getDescription() {
         return description;
     }
@@ -72,7 +70,6 @@ public abstract class RepositoryBase implements Repository {
         this.description = description;
     }
 
-    @Override
     public String getNotes() {
         return notes;
     }
@@ -81,7 +78,6 @@ public abstract class RepositoryBase implements Repository {
         this.notes = notes;
     }
 
-    @Override
     public String getIncludesPattern() {
         return includesPattern;
     }
@@ -90,7 +86,6 @@ public abstract class RepositoryBase implements Repository {
         this.includesPattern = includesPattern;
     }
 
-    @Override
     public String getExcludesPattern() {
         return excludesPattern;
     }
@@ -145,7 +140,6 @@ public abstract class RepositoryBase implements Repository {
                 '}';
     }
 
-    @Override
     public String getRepoLayoutRef() {
         return repoLayoutRef;
     }
@@ -154,7 +148,6 @@ public abstract class RepositoryBase implements Repository {
         this.repoLayoutRef = repoLayoutRef;
     }
 
-    @Override
     public RepositorySettings getRepositorySettings() {
         return settings;
     }
@@ -163,7 +156,6 @@ public abstract class RepositoryBase implements Repository {
         this.settings = settings;
     }
 
-    @Override
     public XraySettings getXraySettings() {
         return xraySettings;
     }
@@ -172,7 +164,6 @@ public abstract class RepositoryBase implements Repository {
         this.xraySettings = xraySettings;
     }
 
-    @Override
     @JsonAnyGetter
     public Map<String, Object> getCustomProperties() {
         return customProperties;

@@ -6,17 +6,25 @@ import org.jfrog.artifactory.client.model.repository.settings.AbstractRepository
 import org.jfrog.artifactory.client.model.repository.settings.CustomRepositorySettings;
 
 public class CustomRepositorySettingsImpl extends AbstractRepositorySettings implements CustomRepositorySettings {
-    public static String defaultLayout = "maven-2-default";
+    static String defaultLayout = "maven-2-default";
 
     private PackageType packageType;
 
     public CustomRepositorySettingsImpl(CustomPackageTypeImpl packageType) {
+        super(defaultLayout);
         this.packageType = packageType;
-        this.repoLayoutRef = defaultLayout;
     }
 
     @Override
     public PackageType getPackageType() {
         return packageType;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof CustomRepositorySettingsImpl)) return false;
+
+        return true;
     }
 }

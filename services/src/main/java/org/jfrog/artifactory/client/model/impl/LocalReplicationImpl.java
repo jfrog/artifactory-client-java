@@ -17,7 +17,7 @@ public class LocalReplicationImpl implements LocalReplication {
     private String pathPrefix;
     private String repoKey;
 
-    public LocalReplicationImpl() {
+    LocalReplicationImpl() {
     }
 
     LocalReplicationImpl(String url, long socketTimeoutMillis, String username, String password,

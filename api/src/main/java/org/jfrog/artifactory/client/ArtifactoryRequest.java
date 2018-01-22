@@ -30,6 +30,8 @@ public interface ArtifactoryRequest {
 
     enum ContentType {
         JSON("JSON"),
+        JOSE("JOSE"),
+        JOSE_JSON("JOSE_JSON"),
         TEXT("TEXT"),
         URLENC("URLENC"),
         ANY("ANY");

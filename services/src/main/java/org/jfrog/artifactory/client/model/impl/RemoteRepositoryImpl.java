@@ -43,11 +43,12 @@ public class RemoteRepositoryImpl extends NonVirtualRepositoryBase implements Re
     private ContentSync contentSync;
     private String clientTlsCertificate;
 
+    //Required for JSON parsing of RemoteRepositoryImpl
     private RemoteRepositoryImpl() {
         repoLayoutRef = MAVEN_2_REPO_LAYOUT;
     }
 
-    RemoteRepositoryImpl(String key, RepositorySettings settings, XraySettings xraySettings,
+    protected RemoteRepositoryImpl(String key, RepositorySettings settings, XraySettings xraySettings,
                          ContentSync contentSync, String description,
                          String excludesPattern, String includesPattern, String notes, boolean blackedOut,
                          List<String> propertySets,
@@ -87,7 +88,6 @@ public class RemoteRepositoryImpl extends NonVirtualRepositoryBase implements Re
         this.clientTlsCertificate = clientTlsCertificate;
     }
 
-    @Override
     public String getUrl() {
         return url;
     }
@@ -96,7 +96,6 @@ public class RemoteRepositoryImpl extends NonVirtualRepositoryBase implements Re
         this.url = url;
     }
 
-    @Override
     public String getUsername() {
         return username;
     }
@@ -105,7 +104,6 @@ public class RemoteRepositoryImpl extends NonVirtualRepositoryBase implements Re
         this.username = username;
     }
 
-    @Override
     public String getPassword() {
         return password;
     }
@@ -114,7 +112,6 @@ public class RemoteRepositoryImpl extends NonVirtualRepositoryBase implements Re
         this.password = password;
     }
 
-    @Override
     public String getProxy() {
         return proxy;
     }
@@ -123,7 +120,6 @@ public class RemoteRepositoryImpl extends NonVirtualRepositoryBase implements Re
         this.proxy = proxy;
     }
 
-    @Override
     public boolean isHardFail() {
         return hardFail;
     }
@@ -132,7 +128,6 @@ public class RemoteRepositoryImpl extends NonVirtualRepositoryBase implements Re
         this.hardFail = hardFail;
     }
 
-    @Override
     public boolean isOffline() {
         return offline;
     }
@@ -141,7 +136,6 @@ public class RemoteRepositoryImpl extends NonVirtualRepositoryBase implements Re
         this.offline = offline;
     }
 
-    @Override
     public boolean isStoreArtifactsLocally() {
         return storeArtifactsLocally;
     }
@@ -150,7 +144,6 @@ public class RemoteRepositoryImpl extends NonVirtualRepositoryBase implements Re
         this.storeArtifactsLocally = storeArtifactsLocally;
     }
 
-    @Override
     public int getSocketTimeoutMillis() {
         return socketTimeoutMillis;
     }
@@ -159,7 +152,6 @@ public class RemoteRepositoryImpl extends NonVirtualRepositoryBase implements Re
         this.socketTimeoutMillis = socketTimeoutMillis;
     }
 
-    @Override
     public boolean isEnableCookieManagement() {
         return enableCookieManagement;
     }
@@ -168,7 +160,6 @@ public class RemoteRepositoryImpl extends NonVirtualRepositoryBase implements Re
         this.enableCookieManagement = cookieManagementEnbaled;
     }
 
-    @Override
     public boolean isAllowAnyHostAuth() {
         return allowAnyHostAuth;
     }
@@ -177,7 +168,6 @@ public class RemoteRepositoryImpl extends NonVirtualRepositoryBase implements Re
         this.allowAnyHostAuth = allowAnyHostAuth;
     }
 
-    @Override
     public String getLocalAddress() {
         return localAddress;
     }
@@ -186,7 +176,6 @@ public class RemoteRepositoryImpl extends NonVirtualRepositoryBase implements Re
         this.localAddress = localAddress;
     }
 
-    @Override
     public int getRetrievalCachePeriodSecs() {
         return retrievalCachePeriodSecs;
     }
@@ -195,7 +184,6 @@ public class RemoteRepositoryImpl extends NonVirtualRepositoryBase implements Re
         this.retrievalCachePeriodSecs = retrievalCachePeriodSecs;
     }
 
-    @Override
     public int getMissedRetrievalCachePeriodSecs() {
         return missedRetrievalCachePeriodSecs;
     }
@@ -204,7 +192,6 @@ public class RemoteRepositoryImpl extends NonVirtualRepositoryBase implements Re
         this.missedRetrievalCachePeriodSecs = missedRetrievalCachePeriodSecs;
     }
 
-    @Override
     public int getFailedRetrievalCachePeriodSecs() {
         return failedRetrievalCachePeriodSecs;
     }
@@ -213,7 +200,6 @@ public class RemoteRepositoryImpl extends NonVirtualRepositoryBase implements Re
         this.failedRetrievalCachePeriodSecs = failedRetrievalCachePeriodSecs;
     }
 
-    @Override
     public boolean isUnusedArtifactsCleanupEnabled() {
         return unusedArtifactsCleanupEnabled;
     }
@@ -222,7 +208,6 @@ public class RemoteRepositoryImpl extends NonVirtualRepositoryBase implements Re
         this.unusedArtifactsCleanupEnabled = unusedArtifactsCleanupEnabled;
     }
 
-    @Override
     public int getUnusedArtifactsCleanupPeriodHours() {
         return unusedArtifactsCleanupPeriodHours;
     }
@@ -231,7 +216,6 @@ public class RemoteRepositoryImpl extends NonVirtualRepositoryBase implements Re
         this.unusedArtifactsCleanupPeriodHours = unusedArtifactsCleanupPeriodHours;
     }
 
-    @Override
     public boolean isShareConfiguration() {
         return shareConfiguration;
     }
@@ -240,7 +224,6 @@ public class RemoteRepositoryImpl extends NonVirtualRepositoryBase implements Re
         this.shareConfiguration = shareConfiguration;
     }
 
-    @Override
     public boolean isSynchronizeProperties() {
         return synchronizeProperties;
     }
@@ -249,7 +232,6 @@ public class RemoteRepositoryImpl extends NonVirtualRepositoryBase implements Re
         this.synchronizeProperties = synchronizeProperties;
     }
 
-    @Override
     public boolean isListRemoteFolderItems() {
         return listRemoteFolderItems;
     }
@@ -258,7 +240,6 @@ public class RemoteRepositoryImpl extends NonVirtualRepositoryBase implements Re
         this.listRemoteFolderItems = listRemoteFolderItems;
     }
 
-    @Override
     public ContentSync getContentSync() {
         return contentSync;
     }
@@ -267,12 +248,10 @@ public class RemoteRepositoryImpl extends NonVirtualRepositoryBase implements Re
         this.contentSync = contentSync;
     }
 
-    @Override
     public RepositoryType getRclass() {
         return RepositoryTypeImpl.REMOTE;
     }
 
-    @Override
     public long getAssumedOfflinePeriodSecs() {
         return assumedOfflinePeriodSecs;
     }
@@ -281,7 +260,6 @@ public class RemoteRepositoryImpl extends NonVirtualRepositoryBase implements Re
         this.assumedOfflinePeriodSecs = assumedOfflinePeriodSecs;
     }
 
-    @Override
     public String getClientTlsCertificate() {
         return clientTlsCertificate;
     }

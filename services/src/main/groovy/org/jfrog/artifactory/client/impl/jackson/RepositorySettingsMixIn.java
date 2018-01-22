@@ -1,7 +1,9 @@
 package org.jfrog.artifactory.client.impl.jackson;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+
 import org.jfrog.artifactory.client.model.repository.settings.RepositorySettings;
 import org.jfrog.artifactory.client.model.repository.settings.impl.*;
 
@@ -37,6 +39,8 @@ import org.jfrog.artifactory.client.model.repository.settings.impl.*;
     @JsonSubTypes.Type(value = ChefRepositorySettingsImpl.class, name = "chef"),
     @JsonSubTypes.Type(value = PuppetRepositorySettingsImpl.class, name = "puppet")
 })
-public interface RepositorySettingsMixIn {
 
+public abstract class RepositorySettingsMixIn {
+  @JsonIgnore
+  abstract String getRepoLayout();
 }

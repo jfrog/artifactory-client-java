@@ -230,33 +230,35 @@ artifactory.repository("RepoName").replications.delete()
 
 ##### Creating or replacing a replication on a local repository
 ```
-LocalReplication replication = new LocalReplicationImpl()
-replication.url = "http://hostname1:port/artifactory/RepoName"
-replication.socketTimeoutMillis = 30000
-replication.username = 'john.doe'
-replication.password = 'secret'
-replication.enableEventReplication = false
-replication.enabled = false
-replication.cronExp = '0 0 0/2 * * ?'
-replication.syncDeletes = true
-replication.syncProperties = true
-replication.syncStatistics = true
-replication.pathPrefix = ''
-replication.repoKey = "RepoName"
+LocalReplication replication = new LocalReplicationBuilderImpl()
+    .url("http://hostname1:port/artifactory/RepoName")
+    .socketTimeoutMillis(30000)
+    .username("john.doe")
+    .password("secret")
+    .enableEventReplication(false)
+    .enabled(false)
+    .cronExp("0 0 0/2 * * ?")
+    .syncDeletes(true)
+    .syncProperties(true)
+    .syncStatistics(true)
+    .pathPrefix("")
+    .repoKey("RepoName")
+    .build();
 
-artifactory.repository("RepoName").replications.createOrReplace(replication)
+artifactory.repository("RepoName").getReplications().createOrReplace(replication);
 ```
 
 ##### Creating or replacing a replication on a remote repository
 ```
-RemoteReplication replication = new RemoteReplicationImpl()
-replication.enabled = false
-replication.cronExp = '0 0 0/2 * * ?'
-replication.syncDeletes = true
-replication.syncProperties = true
-replication.repoKey = "RepoName"
+RemoteReplication replication = new RemoteReplicationBuilderImpl()
+    .enabled(false)
+    .cronExp("0 0 0/2 * * ?")
+    .syncDeletes(true)
+    .syncProperties(true)
+    .repoKey("RepoName")
+    .build();
 
-artifactory.repository("RepoName").replications.createOrReplace(replication)
+artifactory.repository("RepoName").getReplications().createOrReplace(replication)
 ```
 
 ##### Managing Xray properties
@@ -588,7 +590,7 @@ List<String> response = artifactory.restCall(repositoryRequest);
 ## Building and Testing the Sources
 The code is built using Gradle and includes integration tests.
 
-Since the tests may use features which have been recently added to Artifactory, such as new package types, it is best to run the tests against the latest release of Artifactory. Some tests may therefore fail otherwise. Thhose tests can be manually commented out in that case.
+Since the tests may use features which have been recently added to Artifactory, such as new package types, it is best to run the tests against the latest release of Artifactory. Some tests may therefore fail otherwise. Those tests can be manually commented out in that case.
 
 If you'd like to build the code without tests, run:
 ```
@@ -602,6 +604,9 @@ Please follow these steps to build and test the code:
 ```
 > gradle clean build
 ```
+
+## Example Projects
+We created [sample projects](https://github.com/JFrogDev/project-examples/tree/master/artifactory-client-java-examples) demonstrating how to use the Artifactory Java Client.
 
 ## Contributing Code
 We welcome community contribution through pull requests.

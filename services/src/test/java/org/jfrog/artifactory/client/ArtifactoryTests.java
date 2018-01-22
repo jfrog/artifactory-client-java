@@ -1,9 +1,10 @@
 package org.jfrog.artifactory.client;
 
-import java.io.IOException;
-import static junit.framework.Assert.assertEquals;
-import static org.jfrog.artifactory.client.ArtifactoryClient.create;
 import org.testng.annotations.Test;
+
+import java.io.IOException;
+
+import static junit.framework.Assert.assertEquals;
 
 /**
  * @author yoavl
@@ -14,35 +15,37 @@ public class ArtifactoryTests {
     @Test
     public void urlsTest() throws IOException {
         Artifactory artifactory;
-        artifactory = create("http://myhost.com/clienttests", "", "");
+        ArtifactoryClientBuilder artifactoryClientBuilder = ArtifactoryClientBuilder.create();
+
+        artifactory = artifactoryClientBuilder.setUrl("http://myhost.com/clienttests").setUsername("").setPassword("").build();
         assertEquals("http://myhost.com", artifactory.getUri());
         assertEquals("clienttests", artifactory.getContextName());
 
-        artifactory = create("http://myhost.com:80/clienttests", "", "");
+        artifactory = artifactoryClientBuilder.setUrl("http://myhost.com:80/clienttests").setUsername("").setPassword("").build();
         assertEquals("http://myhost.com:80", artifactory.getUri());
         assertEquals("clienttests", artifactory.getContextName());
 
-        artifactory = create("http://myhost.com:80/clienttests/", "", "");
+        artifactory = artifactoryClientBuilder.setUrl("http://myhost.com:80/clienttests/").setUsername("").setPassword("").build();
         assertEquals("http://myhost.com:80", artifactory.getUri());
         assertEquals("clienttests", artifactory.getContextName());
 
-        artifactory = create("http://myhost.com", "", "");
+        artifactory = artifactoryClientBuilder.setUrl("http://myhost.com").setUsername("").setPassword("").build();
         assertEquals("http://myhost.com", artifactory.getUri());
         assertEquals("", artifactory.getContextName());
 
-        artifactory = create("http://myhost.com:80", "", "");
+        artifactory = artifactoryClientBuilder.setUrl("http://myhost.com:80").setUsername("").setPassword("").build();
         assertEquals("http://myhost.com:80", artifactory.getUri());
         assertEquals("", artifactory.getContextName());
 
-        artifactory = create("http://myhost.com:80/", "", "");
+        artifactory = artifactoryClientBuilder.setUrl("http://myhost.com:80/").setUsername("").setPassword("").build();
         assertEquals("http://myhost.com:80", artifactory.getUri());
         assertEquals("", artifactory.getContextName());
 
-        artifactory = create("http://abc.com:80/ab/artifactory/webapp/webapp", "", "");
+        artifactory = artifactoryClientBuilder.setUrl("http://abc.com:80/ab/artifactory/webapp/webapp").setUsername("").setPassword("").build();
         assertEquals("http://abc.com:80", artifactory.getUri());
         assertEquals("ab/artifactory/webapp/webapp", artifactory.getContextName());
 
-        artifactory = create("http://myhost.com:80/", "", "", null, null, null, "testAgent");
+        artifactory = artifactoryClientBuilder.setUrl("http://myhost.com:80/").setUsername("").setPassword("").setUserAgent("testAgent").build();
         assertEquals(artifactory.getUri(), "http://myhost.com:80");
         assertEquals("", artifactory.getContextName());
         assertEquals("testAgent", artifactory.getUserAgent());
@@ -95,7 +98,7 @@ public class ArtifactoryTests {
     public void proxyBuilderTest() {
         ArtifactoryClientBuilder builder = ArtifactoryClientBuilder.create();
         builder.setUrl("http://myhost.com:80/");
-        ArtifactoryClient.ProxyConfig proxy = new ArtifactoryClient.ProxyConfig("localhost", 9090, "http", "user", "password");
+        ProxyConfig proxy = new ProxyConfig("localhost", 9090, "http", "user", "password");
         builder.setProxy(proxy);
 
         assertEquals(builder.getProxy(), proxy);

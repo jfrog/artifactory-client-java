@@ -23,15 +23,19 @@ public class UserImpl extends SubjectImpl implements User {
     @JsonProperty("groups")
     private Collection<String> groups = new ArrayList<>();
 
-    private UserImpl(String name, String email, String password, boolean admin, boolean profileUpdatable, boolean internalPasswordDisabled, Date lastLoggedIn, Collection<String> groups) {
+    protected UserImpl(String name, String email, String password, boolean admin, boolean profileUpdatable, boolean internalPasswordDisabled, Collection<String> groups) {
         super(name);
         this.email = email;
         this.password = password;
         this.admin = admin;
         this.profileUpdatable = profileUpdatable;
         this.internalPasswordDisabled = internalPasswordDisabled;
-        this.lastLoggedIn = lastLoggedIn;
         this.groups = groups;
+    }
+
+    private UserImpl(String name, String email, String password, boolean admin, boolean profileUpdatable, boolean internalPasswordDisabled, Date lastLoggedIn, Collection<String> groups) {
+        this(name, email, password, admin, profileUpdatable, internalPasswordDisabled, groups);
+        this.lastLoggedIn = lastLoggedIn;
     }
 
     private UserImpl(String name) {
@@ -63,7 +67,6 @@ public class UserImpl extends SubjectImpl implements User {
         return admin;
     }
 
-    @Override
     public boolean isGroupAdmin() {
         return groupAdmin;
     }
@@ -100,7 +103,6 @@ public class UserImpl extends SubjectImpl implements User {
         this.lastLoggedIn = lastLoggedIn;
     }
 
-    @Override
     public boolean isGroup() {
         return false;
     }

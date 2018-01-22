@@ -21,7 +21,7 @@ public class ItemImpl implements Item {
     private Date lastUpdated;
 
 
-    ItemImpl(boolean folder, String uri, String metadataUri, Date lastModified, String modifiedBy, Date lastUpdated) {
+    protected ItemImpl(boolean folder, String uri, String metadataUri, Date lastModified, String modifiedBy, Date lastUpdated) {
         this.folder = folder;
         this.uri = uri;
         this.metadataUri = metadataUri;
@@ -31,6 +31,11 @@ public class ItemImpl implements Item {
     }
 
     protected ItemImpl() {
+    }
+
+    protected ItemImpl(boolean folder, String uri){
+        this.folder = folder;
+        this.uri = uri;
     }
 
     public String getPath() {
@@ -49,7 +54,6 @@ public class ItemImpl implements Item {
         this.repo = repo;
     }
 
-    @Override
     public boolean isFolder() {
         return folder;
     }
@@ -58,12 +62,10 @@ public class ItemImpl implements Item {
         this.folder = folder;
     }
 
-    @Override
     public String getName() {
         return new File(uri).getName();
     }
 
-    @Override
     public String getUri() {
         return uri;
     }
@@ -72,7 +74,6 @@ public class ItemImpl implements Item {
         this.uri = uri;
     }
 
-    @Override
     public String getMetadataUri() {
         return metadataUri;
     }
@@ -81,7 +82,6 @@ public class ItemImpl implements Item {
         this.metadataUri = metadataUri;
     }
 
-    @Override
     public Date getLastModified() {
         return lastModified;
     }
@@ -90,7 +90,6 @@ public class ItemImpl implements Item {
         this.lastModified = lastModified;
     }
 
-    @Override
     public String getModifiedBy() {
         return modifiedBy;
     }
@@ -99,7 +98,6 @@ public class ItemImpl implements Item {
         this.modifiedBy = modifiedBy;
     }
 
-    @Override
     public Date getLastUpdated() {
         return lastUpdated;
     }

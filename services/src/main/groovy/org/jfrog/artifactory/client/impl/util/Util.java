@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.module.SimpleAbstractTypeResolver;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import org.apache.commons.io.IOUtils;
+import org.apache.http.Consts;
 import org.apache.http.HttpResponse;
 import org.apache.http.entity.ContentType;
 import org.jfrog.artifactory.client.ArtifactoryRequest;
@@ -32,7 +33,6 @@ import static com.fasterxml.jackson.databind.introspect.VisibilityChecker.Std.de
 public class Util {
 
     public static <T> T responseToObject(HttpResponse httpResponse, Class<? extends T> object, Class<T> interfaceClass) throws IOException {
-
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.addMixIn(Repository.class, RepositoryMixIn.class);
         objectMapper.addMixIn(RepositorySettings.class, RepositorySettingsMixIn.class);
@@ -46,17 +46,13 @@ public class Util {
 
         if (interfaceClass != null) {
             SimpleModule module = new SimpleModule("CustomModel", Version.unknownVersion());
-
             SimpleAbstractTypeResolver resolver = new SimpleAbstractTypeResolver();
             resolver.addMapping(interfaceClass, object);
-
             module.setAbstractTypes(resolver);
-
             objectMapper.registerModule(module);
         }
 
         return objectMapper.readValue(httpResponse.getEntity().getContent(), object);
-
     }
 
     public static String responseToString(HttpResponse httpResponse) throws IOException {
@@ -88,6 +84,14 @@ public class Util {
 
         if (contentType.equals(ArtifactoryRequest.ContentType.JSON)) {
             return ContentType.APPLICATION_JSON;
+        }
+
+        if (contentType.equals(ArtifactoryRequest.ContentType.JOSE)) {
+            return ContentType.create("application/jose", Consts.ISO_8859_1);
+        }
+
+        if (contentType.equals(ArtifactoryRequest.ContentType.JOSE_JSON)) {
+            return ContentType.create("application/jose+json", Consts.UTF_8);
         }
 
         if (contentType.equals(ArtifactoryRequest.ContentType.TEXT)) {

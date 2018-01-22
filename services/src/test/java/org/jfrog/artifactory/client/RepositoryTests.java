@@ -1,11 +1,12 @@
 package org.jfrog.artifactory.client;
 
 import groovyx.net.http.HttpResponseException;
+import org.apache.http.HttpStatus;
 import org.jfrog.artifactory.client.model.*;
+import org.jfrog.artifactory.client.model.impl.LocalRepoChecksumPolicyTypeImpl;
+import org.jfrog.artifactory.client.model.repository.LocalRepoChecksumPolicyType;
 import org.jfrog.artifactory.client.model.repository.settings.RepositorySettings;
-import org.jfrog.artifactory.client.model.repository.settings.impl.GenericRepositorySettingsImpl;
-import org.jfrog.artifactory.client.model.repository.settings.impl.MavenRepositorySettingsImpl;
-import org.jfrog.artifactory.client.model.repository.settings.impl.RpmRepositorySettingsImpl;
+import org.jfrog.artifactory.client.model.repository.settings.impl.*;
 import org.jfrog.artifactory.client.model.xray.settings.impl.XraySettingsImpl;
 
 import org.testng.annotations.AfterClass;
@@ -85,11 +86,11 @@ public class RepositoryTests extends ArtifactoryTestsBase {
 
     @Test(dependsOnMethods = "testCreate")
     public void testCreateDirectoryWithoutPermissions() throws IOException {
-        Artifactory anonymousArtifactory = ArtifactoryClient.create(url);
+        Artifactory anonymousArtifactory = ArtifactoryClientBuilder.create().setUrl(url).build();
         try {
             anonymousArtifactory.repository(localRepository.getKey()).folder("myFolder").create();
-        } catch (Exception e) {
-            assertTrue(e.getMessage().contains("Unauthorized"));
+        } catch (HttpResponseException e) {
+            assertTrue(e.getStatusCode() == HttpStatus.SC_UNAUTHORIZED);
         }
     }
 
@@ -292,7 +293,27 @@ public class RepositoryTests extends ArtifactoryTestsBase {
 
         assertTrue(expectedRepo.equals(otherRepo));
         assertEquals(expectedRepo.hashCode(), otherRepo.hashCode());
+
+        //test more settings types
+        MavenRepositorySettingsImpl mavenSettings = new MavenRepositorySettingsImpl();
+        mavenSettings.setFetchJarsEagerly(true);
+        mavenSettings.setChecksumPolicyType(LocalRepoChecksumPolicyTypeImpl.client_checksums);
+
+        MavenRepositorySettingsImpl otherMavenSettings = new MavenRepositorySettingsImpl();
+        otherMavenSettings.setFetchJarsEagerly(true);
+        otherMavenSettings.setChecksumPolicyType(LocalRepoChecksumPolicyTypeImpl.server_generated_checksums);
+
+        assertNotEquals(mavenSettings, otherMavenSettings);
+        assertNotEquals(mavenSettings.hashCode(), otherMavenSettings.hashCode());
+
+        PuppetRepositorySettingsImpl puppetSettings = new PuppetRepositorySettingsImpl();
+        PuppetRepositorySettingsImpl otherPuppetSettings = new PuppetRepositorySettingsImpl();
+
+        assertEquals(puppetSettings, otherPuppetSettings);
+        assertEquals(puppetSettings.hashCode(), otherPuppetSettings.hashCode());
+
+        VagrantRepositorySettingsImpl vagrantSettings = new VagrantRepositorySettingsImpl();
+        assertNotEquals(puppetSettings, vagrantSettings);
+        assertNotEquals(puppetSettings.hashCode(), vagrantSettings.hashCode());
     }
-
-
 }
