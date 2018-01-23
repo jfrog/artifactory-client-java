@@ -106,8 +106,7 @@ public class Util {
             return ContentType.WILDCARD;
         }
 
-        throw new Exception("Non valid Content Type");
-
+        throw new Exception("Not a valid Content Type - " + contentType);
     }
 
     public static <T> T parseText(String text, Class<? extends T> target) throws IOException {

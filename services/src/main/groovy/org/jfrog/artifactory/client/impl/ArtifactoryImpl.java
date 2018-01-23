@@ -1,5 +1,6 @@
 package org.jfrog.artifactory.client.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import groovyx.net.http.HttpResponseDecorator;
 import groovyx.net.http.HttpResponseException;
 import org.apache.commons.lang.StringUtils;
@@ -138,35 +139,24 @@ public class ArtifactoryImpl implements Artifactory {
         switch (artifactoryRequest.getMethod()) {
             case GET:
                 httpRequest = new HttpGet();
+
                 break;
 
             case POST:
                 httpRequest = new HttpPost();
-
-                String bodyText = Util.getStringFromObject(artifactoryRequest.getBody());
-                if (StringUtils.isNotBlank(bodyText)) {
-                    ((HttpPost) httpRequest).setEntity(new StringEntity(bodyText, contentType));
-                }
+                setEntity((HttpPost)httpRequest, artifactoryRequest.getBody(), contentType);
 
                 break;
 
             case PUT:
                 httpRequest = new HttpPut();
-
-                if (artifactoryRequest.getBody() instanceof InputStream) {
-                    ((HttpPut) httpRequest).setEntity(new InputStreamEntity((InputStream) artifactoryRequest.getBody()));
-                } else {
-                    bodyText = Util.getStringFromObject(artifactoryRequest.getBody());
-
-                    if (StringUtils.isNotBlank(bodyText)) {
-                        ((HttpPut) httpRequest).setEntity(new StringEntity(bodyText, contentType));
-                    }
-                }
+                setEntity((HttpPut)httpRequest, artifactoryRequest.getBody(), contentType);
 
                 break;
 
             case DELETE:
                 httpRequest = new HttpDelete();
+
                 break;
 
             default:
@@ -181,14 +171,29 @@ public class ArtifactoryImpl implements Artifactory {
         }
 
         Map<String, String> headers = artifactoryRequest.getHeaders();
-        if (!headers.isEmpty()) {
-            for (String key : headers.keySet()) {
-                httpRequest.setHeader(key, headers.get(key));
-            }
+        for (String key : headers.keySet()) {
+            httpRequest.setHeader(key, headers.get(key));
         }
 
         HttpResponse httpResponse = httpClient.execute(httpRequest);
         return new ArtifactoryResponseImpl(httpResponse);
+    }
+
+    private void setEntity(HttpEntityEnclosingRequestBase httpRequest, Object body, ContentType contentType) throws JsonProcessingException {
+        if (body == null) {
+            return;
+        }
+        if (body instanceof InputStream) {
+            httpRequest.setEntity(new InputStreamEntity((InputStream)body));
+        } else
+        if (body instanceof String) {
+            httpRequest.setEntity(new StringEntity((String)body, contentType));
+        } else {
+            String bodyText = Util.getStringFromObject(body);
+            if (StringUtils.isNotBlank(bodyText)) {
+                httpRequest.setEntity(new StringEntity(bodyText, contentType));
+            }
+        }
     }
 
     protected InputStream getInputStream(String path) throws IOException, URISyntaxException {

@@ -586,31 +586,21 @@ ArtifactoryRequest repositoryRequest = new ArtifactoryRequestImpl().apiUrl("api/
     .responseType(ArtifactoryRequest.ContentType.JSON);
 ArtifactoryResponse response = artifactory.restCall(repositoryRequest);
   
-// get response headers
+// Get the response headers
 org.apache.http.Header[] headers = response.getAllHeaders();
   
-// get response status info
+// Get the response status information
 org.apache.http.StatusLine statusLine = response.getStatusLine();
   
-// convenience method for verifying success
+// A convenience method for verifying success
 assert response.isSuccessResponse()
   
-// get raw response body
+// Get the response raw body
 String rawBody = response.rawBody();
-  
-assert rawBody == "[ {
-                           "key" : "example-repo-local",
-                           "description" : "Example artifactory repository",
-                           "type" : "LOCAL",
-                           "url" : "http://localhost:8081/artifactory/example-repo-local"
-                         }, 
-                         ... 
-                       ]";
-  
-// convenience method for parsing the raw response body
+    
+// If the the response raw body has a JSON format, populate an object with the body content, 
+// by providing a object's class. 
 List<Map<String, String>> parsedBody = response.parseBody(List.class);
-  
-assert parsedBody.get("key") == "example-repo-local";
 ```
 
 ## Building and Testing the Sources
