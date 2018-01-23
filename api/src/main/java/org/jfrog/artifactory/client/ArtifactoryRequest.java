@@ -14,7 +14,6 @@ public interface ArtifactoryRequest {
     enum Method { GET, POST, PUT, DELETE }
 
     ArtifactoryRequest method(Method method);
-
     ArtifactoryRequest apiUrl(String apiUrl);
     ArtifactoryRequest addHeader(String key, String value);
     ArtifactoryRequest addQueryParam(String key, String value);
@@ -22,6 +21,8 @@ public interface ArtifactoryRequest {
     ArtifactoryRequest responseType(ContentType responseType);
     ArtifactoryRequest requestType(ContentType requestType);
 
+    Method getMethod();
+    <T> T getBody();
     Map<String, String> getHeaders();
     Map<String, String> getQueryParams();
     ContentType getRequestType();
