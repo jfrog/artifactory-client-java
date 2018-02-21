@@ -627,7 +627,10 @@ We created [sample projects](https://github.com/JFrogDev/project-examples/tree/m
 ## Contributing Code
 We welcome community contribution through pull requests.
 
-# License
+## License
 This client is available under the [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0).
+
+## Release Notes
+Release notes are available on [Bintray](https://bintray.com/jfrog/artifactory-tools/artifactory-client-java#release).
 
 (c) All rights reserved JFrog
