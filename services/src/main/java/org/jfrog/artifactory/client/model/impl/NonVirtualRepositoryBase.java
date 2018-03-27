@@ -102,30 +102,4 @@ public abstract class NonVirtualRepositoryBase extends RepositoryBase implements
             xraySettings.setXrayIndex(xrayIndex);
         }
     }
-
-    public Boolean getBlockXrayUnscannedArtifacts() {
-        if (xraySettings != null) {
-            return xraySettings.getBlockXrayUnscannedArtifacts();
-        }
-        return null;
-    }
-
-    public void setBlockXrayUnscannedArtifacts(Boolean blockXrayUnscannedArtifacts) {
-        if (xraySettings != null) {
-            xraySettings.setBlockXrayUnscannedArtifacts(blockXrayUnscannedArtifacts);
-        }
-    }
-
-    public String getXrayMinimumBlockedSeverity() {
-        if (xraySettings != null) {
-            return xraySettings.getXrayMinimumBlockedSeverity();
-        }
-        return null;
-    }
-
-    public void setXrayMinimumBlockedSeverity(String xrayMinimumBlockedSeverity) {
-        if (xraySettings != null) {
-            xraySettings.setXrayMinimumBlockedSeverity(xrayMinimumBlockedSeverity);
-        }
-    }
 }

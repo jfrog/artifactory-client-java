@@ -267,8 +267,6 @@ artifactory.repository("RepoName").getReplications().createOrReplace(replication
     
     XraySettings xraySettings = repository.getXraySettings();
     xraySettings.setXrayIndex(true)
-    xraySettings.setBlockXrayUnscannedArtifacts(true)
-    xraySettings.setXrayMinimumBlockedSeverity('Minor')
 
     Repository updatedRepository = artifactory.repositories()
         .builders()
