@@ -169,7 +169,13 @@ String result = artifactory.repository("RepoName").delete("path/to/item");
 #### Managing Repositories
 ##### List all Repositories
 ```
-List<LightweightRepository> repoList = artifactory.repositories().list(LOCAL);
+import static org.jfrog.artifactory.client.model.impl.RepositoryTypeImpl.LOCAL;
+import static org.jfrog.artifactory.client.model.impl.RepositoryTypeImpl.REMOTE;
+import static org.jfrog.artifactory.client.model.impl.RepositoryTypeImpl.VIRTUAL;
+...
+List<LightweightRepository> localRepoList = artifactory.repositories().list(LOCAL);
+List<LightweightRepository> remoteRepoList = artifactory.repositories().list(REMOTE);
+List<LightweightRepository> virtualRepoList = artifactory.repositories().list(VIRTUAL);
 ```
 
 ##### Creating Repositories
