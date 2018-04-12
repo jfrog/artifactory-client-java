@@ -1,6 +1,6 @@
 package org.jfrog.artifactory.client.impl
 
-import groovyx.net.http.HttpResponseException
+import org.apache.http.client.HttpResponseException
 import org.apache.http.entity.ContentType
 import org.jfrog.artifactory.client.Artifactory
 import org.jfrog.artifactory.client.UploadListener

@@ -30,19 +30,12 @@ public interface ArtifactoryRequest {
     String getApiUrl();
 
     enum ContentType {
-        JSON("JSON"),
-        JOSE("JOSE"),
-        JOSE_JSON("JOSE_JSON"),
-        TEXT("TEXT"),
-        URLENC("URLENC"),
-        ANY("ANY");
-        private String text;
-        ContentType(String text){
-            this.text = text;
-        }
-        String getText(){
-            return this.text;
-        }
+        JSON,
+        JOSE,
+        JOSE_JSON,
+        TEXT,
+        URLENC,
+        ANY,
+        XML
     }
-
 }

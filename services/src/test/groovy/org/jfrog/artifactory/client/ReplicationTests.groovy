@@ -1,6 +1,6 @@
 package org.jfrog.artifactory.client
 
-import groovyx.net.http.HttpResponseException
+import org.apache.http.client.HttpResponseException
 import org.jfrog.artifactory.client.model.RepositoryType
 import org.jfrog.artifactory.client.model.impl.LocalReplicationImpl
 import org.jfrog.artifactory.client.model.repository.settings.RepositorySettings

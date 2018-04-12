@@ -1,6 +1,6 @@
 package org.jfrog.artifactory.client;
 
-import groovyx.net.http.HttpResponseException;
+import org.apache.http.client.HttpResponseException;
 import org.jfrog.artifactory.client.model.*;
 import org.jfrog.artifactory.client.model.builder.GroupBuilder;
 import org.jfrog.artifactory.client.model.builder.PermissionTargetBuilder;
@@ -136,7 +136,7 @@ public class SecurityTests extends ArtifactoryTestsBase {
             artifactory.security().createOrReplacePermissionTarget(permission);
         } catch (Exception e) {
             if (e instanceof HttpResponseException) {
-                throw new UnsupportedOperationException(((HttpResponseException) e).getResponse().getData().toString(), e);
+                throw new UnsupportedOperationException(((HttpResponseException) e).getMessage(), e);
             }
             throw new UnsupportedOperationException(e);
         }
@@ -169,7 +169,7 @@ public class SecurityTests extends ArtifactoryTestsBase {
             artifactory.security().createOrReplacePermissionTarget(permission);
         } catch (Exception e) {
             if (e instanceof HttpResponseException) {
-                throw new UnsupportedOperationException(((HttpResponseException) e).getResponse().getData().toString(), e);
+                throw new UnsupportedOperationException(((HttpResponseException) e).getMessage(), e);
             }
             throw new UnsupportedOperationException(e);
         }

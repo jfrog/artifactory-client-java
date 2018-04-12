@@ -1,5 +1,6 @@
 package org.jfrog.artifactory.client.impl;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
@@ -7,6 +8,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
 import org.apache.http.util.EntityUtils;
 import org.jfrog.artifactory.client.ArtifactoryResponse;
+import org.jfrog.artifactory.client.impl.util.Util;
 
 import java.io.IOException;
 
@@ -50,10 +52,11 @@ public class ArtifactoryResponseImpl implements ArtifactoryResponse {
 
     @Override
     public <T> T parseBody(Class<T> toType) throws IOException {
+        Util.configureObjectMapper(objectMapper);
         try {
             return objectMapper.readValue(rawBody, toType);
         } catch (IOException e) {
-            throw new IOException("Failed casting response entity to " + toType.toString() + ". response status: " + getStatusLine().toString() + ". raw entity: " + this.rawBody);
+            throw new IOException("Failed casting response entity to " + toType.toString() + ". response status: " + getStatusLine().toString() + ". raw entity: " + this.rawBody, e);
         }
     }
 

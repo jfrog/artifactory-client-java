@@ -2,6 +2,7 @@ package org.jfrog.artifactory.client;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 
 /**
@@ -35,7 +36,7 @@ public interface Artifactory extends ApiInterface {
 
     ArtifactorySystem system();
 
-    ArtifactoryResponse restCall(ArtifactoryRequest artifactoryRequest) throws Exception;
+    ArtifactoryResponse restCall(ArtifactoryRequest artifactoryRequest) throws IOException;
 
     void close();
 }
