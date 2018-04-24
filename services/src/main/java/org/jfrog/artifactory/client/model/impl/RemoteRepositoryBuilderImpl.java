@@ -10,7 +10,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import static org.jfrog.artifactory.client.model.Repository.MAVEN_2_REPO_LAYOUT;
 import static org.jfrog.artifactory.client.model.impl.PackageTypeImpl.*;
 
 /**

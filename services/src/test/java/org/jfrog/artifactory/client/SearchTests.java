@@ -181,7 +181,7 @@ public class SearchTests extends ArtifactoryTestsBase {
 
     @Test
     public void testArtifactsCreatedInDateRangeSearch() throws IOException {
-        long now = System.currentTimeMillis() + 1000L;
+        long now = System.currentTimeMillis() + 60000L;
         long startTime = now - 86400000L;
         List<RepoPath> results = artifactory.searches().artifactsCreatedInDateRange(startTime, now).doSearch();
         assertFalse(results.isEmpty());

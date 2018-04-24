@@ -1,6 +1,6 @@
 package org.jfrog.artifactory.client;
 
-import groovyx.net.http.HttpResponseException;
+import org.apache.http.client.HttpResponseException;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;

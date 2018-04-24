@@ -1,7 +1,7 @@
 package org.jfrog.artifactory.client.impl
 
 import com.fasterxml.jackson.core.type.TypeReference
-import groovyx.net.http.HttpResponseException
+import org.apache.http.client.HttpResponseException
 import org.apache.http.entity.ContentType
 import org.jfrog.artifactory.client.ItemHandle
 import org.jfrog.artifactory.client.PropertiesHandler

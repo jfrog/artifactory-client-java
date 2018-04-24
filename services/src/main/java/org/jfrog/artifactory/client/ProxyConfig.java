@@ -26,7 +26,7 @@ public class ProxyConfig {
      */
     private String password;
 
-    protected ProxyConfig(String host, int port, String scheme, String user, String password) {
+    public ProxyConfig(String host, int port, String scheme, String user, String password) {
         this.host = host;
         this.port = port;
         this.scheme = scheme;

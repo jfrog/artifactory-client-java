@@ -1,6 +1,6 @@
 package org.jfrog.artifactory.client;
 
-import groovyx.net.http.HttpResponseException;
+import org.apache.http.client.HttpResponseException;
 import org.jfrog.artifactory.client.impl.ArtifactoryRequestImpl;
 import org.jfrog.artifactory.client.impl.CopyMoveException;
 import org.jfrog.artifactory.client.model.File;
@@ -127,7 +127,7 @@ public class ItemTests extends ArtifactoryTestsBase {
             artifactory.repositories().create(2, localRepository);
         } catch (Exception e) {
             //noinspection ConstantConditions
-            if (!(e instanceof HttpResponseException) || !(((org.apache.http.client.HttpResponseException) e).getStatusCode() == 404 || ((org.apache.http.client.HttpResponseException) e).getStatusCode() == 405)) {
+            if (!(e instanceof HttpResponseException) || !(((HttpResponseException) e).getStatusCode() == 404 || ((HttpResponseException) e).getStatusCode() == 405)) {
                 throw e;
             }
         }
@@ -141,7 +141,7 @@ public class ItemTests extends ArtifactoryTestsBase {
             //should fail
         } catch (Exception e) {
             //noinspection ConstantConditions
-            if (!(e instanceof HttpResponseException) || !(((org.apache.http.client.HttpResponseException) e).getStatusCode() == 404 || ((org.apache.http.client.HttpResponseException) e).getStatusCode() == 405)) {
+            if (!(e instanceof HttpResponseException) || !(((HttpResponseException) e).getStatusCode() == 404 || ((HttpResponseException) e).getStatusCode() == 405)) {
                 throw e;
             }
         }

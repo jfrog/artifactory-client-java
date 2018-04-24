@@ -1,6 +1,6 @@
 package org.jfrog.artifactory.client.impl
 
-import groovyx.net.http.HttpResponseException
+import org.apache.http.client.HttpResponseException
 import org.jfrog.artifactory.client.PropertiesHandler
 import org.jfrog.artifactory.client.impl.util.Util
 

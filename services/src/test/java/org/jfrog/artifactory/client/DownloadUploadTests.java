@@ -1,6 +1,6 @@
 package org.jfrog.artifactory.client;
 
-import groovyx.net.http.HttpResponseException;
+import org.apache.http.client.HttpResponseException;
 import junit.framework.Assert;
 import org.jfrog.artifactory.client.model.File;
 import org.jfrog.artifactory.client.model.Item;

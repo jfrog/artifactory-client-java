@@ -1,11 +1,11 @@
 package org.jfrog.artifactory.client.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import groovyx.net.http.HttpResponseDecorator;
-import groovyx.net.http.HttpResponseException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
+import org.apache.http.StatusLine;
+import org.apache.http.client.HttpResponseException;
 import org.apache.http.client.methods.*;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.InputStreamEntity;
@@ -18,7 +18,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Map;
 
@@ -125,7 +124,7 @@ public class ArtifactoryImpl implements Artifactory {
      * @return {@link ArtifactoryResponse} artifactory response as per to the request sent
      */
     @Override
-    public ArtifactoryResponse restCall(ArtifactoryRequest artifactoryRequest) throws Exception {
+    public ArtifactoryResponse restCall(ArtifactoryRequest artifactoryRequest) throws IOException {
         HttpRequestBase httpRequest;
 
         String requestPath = "/" + artifactoryRequest.getApiUrl();
@@ -133,7 +132,7 @@ public class ArtifactoryImpl implements Artifactory {
 
         String queryPath = "";
         if (!artifactoryRequest.getQueryParams().isEmpty()) {
-            queryPath = Util.getQueryPath("?", artifactoryRequest.getQueryParams().entrySet());
+            queryPath = Util.getQueryPath("?", artifactoryRequest.getQueryParams());
         }
 
         switch (artifactoryRequest.getMethod()) {
@@ -163,7 +162,7 @@ public class ArtifactoryImpl implements Artifactory {
                 throw new IllegalArgumentException("Unsupported request method.");
         }
 
-        httpRequest.setURI(new URI(url + requestPath + queryPath));
+        httpRequest.setURI(URI.create(url + requestPath + queryPath));
         addAccessTokenHeaderIfNeeded(httpRequest);
 
         if (contentType != null) {
@@ -196,21 +195,21 @@ public class ArtifactoryImpl implements Artifactory {
         }
     }
 
-    protected InputStream getInputStream(String path) throws IOException, URISyntaxException {
+    protected InputStream getInputStream(String path) throws IOException {
         HttpResponse httpResponse = get(path, null, null);
         if (httpResponse.getStatusLine().getStatusCode() == 200) {
             return httpResponse.getEntity().getContent();
         }
-        throwException(httpResponse);
-        return null;
+        throw newHttpResponseException(httpResponse);
     }
 
-    private void throwException(HttpResponse httpResponse) throws IOException {
+    private HttpResponseException newHttpResponseException(HttpResponse httpResponse) throws IOException {
         String artifactoryResponse = Util.responseToString(httpResponse);
-        if (StringUtils.isNotBlank(artifactoryResponse)) {
-            httpResponse.setReasonPhrase(artifactoryResponse);
+        StatusLine statusLine = httpResponse.getStatusLine();
+        if (StringUtils.isBlank(artifactoryResponse)) {
+            artifactoryResponse = statusLine.getReasonPhrase() != null ? statusLine.getReasonPhrase() : "";
         }
-        throw new HttpResponseException(new HttpResponseDecorator(httpResponse, null));
+        return new HttpResponseException(statusLine.getStatusCode(), artifactoryResponse);
     }
 
     private HttpRequestBase addAccessTokenHeaderIfNeeded(HttpRequestBase httpRequestBase) {
@@ -220,9 +219,9 @@ public class ArtifactoryImpl implements Artifactory {
         return httpRequestBase;
     }
 
-    protected Boolean head(String path) throws URISyntaxException, IOException {
+    protected Boolean head(String path) throws IOException {
         HttpHead httpHead = new HttpHead();
-        httpHead.setURI(new URI(url + path));
+        httpHead.setURI(URI.create(url + path));
         httpHead = (HttpHead) addAccessTokenHeaderIfNeeded(httpHead);
         HttpResponse httpResponse = httpClient.execute(httpHead);
         int status = httpResponse.getStatusLine().getStatusCode();
@@ -230,16 +229,16 @@ public class ArtifactoryImpl implements Artifactory {
         return (status >= 100 && status < 400);
     }
 
-    public <T> T get(String path, Class<? extends T> object, Class<T> interfaceObject) throws URISyntaxException, IOException {
+    public <T> T get(String path, Class<? extends T> object, Class<T> interfaceObject) throws IOException {
         HttpGet httpGet = new HttpGet();
 
-        httpGet.setURI(new URI(url + path));
+        httpGet.setURI(URI.create(url + path));
         httpGet = (HttpGet) addAccessTokenHeaderIfNeeded(httpGet);
 
         HttpResponse httpResponse = httpClient.execute(httpGet);
         int status = httpResponse.getStatusLine().getStatusCode();
         if (status != HttpStatus.SC_OK && status != HttpStatus.SC_NO_CONTENT && status != HttpStatus.SC_ACCEPTED) {
-            throwException(httpResponse);
+            throw newHttpResponseException(httpResponse);
         }
 
         if (object == null) {
@@ -251,9 +250,9 @@ public class ArtifactoryImpl implements Artifactory {
         return Util.responseToObject(httpResponse, object, interfaceObject);
     }
 
-    public <T> T post(String path, org.apache.http.entity.ContentType contentType, String content, Map<String, String> headers, Class<? extends T> object, Class<T> interfaceObject) throws URISyntaxException, IOException {
+    public <T> T post(String path, org.apache.http.entity.ContentType contentType, String content, Map<String, String> headers, Class<? extends T> object, Class<T> interfaceObject) throws IOException {
         HttpPost httpPost = new HttpPost();
-        httpPost.setURI(new URI(url + path));
+        httpPost.setURI(URI.create(url + path));
         httpPost = (HttpPost) addAccessTokenHeaderIfNeeded(httpPost);
 
         httpPost.setHeader("Content-type", contentType.getMimeType());
@@ -273,9 +272,9 @@ public class ArtifactoryImpl implements Artifactory {
         return Util.responseToObject(httpResponse, object, interfaceObject);
     }
 
-    public <T> T put(String path, org.apache.http.entity.ContentType contentType, String content, Map<String, String> headers, InputStream inputStream, long length, Class<? extends T> object, Class<T> interfaceObject) throws IOException, URISyntaxException {
+    public <T> T put(String path, org.apache.http.entity.ContentType contentType, String content, Map<String, String> headers, InputStream inputStream, long length, Class<? extends T> object, Class<T> interfaceObject) throws IOException {
         HttpPut httpPut = new HttpPut();
-        httpPut.setURI(new URI(url + path));
+        httpPut.setURI(URI.create(url + path));
         httpPut = (HttpPut) addAccessTokenHeaderIfNeeded(httpPut);
 
         if (contentType != null) {
@@ -307,19 +306,18 @@ public class ArtifactoryImpl implements Artifactory {
             return Util.responseToObject(httpResponse, object, interfaceObject);
         }
 
-        throwException(httpResponse);
-        return null;
+        throw newHttpResponseException(httpResponse);
     }
 
-    public String delete(String path) throws URISyntaxException, IOException {
+    public String delete(String path) throws IOException {
         HttpDelete httpDelete = new HttpDelete();
 
-        httpDelete.setURI(new URI(url + path));
+        httpDelete.setURI(URI.create(url + path));
         httpDelete = (HttpDelete) addAccessTokenHeaderIfNeeded(httpDelete);
         HttpResponse httpResponse = httpClient.execute(httpDelete);
         int status = httpResponse.getStatusLine().getStatusCode();
         if (status != HttpStatus.SC_OK && status != HttpStatus.SC_NO_CONTENT && status != HttpStatus.SC_ACCEPTED) {
-            throwException(httpResponse);
+            throw newHttpResponseException(httpResponse);
         }
         return Util.responseToString(httpResponse);
     }
