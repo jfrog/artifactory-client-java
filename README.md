@@ -12,6 +12,14 @@ It also allows searches, upload and download artifacts to or from Artifactory an
 Add the following dependency to your `pom.xml` file:
 
 ```maven
+<repositories>
+    <repository>
+        <id>central</id>
+        <name>bintray</name>
+        <url>http://jcenter.bintray.com</url>
+    </repository>
+</repositories>
+....
 <dependency>
     <groupId>org.jfrog.artifactory.client</groupId>
     <artifactId>artifactory-java-client-services</artifactId>
