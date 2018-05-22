@@ -25,18 +25,18 @@ public class GradlePackageTypeRepositoryTests extends BaseRepositoryTests {
         settings.with {
             // local
             checksumPolicyType = LocalRepoChecksumPolicyTypeImpl.values()[rnd.nextInt(LocalRepoChecksumPolicyTypeImpl.values().length)]
-            handleReleases = rnd.nextBoolean()
-            handleSnapshots = rnd.nextBoolean()
+            handleReleases = true
+            handleSnapshots = true
             maxUniqueSnapshots = rnd.nextInt()
             snapshotVersionBehavior = SnapshotVersionBehaviorImpl.values()[rnd.nextInt(SnapshotVersionBehaviorImpl.values().length)]
-            suppressPomConsistencyChecks = rnd.nextBoolean()
+            suppressPomConsistencyChecks = true
 
             // remote
-            fetchJarsEagerly = rnd.nextBoolean()
-            fetchSourcesEagerly = rnd.nextBoolean()
-            listRemoteFolderItems = rnd.nextBoolean()
-            rejectInvalidJars = rnd.nextBoolean()
-            remoteRepoChecksumPolicyType = RemoteRepoChecksumPolicyTypeImpl.values()[rnd.nextInt(RemoteRepoChecksumPolicyTypeImpl.values().length)]
+            fetchJarsEagerly = true
+            fetchSourcesEagerly = true
+            listRemoteFolderItems = true
+            rejectInvalidJars = true
+            remoteRepoChecksumPolicyType = RemoteRepoChecksumPolicyTypeImpl.ignore_and_generate
 
             // virtual
             keyPair // no key pairs configured
@@ -103,16 +103,13 @@ public class GradlePackageTypeRepositoryTests extends BaseRepositoryTests {
             assertThat(maxUniqueSnapshots, CoreMatchers.is(expectedSettings.getMaxUniqueSnapshots()))  // always in resp payload
             assertThat(snapshotVersionBehavior, CoreMatchers.nullValue())
             assertThat(suppressPomConsistencyChecks, CoreMatchers.is(expectedSettings.getSuppressPomConsistencyChecks()))
-            // always sent by artifactory
 
             // remote
             assertThat(fetchJarsEagerly, CoreMatchers.is(expectedSettings.getFetchJarsEagerly()))
             assertThat(fetchSourcesEagerly, CoreMatchers.is(expectedSettings.getFetchSourcesEagerly()))
             assertThat(listRemoteFolderItems, CoreMatchers.is(expectedSettings.getListRemoteFolderItems()))
             assertThat(rejectInvalidJars, CoreMatchers.is(expectedSettings.getRejectInvalidJars()))
-            // TODO: property is not returned by the artifactory, asserting on default value
-            // assertThat(remoteRepoChecksumPolicyType, CoreMatchers.is(specRepo.getRemoteRepoChecksumPolicyType()))
-            assertThat(remoteRepoChecksumPolicyType, CoreMatchers.is(RemoteRepoChecksumPolicyTypeImpl.generate_if_absent))
+            assertThat(remoteRepoChecksumPolicyType, CoreMatchers.is(RemoteRepoChecksumPolicyTypeImpl.ignore_and_generate))
 
             // virtual
             assertThat(keyPair, CoreMatchers.nullValue())
