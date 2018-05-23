@@ -5,6 +5,16 @@ Artifactory Java client provides simple yet powerful Artifactory connection and 
 The client allows managing Artifactory repositories, users, groups, permissions and system configuration.
 It also allows searches, upload and download artifacts to or from Artifactory and a lot more.
 
+## Table of Contents  
+[Getting Started](#Getting_Started)<br>
+[Building and Testing the Sources](#Building_and_Testing_the_Sources)<br>
+[Example Projects](#Example_Projects)<br>
+[Contributing Code](#Contributing_Code)<br>
+[License](#License)<br>
+[Release Notes](#Release_Notes)<br>
+
+<a name="Getting_Started"/>
+
 ## Getting Started
 
 ### Add *artifactory-java-client-services* as a dependency to your build script.
@@ -606,6 +616,7 @@ String rawBody = response.rawBody();
 // by providing a object's class. 
 List<Map<String, String>> parsedBody = response.parseBody(List.class);
 ```
+<a name="Building_and_Testing_the_Sources"/>
 
 ## Building and Testing the Sources
 The code is built using Gradle and includes integration tests.
@@ -625,14 +636,22 @@ Please follow these steps to build and test the code:
 > gradle clean build
 ```
 
+<a name="Example_Projects"/>
+
 ## Example Projects
 We created [sample projects](https://github.com/JFrogDev/project-examples/tree/master/artifactory-client-java-examples) demonstrating how to use the Artifactory Java Client.
+
+<a name="Contributing_Code"/>
 
 ## Contributing Code
 We welcome community contribution through pull requests.
 
+<a name="License"/>
+
 ## License
 This client is available under the [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0).
+
+<a name="Release_Notes"/>
 
 ## Release Notes
 Release notes are available on [Bintray](https://bintray.com/jfrog/artifactory-tools/artifactory-client-java#release).
