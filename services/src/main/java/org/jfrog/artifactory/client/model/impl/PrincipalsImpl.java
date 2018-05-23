@@ -10,7 +10,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.jfrog.artifactory.client.model.Principal;
 import org.jfrog.artifactory.client.model.Principals;
 import org.jfrog.artifactory.client.model.Privilege;
@@ -48,7 +47,7 @@ public class PrincipalsImpl implements Principals {
 
     private static Map<String, Set<Character>> setMapPrivilegesFrom(List<Principal> list) {
         Map<String, Set<Character>> map = new HashMap<>();
-        if (CollectionUtils.isNotEmpty(list)) {
+        if (list != null && !list.isEmpty()) {
             for (Principal principal : list) {
                 Set<Character> characters = new HashSet<>(principal.getPrivileges().size());
                 for (Privilege privilege : principal.getPrivileges()) {
