@@ -25,7 +25,7 @@ Add the following dependency to your `pom.xml` file:
 <dependency>
     <groupId>org.jfrog.artifactory.client</groupId>
     <artifactId>artifactory-java-client-services</artifactId>
-    <version>2.6.1</version>
+    <version>2.6.2</version>
 </dependency>
 ```
 #### Gradle
