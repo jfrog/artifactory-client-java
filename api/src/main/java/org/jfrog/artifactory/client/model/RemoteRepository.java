@@ -26,6 +26,8 @@ public interface RemoteRepository extends Repository, NonVirtualRepository {
 
     boolean isEnableCookieManagement();
 
+    boolean isBypassHeadRequests();
+
     boolean isAllowAnyHostAuth();
 
     String getLocalAddress();

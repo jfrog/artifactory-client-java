@@ -1,16 +1,38 @@
 package org.jfrog.artifactory.client.model.impl;
 
-import org.jfrog.artifactory.client.model.ContentSync;
-import org.jfrog.artifactory.client.model.PackageType;
-import org.jfrog.artifactory.client.model.RemoteRepository;
-import org.jfrog.artifactory.client.model.RepositoryType;
-import org.jfrog.artifactory.client.model.builder.RemoteRepositoryBuilder;
+import static org.jfrog.artifactory.client.model.impl.PackageTypeImpl.bower;
+import static org.jfrog.artifactory.client.model.impl.PackageTypeImpl.chef;
+import static org.jfrog.artifactory.client.model.impl.PackageTypeImpl.cocoapods;
+import static org.jfrog.artifactory.client.model.impl.PackageTypeImpl.composer;
+import static org.jfrog.artifactory.client.model.impl.PackageTypeImpl.conan;
+import static org.jfrog.artifactory.client.model.impl.PackageTypeImpl.debian;
+import static org.jfrog.artifactory.client.model.impl.PackageTypeImpl.docker;
+import static org.jfrog.artifactory.client.model.impl.PackageTypeImpl.gems;
+import static org.jfrog.artifactory.client.model.impl.PackageTypeImpl.generic;
+import static org.jfrog.artifactory.client.model.impl.PackageTypeImpl.gitlfs;
+import static org.jfrog.artifactory.client.model.impl.PackageTypeImpl.gradle;
+import static org.jfrog.artifactory.client.model.impl.PackageTypeImpl.ivy;
+import static org.jfrog.artifactory.client.model.impl.PackageTypeImpl.maven;
+import static org.jfrog.artifactory.client.model.impl.PackageTypeImpl.npm;
+import static org.jfrog.artifactory.client.model.impl.PackageTypeImpl.nuget;
+import static org.jfrog.artifactory.client.model.impl.PackageTypeImpl.opkg;
+import static org.jfrog.artifactory.client.model.impl.PackageTypeImpl.p2;
+import static org.jfrog.artifactory.client.model.impl.PackageTypeImpl.puppet;
+import static org.jfrog.artifactory.client.model.impl.PackageTypeImpl.pypi;
+import static org.jfrog.artifactory.client.model.impl.PackageTypeImpl.rpm;
+import static org.jfrog.artifactory.client.model.impl.PackageTypeImpl.sbt;
+import static org.jfrog.artifactory.client.model.impl.PackageTypeImpl.vcs;
+import static org.jfrog.artifactory.client.model.impl.PackageTypeImpl.yum;
 
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import static org.jfrog.artifactory.client.model.impl.PackageTypeImpl.*;
+import org.jfrog.artifactory.client.model.ContentSync;
+import org.jfrog.artifactory.client.model.PackageType;
+import org.jfrog.artifactory.client.model.RemoteRepository;
+import org.jfrog.artifactory.client.model.RepositoryType;
+import org.jfrog.artifactory.client.model.builder.RemoteRepositoryBuilder;
 
 /**
  * @author jbaruch
@@ -31,6 +53,7 @@ public class RemoteRepositoryBuilderImpl extends NonVirtualRepositoryBuilderBase
     private boolean storeArtifactsLocally = true;
     private int socketTimeoutMillis = 15000;
     private boolean enableCookieManagement = false;
+    private boolean bypassHeadRequests = false;
     private boolean allowAnyHostAuth = false;
     private String localAddress = "";
     private int retrievalCachePeriodSecs = 43200;
@@ -137,6 +160,15 @@ public class RemoteRepositoryBuilderImpl extends NonVirtualRepositoryBuilderBase
 
     public boolean isEnableCookieManagement() {
         return enableCookieManagement;
+    }
+
+    public RemoteRepositoryBuilder bypassHeadRequests(boolean theByPassBoolean) {
+        this.bypassHeadRequests = theByPassBoolean;
+        return this;
+    }
+
+    public boolean isBypassHeadRequests() {
+        return bypassHeadRequests;
     }
 
     public RemoteRepositoryBuilder localAddress(String localAddress) {
@@ -257,7 +289,7 @@ public class RemoteRepositoryBuilderImpl extends NonVirtualRepositoryBuilderBase
                 password, proxy, retrievalCachePeriodSecs, shareConfiguration, socketTimeoutMillis,
                 enableCookieManagement, allowAnyHostAuth, storeArtifactsLocally, synchronizeProperties,
                 unusedArtifactsCleanupEnabled, unusedArtifactsCleanupPeriodHours, url, username, repoLayoutRef,
-                assumedOfflinePeriodSecs, archiveBrowsingEnabled, listRemoteFolderItems, clientTlsCertificate, customProperties);
+                assumedOfflinePeriodSecs, archiveBrowsingEnabled, listRemoteFolderItems, clientTlsCertificate, customProperties, bypassHeadRequests);
     }
 
     @Override

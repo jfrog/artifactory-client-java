@@ -32,6 +32,7 @@ public class RepositoryBuildersImpl implements RepositoryBuilders {
                 .password(from.getPassword()).proxy(from.getProxy()).hardFail(from.isHardFail()).offline(from.isOffline())
                 .storeArtifactsLocally(from.isStoreArtifactsLocally()).socketTimeoutMillis(from.getSocketTimeoutMillis())
                 .allowAnyHostAuth(from.isAllowAnyHostAuth()).enableCookieManagement(from.isEnableCookieManagement())
+                .bypassHeadRequests(from.isBypassHeadRequests())
                 .localAddress(from.getLocalAddress()).retrievalCachePeriodSecs(from.getRetrievalCachePeriodSecs())
                 .missedRetrievalCachePeriodSecs(from.getMissedRetrievalCachePeriodSecs()).failedRetrievalCachePeriodSecs(from.getFailedRetrievalCachePeriodSecs())
                 .unusedArtifactsCleanupEnabled(from.isUnusedArtifactsCleanupEnabled()).unusedArtifactsCleanupPeriodHours(from.getUnusedArtifactsCleanupPeriodHours())
