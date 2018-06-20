@@ -34,12 +34,18 @@ class ArtifactorySystemImpl implements ArtifactorySystem {
 
     @Override
     String configuration() {
-        return artifactory.get(getSystemConfirmationApi(), String, null);
+        return artifactory.get(getSystemConfigurationApi(), String, null);
     }
 
     @Override
     void configuration(String xml) {
-        artifactory.post(getSystemConfirmationApi(), ContentType.APPLICATION_XML, xml, null, String, null)
+        artifactory.post(getSystemConfigurationApi(), ContentType.APPLICATION_XML, xml, null, String, null)
+    }
+
+    @Override
+    void patchConfiguration(String yml) {
+        ContentType mimeType = ContentType.create("application/x-yaml");
+        artifactory.patch(getSystemConfigurationApi(), mimeType, yml, null, String, null)
     }
 
     @Override
@@ -56,7 +62,7 @@ class ArtifactorySystemImpl implements ArtifactorySystem {
         return getSystemApi() + "version";
     }
 
-    private String getSystemConfirmationApi() {
+    private String getSystemConfigurationApi() {
         return getSystemApi() + "configuration";
     }
 

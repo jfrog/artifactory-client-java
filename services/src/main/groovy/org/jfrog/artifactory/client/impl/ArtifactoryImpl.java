@@ -272,6 +272,29 @@ public class ArtifactoryImpl implements Artifactory {
         return Util.responseToObject(httpResponse, object, interfaceObject);
     }
 
+    public <T> T patch(String path, org.apache.http.entity.ContentType contentType, String content, Map<String, String>
+        headers, Class<? extends T> object, Class<T> interfaceObject) throws IOException {
+        HttpPatch httpPatch = new HttpPatch();
+        httpPatch.setURI(URI.create(url + path));
+        httpPatch = (HttpPatch) addAccessTokenHeaderIfNeeded(httpPatch);
+
+        httpPatch.setHeader("Content-type", contentType.getMimeType());
+        if (headers != null && !headers.isEmpty()) {
+            for (String key : headers.keySet()) {
+                httpPatch.setHeader(key, headers.get(key));
+            }
+        }
+        if (content != null) {
+            httpPatch.setEntity(new StringEntity(content, contentType));
+        }
+        HttpResponse httpResponse = httpClient.execute(httpPatch);
+        if (object == String.class) {
+            return (T) Util.responseToString(httpResponse);
+        }
+
+        return Util.responseToObject(httpResponse, object, interfaceObject);
+    }
+
     public <T> T put(String path, org.apache.http.entity.ContentType contentType, String content, Map<String, String> headers, InputStream inputStream, long length, Class<? extends T> object, Class<T> interfaceObject) throws IOException {
         HttpPut httpPut = new HttpPut();
         httpPut.setURI(URI.create(url + path));
