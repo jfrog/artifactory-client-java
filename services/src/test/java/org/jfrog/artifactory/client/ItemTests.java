@@ -29,9 +29,10 @@ public class ItemTests extends ArtifactoryTestsBase {
     protected static final String NEW_LOCAL_TO = "new-local-to";
 
     @Test
-    public void testFolderInfo() {
-        //Get the folder to the cache
+    public void testFolderInfo() throws IOException {
+        // Get the folder to the cache
         artifactory.repository(getJCenterRepoName()).download("junit/junit/4.10/junit-4.10-sources.jar").doDownload();
+
         Folder folder = artifactory.repository(getJcenterCacheName()).folder("junit").info();
         assertNotNull(folder);
         assertTrue(folder.isFolder());
@@ -41,9 +42,8 @@ public class ItemTests extends ArtifactoryTestsBase {
     }
 
     @Test
-    public void testFileInfo() {
-
-        //Get the file to the cache
+    public void testFileInfo() throws IOException {
+        // Get the file to the cache
         artifactory.repository(getJCenterRepoName()).download("junit/junit/4.10/junit-4.10-sources.jar").doDownload();
 
         File file = artifactory.repository(getJcenterCacheName()).file("junit/junit/4.10/junit-4.10-sources.jar").info();

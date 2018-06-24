@@ -195,7 +195,7 @@ public class ArtifactoryImpl implements Artifactory {
         }
     }
 
-    protected InputStream getInputStream(String path) throws IOException {
+    public InputStream getInputStream(String path) throws IOException {
         HttpResponse httpResponse = get(path, null, null);
         if (httpResponse.getStatusLine().getStatusCode() == 200) {
             return httpResponse.getEntity().getContent();
