@@ -23,6 +23,7 @@ public class NugetPackageTypeRepositoryTests extends BaseRepositoryTests {
             maxUniqueSnapshots = rnd.nextInt()
             downloadContextPath = "api/v${rnd.nextInt()}/package"
             feedContextPath = "api/v${rnd.nextInt()}"
+            v3FeedUrl = "api/v${rnd.nextInt()}/v3"
 
             // remote
             listRemoteFolderItems = rnd.nextBoolean()
@@ -83,8 +84,9 @@ public class NugetPackageTypeRepositoryTests extends BaseRepositoryTests {
             // local
             assertThat(maxUniqueSnapshots, CoreMatchers.is(expectedSettings.getMaxUniqueSnapshots()))
             // always in resp payload
-            assertThat(downloadContextPath, CoreMatchers.is(CoreMatchers.nullValue()))
-            assertThat(feedContextPath, CoreMatchers.is(CoreMatchers.nullValue()))
+            assertThat(downloadContextPath, CoreMatchers.is(expectedSettings.getDownloadContextPath()))
+            assertThat(feedContextPath, CoreMatchers.is(expectedSettings.getFeedContextPath()))
+            assertThat(v3FeedUrl, CoreMatchers.is(expectedSettings.getV3FeedUrl()))
 
             // remote
             assertThat(listRemoteFolderItems, CoreMatchers.is(expectedSettings.getListRemoteFolderItems()))

@@ -17,6 +17,8 @@ public interface NugetRepositorySettings extends RepositorySettings {
     String getFeedContextPath();
 
     String getDownloadContextPath();
+
+    String getV3FeedUrl();
     
     Boolean getListRemoteFolderItems();
 

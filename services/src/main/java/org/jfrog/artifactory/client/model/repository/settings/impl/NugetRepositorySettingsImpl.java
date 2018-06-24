@@ -14,6 +14,7 @@ public class NugetRepositorySettingsImpl extends AbstractRepositorySettings impl
     private Boolean forceNugetAuthentication;
     private String feedContextPath;
     private String downloadContextPath;
+    private String v3FeedUrl;
     private Boolean listRemoteFolderItems;
 
     public NugetRepositorySettingsImpl() {
@@ -56,6 +57,10 @@ public class NugetRepositorySettingsImpl extends AbstractRepositorySettings impl
         this.downloadContextPath = downloadContextPath;
     }
 
+    public String getV3FeedUrl() { return v3FeedUrl; }
+
+    public void setV3FeedUrl(String v3FeedUrl) { this.v3FeedUrl = v3FeedUrl; }
+
     public Boolean getListRemoteFolderItems() {
         return listRemoteFolderItems;
     }
@@ -79,6 +84,8 @@ public class NugetRepositorySettingsImpl extends AbstractRepositorySettings impl
             return false;
         if (downloadContextPath != null ? !downloadContextPath.equals(that.downloadContextPath) : that.downloadContextPath != null)
             return false;
+        if (v3FeedUrl != null ? !v3FeedUrl.equals(that.v3FeedUrl) : that.v3FeedUrl != null)
+            return false;
         return listRemoteFolderItems != null ? listRemoteFolderItems.equals(that.listRemoteFolderItems) : that.listRemoteFolderItems == null;
     }
 
@@ -88,6 +95,7 @@ public class NugetRepositorySettingsImpl extends AbstractRepositorySettings impl
         result = 31 * result + (forceNugetAuthentication != null ? forceNugetAuthentication.hashCode() : 0);
         result = 31 * result + (feedContextPath != null ? feedContextPath.hashCode() : 0);
         result = 31 * result + (downloadContextPath != null ? downloadContextPath.hashCode() : 0);
+        result = 31 * result + (v3FeedUrl != null ? v3FeedUrl.hashCode() : 0);
         result = 31 * result + (listRemoteFolderItems != null ? listRemoteFolderItems.hashCode() : 0);
         return result;
     }
