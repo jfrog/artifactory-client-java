@@ -39,6 +39,7 @@ public class MavenPackageTypeRepositoryTests extends BaseRepositoryTests {
             remoteRepoChecksumPolicyType = RemoteRepoChecksumPolicyTypeImpl.ignore_and_generate
 
             // virtual
+            forceMavenAuthentication = true
             keyPair // no key pairs configured
             pomRepositoryReferencesCleanupPolicy = PomCleanupPolicy.values()[rnd.nextInt(PomCleanupPolicy.values().length)]
         }
@@ -145,6 +146,7 @@ public class MavenPackageTypeRepositoryTests extends BaseRepositoryTests {
             assertThat(remoteRepoChecksumPolicyType, CoreMatchers.nullValue())
 
             // virtual
+            assertThat(forceMavenAuthentication, CoreMatchers.is(expectedSettings.getForceMavenAuthentication())) // empty = keyPair is not set
             assertThat(keyPair, CoreMatchers.is('')) // empty = keyPair is not set
             assertThat(pomRepositoryReferencesCleanupPolicy, CoreMatchers.is(expectedSettings.getPomRepositoryReferencesCleanupPolicy())) // always sent by artifactory
         }
