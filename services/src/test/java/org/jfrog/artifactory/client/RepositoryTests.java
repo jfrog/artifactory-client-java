@@ -1,10 +1,9 @@
 package org.jfrog.artifactory.client;
 
-import groovyx.net.http.HttpResponseException;
+import org.apache.http.client.HttpResponseException;
 import org.apache.http.HttpStatus;
 import org.jfrog.artifactory.client.model.*;
 import org.jfrog.artifactory.client.model.impl.LocalRepoChecksumPolicyTypeImpl;
-import org.jfrog.artifactory.client.model.repository.LocalRepoChecksumPolicyType;
 import org.jfrog.artifactory.client.model.repository.settings.RepositorySettings;
 import org.jfrog.artifactory.client.model.repository.settings.impl.*;
 import org.jfrog.artifactory.client.model.xray.settings.impl.XraySettingsImpl;
@@ -266,7 +265,6 @@ public class RepositoryTests extends ArtifactoryTestsBase {
         expectedSettings.setListRemoteFolderItems(true);
 
         XraySettingsImpl expectedXray = new XraySettingsImpl();
-        expectedXray.setXrayMinimumBlockedSeverity("test");
 
         LocalRepository expectedRepo = artifactory.repositories().builders().localRepositoryBuilder()
             .key("key").repositorySettings(expectedSettings).xraySettings(expectedXray).build();
@@ -281,10 +279,12 @@ public class RepositoryTests extends ArtifactoryTestsBase {
         assertEquals(expectedSettings.hashCode(), otherSettings.hashCode());
 
         XraySettingsImpl otherXray = new XraySettingsImpl();
+        otherXray.setXrayIndex(true);
+        expectedXray.setXrayIndex(false);
         assertFalse(expectedXray.equals(otherXray));
         assertNotEquals(expectedXray.hashCode(), otherXray.hashCode());
 
-        otherXray.setXrayMinimumBlockedSeverity("test");
+        otherXray.setXrayIndex(false);
         assertTrue(expectedXray.equals(otherXray));
         assertEquals(expectedXray.hashCode(), otherXray.hashCode());
 

@@ -34,15 +34,7 @@ public class Util {
 
     public static <T> T responseToObject(HttpResponse httpResponse, Class<? extends T> object, Class<T> interfaceClass) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.addMixIn(Repository.class, RepositoryMixIn.class);
-        objectMapper.addMixIn(RepositorySettings.class, RepositorySettingsMixIn.class);
-
-        objectMapper.configure(WRITE_DATES_AS_TIMESTAMPS, false);
-        objectMapper.setVisibilityChecker(defaultInstance().withFieldVisibility(JsonAutoDetect.Visibility.ANY));
-
-        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        objectMapper.configure(SerializationFeature.FAIL_ON_UNWRAPPED_TYPE_IDENTIFIERS, false);
-        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        configureObjectMapper(objectMapper);
 
         if (interfaceClass != null) {
             SimpleModule module = new SimpleModule("CustomModel", Version.unknownVersion());
@@ -53,6 +45,16 @@ public class Util {
         }
 
         return objectMapper.readValue(httpResponse.getEntity().getContent(), object);
+    }
+
+    public static void configureObjectMapper(ObjectMapper objectMapper) {
+        objectMapper.addMixIn(Repository.class, RepositoryMixIn.class);
+        objectMapper.addMixIn(RepositorySettings.class, RepositorySettingsMixIn.class);
+        objectMapper.configure(WRITE_DATES_AS_TIMESTAMPS, false);
+        objectMapper.setVisibilityChecker(defaultInstance().withFieldVisibility(JsonAutoDetect.Visibility.ANY));
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        objectMapper.configure(SerializationFeature.FAIL_ON_UNWRAPPED_TYPE_IDENTIFIERS, false);
+        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
     }
 
     public static String responseToString(HttpResponse httpResponse) throws IOException {
@@ -72,53 +74,42 @@ public class Util {
             return null;
         }
         ObjectMapper objectMapper = new ObjectMapper();
+        configureObjectMapper(objectMapper);
         objectMapper.configure(SerializationFeature.INDENT_OUTPUT, true);
-        objectMapper.addMixIn(Repository.class, RepositoryMixIn.class);
-        objectMapper.configure(SerializationFeature.FAIL_ON_UNWRAPPED_TYPE_IDENTIFIERS, false);
-        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
 
         return objectMapper.writeValueAsString(object);
     }
 
-    public static ContentType getContentType(ArtifactoryRequest.ContentType contentType) throws Exception {
-
-        if (contentType.equals(ArtifactoryRequest.ContentType.JSON)) {
-            return ContentType.APPLICATION_JSON;
+    public static ContentType getContentType(ArtifactoryRequest.ContentType contentType)  {
+        switch(contentType){
+            case JSON:
+                return ContentType.APPLICATION_JSON;
+            case JOSE:
+                return ContentType.create("application/jose", Consts.ISO_8859_1);
+            case JOSE_JSON:
+                return ContentType.create("application/jose+json", Consts.UTF_8);
+            case TEXT:
+                return ContentType.TEXT_PLAIN;
+            case URLENC:
+                return ContentType.APPLICATION_FORM_URLENCODED;
+            case XML:
+                return ContentType.APPLICATION_XML;
+            case ANY:
+                return ContentType.WILDCARD;
+            default:
+                throw new IllegalArgumentException("Not a valid Content Type - " + contentType);
         }
-
-        if (contentType.equals(ArtifactoryRequest.ContentType.JOSE)) {
-            return ContentType.create("application/jose", Consts.ISO_8859_1);
-        }
-
-        if (contentType.equals(ArtifactoryRequest.ContentType.JOSE_JSON)) {
-            return ContentType.create("application/jose+json", Consts.UTF_8);
-        }
-
-        if (contentType.equals(ArtifactoryRequest.ContentType.TEXT)) {
-            return ContentType.TEXT_PLAIN;
-        }
-
-        if (contentType.equals(ArtifactoryRequest.ContentType.URLENC)) {
-            return ContentType.APPLICATION_FORM_URLENCODED;
-        }
-
-        if (contentType.equals(ArtifactoryRequest.ContentType.ANY)) {
-            return ContentType.WILDCARD;
-        }
-
-        throw new Exception("Non valid Content Type");
-
     }
 
     public static <T> T parseText(String text, Class<? extends T> target) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.addMixIn(Repository.class, RepositoryMixIn.class);
-        objectMapper.addMixIn(RepositorySettings.class, RepositorySettingsMixIn.class);
+        configureObjectMapper(objectMapper);
         return objectMapper.readValue(text, target);
     }
 
-    public static <T> T parseObjectWithTypeReference(String content, TypeReference typeReference) throws IOException {
+  public static <T> T parseObjectWithTypeReference(String content, TypeReference typeReference) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
+        configureObjectMapper(objectMapper);
         return objectMapper.readValue(content, typeReference);
     }
 
@@ -126,16 +117,18 @@ public class Util {
         return URLEncoder.encode(param, "UTF-8");
     }
 
-    public static String getQueryPath(String startingParam, Set<Map.Entry<String, String>> paramsMap) throws UnsupportedEncodingException {
+    public static String getQueryPath(String startingParam, Map<String, String> paramsMap) throws UnsupportedEncodingException {
         StringBuilder queryPath = new StringBuilder(startingParam);
-        Iterator it = paramsMap.iterator();
+        Iterator<Map.Entry<String, String>> it = paramsMap.entrySet().iterator();
         while (it.hasNext()) {
-            Map.Entry pair = (Map.Entry) it.next();
-            String key = (String) pair.getKey();
-            String value = (String) pair.getValue();
-            queryPath.append(encodeParams(key)).append("=").append(Util.encodeParams(value)).append("&");
+            Map.Entry<String, String> pair = it.next();
+            String key = pair.getKey();
+            String value = pair.getValue();
+            queryPath.append(encodeParams(key)).append("=").append(Util.encodeParams(value));
+            if(it.hasNext()){
+                queryPath.append("&");
+            }
         }
-
         return queryPath.toString();
     }
 }

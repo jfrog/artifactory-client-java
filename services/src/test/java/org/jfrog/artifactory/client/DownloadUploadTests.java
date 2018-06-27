@@ -1,6 +1,6 @@
 package org.jfrog.artifactory.client;
 
-import groovyx.net.http.HttpResponseException;
+import org.apache.http.client.HttpResponseException;
 import junit.framework.Assert;
 import org.jfrog.artifactory.client.model.File;
 import org.jfrog.artifactory.client.model.Item;
@@ -250,21 +250,21 @@ public class DownloadUploadTests extends ArtifactoryTestsBase {
 
     @Test(dependsOnMethods = "testUploadWithMultipleProperties")
     public void testDownloadWithMatchingMandatoryProperties() throws IOException {
-        //property matches
+        // Property matches
         InputStream inputStream =
                 artifactory.repository(localRepository.getKey()).download(PATH).withMandatoryProperty("colors", "red").doDownload();
         assertEquals(textFrom(inputStream), textFrom(this.getClass().getResourceAsStream("/sample.txt")));
     }
 
-    @Test(dependsOnMethods = "testUploadWithMultipleProperties", expectedExceptions = HttpResponseException.class)
+    @Test(dependsOnMethods = "testUploadWithMultipleProperties", expectedExceptions = IOException.class)
     public void testDownloadWithNonExistingMandatoryProperties() throws IOException {
-        //property doesn't exist, will fail
+        // Property doesn't exist, will fail
         artifactory.repository(localRepository.getKey()).download(PATH).withMandatoryProperty("foo", "bar").doDownload();
     }
 
     @Test(dependsOnMethods = "testUploadWithMultipleProperties", expectedExceptions = HttpResponseException.class)
     public void testDownloadWithWrongMandatoryProperties() throws IOException {
-        //property doesn't match, will fail
+        // Property doesn't match, will fail
         artifactory.repository(localRepository.getKey()).download(PATH).withMandatoryProperty("colors", "black").doDownload();
     }
 

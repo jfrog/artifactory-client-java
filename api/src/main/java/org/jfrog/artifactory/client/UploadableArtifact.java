@@ -19,4 +19,8 @@ public interface UploadableArtifact extends Artifact<UploadableArtifact> {
     UploadableArtifact bySha1Checksum();
 
     UploadableArtifact bySha1Checksum(String sha1);
+
+    UploadableArtifact withProperty(String name, Object... values);
+
+    UploadableArtifact withProperty(String name, Object value);
 }

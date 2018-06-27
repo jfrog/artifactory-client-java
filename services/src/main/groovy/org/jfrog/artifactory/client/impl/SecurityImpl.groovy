@@ -1,6 +1,5 @@
 package org.jfrog.artifactory.client.impl
 
-import org.apache.commons.collections.CollectionUtils
 import org.apache.http.entity.ContentType
 import org.jfrog.artifactory.client.Security
 import org.jfrog.artifactory.client.impl.util.Util
@@ -91,7 +90,8 @@ class SecurityImpl implements Security {
 
     @Override
     public void createOrReplacePermissionTarget(PermissionTarget permissionTarget) {
-        if (CollectionUtils.isEmpty(permissionTarget.getRepositories())) {
+        List<String> repositories = permissionTarget.getRepositories()
+        if (repositories == null || repositories.isEmpty()) {
             throw new UnsupportedOperationException("At least 1 repository is required in permission target (could be 'ANY', 'ANY LOCAL', 'ANY REMOTE')")
         }
         String name = Util.encodeParams(permissionTarget.name);

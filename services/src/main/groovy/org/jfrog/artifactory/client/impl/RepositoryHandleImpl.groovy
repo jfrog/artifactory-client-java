@@ -1,6 +1,7 @@
 package org.jfrog.artifactory.client.impl
 
-import groovy.json.JsonSlurper
+import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.databind.ObjectMapper
 import org.jfrog.artifactory.client.*
 import org.jfrog.artifactory.client.model.ItemPermission
 import org.jfrog.artifactory.client.impl.util.Util
@@ -16,6 +17,8 @@ import org.jfrog.artifactory.client.model.xray.settings.impl.XraySettingsImpl
 import java.beans.BeanInfo
 import java.beans.Introspector
 import java.beans.PropertyDescriptor
+
+import static org.jfrog.artifactory.client.impl.util.Util.configureObjectMapper
 
 /**
  *
@@ -132,9 +135,12 @@ class RepositoryHandleImpl implements RepositoryHandle {
     @Override
     boolean isFolder(String path) {
         String itemInfoJson = artifactory.get("/api/storage/${repoKey}/${path}", String, null)
-        JsonSlurper slurper = new JsonSlurper()
-        def itemInfo = slurper.parseText(itemInfoJson)
-        return itemInfo.children != null;
+
+        ObjectMapper objectMapper = new ObjectMapper()
+        configureObjectMapper(objectMapper)
+        JsonNode jsonNode = objectMapper.readTree(itemInfoJson)
+
+        return jsonNode.get("children") != null
     }
 
     @Override

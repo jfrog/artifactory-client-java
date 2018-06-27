@@ -1,6 +1,6 @@
 package org.jfrog.artifactory.client.impl
 
-import groovyx.net.http.HttpResponseException
+import org.apache.http.client.HttpResponseException
 import org.apache.http.entity.ContentType
 import org.jfrog.artifactory.client.Artifactory
 import org.jfrog.artifactory.client.UploadListener
@@ -119,6 +119,18 @@ class UploadableArtifactImpl extends ArtifactBase<UploadableArtifact> implements
         sha1 = sb.toString()
         //the content has been read, need to reset it
         content = file.newInputStream()
+        this
+    }
+
+    @Override
+    UploadableArtifact withProperty(String name, Object... values) {
+        super.withProperty(name, values)
+        this
+    }
+
+    @Override
+    UploadableArtifact withProperty(String name, Object value) {
+        super.withProperty(name, value)
         this
     }
 }

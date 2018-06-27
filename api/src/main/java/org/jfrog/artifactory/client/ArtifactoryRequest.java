@@ -14,7 +14,6 @@ public interface ArtifactoryRequest {
     enum Method { GET, POST, PUT, DELETE }
 
     ArtifactoryRequest method(Method method);
-
     ArtifactoryRequest apiUrl(String apiUrl);
     ArtifactoryRequest addHeader(String key, String value);
     ArtifactoryRequest addQueryParam(String key, String value);
@@ -22,6 +21,8 @@ public interface ArtifactoryRequest {
     ArtifactoryRequest responseType(ContentType responseType);
     ArtifactoryRequest requestType(ContentType requestType);
 
+    Method getMethod();
+    <T> T getBody();
     Map<String, String> getHeaders();
     Map<String, String> getQueryParams();
     ContentType getRequestType();
@@ -29,19 +30,12 @@ public interface ArtifactoryRequest {
     String getApiUrl();
 
     enum ContentType {
-        JSON("JSON"),
-        JOSE("JOSE"),
-        JOSE_JSON("JOSE_JSON"),
-        TEXT("TEXT"),
-        URLENC("URLENC"),
-        ANY("ANY");
-        private String text;
-        ContentType(String text){
-            this.text = text;
-        }
-        String getText(){
-            return this.text;
-        }
+        JSON,
+        JOSE,
+        JOSE_JSON,
+        TEXT,
+        URLENC,
+        ANY,
+        XML
     }
-
 }

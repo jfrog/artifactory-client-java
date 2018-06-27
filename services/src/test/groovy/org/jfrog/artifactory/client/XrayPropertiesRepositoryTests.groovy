@@ -25,8 +25,6 @@ class XrayPropertiesRepositoryTests extends BaseRepositoryTests {
     xraySettings.with {
       // local
       xrayIndex = true;
-      blockXrayUnscannedArtifacts = rnd.nextBoolean();
-      xrayMinimumBlockedSeverity = "Minor${rnd.nextInt()}";
     }
 
     super.setUp()
@@ -39,8 +37,6 @@ class XrayPropertiesRepositoryTests extends BaseRepositoryTests {
     def resp = artifactory.repository(localRepo.getKey()).get()
     resp.getXraySettings().with {
       assertThat(xrayIndex, CoreMatchers.is(xraySettings.getXrayIndex()))
-      assertThat(blockXrayUnscannedArtifacts, CoreMatchers.is(xraySettings.getBlockXrayUnscannedArtifacts()))
-      assertThat(xrayMinimumBlockedSeverity, CoreMatchers.is(xraySettings.getXrayMinimumBlockedSeverity()))
     }
   }
 
@@ -51,8 +47,6 @@ class XrayPropertiesRepositoryTests extends BaseRepositoryTests {
     def resp = artifactory.repository(remoteRepo.getKey()).get()
     resp.getXraySettings().with {
       assertThat(xrayIndex, CoreMatchers.is(xraySettings.getXrayIndex()))
-      assertThat(blockXrayUnscannedArtifacts, CoreMatchers.is(xraySettings.getBlockXrayUnscannedArtifacts()))
-      assertThat(xrayMinimumBlockedSeverity, CoreMatchers.is(xraySettings.getXrayMinimumBlockedSeverity()))
     }
   }
 
@@ -64,8 +58,6 @@ class XrayPropertiesRepositoryTests extends BaseRepositoryTests {
 
     resp.getXraySettings().with {
       assertThat(xrayIndex, CoreMatchers.nullValue())
-      assertThat(blockXrayUnscannedArtifacts, CoreMatchers.nullValue())
-      assertThat(xrayMinimumBlockedSeverity, CoreMatchers.nullValue())
     }
   }
 }

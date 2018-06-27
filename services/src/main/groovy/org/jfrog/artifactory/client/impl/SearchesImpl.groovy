@@ -1,9 +1,10 @@
 package org.jfrog.artifactory.client.impl
 
-import groovyx.net.http.HttpResponseException
+import org.apache.http.client.HttpResponseException
 import org.jfrog.artifactory.client.Artifactory
 import org.jfrog.artifactory.client.PropertyFilters
 import org.jfrog.artifactory.client.Searches
+import org.jfrog.artifactory.client.impl.util.Util
 import org.jfrog.artifactory.client.model.RepoPath
 import org.jfrog.artifactory.client.model.SearchResult
 import org.jfrog.artifactory.client.model.SearchResultImpl
@@ -114,12 +115,8 @@ class SearchesImpl implements Searches {
             query.repos = reposFilter.join(',')
         }
         try {
-            StringBuilder path = new StringBuilder();
-            path.append("?");
-            for (Map.Entry<String, Object> entry : query.entrySet()) {
-                path.append(entry.getKey()).append("=").append(entry.getValue()).append("&")
-            }
-            SearchResultImpl searchResults = artifactory.get("${getSearcherApi()}$url/$path", SearchResultImpl, SearchResult)
+            String path = Util.getQueryPath("?", query)
+            SearchResultImpl searchResults = artifactory.get("${getSearcherApi()}$url$path", SearchResultImpl, SearchResult)
             List<RepoPath> pathList = new ArrayList<>();
             for (SearchResultReport searchResultReport : searchResults.getResults()) {
                 String uri = searchResultReport.getUri();
@@ -139,12 +136,8 @@ class SearchesImpl implements Searches {
             query.repos = reposFilter.join(',')
         }
         try {
-            StringBuilder path = new StringBuilder();
-            path.append("?");
-            for (Map.Entry<String, Object> entry : query.entrySet()) {
-                path.append(entry.getKey()).append("=").append(entry.getValue()).append("&")
-            }
-            return artifactory.get("${getSearcherApi()}$url/$path", String, null)
+            String path = Util.getQueryPath("?", query)
+            return artifactory.get("${getSearcherApi()}$url$path", String, null)
         } catch (HttpResponseException e) {
             return ""
         }

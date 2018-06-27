@@ -28,6 +28,9 @@ public enum RemoteRepoChecksumPolicyTypeImpl implements RemoteRepoChecksumPolicy
         if (value == null || value.isEmpty()) {
             return generate_if_absent;
         }
+        // The enum values include dashes (-), where the enum names include underscores (_).
+        // We therefore replace all dashes with underscores.
+        value = value.replaceAll("-", "_");
         return valueOf(value);
     }
 }
