@@ -27,6 +27,7 @@ public class MavenRepositorySettingsImpl extends AbstractRepositorySettings impl
     private Boolean rejectInvalidJars;
     private PomCleanupPolicy pomRepositoryReferencesCleanupPolicy;
     private String keyPair;
+    private Boolean forceMavenAuthentication;
 
     public MavenRepositorySettingsImpl() {
         this(defaultLayout);
@@ -137,6 +138,12 @@ public class MavenRepositorySettingsImpl extends AbstractRepositorySettings impl
         this.pomRepositoryReferencesCleanupPolicy = pomRepositoryReferencesCleanupPolicy;
     }
 
+    public Boolean getForceMavenAuthentication() { return forceMavenAuthentication; }
+
+    public void setForceMavenAuthentication(Boolean forceMavenAuthentication) {
+        this.forceMavenAuthentication = forceMavenAuthentication;
+    }
+
     public String getKeyPair() {
         return keyPair;
     }
@@ -172,6 +179,8 @@ public class MavenRepositorySettingsImpl extends AbstractRepositorySettings impl
         if (rejectInvalidJars != null ? !rejectInvalidJars.equals(that.rejectInvalidJars) : that.rejectInvalidJars != null)
             return false;
         if (pomRepositoryReferencesCleanupPolicy != that.pomRepositoryReferencesCleanupPolicy) return false;
+        if (forceMavenAuthentication != null ? !forceMavenAuthentication.equals(that.forceMavenAuthentication) : that.forceMavenAuthentication != null)
+            return false;
         return keyPair != null ? keyPair.equals(that.keyPair) : that.keyPair == null;
     }
 
@@ -190,6 +199,7 @@ public class MavenRepositorySettingsImpl extends AbstractRepositorySettings impl
         result = 31 * result + (rejectInvalidJars != null ? rejectInvalidJars.hashCode() : 0);
         result = 31 * result + (pomRepositoryReferencesCleanupPolicy != null ? pomRepositoryReferencesCleanupPolicy.hashCode() : 0);
         result = 31 * result + (keyPair != null ? keyPair.hashCode() : 0);
+        result = 31 * result + (forceMavenAuthentication != null ? forceMavenAuthentication.hashCode() : 0);
         return result;
     }
 }
