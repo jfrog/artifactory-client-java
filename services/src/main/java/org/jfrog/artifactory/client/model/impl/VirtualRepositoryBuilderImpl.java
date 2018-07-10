@@ -14,7 +14,7 @@ import java.util.*;
  */
 public class VirtualRepositoryBuilderImpl extends RepositoryBuilderBase<VirtualRepositoryBuilder, VirtualRepository> implements VirtualRepositoryBuilder {
     private static Set<PackageType> virtualRepositorySupportedTypes = new HashSet<PackageType>(Arrays.asList(
-            bower, docker, gems, generic, gitlfs, gradle, ivy, maven, npm, nuget, p2, pypi, sbt, yum, rpm, composer, conan, chef, puppet
+            bower, cran, docker, gems, generic, gitlfs, gradle, ivy, maven, npm, nuget, p2, pypi, sbt, yum, rpm, composer, conan, chef, puppet
     ));
 
     private Collection<String> repositories = Collections.emptyList();
