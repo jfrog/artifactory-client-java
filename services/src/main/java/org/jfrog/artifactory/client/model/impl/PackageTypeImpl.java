@@ -5,6 +5,7 @@ import org.jfrog.artifactory.client.model.PackageType;
 public enum PackageTypeImpl implements PackageType {
     bower,
     cocoapods,
+    cran,
     debian,
     distribution,
     docker,
