@@ -5,6 +5,7 @@ import org.jfrog.artifactory.client.impl.ArtifactoryRequestImpl;
 import org.jfrog.artifactory.client.impl.CopyMoveException;
 import org.jfrog.artifactory.client.model.File;
 import org.jfrog.artifactory.client.model.Folder;
+import org.jfrog.artifactory.client.model.Item;
 import org.jfrog.artifactory.client.model.LocalRepository;
 import org.jfrog.artifactory.client.model.repository.settings.RepositorySettings;
 import org.jfrog.artifactory.client.model.repository.settings.impl.GenericRepositorySettingsImpl;
@@ -232,12 +233,12 @@ public class ItemTests extends ArtifactoryTestsBase {
 
     private void checkTheEqualityOfFolders(ItemHandle newItemHandle, String expectedRepo, String expectedPath) {
         ItemHandle itemHandle = artifactory.repository(expectedRepo).folder(expectedPath);
-        assertEquals(itemHandle.info(), (newItemHandle.info()));
+        assertEquals(itemHandle.info(), (Item)newItemHandle.info());
     }
 
     private void checkTheEqualityOfFiles(ItemHandle newItemHandle, String expectedRepo, String expectedPath) {
         ItemHandle itemHandle = artifactory.repository(expectedRepo).file(expectedPath);
-        assertEquals(itemHandle.info(), (newItemHandle.info()));
+        assertEquals(itemHandle.info(), (Item)newItemHandle.info());
     }
 
 

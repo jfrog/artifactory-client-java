@@ -109,7 +109,7 @@ public class Util {
         return objectMapper.readValue(text, target);
     }
 
-  public static <T> T parseObjectWithTypeReference(String content, TypeReference typeReference) throws IOException {
+    public static <T> T parseObjectWithTypeReference(String content, TypeReference typeReference) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         configureObjectMapper(objectMapper);
         return objectMapper.readValue(content, typeReference);
