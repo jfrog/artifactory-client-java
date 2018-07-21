@@ -1,9 +1,8 @@
 package org.jfrog.artifactory.client.model.xray.settings.impl;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import org.jfrog.artifactory.client.model.repository.settings.XraySettings;
 
-import java.util.Objects;
+import org.jfrog.artifactory.client.model.repository.settings.XraySettings;
 
 /**
  * @author Ihor Banadiga (ihorb@jfrog.com)
@@ -23,7 +22,7 @@ public class XraySettingsImpl implements XraySettings {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
+        if (this.is(o)) return true;
         if (!(o instanceof XraySettingsImpl)) return false;
 
         XraySettingsImpl that = (XraySettingsImpl) o;
