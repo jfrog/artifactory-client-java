@@ -94,13 +94,11 @@ public class AqlQueryBuilderTest {
             .build();
 
         assertThat(result, notNullValue());
-        //@formatter:off
         assertEquals(result, "items.find("
                                    + "{\"$and\":["
                                    +  "{\"repo\":\"myrepo1\"},"
                                    +  "{\"repo\":\"myrepo2\"}"
                                    + "]})");
-        //@formatter:on
     }
 
     @Test
@@ -110,13 +108,11 @@ public class AqlQueryBuilderTest {
             .build();
 
         assertThat(result, notNullValue());
-        //@formatter:off
         assertEquals(result, "items.find("
                                    + "{\"$and\":["
                                    +  "{\"repo\":\"myrepo1\"},"
                                    +  "{\"repo\":\"myrepo2\"}"
                                    + "]})");
-        //@formatter:on
     }
 
     @Test
@@ -127,13 +123,11 @@ public class AqlQueryBuilderTest {
             .build();
 
         assertThat(result, notNullValue());
-        //@formatter:off
         assertEquals(result, "items.find("
                                    + "{\"$and\":["
                                    +  "{\"repo\":\"myrepo1\"},"
                                    +  "{\"repo\":\"myrepo2\"}"
                                    + "]})");
-        //@formatter:on
     }
 
     @Test
@@ -143,13 +137,11 @@ public class AqlQueryBuilderTest {
             .build();
 
         assertThat(result, notNullValue());
-        //@formatter:off
         assertThat(result, is("items.find("
                                    + "{\"$or\":["
                                    +  "{\"repo\":\"myrepo1\"},"
                                    +  "{\"repo\":\"myrepo2\"}"
                                    + "]})"));
-        //@formatter:on
     }
 
     @Test
@@ -169,7 +161,6 @@ public class AqlQueryBuilderTest {
             .build();
 
         assertThat(result, notNullValue());
-        //@formatter:off
         assertThat(result, is("items.find("
                                    + "{\"$and\":["
                                    +  "{\"$or\":["
@@ -183,7 +174,6 @@ public class AqlQueryBuilderTest {
                                    +  "]}"
                                    + "]}"
                                    + ")"));
-        //@formatter:on
     }
 
     @Test
@@ -204,7 +194,6 @@ public class AqlQueryBuilderTest {
             .build();
 
         assertThat(result, notNullValue());
-        //@formatter:off
         assertThat(result, is( "items.find("
                                    + "{\"$and\":["
                                    +  "{\"$or\":["
@@ -219,7 +208,6 @@ public class AqlQueryBuilderTest {
                                    + "})"
                                    + ".include(\"name\",\"repo\")"
                                    + ".sort({\"$asc\":[\"name\",\"repo\"]})"));
-        //@formatter:on
     }
 
     @Test

@@ -9,11 +9,11 @@ public class AqlInclude {
     private String[] elements;
 
     private AqlInclude(String[] elements) {
-      this.elements = elements;
+        this.elements = elements;
     }
 
     public static AqlInclude buildWithElements(String[] elements) {
-      return new AqlInclude(elements);
+        return new AqlInclude(elements);
     }
 
     @Override
@@ -24,6 +24,6 @@ public class AqlInclude {
     }
 
     public boolean isNotEmpty() {
-      return ArrayUtils.isNotEmpty(elements);
+        return ArrayUtils.isNotEmpty(elements);
     }
 }
