@@ -1,6 +1,7 @@
 package org.jfrog.artifactory.client;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.jfrog.artifactory.client.v2.V2;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -40,6 +41,8 @@ public interface Artifactory extends ApiInterface {
     ArtifactoryResponse restCall(ArtifactoryRequest artifactoryRequest) throws IOException;
 
     InputStream getInputStream(String path) throws IOException;
+
+    V2 v2();
 
     void close();
 }

@@ -13,6 +13,8 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.jfrog.artifactory.client.*;
 import org.jfrog.artifactory.client.impl.util.Util;
+import org.jfrog.artifactory.client.v2.V2;
+import org.jfrog.artifactory.client.v2.impl.V2Impl;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -115,6 +117,11 @@ public class ArtifactoryImpl implements Artifactory {
     @Override
     public ArtifactorySystem system() {
         return new ArtifactorySystemImpl(this, API_BASE);
+    }
+
+    @Override
+    public V2 v2() {
+        return new V2Impl(this, API_BASE + "/v2");
     }
 
     /**
@@ -265,6 +272,10 @@ public class ArtifactoryImpl implements Artifactory {
             httpPost.setEntity(new StringEntity(content, contentType));
         }
         HttpResponse httpResponse = httpClient.execute(httpPost);
+        int status = httpResponse.getStatusLine().getStatusCode();
+        if (status != HttpStatus.SC_OK && status != HttpStatus.SC_CREATED && status != HttpStatus.SC_NO_CONTENT && status != HttpStatus.SC_ACCEPTED) {
+            throw newHttpResponseException(httpResponse);
+        }
         if (object == String.class) {
             return (T) Util.responseToString(httpResponse);
         }
