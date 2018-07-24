@@ -1,13 +1,16 @@
 package org.jfrog.artifactory.client.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public interface PermissionTarget {
 
     String getName();
 
-    BuildPermission getBuild();
+    @JsonProperty("build")
+    BuildPermission getBuildPermission();
 
-    RepositoryPermission getRepo();
+    @JsonProperty("repo")
+    RepositoryPermission getRepositoryPermission();
 }

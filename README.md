@@ -527,12 +527,21 @@ for (ItemPermission itemPermission : itemPermissions) {
 
 ##### Getting Permission Target information
 ```
-PermissionTarget permissionTarget = artifactory.security().permissionTarget("permissionName");
-String name = permissionTarget.getName());
-String exclude = permissionTarget.getExcludesPattern();
-String include = permissionTarget.getIncludesPattern();
-List<String> repos = permissionTarget.getRepositories();
-List<ItemPermission> perm = permissionTarget.getItemPermissions();
+    PermissionTarget permissionTarget = artifactory.security().permissionTarget("permissionName");
+    String name = permissionTarget.getName();
+    //Get Repository Resource
+    RepositoryPermission repositoryPermission = permissionTarget.getRepositoryPermission();
+    List<String> exclude = repositoryPermission.getExcludePatterns();
+    List<String> include = repositoryPermission.getIncludePatterns();
+    List<String> repos = repositoryPermission.getRepositories();
+    Actions repoActions = repositoryPermission.getActions();
+    Action repoAction = repoActions.getUser("user");
+    //Get Build Resource
+    BuildPermission buildPermission = permissionTarget.getBuildPermission();
+    String regex = buildPermission.getRegex();
+    List<String> builds = buildPermission.getBuilds();
+    Actions buildActions = buildPermission.getActions();
+    Action buildAction = buildActions.getUser("user");
 ```
 
 ##### Listing all Permission Targets
@@ -545,29 +554,33 @@ for (String permissionTargetName : permissionTargetNames) {
 
 ##### Creating a Permission Target
 ```
-Principal userAdmin = artifactory.security().builders().principalBuilder()
-    .name("admin")
-    .privileges(Privilege.ADMIN)
-    .build();
+Action userAnonymous = artifactory.security().builders().actionBuilder()
+                .name("anonymous")
+                .actions(ActionType.BASIC_VIEW, ActionType.READ)
+                .build();
 
-Principal groupTest = artifactory.security().builders().principalBuilder()
-    .name("myTest")
-    .privileges(Privilege.DEPLOY, Privilege.READ)
-    .build();
+        Actions actions = artifactory.security().builders().actionsBuilder()
+                .users(userAnonymous)
+                .build();
 
-Principals principals = artifactory.security().builders().principalsBuilder()
-    .users(userAdmin)
-    .groups(groupTest)
-    .build();
+        RepositoryPermission repositoryPermission = artifactory.security().builders().repositoryPermissionBuilder()
+                .includePatterns("**")
+                .actions(actions)
+                .repositories("ANY")
+                .build();
 
-PermissionTarget permissionTarget = artifactory.security().builders().permissionTargetBuilder()
-    .name("myPermission")
-    .principals(principals)
-    .repositories("some-repository")
-    .includesPattern("com/company/**,org/public/**")
-    .build();
+        BuildPermission buildPermission = artifactory.security().builders().buildPermissionBuilder()
+                .regex(".*")
+                .actions(actions)
+                .build();
 
-artifactory.security().createOrReplacePermissionTarget(permissionTarget);
+        PermissionTarget permissionTarget = artifactory.security().builders().permissionTargetBuilder()
+                .name("myPermission")
+                .repositoryPermission(repositoryPermission)
+                .buildPermission(buildPermission)
+                .build();
+
+        artifactory.security().createPermissionTarget(permissionTarget);
 ```
 
 #### System

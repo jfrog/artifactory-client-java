@@ -114,7 +114,6 @@ public class SecurityTests extends ArtifactoryTestsBase {
         Actions buildActions = artifactory.security().builders().actionsBuilder().users(buildUserAction).build();
         BuildPermission buildPermission = artifactory.security().builders().buildPermissionBuilder()
                 .regex("a")
-//                .builds("a","b","c")
                 .actions(buildActions)
                 .build();
         //Permission Target
@@ -128,12 +127,12 @@ public class SecurityTests extends ArtifactoryTestsBase {
         PermissionTarget permissionTargetRes = artifactory.security().permissionTarget(PERMISSION_TARGET_CREATE_NAME);
         assertNotNull(permissionTargetRes);
         assertEquals(permissionTargetRes.getName(), PERMISSION_TARGET_CREATE_NAME);
-        assertEquals("ANY REMOTE", permissionTargetRes.getRepo().getRepositories().get(0));
-        assertNotNull(permissionTargetRes.getRepo().getActions());
-        assertEquals(permissionTargetRes.getRepo().getActions().getUsers().get(0).getName(), "anonymous");
-        assertEquals(permissionTargetRes.getRepo().getActions().getUsers().get(0).getActionTypes(), repositoryUserAction.getActionTypes());
-        assertEquals(permissionTargetRes.getRepo().getActions().getGroups().get(0).getName(), "readers");
-        assertEquals(permissionTargetRes.getRepo().getActions().getGroups().get(0).getActionTypes(), repositoryGroupAction.getActionTypes());
+        assertEquals("ANY REMOTE", permissionTargetRes.getRepositoryPermission().getRepositories().get(0));
+        assertNotNull(permissionTargetRes.getRepositoryPermission().getActions());
+        assertEquals(permissionTargetRes.getRepositoryPermission().getActions().getUsers().get(0).getName(), "anonymous");
+        assertEquals(permissionTargetRes.getRepositoryPermission().getActions().getUsers().get(0).getActionTypes(), repositoryUserAction.getActionTypes());
+        assertEquals(permissionTargetRes.getRepositoryPermission().getActions().getGroups().get(0).getName(), "readers");
+        assertEquals(permissionTargetRes.getRepositoryPermission().getActions().getGroups().get(0).getActionTypes(), repositoryGroupAction.getActionTypes());
     }
 
     @Test(enabled = false)
@@ -166,7 +165,7 @@ public class SecurityTests extends ArtifactoryTestsBase {
         PermissionTarget permissionTargetRes = artifactory.security().permissionTarget(PERMISSION_TARGET_UPDATE_NAME);
         assertNotNull(permissionTargetRes);
         assertEquals(permissionTargetRes.getName(), PERMISSION_TARGET_UPDATE_NAME);
-        assertEquals(v2PermissionTarget.getBuild().getRegex(), "a.*");
+        assertEquals(v2PermissionTarget.getBuildPermission().getRegex(), "a.*");
 
         buildPermission = artifactory.security().builders().buildPermissionBuilder().regex("b.*").build();
 
@@ -177,7 +176,7 @@ public class SecurityTests extends ArtifactoryTestsBase {
 
         permissionTargetRes = artifactory.security().permissionTarget(PERMISSION_TARGET_UPDATE_NAME);
         artifactory.security().updatePermissionTarget(updatePermissionTarget);
-        assertEquals("a.*", permissionTargetRes.getBuild().getRegex());
+        assertEquals("a.*", permissionTargetRes.getBuildPermission().getRegex());
     }
 
     @Test
@@ -193,6 +192,12 @@ public class SecurityTests extends ArtifactoryTestsBase {
         assertFalse(permissionTargetV1.getPrincipals().getUser(user).getPrivileges().contains(Privilege.DELETE));
         assertTrue(permissionTargetV1.getPrincipals().getUser(user).getPrivileges().contains(Privilege.READ));
         assertNotNull(permissionTargetV1.getPrincipals().getGroups());
+
+        PermissionTarget permissionTarget = artifactory.security().permissionTarget("permissionName");
+        String name = permissionTarget.getName();
+        List<String> exclude = permissionTarget.getRepositoryPermission().getExcludePatterns();
+        List<String> include = permissionTarget.getRepositoryPermission().getIncludePatterns();
+        List<String> repos = permissionTarget.getRepositoryPermission().getRepositories();
     }
 
     @Test

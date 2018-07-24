@@ -34,12 +34,12 @@ public class PermissionTargetImpl implements PermissionTarget {
     }
 
     @Override
-    public BuildPermission getBuild() {
+    public BuildPermission getBuildPermission() {
         return build;
     }
 
     @Override
-    public RepositoryPermission getRepo() {
+    public RepositoryPermission getRepositoryPermission() {
         return repo;
     }
 }
