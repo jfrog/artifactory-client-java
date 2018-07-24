@@ -1,17 +1,16 @@
 package org.jfrog.artifactory.client.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import java.util.List;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-/**
- * @author jbaruch
- * @since 26/11/12
- */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public interface PermissionTarget {
+
     String getName();
-    String getIncludesPattern();
-    String getExcludesPattern();
-    List<String> getRepositories();
-    Principals getPrincipals();
+
+    @JsonProperty("build")
+    BuildPermission getBuildPermission();
+
+    @JsonProperty("repo")
+    RepositoryPermission getRepositoryPermission();
 }

@@ -265,6 +265,10 @@ public class ArtifactoryImpl implements Artifactory {
             httpPost.setEntity(new StringEntity(content, contentType));
         }
         HttpResponse httpResponse = httpClient.execute(httpPost);
+        int status = httpResponse.getStatusLine().getStatusCode();
+        if (status != HttpStatus.SC_OK && status != HttpStatus.SC_CREATED && status != HttpStatus.SC_NO_CONTENT && status != HttpStatus.SC_ACCEPTED) {
+            throw newHttpResponseException(httpResponse);
+        }
         if (object == String.class) {
             return (T) Util.responseToString(httpResponse);
         }
