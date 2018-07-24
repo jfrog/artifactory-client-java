@@ -2,6 +2,7 @@ package org.jfrog.artifactory.client.model.builder;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.jfrog.artifactory.client.model.PermissionTarget;
+import org.jfrog.artifactory.client.model.PermissionTargetV1;
 import org.jfrog.artifactory.client.model.User;
 
 /**
@@ -18,11 +19,23 @@ public interface SecurityBuilders {
 
     UserBuilder builderFrom(User from);
 
-    PermissionTargetBuilder permissionTargetBuilder();
+    PermissionTargetV1Builder permissionTargetV1Builder();
 
-    PermissionTargetBuilder builderFrom(PermissionTarget from);
+    PermissionTargetV1Builder builderFrom(PermissionTargetV1 from);
 
     PrincipalsBuilder principalsBuilder();
 
     PrincipalBuilder principalBuilder();
+
+    PermissionTargetBuilder permissionTargetBuilder();
+
+    PermissionTargetBuilder builderFrom(PermissionTarget from);
+
+    BuildPermissionBuilder buildPermissionBuilder();
+
+    RepositoryPermissionBuilder repositoryPermissionBuilder();
+
+    ActionsBuilder actionsBuilder();
+
+    ActionBuilder actionBuilder();
 }

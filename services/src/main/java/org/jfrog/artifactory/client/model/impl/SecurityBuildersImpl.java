@@ -1,6 +1,7 @@
 package org.jfrog.artifactory.client.model.impl;
 
 import org.jfrog.artifactory.client.model.PermissionTarget;
+import org.jfrog.artifactory.client.model.PermissionTargetV1;
 import org.jfrog.artifactory.client.model.User;
 import org.jfrog.artifactory.client.model.builder.*;
 
@@ -30,11 +31,11 @@ public class SecurityBuildersImpl implements SecurityBuilders {
         return null;//TODO implement copy builder for User
     }
 
-    public PermissionTargetBuilder permissionTargetBuilder() {
-        return new PermissionTargetBuilderImpl();
+    public PermissionTargetV1Builder permissionTargetV1Builder() {
+        return new PermissionTargetV1BuilderImpl();
     }
 
-    public PermissionTargetBuilder builderFrom(PermissionTarget from) {
+    public PermissionTargetV1Builder builderFrom(PermissionTargetV1 from) {
         return null;//TODO implement copy builder for PermissionTarget
     }
 
@@ -44,5 +45,35 @@ public class SecurityBuildersImpl implements SecurityBuilders {
 
     public PrincipalBuilder principalBuilder() {
         return new PrincipalBuilderImpl();
+    }
+
+    @Override
+    public PermissionTargetBuilder permissionTargetBuilder() {
+        return new PermissionTargetBuilderImpl();
+    }
+
+    @Override
+    public PermissionTargetBuilder builderFrom(PermissionTarget from) {
+        return null;
+    }
+
+    @Override
+    public BuildPermissionBuilder buildPermissionBuilder() {
+        return new BuildPermissionBuilderImpl();
+    }
+
+    @Override
+    public RepositoryPermissionBuilder repositoryPermissionBuilder() {
+        return new RepositoryPermissionBuilderImpl();
+    }
+
+    @Override
+    public ActionsBuilder actionsBuilder() {
+        return new ActionsBuilderImpl();
+    }
+
+    @Override
+    public ActionBuilder actionBuilder() {
+        return new ActionBuilderImpl();
     }
 }
