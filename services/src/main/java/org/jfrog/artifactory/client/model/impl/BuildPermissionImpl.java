@@ -1,8 +1,8 @@
-package org.jfrog.artifactory.client.v2.impl;
+package org.jfrog.artifactory.client.model.impl;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import org.jfrog.artifactory.client.v2.model.permissions.Actions;
-import org.jfrog.artifactory.client.v2.model.permissions.BuildPermission;
+import org.jfrog.artifactory.client.model.Actions;
+import org.jfrog.artifactory.client.model.BuildPermission;
 
 import java.util.List;
 

@@ -13,8 +13,6 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.jfrog.artifactory.client.*;
 import org.jfrog.artifactory.client.impl.util.Util;
-import org.jfrog.artifactory.client.v2.V2;
-import org.jfrog.artifactory.client.v2.impl.V2Impl;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -117,11 +115,6 @@ public class ArtifactoryImpl implements Artifactory {
     @Override
     public ArtifactorySystem system() {
         return new ArtifactorySystemImpl(this, API_BASE);
-    }
-
-    @Override
-    public V2 v2() {
-        return new V2Impl(this, API_BASE + "/v2");
     }
 
     /**

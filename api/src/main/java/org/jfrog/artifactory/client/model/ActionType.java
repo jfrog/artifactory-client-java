@@ -1,4 +1,4 @@
-package org.jfrog.artifactory.client.v2.model.permissions;
+package org.jfrog.artifactory.client.model;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 

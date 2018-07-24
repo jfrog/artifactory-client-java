@@ -1,8 +1,8 @@
-package org.jfrog.artifactory.client.v2.model.builder;
+package org.jfrog.artifactory.client.model.builder;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import org.jfrog.artifactory.client.v2.model.permissions.Actions;
-import org.jfrog.artifactory.client.v2.model.permissions.BuildPermission;
+import org.jfrog.artifactory.client.model.Actions;
+import org.jfrog.artifactory.client.model.BuildPermission;
 
 /**
  * @author matank

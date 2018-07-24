@@ -1,8 +1,8 @@
-package org.jfrog.artifactory.client.v2.impl;
+package org.jfrog.artifactory.client.model.impl;
 
-import org.jfrog.artifactory.client.v2.model.builder.RepositoryPermissionBuilder;
-import org.jfrog.artifactory.client.v2.model.permissions.Actions;
-import org.jfrog.artifactory.client.v2.model.permissions.RepositoryPermission;
+import org.jfrog.artifactory.client.model.Actions;
+import org.jfrog.artifactory.client.model.RepositoryPermission;
+import org.jfrog.artifactory.client.model.builder.RepositoryPermissionBuilder;
 
 import java.util.Arrays;
 import java.util.List;

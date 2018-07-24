@@ -1,60 +1,45 @@
 package org.jfrog.artifactory.client.model.impl;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import org.jfrog.artifactory.client.model.BuildPermission;
 import org.jfrog.artifactory.client.model.PermissionTarget;
-import org.jfrog.artifactory.client.model.Principals;
-
-import java.util.List;
+import org.jfrog.artifactory.client.model.RepositoryPermission;
 
 /**
- * @author jbaruch
- * @since 26/11/12
+ * @author matank
+ * @since 21/07/2018
  */
 public class PermissionTargetImpl implements PermissionTarget {
 
     private String name;
-    private String includesPattern;
-    private String excludesPattern;
-    private List<String> repositories;
-    @JsonProperty("principals")
-    @JsonDeserialize(as = PrincipalsImpl.class)
-    private Principals principals;
+    @JsonDeserialize(as = BuildPermissionImpl.class)
+    private BuildPermission build;
+    @JsonDeserialize(as = RepositoryPermissionImpl.class)
+    private RepositoryPermission repo;
 
     //Required for JSON parsing of PermissionTargetImpl
     private PermissionTargetImpl() {
         super();
     }
 
-    protected PermissionTargetImpl(String name, String includesPattern, String excludesPattern, List<String> repositories, Principals principals) {
+    public PermissionTargetImpl(String name, BuildPermission build, RepositoryPermission repo) {
         this.name = name;
-        this.includesPattern = includesPattern;
-        this.excludesPattern = excludesPattern;
-        this.repositories = repositories;
-        this.principals = principals;
+        this.build = build;
+        this.repo = repo;
     }
 
+    @Override
     public String getName() {
         return name;
     }
 
-    public String getIncludesPattern() {
-        return includesPattern;
+    @Override
+    public BuildPermission getBuild() {
+        return build;
     }
 
-    public String getExcludesPattern() {
-        return excludesPattern;
-    }
-
-    public List<String> getRepositories() {
-        return repositories;
-    }
-
-    public Principals getPrincipals() {
-        return principals;
-    }
-
-    public void setRepositories(List<String> repositories) {
-        this.repositories = repositories;
+    @Override
+    public RepositoryPermission getRepo() {
+        return repo;
     }
 }

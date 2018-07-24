@@ -5,13 +5,10 @@ import org.jfrog.artifactory.client.Security
 import org.jfrog.artifactory.client.impl.util.Util
 import org.jfrog.artifactory.client.model.Group
 import org.jfrog.artifactory.client.model.PermissionTarget
+import org.jfrog.artifactory.client.model.PermissionTargetV1
 import org.jfrog.artifactory.client.model.User
 import org.jfrog.artifactory.client.model.builder.SecurityBuilders
-import org.jfrog.artifactory.client.model.impl.SecurityBuildersImpl
-import org.jfrog.artifactory.client.model.impl.UserBuilderImpl
-import org.jfrog.artifactory.client.model.impl.GroupImpl
-import org.jfrog.artifactory.client.model.impl.PermissionTargetImpl
-import org.jfrog.artifactory.client.model.impl.UserImpl
+import org.jfrog.artifactory.client.model.impl.*
 
 /**
  *
@@ -55,9 +52,9 @@ class SecurityImpl implements Security {
     }
 
     @Override
-    PermissionTarget permissionTarget(String name) {
+    PermissionTargetV1 permissionTargetV1(String name) {
         name = Util.encodeParams(name);
-        return artifactory.get("${getSecurityPermissionsApi()}/$name", PermissionTargetImpl, PermissionTarget)
+        return artifactory.get("${getSecurityPermissionsV1Api()}/$name", PermissionTargetV1Impl, PermissionTargetV1)
     }
 
     @Override
@@ -68,8 +65,8 @@ class SecurityImpl implements Security {
     }
 
     @Override
-    List<String> permissionTargets() {
-        ArrayList permissionTargets = artifactory.get("${getSecurityPermissionsApi()}", ArrayList, List)
+    List<String> permissionTargetsV1() {
+        ArrayList permissionTargets = artifactory.get("${getSecurityPermissionsV1Api()}", ArrayList, List)
         def permissionTargetNames = permissionTargets.collect { it.name }
         return permissionTargetNames
     }
@@ -89,14 +86,47 @@ class SecurityImpl implements Security {
     }
 
     @Override
-    public void createOrReplacePermissionTarget(PermissionTarget permissionTarget) {
+    public void createOrReplacePermissionTargetV1(PermissionTargetV1 permissionTarget) {
         List<String> repositories = permissionTarget.getRepositories()
         if (repositories == null || repositories.isEmpty()) {
             throw new UnsupportedOperationException("At least 1 repository is required in permission target (could be 'ANY', 'ANY LOCAL', 'ANY REMOTE')")
         }
         String name = Util.encodeParams(permissionTarget.name);
+        artifactory.put("${getSecurityPermissionsV1Api()}/$name", ContentType.APPLICATION_JSON, Util.getStringFromObject(permissionTarget),
+                new HashMap<String, String>(), null, -1, String, null)
+    }
+
+    @Override
+    PermissionTarget permissionTarget(String name) {
+        name = Util.encodeParams(name);
+        return artifactory.get("${getSecurityPermissionsApi()}/$name", PermissionTargetImpl, PermissionTarget)
+    }
+
+    @Override
+    List<String> permissionTargets() {
+        ArrayList permissionTargets = artifactory.get("${getSecurityPermissionsApi()}", ArrayList, List)
+        def permissionTargetNames = permissionTargets.collect { it.name }
+        return permissionTargetNames
+    }
+
+    @Override
+    public void createPermissionTarget(PermissionTarget permissionTarget) {
+        String name = Util.encodeParams(permissionTarget.name);
+        artifactory.post("${getSecurityPermissionsApi()}/$name", ContentType.APPLICATION_JSON, Util.getStringFromObject(permissionTarget),
+                new HashMap<String, String>(), String, null)
+    }
+
+    @Override
+    public void updatePermissionTarget(PermissionTarget permissionTarget) {
+        String name = Util.encodeParams(permissionTarget.name);
         artifactory.put("${getSecurityPermissionsApi()}/$name", ContentType.APPLICATION_JSON, Util.getStringFromObject(permissionTarget),
                 new HashMap<String, String>(), null, -1, String, null)
+    }
+
+    @Override
+    String deletePermissionTarget(String name) {
+        name = Util.encodeParams(name);
+        artifactory.delete("${getSecurityPermissionsApi()}/$name")
     }
 
     @Override
@@ -112,19 +142,29 @@ class SecurityImpl implements Security {
     }
 
     @Override
-    String deletePermissionTarget(String name) {
+    String deletePermissionTargetV1(String name) {
         name = Util.encodeParams(name);
-        artifactory.delete("${getSecurityPermissionsApi()}/$name")
+        artifactory.delete("${getSecurityPermissionsV1Api()}/$name")
     }
 
     @Override
-    String getSecurityApi() {
+    String getSecurityV1Api() {
         return baseApiPath + "/security/";
     }
 
     @Override
+    String getSecurityApi() {
+        return baseApiPath + "/v2/security/";
+    }
+
+    @Override
     String getSecurityUsersApi() {
-        return getSecurityApi() + "users";
+        return getSecurityV1Api() + "users";
+    }
+
+    @Override
+    String getSecurityPermissionsV1Api() {
+        return getSecurityV1Api() + "permissions";
     }
 
     @Override
@@ -134,6 +174,6 @@ class SecurityImpl implements Security {
 
     @Override
     String getSecurityUserGroupsApi() {
-        return getSecurityApi() + "groups";
+        return getSecurityV1Api() + "groups";
     }
 }

@@ -1,7 +1,7 @@
-package org.jfrog.artifactory.client.v2.impl;
+package org.jfrog.artifactory.client.model.impl;
 
-import org.jfrog.artifactory.client.v2.model.permissions.Action;
-import org.jfrog.artifactory.client.v2.model.permissions.ActionType;
+import org.jfrog.artifactory.client.model.Action;
+import org.jfrog.artifactory.client.model.ActionType;
 
 import java.util.Set;
 

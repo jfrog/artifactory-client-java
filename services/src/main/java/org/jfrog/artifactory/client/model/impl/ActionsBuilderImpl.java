@@ -1,8 +1,8 @@
-package org.jfrog.artifactory.client.v2.impl;
+package org.jfrog.artifactory.client.model.impl;
 
-import org.jfrog.artifactory.client.v2.model.builder.ActionsBuilder;
-import org.jfrog.artifactory.client.v2.model.permissions.Action;
-import org.jfrog.artifactory.client.v2.model.permissions.Actions;
+import org.jfrog.artifactory.client.model.Action;
+import org.jfrog.artifactory.client.model.Actions;
+import org.jfrog.artifactory.client.model.builder.ActionsBuilder;
 
 import java.util.Arrays;
 import java.util.List;
