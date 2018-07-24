@@ -158,6 +158,11 @@ public class ArtifactoryImpl implements Artifactory {
 
                 break;
 
+            case PATCH:
+                httpRequest = new HttpPatch();
+                setEntity((HttpPatch)httpRequest, artifactoryRequest.getBody(), contentType);
+                break;
+
             default:
                 throw new IllegalArgumentException("Unsupported request method.");
         }

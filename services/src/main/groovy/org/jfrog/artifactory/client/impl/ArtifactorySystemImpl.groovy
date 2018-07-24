@@ -1,5 +1,6 @@
 package org.jfrog.artifactory.client.impl
 
+import org.apache.http.Consts
 import org.apache.http.entity.ContentType
 import org.jfrog.artifactory.client.ArtifactorySystem
 import org.jfrog.artifactory.client.model.SystemInfo
@@ -44,7 +45,7 @@ class ArtifactorySystemImpl implements ArtifactorySystem {
 
     @Override
     void patchConfiguration(String yml) {
-        ContentType mimeType = ContentType.create("application/yaml")
+        ContentType mimeType = ContentType.create("application/yaml", Consts.UTF_8)
         artifactory.patch(getSystemConfigurationApi(), mimeType, yml, null, String, null)
     }
 
