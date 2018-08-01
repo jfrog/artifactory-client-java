@@ -22,7 +22,6 @@ public class RemoteRepositoryBuilderImpl extends NonVirtualRepositoryBuilderBase
     ));
 
     private String url;
-    protected String description = " (local file cache)";
     private String username = "";
     private String password;
     private String proxy;
