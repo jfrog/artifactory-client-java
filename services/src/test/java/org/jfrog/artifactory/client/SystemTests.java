@@ -61,6 +61,19 @@ public class SystemTests extends ArtifactoryTestsBase {
     }
 
     @Test
+    public void testPatchOfSystemConfiguration() {
+        artifactory.system().patchConfiguration("excludeBuilds: true");
+
+        String updatedXml = artifactory.system().configuration();
+        assertTrue(updatedXml.contains("backups"));
+        assertTrue(updatedXml.contains("localRepositories"));
+        assertTrue(updatedXml.contains("repoLayouts"));
+
+        // Restore
+        artifactory.system().patchConfiguration("excludeBuilds: false");
+    }
+
+    @Test
     public void testSystemInfo() {
         SystemInfo info = artifactory.system().info();
         Assert.assertNotNull(info);
