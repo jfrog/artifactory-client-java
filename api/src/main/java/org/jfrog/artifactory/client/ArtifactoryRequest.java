@@ -11,7 +11,7 @@ import java.util.Map;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public interface ArtifactoryRequest {
 
-    enum Method { GET, POST, PUT, DELETE }
+    enum Method { GET, POST, PUT, DELETE, PATCH }
 
     ArtifactoryRequest method(Method method);
     ArtifactoryRequest apiUrl(String apiUrl);
@@ -36,6 +36,7 @@ public interface ArtifactoryRequest {
         TEXT,
         URLENC,
         ANY,
-        XML
+        XML,
+        YAML
     }
 }

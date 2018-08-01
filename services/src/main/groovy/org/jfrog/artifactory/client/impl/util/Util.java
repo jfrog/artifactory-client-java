@@ -94,6 +94,8 @@ public class Util {
                 return ContentType.APPLICATION_FORM_URLENCODED;
             case XML:
                 return ContentType.APPLICATION_XML;
+            case YAML:
+                return ContentType.create("application/yaml", Consts.UTF_8);
             case ANY:
                 return ContentType.WILDCARD;
             default:

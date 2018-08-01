@@ -125,6 +125,34 @@ public class RestCallTests extends ArtifactoryTestsBase {
         assertTrue(buildInfo.containsKey("number"));
     }
 
+    @Test
+    public void testPatchProxy() throws Exception {
+        final String proxyName = "proxy1";
+        String yaml = "proxies:\n"
+                      + "  " + proxyName + ":\n"
+                      + "    host: hostproxy1\n"
+                      + "    port: 0 \n"
+                      + "    defaultProxy: false\n";
+
+        ArtifactoryRequest patchProxyRequest = new ArtifactoryRequestImpl()
+            .method(ArtifactoryRequest.Method.PATCH)
+            .apiUrl("api/system/configuration")
+            .requestType(ArtifactoryRequest.ContentType.YAML)
+            .requestBody(yaml);
+
+        ArtifactoryResponse response = artifactory.restCall(patchProxyRequest);
+
+        assertNotNull(response);
+        assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
+
+        String updatedXml = artifactory.system().configuration();
+        assertTrue(updatedXml.contains(proxyName));
+
+        // Remove proxy
+        patchProxyRequest.requestBody("proxies:\n  " + proxyName + ": null\n");
+        artifactory.restCall(patchProxyRequest);
+    }
+
     @Test(dependsOnMethods = {"testGetBuildInfo"})
     public void testDeleteBuild() throws Exception {
         String deleteResponse = deleteBuild("TestBuild");
