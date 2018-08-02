@@ -20,7 +20,7 @@ public interface ArtifactorySystem {
 
     void configuration(String xml);
 
-    void patchConfiguration(String yml);
+    void yamlConfiguration(String yml);
 
     Version version();
 

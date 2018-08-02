@@ -44,7 +44,7 @@ class ArtifactorySystemImpl implements ArtifactorySystem {
     }
 
     @Override
-    void patchConfiguration(String yml) {
+    void yamlConfiguration(String yml) {
         ContentType mimeType = ContentType.create("application/yaml", Consts.UTF_8)
         artifactory.patch(getSystemConfigurationApi(), mimeType, yml, null, String, null)
     }
