@@ -592,6 +592,17 @@ String xml = ...
 artifactory.system().configuration(xml);
 ```
 
+##### Getting System Configuration YAML
+```
+String yaml = artifactory.system().yamlConfiguration();
+```
+
+##### Setting System Configuration YAML
+```
+String yaml = ... 
+artifactory.system().yamlConfiguration(yaml);
+```
+
 #### Rest API
 Executing an Artifactory REST API
 ```
