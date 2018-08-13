@@ -1,7 +1,5 @@
 package org.jfrog.artifactory.client.model.impl;
 
-import static org.jfrog.artifactory.client.model.impl.PackageTypeImpl.*;
-
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -11,6 +9,7 @@ import org.jfrog.artifactory.client.model.PackageType;
 import org.jfrog.artifactory.client.model.RemoteRepository;
 import org.jfrog.artifactory.client.model.RepositoryType;
 import org.jfrog.artifactory.client.model.builder.RemoteRepositoryBuilder;
+import static org.jfrog.artifactory.client.model.impl.PackageTypeImpl.*;
 
 /**
  * @author jbaruch
