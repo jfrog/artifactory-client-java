@@ -1,28 +1,6 @@
 package org.jfrog.artifactory.client.model.impl;
 
-import static org.jfrog.artifactory.client.model.impl.PackageTypeImpl.bower;
-import static org.jfrog.artifactory.client.model.impl.PackageTypeImpl.chef;
-import static org.jfrog.artifactory.client.model.impl.PackageTypeImpl.cocoapods;
-import static org.jfrog.artifactory.client.model.impl.PackageTypeImpl.composer;
-import static org.jfrog.artifactory.client.model.impl.PackageTypeImpl.conan;
-import static org.jfrog.artifactory.client.model.impl.PackageTypeImpl.debian;
-import static org.jfrog.artifactory.client.model.impl.PackageTypeImpl.docker;
-import static org.jfrog.artifactory.client.model.impl.PackageTypeImpl.gems;
-import static org.jfrog.artifactory.client.model.impl.PackageTypeImpl.generic;
-import static org.jfrog.artifactory.client.model.impl.PackageTypeImpl.gitlfs;
-import static org.jfrog.artifactory.client.model.impl.PackageTypeImpl.gradle;
-import static org.jfrog.artifactory.client.model.impl.PackageTypeImpl.ivy;
-import static org.jfrog.artifactory.client.model.impl.PackageTypeImpl.maven;
-import static org.jfrog.artifactory.client.model.impl.PackageTypeImpl.npm;
-import static org.jfrog.artifactory.client.model.impl.PackageTypeImpl.nuget;
-import static org.jfrog.artifactory.client.model.impl.PackageTypeImpl.opkg;
-import static org.jfrog.artifactory.client.model.impl.PackageTypeImpl.p2;
-import static org.jfrog.artifactory.client.model.impl.PackageTypeImpl.puppet;
-import static org.jfrog.artifactory.client.model.impl.PackageTypeImpl.pypi;
-import static org.jfrog.artifactory.client.model.impl.PackageTypeImpl.rpm;
-import static org.jfrog.artifactory.client.model.impl.PackageTypeImpl.sbt;
-import static org.jfrog.artifactory.client.model.impl.PackageTypeImpl.vcs;
-import static org.jfrog.artifactory.client.model.impl.PackageTypeImpl.yum;
+import static org.jfrog.artifactory.client.model.impl.PackageTypeImpl.*;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -162,8 +140,8 @@ public class RemoteRepositoryBuilderImpl extends NonVirtualRepositoryBuilderBase
         return enableCookieManagement;
     }
 
-    public RemoteRepositoryBuilder bypassHeadRequests(boolean theByPassBoolean) {
-        this.bypassHeadRequests = theByPassBoolean;
+    public RemoteRepositoryBuilder bypassHeadRequests(boolean bypass) {
+        this.bypassHeadRequests = bypass;
         return this;
     }
 
