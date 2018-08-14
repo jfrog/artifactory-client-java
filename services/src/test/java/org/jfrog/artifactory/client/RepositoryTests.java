@@ -1,25 +1,20 @@
 package org.jfrog.artifactory.client;
 
-import org.apache.http.client.HttpResponseException;
-import org.apache.http.HttpStatus;
+import java.io.*;
+import java.util.*;
+
+import static java.util.Arrays.*;
+import static org.apache.commons.lang.StringUtils.*;
+import org.apache.http.*;
+import org.apache.http.client.*;
 import org.jfrog.artifactory.client.model.*;
-import org.jfrog.artifactory.client.model.impl.LocalRepoChecksumPolicyTypeImpl;
-import org.jfrog.artifactory.client.model.repository.settings.RepositorySettings;
-import org.jfrog.artifactory.client.model.repository.settings.impl.*;
-import org.jfrog.artifactory.client.model.xray.settings.impl.XraySettingsImpl;
-
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
-
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-
-import static java.util.Arrays.asList;
-import static org.apache.commons.lang.StringUtils.countMatches;
+import org.jfrog.artifactory.client.model.impl.*;
 import static org.jfrog.artifactory.client.model.impl.RepositoryTypeImpl.*;
+import org.jfrog.artifactory.client.model.repository.settings.*;
+import org.jfrog.artifactory.client.model.repository.settings.impl.*;
+import org.jfrog.artifactory.client.model.xray.settings.impl.*;
 import static org.testng.Assert.*;
+import org.testng.annotations.*;
 
 /**
  * @author jbaruch
@@ -256,6 +251,42 @@ public class RepositoryTests extends ArtifactoryTestsBase {
 
         assertNotNull(repository);
         assertEquals(repository.getClientTlsCertificate(), clientTlsCertificate);
+    }
+
+    /**
+     * Tests whether the builder sets the bypassHead request correctly (true)
+     */
+    @Test
+    public void testRemoteRepoBypassHead() throws Exception {
+        RemoteRepository changedRepository = artifactory.repositories().builders().builderFrom(remoteRepository)
+                .key("testRemoteRepoBypassHead")
+                .description("create remote repo with bypassHead=true")
+                .bypassHeadRequests(true)
+                .build();
+
+        artifactory.repositories().create(1, changedRepository);
+        RemoteRepository repository = (RemoteRepository) artifactory.repository(changedRepository.getKey()).get();
+
+        assertNotNull(repository);
+        assertEquals(repository.isBypassHeadRequests(), true);
+    }
+
+    /**
+     * Tests whether the builder sets the bypassHead request correctly (false)
+     */
+    @Test
+    public void testRemoteRepoNotBypassHead() throws Exception {
+        RemoteRepository changedRepository = artifactory.repositories().builders().builderFrom(remoteRepository)
+                .description("create remote repo with bypassHead=false")
+                .key("testRemoteRepoNotBypassHead")
+                .bypassHeadRequests(false)
+                .build();
+
+        artifactory.repositories().create(1, changedRepository);
+        RemoteRepository repository = (RemoteRepository) artifactory.repository(changedRepository.getKey()).get();
+
+        assertNotNull(repository);
+        assertEquals(repository.isBypassHeadRequests(), false);
     }
 
     @Test
