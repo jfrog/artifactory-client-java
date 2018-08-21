@@ -5,6 +5,7 @@ import org.jfrog.artifactory.client.impl.ArtifactoryRequestImpl;
 import org.jfrog.artifactory.client.impl.CopyMoveException;
 import org.jfrog.artifactory.client.model.File;
 import org.jfrog.artifactory.client.model.Folder;
+import org.jfrog.artifactory.client.model.Item;
 import org.jfrog.artifactory.client.model.LocalRepository;
 import org.jfrog.artifactory.client.model.repository.settings.RepositorySettings;
 import org.jfrog.artifactory.client.model.repository.settings.impl.GenericRepositorySettingsImpl;
@@ -29,9 +30,10 @@ public class ItemTests extends ArtifactoryTestsBase {
     protected static final String NEW_LOCAL_TO = "new-local-to";
 
     @Test
-    public void testFolderInfo() {
-        //Get the folder to the cache
+    public void testFolderInfo() throws IOException {
+        // Get the folder to the cache
         artifactory.repository(getJCenterRepoName()).download("junit/junit/4.10/junit-4.10-sources.jar").doDownload();
+
         Folder folder = artifactory.repository(getJcenterCacheName()).folder("junit").info();
         assertNotNull(folder);
         assertTrue(folder.isFolder());
@@ -41,9 +43,8 @@ public class ItemTests extends ArtifactoryTestsBase {
     }
 
     @Test
-    public void testFileInfo() {
-
-        //Get the file to the cache
+    public void testFileInfo() throws IOException {
+        // Get the file to the cache
         artifactory.repository(getJCenterRepoName()).download("junit/junit/4.10/junit-4.10-sources.jar").doDownload();
 
         File file = artifactory.repository(getJcenterCacheName()).file("junit/junit/4.10/junit-4.10-sources.jar").info();
@@ -232,12 +233,12 @@ public class ItemTests extends ArtifactoryTestsBase {
 
     private void checkTheEqualityOfFolders(ItemHandle newItemHandle, String expectedRepo, String expectedPath) {
         ItemHandle itemHandle = artifactory.repository(expectedRepo).folder(expectedPath);
-        assertEquals(itemHandle.info(), (newItemHandle.info()));
+        assertEquals(itemHandle.info(), (Item)newItemHandle.info());
     }
 
     private void checkTheEqualityOfFiles(ItemHandle newItemHandle, String expectedRepo, String expectedPath) {
         ItemHandle itemHandle = artifactory.repository(expectedRepo).file(expectedPath);
-        assertEquals(itemHandle.info(), (newItemHandle.info()));
+        assertEquals(itemHandle.info(), (Item)newItemHandle.info());
     }
 
 

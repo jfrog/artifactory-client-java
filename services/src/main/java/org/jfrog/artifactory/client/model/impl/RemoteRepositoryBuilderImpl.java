@@ -17,11 +17,10 @@ import static org.jfrog.artifactory.client.model.impl.PackageTypeImpl.*;
  */
 public class RemoteRepositoryBuilderImpl extends NonVirtualRepositoryBuilderBase<RemoteRepositoryBuilder, RemoteRepository> implements RemoteRepositoryBuilder {
     private static Set<PackageType> remoteRepositorySupportedTypes = new HashSet<PackageType>(Arrays.asList(
-            bower, cocoapods, debian, docker, gems, generic, gitlfs, gradle, ivy, maven, npm, nuget, opkg, p2, pypi, sbt, vcs, yum, rpm, composer, conan, chef, puppet
+            bower, cocoapods, cran, debian, docker, gems, generic, gitlfs, gradle, ivy, maven, npm, nuget, opkg, p2, pypi, sbt, vcs, yum, rpm, composer, conan, chef, puppet
     ));
 
     private String url;
-    protected String description = " (local file cache)";
     private String username = "";
     private String password;
     private String proxy;

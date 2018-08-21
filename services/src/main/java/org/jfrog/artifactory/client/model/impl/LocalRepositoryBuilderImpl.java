@@ -17,7 +17,7 @@ import static org.jfrog.artifactory.client.model.impl.PackageTypeImpl.*;
  */
 public class LocalRepositoryBuilderImpl extends NonVirtualRepositoryBuilderBase<LocalRepositoryBuilder, LocalRepository> implements LocalRepositoryBuilder {
     private static Set<PackageType> localRepositorySupportedTypes = new HashSet<PackageType>(Arrays.asList(
-            bower, cocoapods, debian, docker, gems, generic, gitlfs, gradle, ivy, maven, npm, nuget, opkg, pypi, sbt, vagrant, yum, rpm, composer, conan, chef, puppet
+            bower, cocoapods, cran, debian, docker, gems, generic, gitlfs, gradle, ivy, maven, npm, nuget, opkg, pypi, sbt, vagrant, yum, rpm, composer, conan, chef, puppet
     ));
 
     protected LocalRepositoryBuilderImpl() {

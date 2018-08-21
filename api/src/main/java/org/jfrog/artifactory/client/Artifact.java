@@ -8,7 +8,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public interface Artifact<T extends Artifact> {
-    T withProperty(String name, Object... values);
+    Artifact withProperty(String name, Object... values);
 
-    T withProperty(String name, Object value);
+    Artifact withProperty(String name, Object value);
 }

@@ -158,6 +158,11 @@ public class ArtifactoryImpl implements Artifactory {
 
                 break;
 
+            case PATCH:
+                httpRequest = new HttpPatch();
+                setEntity((HttpPatch)httpRequest, artifactoryRequest.getBody(), contentType);
+                break;
+
             default:
                 throw new IllegalArgumentException("Unsupported request method.");
         }
@@ -195,7 +200,7 @@ public class ArtifactoryImpl implements Artifactory {
         }
     }
 
-    protected InputStream getInputStream(String path) throws IOException {
+    public InputStream getInputStream(String path) throws IOException {
         HttpResponse httpResponse = get(path, null, null);
         if (httpResponse.getStatusLine().getStatusCode() == 200) {
             return httpResponse.getEntity().getContent();
@@ -265,6 +270,29 @@ public class ArtifactoryImpl implements Artifactory {
             httpPost.setEntity(new StringEntity(content, contentType));
         }
         HttpResponse httpResponse = httpClient.execute(httpPost);
+        if (object == String.class) {
+            return (T) Util.responseToString(httpResponse);
+        }
+
+        return Util.responseToObject(httpResponse, object, interfaceObject);
+    }
+
+    public <T> T patch(String path, org.apache.http.entity.ContentType contentType, String content, Map<String, String>
+        headers, Class<? extends T> object, Class<T> interfaceObject) throws IOException {
+        HttpPatch httpPatch = new HttpPatch();
+        httpPatch.setURI(URI.create(url + path));
+        httpPatch = (HttpPatch) addAccessTokenHeaderIfNeeded(httpPatch);
+
+        httpPatch.setHeader("Content-type", contentType.getMimeType());
+        if (headers != null && !headers.isEmpty()) {
+            for (String key : headers.keySet()) {
+                httpPatch.setHeader(key, headers.get(key));
+            }
+        }
+        if (content != null) {
+            httpPatch.setEntity(new StringEntity(content, contentType));
+        }
+        HttpResponse httpResponse = httpClient.execute(httpPatch);
         if (object == String.class) {
             return (T) Util.responseToString(httpResponse);
         }

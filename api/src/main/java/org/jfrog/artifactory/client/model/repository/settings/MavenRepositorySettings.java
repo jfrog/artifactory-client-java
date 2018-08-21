@@ -40,6 +40,8 @@ public interface MavenRepositorySettings extends RepositorySettings {
 
     // ** virtual ** //
 
+    Boolean getForceMavenAuthentication();
+
     PomCleanupPolicy getPomRepositoryReferencesCleanupPolicy();
 
     String getKeyPair();

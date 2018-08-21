@@ -121,4 +121,16 @@ class UploadableArtifactImpl extends ArtifactBase<UploadableArtifact> implements
         content = file.newInputStream()
         this
     }
+
+    @Override
+    UploadableArtifact withProperty(String name, Object... values) {
+        super.withProperty(name, values)
+        this
+    }
+
+    @Override
+    UploadableArtifact withProperty(String name, Object value) {
+        super.withProperty(name, value)
+        this
+    }
 }

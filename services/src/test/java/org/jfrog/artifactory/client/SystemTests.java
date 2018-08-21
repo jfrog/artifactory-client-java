@@ -61,6 +61,25 @@ public class SystemTests extends ArtifactoryTestsBase {
     }
 
     @Test
+    public void testPatchOfProxy() {
+        final String proxyName = "proxy1";
+        String yaml = "proxies:\n"
+                      + "  " + proxyName + ":\n"
+                      + "    host: hostproxy1\n"
+                      + "    port: 0 \n"
+                      + "    defaultProxy: false\n";
+        artifactory.system().yamlConfiguration(yaml);
+
+        String updatedXml = artifactory.system().configuration();
+        assertTrue(updatedXml.contains(proxyName));
+
+        // Restore
+        String deleteProxy = "proxies:\n"
+                      + "  " + proxyName + ": null\n";
+        artifactory.system().yamlConfiguration(deleteProxy);
+    }
+
+    @Test
     public void testSystemInfo() {
         SystemInfo info = artifactory.system().info();
         Assert.assertNotNull(info);
