@@ -47,6 +47,10 @@ public interface RemoteRepositoryBuilder extends NonVirtualRepositoryBuilder<Rem
 
     boolean isEnableCookieManagement();
 
+    RemoteRepositoryBuilder bypassHeadRequests(boolean cookieManagementEnabled);
+
+    boolean isBypassHeadRequests();
+
     RemoteRepositoryBuilder allowAnyHostAuth(boolean allowAnyHostAuth);
 
     boolean isAllowAnyHostAuth();
