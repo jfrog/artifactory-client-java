@@ -5,6 +5,7 @@ import org.jfrog.artifactory.client.model.ItemPermission;
 import org.jfrog.artifactory.client.model.ReplicationStatus;
 import org.jfrog.artifactory.client.model.Repository;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Set;
 
@@ -39,7 +40,7 @@ public interface RepositoryHandle {
 
     Replications getReplications();
 
-    boolean isFolder(String path);
+    boolean isFolder(String path) throws IOException;
 
     boolean exists();
 }
