@@ -8,10 +8,12 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.module.SimpleAbstractTypeResolver;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.core.JsonParseException;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.Consts;
 import org.apache.http.HttpResponse;
 import org.apache.http.entity.ContentType;
+import org.apache.http.util.EntityUtils;
 import org.jfrog.artifactory.client.ArtifactoryRequest;
 import org.jfrog.artifactory.client.impl.jackson.RepositoryMixIn;
 import org.jfrog.artifactory.client.impl.jackson.RepositorySettingsMixIn;
@@ -44,7 +46,8 @@ public class Util {
             objectMapper.registerModule(module);
         }
 
-        return objectMapper.readValue(httpResponse.getEntity().getContent(), object);
+        String content = EntityUtils.toString(httpResponse.getEntity(), "UTF-8");
+        return objectMapper.readValue(content, object);
     }
 
     public static void configureObjectMapper(ObjectMapper objectMapper) {
