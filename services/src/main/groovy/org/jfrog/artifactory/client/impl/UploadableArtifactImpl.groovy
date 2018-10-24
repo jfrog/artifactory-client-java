@@ -69,8 +69,8 @@ class UploadableArtifactImpl extends ArtifactBase<UploadableArtifact> implements
     String doUploadAndExplode(boolean atomic) {
         def params = parseParams(props, "=")
         Map<String, String>  headers = ['X-Explode-Archive': true]
-        if(atomic){
-            headers.put('X-Explode-Archive-Atomic',atomic as String)
+        if (atomic) {
+            headers.put('X-Explode-Archive-Atomic','true')
         }
         int size = file ? file.size() : -1;
         return artifactory.put("/$repo/$path${params}", ContentType.APPLICATION_OCTET_STREAM, null, headers, content, size, String, null);
