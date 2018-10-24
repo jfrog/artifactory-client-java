@@ -59,6 +59,12 @@ java.io.File file = new java.io.File("fileToUpload.txt");
 File result = artifactory.repository("RepoName").upload("path/to/newName.txt", file).doUpload();
 ```
 
+##### Upload and explode an Archive
+```
+java.io.File file = new java.io.File("fileToUpload.txt");
+File result = artifactory.repository("RepoName").upload("path/to/newName.txt",file).doUploadAndExplode(true)
+```
+
 ##### Uploading an Artifact with Properties
 ```
 java.io.File file = new java.io.File("fileToUpload.txt");
