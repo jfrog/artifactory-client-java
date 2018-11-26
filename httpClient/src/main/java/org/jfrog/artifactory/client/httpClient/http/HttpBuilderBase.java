@@ -3,6 +3,7 @@ package org.jfrog.artifactory.client.httpClient.http;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.*;
 import org.apache.http.auth.*;
+import org.apache.http.client.HttpRequestRetryHandler;
 import org.apache.http.client.config.AuthSchemes;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.config.Registry;
@@ -156,6 +157,11 @@ public abstract class HttpBuilderBase<T extends HttpBuilderBase> {
                     new AuthScope(defaultHost.getHostName(), AuthScope.ANY_PORT, AuthScope.ANY_REALM);
             credsProvider.setCredentials(authscope, new UsernamePasswordCredentials(username, password));
         }
+        return self();
+    }
+
+    public T retryHandler(HttpRequestRetryHandler retryHandler) {
+        builder.setRetryHandler(retryHandler);
         return self();
     }
 

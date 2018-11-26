@@ -1,6 +1,7 @@
 package org.jfrog.artifactory.client;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.http.client.HttpRequestRetryHandler;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.jfrog.artifactory.client.httpClient.http.HttpBuilderBase;
@@ -30,6 +31,7 @@ public class ArtifactoryClientBuilder {
     private String userAgent;
     private boolean ignoreSSLIssues;
     private String accessToken;
+    private HttpRequestRetryHandler retryHandler;
 
     protected ArtifactoryClientBuilder() {
         super();
@@ -87,6 +89,11 @@ public class ArtifactoryClientBuilder {
         return this;
     }
 
+    public ArtifactoryClientBuilder setRetryHandler(HttpRequestRetryHandler retryHandler) {
+        this.retryHandler = retryHandler;
+        return this;
+    }
+
     private CloseableHttpClient createClientBuilder(URI uri) {
         ArtifactoryHttpClient artifactoryHttpClient = new ArtifactoryHttpClient();
         artifactoryHttpClient.hostFromUrl(uri.toString());
@@ -110,6 +117,10 @@ public class ArtifactoryClientBuilder {
 
         if (socketTimeout != null) {
             artifactoryHttpClient.socketTimeout(socketTimeout);
+        }
+
+        if (retryHandler != null) {
+            artifactoryHttpClient.retryHandler(retryHandler);
         }
 
         artifactoryHttpClient.trustSelfSignCert(!ignoreSSLIssues);

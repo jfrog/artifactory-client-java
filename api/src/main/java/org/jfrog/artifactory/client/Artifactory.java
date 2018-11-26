@@ -11,7 +11,7 @@ import java.net.MalformedURLException;
  * @since 25/07/12
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public interface Artifactory extends ApiInterface {
+public interface Artifactory extends ApiInterface, Closeable {
 
     String API_BASE = "/api";
 
