@@ -58,7 +58,7 @@ public class SearchTests extends ArtifactoryTestsBase {
                 .artifactId("junit")
                 .repositories(getJCenterRepoName())
                 .doRawSearch();
-        assertEquals(results, "4.12");
+        assertEquals(results, "4.13-beta-1");
     }
 
     @Test
