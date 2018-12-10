@@ -6,6 +6,7 @@ import org.jfrog.artifactory.client.model.repository.settings.RepositorySettings
 import org.jfrog.artifactory.client.model.repository.settings.impl.NpmRepositorySettingsImpl
 import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
+import static org.testng.Assert.assertFalse
 
 /**
  * test that client correctly sends and receives repository configuration with `npm` package type
@@ -76,7 +77,7 @@ public class NpmPackageTypeRepositoryTests extends BaseRepositoryTests {
             assertThat(listRemoteFolderItems, CoreMatchers.is(expectedSettings.getListRemoteFolderItems()))
 
             // virtual
-            assertThat(externalDependenciesEnabled, CoreMatchers.nullValue())
+            assertFalse(externalDependenciesEnabled)
             assertThat(externalDependenciesPatterns, CoreMatchers.nullValue())
             assertThat(externalDependenciesRemoteRepo, CoreMatchers.nullValue())
         }
