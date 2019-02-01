@@ -1,8 +1,17 @@
 package org.jfrog.artifactory.client;
 
+import com.sun.net.httpserver.Headers;
+import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpHandler;
+import com.sun.net.httpserver.HttpServer;
+import org.apache.commons.io.IOUtils;
+import org.jfrog.artifactory.client.impl.ArtifactoryRequestImpl;
+import org.junit.Assert;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
+import java.io.OutputStream;
+import java.net.InetSocketAddress;
 
 import static junit.framework.Assert.assertEquals;
 
@@ -124,4 +133,49 @@ public class ArtifactoryTests {
         assertEquals(builder.getSocketTimeout(), new Integer(100));
         builder.build();
     }
+
+
+    @Test
+    public void apiKeyBuilderTest() throws IOException {
+        HttpServer server = createServer();
+        server.start();
+
+        String apiKey = "my-api-key";
+        ArtifactoryClientBuilder builder = ArtifactoryClientBuilder.create();
+        builder.setUrl("http://localhost:" + server.getAddress().getPort())
+                .setApiKey(apiKey);
+
+        Artifactory artifactory = builder.build();
+
+        ArtifactoryRequest repositoryRequest = new ArtifactoryRequestImpl().apiUrl("/api/system/ping")
+                .method(ArtifactoryRequest.Method.POST)
+                .responseType(ArtifactoryRequest.ContentType.JSON);
+
+        ArtifactoryResponse response = artifactory.restCall(repositoryRequest);
+        Assert.assertTrue(response.isSuccessResponse());
+        Assert.assertEquals(apiKey, response.getRawBody());
+    }
+
+    private HttpServer createServer() throws IOException {
+        HttpServer server = HttpServer.create(new InetSocketAddress(0), 0);
+        server.createContext("/api/system/ping", new RestMockHandler());
+        server.setExecutor(null);
+        return server;
+    }
+
+    class RestMockHandler implements HttpHandler {
+        public void handle(HttpExchange t) throws IOException {
+            Headers headers = t.getRequestHeaders();
+            String response = null;
+            if(headers.containsKey("X-JFrog-Art-Api")) {
+                response = headers.getFirst("X-JFrog-Art-Api");
+            }
+
+            t.sendResponseHeaders(200, response.length());
+            OutputStream os = t.getResponseBody();
+            os.write(response.getBytes());
+            os.close();
+        }
+    }
+
 }

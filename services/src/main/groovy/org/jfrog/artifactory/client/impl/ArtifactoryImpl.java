@@ -33,13 +33,15 @@ public class ArtifactoryImpl implements Artifactory {
     private String userAgent;
     private CloseableHttpClient httpClient;
     private String accessToken;
+    private String apiKey;
 
-    public ArtifactoryImpl(CloseableHttpClient httpClient, String url, String userAgent, String username, String accessToken) {
+    public ArtifactoryImpl(CloseableHttpClient httpClient, String url, String userAgent, String username, String accessToken, String apiKey) {
         this.url = url;
         this.httpClient = httpClient;
         this.userAgent = userAgent;
         this.username = username;
         this.accessToken = accessToken;
+        this.apiKey = apiKey;
     }
 
     @Override
@@ -172,7 +174,7 @@ public class ArtifactoryImpl implements Artifactory {
         }
 
         httpRequest.setURI(URI.create(url + requestPath + queryPath));
-        addAccessTokenHeaderIfNeeded(httpRequest);
+        addAuthenticationHeadersIfNeeded(httpRequest);
 
         if (contentType != null) {
             httpRequest.setHeader("Content-type", contentType.getMimeType());
@@ -221,9 +223,11 @@ public class ArtifactoryImpl implements Artifactory {
         return new HttpResponseException(statusLine.getStatusCode(), artifactoryResponse);
     }
 
-    private HttpRequestBase addAccessTokenHeaderIfNeeded(HttpRequestBase httpRequestBase) {
+    private HttpRequestBase addAuthenticationHeadersIfNeeded(HttpRequestBase httpRequestBase) {
         if (StringUtils.isNotEmpty(accessToken)) {
             httpRequestBase.addHeader("Authorization", "Bearer " + accessToken);
+        } else if (StringUtils.isNotEmpty(apiKey)) {
+            httpRequestBase.addHeader("X-JFrog-Art-Api", apiKey);
         }
         return httpRequestBase;
     }
@@ -231,7 +235,7 @@ public class ArtifactoryImpl implements Artifactory {
     protected Boolean head(String path) throws IOException {
         HttpHead httpHead = new HttpHead();
         httpHead.setURI(URI.create(url + path));
-        httpHead = (HttpHead) addAccessTokenHeaderIfNeeded(httpHead);
+        httpHead = (HttpHead) addAuthenticationHeadersIfNeeded(httpHead);
         HttpResponse httpResponse = httpClient.execute(httpHead);
         int status = httpResponse.getStatusLine().getStatusCode();
         /** Any status code >= 100 and < 400 According to the {@link groovyx.net.http.Status} class*/
@@ -242,7 +246,7 @@ public class ArtifactoryImpl implements Artifactory {
         HttpGet httpGet = new HttpGet();
 
         httpGet.setURI(URI.create(url + path));
-        httpGet = (HttpGet) addAccessTokenHeaderIfNeeded(httpGet);
+        httpGet = (HttpGet) addAuthenticationHeadersIfNeeded(httpGet);
 
         HttpResponse httpResponse = httpClient.execute(httpGet);
         int status = httpResponse.getStatusLine().getStatusCode();
@@ -262,7 +266,7 @@ public class ArtifactoryImpl implements Artifactory {
     public <T> T post(String path, org.apache.http.entity.ContentType contentType, String content, Map<String, String> headers, Class<? extends T> object, Class<T> interfaceObject) throws IOException {
         HttpPost httpPost = new HttpPost();
         httpPost.setURI(URI.create(url + path));
-        httpPost = (HttpPost) addAccessTokenHeaderIfNeeded(httpPost);
+        httpPost = (HttpPost) addAuthenticationHeadersIfNeeded(httpPost);
 
         httpPost.setHeader("Content-type", contentType.getMimeType());
         if (headers != null && !headers.isEmpty()) {
@@ -285,7 +289,7 @@ public class ArtifactoryImpl implements Artifactory {
         headers, Class<? extends T> object, Class<T> interfaceObject) throws IOException {
         HttpPatch httpPatch = new HttpPatch();
         httpPatch.setURI(URI.create(url + path));
-        httpPatch = (HttpPatch) addAccessTokenHeaderIfNeeded(httpPatch);
+        httpPatch = (HttpPatch) addAuthenticationHeadersIfNeeded(httpPatch);
 
         httpPatch.setHeader("Content-type", contentType.getMimeType());
         if (headers != null && !headers.isEmpty()) {
@@ -307,7 +311,7 @@ public class ArtifactoryImpl implements Artifactory {
     public <T> T put(String path, org.apache.http.entity.ContentType contentType, String content, Map<String, String> headers, InputStream inputStream, long length, Class<? extends T> object, Class<T> interfaceObject) throws IOException {
         HttpPut httpPut = new HttpPut();
         httpPut.setURI(URI.create(url + path));
-        httpPut = (HttpPut) addAccessTokenHeaderIfNeeded(httpPut);
+        httpPut = (HttpPut) addAuthenticationHeadersIfNeeded(httpPut);
 
         if (contentType != null) {
             httpPut.setHeader("Content-type", contentType.getMimeType());
@@ -345,7 +349,7 @@ public class ArtifactoryImpl implements Artifactory {
         HttpDelete httpDelete = new HttpDelete();
 
         httpDelete.setURI(URI.create(url + path));
-        httpDelete = (HttpDelete) addAccessTokenHeaderIfNeeded(httpDelete);
+        httpDelete = (HttpDelete) addAuthenticationHeadersIfNeeded(httpDelete);
         HttpResponse httpResponse = httpClient.execute(httpDelete);
         int status = httpResponse.getStatusLine().getStatusCode();
         if (status != HttpStatus.SC_OK && status != HttpStatus.SC_NO_CONTENT && status != HttpStatus.SC_ACCEPTED) {

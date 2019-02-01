@@ -30,6 +30,7 @@ public class ArtifactoryClientBuilder {
     private String userAgent;
     private boolean ignoreSSLIssues;
     private String accessToken;
+    private String apiKey;
 
     protected ArtifactoryClientBuilder() {
         super();
@@ -87,12 +88,17 @@ public class ArtifactoryClientBuilder {
         return this;
     }
 
+    public ArtifactoryClientBuilder setApiKey(String apiKey) {
+        this.apiKey = apiKey;
+        return this;
+    }
+
+
     private CloseableHttpClient createClientBuilder(URI uri) {
         ArtifactoryHttpClient artifactoryHttpClient = new ArtifactoryHttpClient();
         artifactoryHttpClient.hostFromUrl(uri.toString());
 
-
-        if (StringUtils.isEmpty(accessToken)) {
+        if (StringUtils.isEmpty(accessToken) && StringUtils.isEmpty(apiKey)) {
             artifactoryHttpClient.authentication(username, password);
         }
 
@@ -134,7 +140,7 @@ public class ArtifactoryClientBuilder {
 
         CloseableHttpClient closeableHttpClient = createClientBuilder(uri);
 
-        return new ArtifactoryImpl(closeableHttpClient, url, userAgent, username, accessToken);
+        return new ArtifactoryImpl(closeableHttpClient, url, userAgent, username, accessToken, apiKey);
     }
 
     private static String getUserAgent() throws IOException {
