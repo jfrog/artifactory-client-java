@@ -54,11 +54,11 @@ public class SearchTests extends ArtifactoryTestsBase {
     @Test
     public void testLatestVersionSearch() throws IOException {
         String results = artifactory.searches().artifactsLatestVersion()
-                .groupId("junit")
-                .artifactId("junit")
+                .groupId("org.jfrog.maven.annomojo")
+                .artifactId("maven-plugin-anno")
                 .repositories(getJCenterRepoName())
                 .doRawSearch();
-        assertEquals(results, "4.13-beta-1");
+        assertEquals(results, "1.4.1");
     }
 
     @Test
