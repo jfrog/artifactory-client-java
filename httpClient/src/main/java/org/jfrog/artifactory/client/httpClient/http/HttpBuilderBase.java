@@ -46,6 +46,7 @@ public abstract class HttpBuilderBase<T extends HttpBuilderBase> {
     private JFrogAuthScheme chosenAuthScheme = JFrogAuthScheme.BASIC; //Signifies what auth scheme will be used by the client
     private boolean cookieSupportEnabled = false;
     private boolean trustSelfSignCert = false;
+    protected SSLContextBuilder sslContextBuilder;
     private int maxConnectionsTotal = DEFAULT_MAX_CONNECTIONS;
     private int maxConnectionsPerRoute = DEFAULT_MAX_CONNECTIONS;
     private int connectionPoolTimeToLive = CONNECTION_POOL_TIME_TO_LIVE;
@@ -133,6 +134,15 @@ public abstract class HttpBuilderBase<T extends HttpBuilderBase> {
      */
     public T trustSelfSignCert(boolean trustSelfSignCert) {
         this.trustSelfSignCert = trustSelfSignCert;
+        return self();
+    }
+
+    /**
+     * @param sslContextBuilder SSLContext builder
+     * @return {@link T}
+     */
+    public T sslContextBuilder(SSLContextBuilder sslContextBuilder) {
+        this.sslContextBuilder = sslContextBuilder;
         return self();
     }
 
@@ -287,8 +297,11 @@ public abstract class HttpBuilderBase<T extends HttpBuilderBase> {
     private SSLContext buildSslContext() {
         SSLContext sslContext = null;
         try {
-            SSLContextBuilder sslBuilder = null;
+            SSLContextBuilder sslBuilder = sslContextBuilder;
             if (trustSelfSignCert) {
+                if (sslBuilder != null) {
+                    throw new IllegalStateException("Cannot configure both SSLContextBuilder and TrustSelfSignCert");
+                }
                 // trust any self signed certificate
                 sslBuilder = SSLContexts.custom().loadTrustMaterial(TrustSelfSignedMultiChainStrategy.INSTANCE);
             }
