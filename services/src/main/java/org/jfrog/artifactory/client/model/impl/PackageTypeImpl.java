@@ -6,6 +6,7 @@ public enum PackageTypeImpl implements PackageType {
     bower,
     cocoapods,
     cran,
+    conda,
     debian,
     distribution,
     docker,

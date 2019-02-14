@@ -51,6 +51,18 @@ Artifactory artifactory = ArtifactoryClientBuilder.create()
     .setPassword("password")
     .build();
 ```
+
+Trusting your own self-signed certificates without ignoring any SSL issue:
+```
+Artifactory artifactory = ArtifactoryClientBuilder.create()
+    .setUrl("ArtifactoryUrl")
+    .setUsername("username")
+    .setPassword("password")
+    .setSslContextBuilder(SSLContexts.custom()
+        .loadTrustMaterial( <your trust strategy here> ))
+    .build();
+```
+
 #### Uploading and downloading artifacts
 
 ##### Uploading an Artifacts

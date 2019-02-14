@@ -1,16 +1,15 @@
 package org.jfrog.artifactory.client.model.impl;
 
+import java.util.List;
+import java.util.Map;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-
 import org.jfrog.artifactory.client.model.ContentSync;
 import org.jfrog.artifactory.client.model.RemoteRepository;
 import org.jfrog.artifactory.client.model.RepositoryType;
 import org.jfrog.artifactory.client.model.repository.settings.RepositorySettings;
 import org.jfrog.artifactory.client.model.repository.settings.XraySettings;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * @author jbaruch
@@ -27,6 +26,7 @@ public class RemoteRepositoryImpl extends NonVirtualRepositoryBase implements Re
     private boolean storeArtifactsLocally;
     private int socketTimeoutMillis;
     private boolean enableCookieManagement;
+    private boolean bypassHeadRequests;
     private boolean allowAnyHostAuth;
     private String localAddress;
     private int retrievalCachePeriodSecs;
@@ -57,7 +57,7 @@ public class RemoteRepositoryImpl extends NonVirtualRepositoryBase implements Re
                          int retrievalCachePeriodSecs, boolean shareConfiguration, int socketTimeoutMillis, boolean cookieManagementEnabled, boolean allowAnyHostAuth, boolean storeArtifactsLocally, boolean synchronizeProperties,
                          boolean unusedArtifactsCleanupEnabled, int unusedArtifactsCleanupPeriodHours, String url, String username, String repoLayoutRef,
                          long assumedOfflinePeriodSecs, boolean archiveBrowsingEnabled, boolean listRemoteFolderItems,
-                         String clientTlsCertificate, Map<String, Object> customProperties) {
+                         String clientTlsCertificate, Map<String, Object> customProperties, boolean bypassHeadRequests) {
 
         super(key, settings, xraySettings, description, excludesPattern, includesPattern,
             notes, blackedOut,
@@ -86,6 +86,7 @@ public class RemoteRepositoryImpl extends NonVirtualRepositoryBase implements Re
         this.assumedOfflinePeriodSecs = assumedOfflinePeriodSecs;
         this.listRemoteFolderItems = listRemoteFolderItems;
         this.clientTlsCertificate = clientTlsCertificate;
+        this.bypassHeadRequests = bypassHeadRequests;
     }
 
     public String getUrl() {
@@ -158,6 +159,14 @@ public class RemoteRepositoryImpl extends NonVirtualRepositoryBase implements Re
 
     public void setEnableCookieManagement(boolean cookieManagementEnbaled) {
         this.enableCookieManagement = cookieManagementEnbaled;
+    }
+
+    public boolean isBypassHeadRequests() {
+        return bypassHeadRequests;
+    }
+
+    public void setBypassHeadRequests(boolean bypassHeadRequests) {
+        this.bypassHeadRequests = bypassHeadRequests;
     }
 
     public boolean isAllowAnyHostAuth() {
@@ -285,6 +294,7 @@ public class RemoteRepositoryImpl extends NonVirtualRepositoryBase implements Re
         if (socketTimeoutMillis != that.socketTimeoutMillis) return false;
         if (allowAnyHostAuth != that.allowAnyHostAuth) return false;
         if (enableCookieManagement != that.allowAnyHostAuth) return false;
+        if (bypassHeadRequests != that.bypassHeadRequests) return false;
         if (storeArtifactsLocally != that.storeArtifactsLocally) return false;
         if (synchronizeProperties != that.synchronizeProperties) return false;
         if (unusedArtifactsCleanupEnabled != that.unusedArtifactsCleanupEnabled) return false;
@@ -312,6 +322,7 @@ public class RemoteRepositoryImpl extends NonVirtualRepositoryBase implements Re
         result = 31 * result + socketTimeoutMillis;
         result = 31 * result + (allowAnyHostAuth ? 1 : 0);
         result = 31 * result + (enableCookieManagement ? 1 : 0);
+        result = 31 * result + (bypassHeadRequests ? 1 : 0);
         result = 31 * result + (localAddress != null ? localAddress.hashCode() : 0);
         result = 31 * result + retrievalCachePeriodSecs;
         result = 31 * result + missedRetrievalCachePeriodSecs;
@@ -338,6 +349,7 @@ public class RemoteRepositoryImpl extends NonVirtualRepositoryBase implements Re
                 ", socketTimeoutMillis=" + socketTimeoutMillis +
                 ", allowAnyHostAuth=" + allowAnyHostAuth +
                 ", enableCookieManagement=" + enableCookieManagement +
+                ", bypassHeadRequests=" + bypassHeadRequests +
                 ", localAddress='" + localAddress + '\'' +
                 ", retrievalCachePeriodSecs=" + retrievalCachePeriodSecs +
                 ", missedRetrievalCachePeriodSecs=" + missedRetrievalCachePeriodSecs +

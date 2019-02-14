@@ -4,9 +4,10 @@ import org.jfrog.artifactory.client.model.PackageType;
 import org.jfrog.artifactory.client.model.RepositoryType;
 import org.jfrog.artifactory.client.model.VirtualRepository;
 import org.jfrog.artifactory.client.model.builder.VirtualRepositoryBuilder;
-import static org.jfrog.artifactory.client.model.impl.PackageTypeImpl.*;
 
 import java.util.*;
+
+import static org.jfrog.artifactory.client.model.impl.PackageTypeImpl.*;
 
 /**
  * @author jbaruch
@@ -14,7 +15,7 @@ import java.util.*;
  */
 public class VirtualRepositoryBuilderImpl extends RepositoryBuilderBase<VirtualRepositoryBuilder, VirtualRepository> implements VirtualRepositoryBuilder {
     private static Set<PackageType> virtualRepositorySupportedTypes = new HashSet<PackageType>(Arrays.asList(
-            bower, cran, docker, gems, generic, gitlfs, gradle, ivy, maven, npm, nuget, p2, pypi, sbt, yum, rpm, composer, conan, chef, puppet
+            bower, cran, conda, docker, debian, gems, generic, gitlfs, gradle, ivy, maven, npm, nuget, p2, pypi, sbt, yum, rpm, composer, conan, chef, puppet
     ));
 
     private Collection<String> repositories = Collections.emptyList();

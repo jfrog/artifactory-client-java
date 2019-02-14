@@ -1,15 +1,14 @@
 package org.jfrog.artifactory.client.model.impl;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
 import org.jfrog.artifactory.client.model.ContentSync;
 import org.jfrog.artifactory.client.model.PackageType;
 import org.jfrog.artifactory.client.model.RemoteRepository;
 import org.jfrog.artifactory.client.model.RepositoryType;
 import org.jfrog.artifactory.client.model.builder.RemoteRepositoryBuilder;
-
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-
 import static org.jfrog.artifactory.client.model.impl.PackageTypeImpl.*;
 
 /**
@@ -18,7 +17,7 @@ import static org.jfrog.artifactory.client.model.impl.PackageTypeImpl.*;
  */
 public class RemoteRepositoryBuilderImpl extends NonVirtualRepositoryBuilderBase<RemoteRepositoryBuilder, RemoteRepository> implements RemoteRepositoryBuilder {
     private static Set<PackageType> remoteRepositorySupportedTypes = new HashSet<PackageType>(Arrays.asList(
-            bower, cocoapods, cran, debian, docker, gems, generic, gitlfs, gradle, ivy, maven, npm, nuget, opkg, p2, pypi, sbt, vcs, yum, rpm, composer, conan, chef, puppet
+            bower, cocoapods, cran, conda, debian, docker, gems, generic, gitlfs, gradle, ivy, maven, npm, nuget, opkg, p2, pypi, sbt, vcs, yum, rpm, composer, conan, chef, puppet
     ));
 
     private String url;
@@ -30,6 +29,7 @@ public class RemoteRepositoryBuilderImpl extends NonVirtualRepositoryBuilderBase
     private boolean storeArtifactsLocally = true;
     private int socketTimeoutMillis = 15000;
     private boolean enableCookieManagement = false;
+    private boolean bypassHeadRequests = false;
     private boolean allowAnyHostAuth = false;
     private String localAddress = "";
     private int retrievalCachePeriodSecs = 43200;
@@ -136,6 +136,15 @@ public class RemoteRepositoryBuilderImpl extends NonVirtualRepositoryBuilderBase
 
     public boolean isEnableCookieManagement() {
         return enableCookieManagement;
+    }
+
+    public RemoteRepositoryBuilder bypassHeadRequests(boolean bypass) {
+        this.bypassHeadRequests = bypass;
+        return this;
+    }
+
+    public boolean isBypassHeadRequests() {
+        return bypassHeadRequests;
     }
 
     public RemoteRepositoryBuilder localAddress(String localAddress) {
@@ -256,7 +265,7 @@ public class RemoteRepositoryBuilderImpl extends NonVirtualRepositoryBuilderBase
                 password, proxy, retrievalCachePeriodSecs, shareConfiguration, socketTimeoutMillis,
                 enableCookieManagement, allowAnyHostAuth, storeArtifactsLocally, synchronizeProperties,
                 unusedArtifactsCleanupEnabled, unusedArtifactsCleanupPeriodHours, url, username, repoLayoutRef,
-                assumedOfflinePeriodSecs, archiveBrowsingEnabled, listRemoteFolderItems, clientTlsCertificate, customProperties);
+                assumedOfflinePeriodSecs, archiveBrowsingEnabled, listRemoteFolderItems, clientTlsCertificate, customProperties, bypassHeadRequests);
     }
 
     @Override
