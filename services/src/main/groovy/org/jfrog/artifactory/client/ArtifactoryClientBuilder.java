@@ -3,6 +3,8 @@ package org.jfrog.artifactory.client;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.ssl.SSLContextBuilder;
+
 import org.jfrog.artifactory.client.httpClient.http.HttpBuilderBase;
 import org.jfrog.artifactory.client.impl.ArtifactoryImpl;
 import org.jfrog.artifactory.client.impl.util.ArtifactoryHttpClient;
@@ -29,6 +31,7 @@ public class ArtifactoryClientBuilder {
     private ProxyConfig proxy;
     private String userAgent;
     private boolean ignoreSSLIssues;
+    private SSLContextBuilder sslContextBuilder;
     private String accessToken;
 
     protected ArtifactoryClientBuilder() {
@@ -82,6 +85,11 @@ public class ArtifactoryClientBuilder {
         return this;
     }
 
+    public ArtifactoryClientBuilder setSslContextBuilder(SSLContextBuilder sslContextBuilder) {
+        this.sslContextBuilder = sslContextBuilder;
+        return this;
+    }
+
     public ArtifactoryClientBuilder setAccessToken(String accessToken) {
         this.accessToken = accessToken;
         return this;
@@ -112,7 +120,12 @@ public class ArtifactoryClientBuilder {
             artifactoryHttpClient.socketTimeout(socketTimeout);
         }
 
-        artifactoryHttpClient.trustSelfSignCert(!ignoreSSLIssues);
+        if (sslContextBuilder != null) {
+            artifactoryHttpClient.sslContextBuilder(sslContextBuilder);
+        }
+        else {
+            artifactoryHttpClient.trustSelfSignCert(!ignoreSSLIssues);
+        }
         return artifactoryHttpClient.build();
     }
 
@@ -175,6 +188,10 @@ public class ArtifactoryClientBuilder {
 
     public boolean isIgnoreSSLIssues() {
         return ignoreSSLIssues;
+    }
+
+    public SSLContextBuilder getSslContextBuilder() {
+        return sslContextBuilder;
     }
 
     public String getAccessToken() {
