@@ -11,6 +11,7 @@ import org.jfrog.artifactory.client.model.repository.settings.PypiRepositorySett
 public class PypiRepositorySettingsImpl extends AbstractRepositorySettings implements PypiRepositorySettings {
     private static String defaultLayout = "simple-default";
     private Boolean listRemoteFolderItems;
+    private String pyPIRegistryUrl;
 
     public PypiRepositorySettingsImpl() {
         super(defaultLayout);
@@ -26,6 +27,15 @@ public class PypiRepositorySettingsImpl extends AbstractRepositorySettings imple
 
     public void setListRemoteFolderItems(Boolean listRemoteFolderItems) {
         this.listRemoteFolderItems = listRemoteFolderItems;
+    }
+
+    @Override
+    public String getPyPIRegistryUrl() {
+        return pyPIRegistryUrl;
+    }
+
+    public void setPyPIRegistryUrl(String pyPIRegistryUrl) {
+        this.pyPIRegistryUrl = pyPIRegistryUrl;
     }
 
     @Override

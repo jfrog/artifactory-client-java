@@ -12,4 +12,5 @@ public interface PypiRepositorySettings extends RepositorySettings {
 
     Boolean getListRemoteFolderItems();
 
+    String getPyPIRegistryUrl();
 }

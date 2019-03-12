@@ -20,6 +20,7 @@ public class PypiPackageTypeRepositoryTests extends BaseRepositoryTests {
         settings.with {
             // remote
             listRemoteFolderItems = rnd.nextBoolean()
+            pyPIRegistryUrl = "https://pypi.org"
         }
 
         return settings
@@ -55,6 +56,7 @@ public class PypiPackageTypeRepositoryTests extends BaseRepositoryTests {
             assertThat(packageType, CoreMatchers.is(expectedSettings.getPackageType()))
             assertThat(repoLayout, CoreMatchers.is(expectedSettings.getRepoLayout()))
             assertThat(listRemoteFolderItems, CoreMatchers.is(expectedSettings.getListRemoteFolderItems()))
+            assertThat(pyPIRegistryUrl, CoreMatchers.is(expectedSettings.pyPIRegistryUrl))
         }
     }
 
