@@ -9,6 +9,7 @@ import org.jfrog.artifactory.client.model.repository.settings.vcs.VcsType
 import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
 import static org.testng.Assert.assertFalse
+import static org.testng.Assert.assertTrue
 
 /**
  * test that client correctly sends and receives repository configuration with `bower` package type
@@ -93,7 +94,7 @@ public class BowerPackageTypeRepositoryTests extends BaseRepositoryTests {
             assertThat(vcsType, CoreMatchers.is(expectedSettings.getVcsType()))
 
             // virtual
-            assertFalse(externalDependenciesEnabled)
+            assertTrue(externalDependenciesEnabled == null)
             assertThat(externalDependenciesPatterns, CoreMatchers.nullValue())
             assertThat(externalDependenciesRemoteRepo, CoreMatchers.nullValue())
         }
