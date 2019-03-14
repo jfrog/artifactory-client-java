@@ -1,5 +1,7 @@
 package org.jfrog.artifactory.client.model.repository.settings.impl;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import org.jfrog.artifactory.client.model.PackageType;
 import org.jfrog.artifactory.client.model.impl.PackageTypeImpl;
 import org.jfrog.artifactory.client.model.repository.settings.AbstractRepositorySettings;
@@ -11,6 +13,8 @@ import org.jfrog.artifactory.client.model.repository.settings.PypiRepositorySett
 public class PypiRepositorySettingsImpl extends AbstractRepositorySettings implements PypiRepositorySettings {
     private static String defaultLayout = "simple-default";
     private Boolean listRemoteFolderItems;
+    @JsonProperty("pyPIRegistryUrl")
+    private String pypiRegistryUrl;
 
     public PypiRepositorySettingsImpl() {
         super(defaultLayout);
@@ -26,6 +30,15 @@ public class PypiRepositorySettingsImpl extends AbstractRepositorySettings imple
 
     public void setListRemoteFolderItems(Boolean listRemoteFolderItems) {
         this.listRemoteFolderItems = listRemoteFolderItems;
+    }
+
+    @Override
+    public String getPypiRegistryUrl() {
+        return pypiRegistryUrl;
+    }
+
+    public void setPypiRegistryUrl(String pypiRegistryUrl) {
+        this.pypiRegistryUrl = pypiRegistryUrl;
     }
 
     @Override
