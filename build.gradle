@@ -93,6 +93,7 @@ subprojects {
             events "started", "passed", "skipped", "failed", "standardOut", "standardError"
             minGranularity 0
         }
+	ignoreFailures = System.getenv("IGNORE_FAILURES") ? System.getenv("IGNORE_FAILURES").toBoolean() : false
     }
 
     publishing {
