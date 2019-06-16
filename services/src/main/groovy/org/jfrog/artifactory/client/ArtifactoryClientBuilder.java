@@ -15,6 +15,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Properties;
+import java.util.function.Supplier;
 
 /**
  * @author jbaruch
@@ -33,6 +34,7 @@ public class ArtifactoryClientBuilder {
     private boolean ignoreSSLIssues;
     private SSLContextBuilder sslContextBuilder;
     private String accessToken;
+    private Supplier<String> traceIdSupplier;
 
     protected ArtifactoryClientBuilder() {
         super();
@@ -95,6 +97,16 @@ public class ArtifactoryClientBuilder {
         return this;
     }
 
+    /**
+     * Sets a supplier for the current trace-id.
+     * If the supplier would return a non-empty string, that string would
+     * be added as a header called X-B3-Traceid to outgoing requests.
+     */
+    public ArtifactoryClientBuilder setTraceIdSupplier(Supplier<String> traceIdSupplier) {
+        this.traceIdSupplier = traceIdSupplier;
+        return this;
+    }
+
     private CloseableHttpClient createClientBuilder(URI uri) {
         ArtifactoryHttpClient artifactoryHttpClient = new ArtifactoryHttpClient();
         artifactoryHttpClient.hostFromUrl(uri.toString());
@@ -125,6 +137,9 @@ public class ArtifactoryClientBuilder {
         }
         else {
             artifactoryHttpClient.trustSelfSignCert(!ignoreSSLIssues);
+        }
+        if (traceIdSupplier != null) {
+                artifactoryHttpClient.setTraceIdSupplier(traceIdSupplier);
         }
         return artifactoryHttpClient.build();
     }

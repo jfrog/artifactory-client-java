@@ -31,6 +31,7 @@ import java.net.*;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
 
 /**
  * Base builder for HTTP client.
@@ -50,6 +51,8 @@ public abstract class HttpBuilderBase<T extends HttpBuilderBase> {
     private int maxConnectionsTotal = DEFAULT_MAX_CONNECTIONS;
     private int maxConnectionsPerRoute = DEFAULT_MAX_CONNECTIONS;
     private int connectionPoolTimeToLive = CONNECTION_POOL_TIME_TO_LIVE;
+    private static final String TRACING_HEADER = "X-B3-Traceid";
+
 
     HttpBuilderBase() {
         credsProvider = new BasicCredentialsProvider();
@@ -171,6 +174,22 @@ public abstract class HttpBuilderBase<T extends HttpBuilderBase> {
 
     public HttpBuilderBase.ProxyConfigBuilder proxy(String host, int port) {
         return new HttpBuilderBase.ProxyConfigBuilder(host, port);
+    }
+
+    /**
+     * Sets a supplier for the current trace-id.
+     * If the supplier would return a non-empty string, that string would
+     * be added as a header called X-B3-Traceid to outgoing requests.
+     */
+    public void setTraceIdSupplier(Supplier<String> traceIdSupplier) {
+        builder.addInterceptorLast(
+                (HttpRequestInterceptor) (request, context) -> {
+                    String traceId = traceIdSupplier.get();
+                    if (traceId != null && !traceId.isEmpty()) {
+                        request.addHeader(TRACING_HEADER, traceId);
+                    }
+                }
+        );
     }
 
     public class ProxyConfigBuilder {
