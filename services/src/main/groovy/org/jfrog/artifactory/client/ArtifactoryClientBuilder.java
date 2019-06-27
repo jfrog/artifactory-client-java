@@ -35,7 +35,7 @@ public class ArtifactoryClientBuilder {
     private boolean ignoreSSLIssues;
     private SSLContextBuilder sslContextBuilder;
     private String accessToken;
-    private List<HttpRequestInterceptor> requestInterceptorList;
+    private List<HttpRequestInterceptor> requestInterceptorList = new ArrayList<>();
 
     protected ArtifactoryClientBuilder() {
         super();
@@ -107,9 +107,6 @@ public class ArtifactoryClientBuilder {
      * @return ArtifactoryClientBuilder
      */
     public ArtifactoryClientBuilder addInterceptorLast(HttpRequestInterceptor httpRequestInterceptor) {
-        if (this.requestInterceptorList == null) {
-            this.requestInterceptorList = new ArrayList<>();
-        }
         this.requestInterceptorList.add(httpRequestInterceptor);
         return this;
     }
