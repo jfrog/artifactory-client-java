@@ -124,7 +124,7 @@ public abstract class HttpBuilderBase<T extends HttpBuilderBase> {
         return self();
     }
 
-    public T addInterceptorLast(HttpRequestInterceptor httpRequestInterceptor){
+    public T addInterceptorLast(HttpRequestInterceptor httpRequestInterceptor) {
         builder.addInterceptorLast(httpRequestInterceptor);
         return self();
     }
