@@ -142,10 +142,8 @@ public class ArtifactoryClientBuilder {
         else {
             artifactoryHttpClient.trustSelfSignCert(!ignoreSSLIssues);
         }
-        if (requestInterceptorList != null) {
-            for (HttpRequestInterceptor httpRequestInterceptor :requestInterceptorList) {
-                artifactoryHttpClient.addInterceptorLast(httpRequestInterceptor);
-            }
+        for (HttpRequestInterceptor httpRequestInterceptor : requestInterceptorList) {
+            artifactoryHttpClient.addInterceptorLast(httpRequestInterceptor);
         }
         return artifactoryHttpClient.build();
     }
