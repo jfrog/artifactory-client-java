@@ -1,10 +1,10 @@
 package org.jfrog.artifactory.client;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.http.HttpRequestInterceptor;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.ssl.SSLContextBuilder;
-
 import org.jfrog.artifactory.client.httpClient.http.HttpBuilderBase;
 import org.jfrog.artifactory.client.impl.ArtifactoryImpl;
 import org.jfrog.artifactory.client.impl.util.ArtifactoryHttpClient;
@@ -14,6 +14,8 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 /**
@@ -33,6 +35,7 @@ public class ArtifactoryClientBuilder {
     private boolean ignoreSSLIssues;
     private SSLContextBuilder sslContextBuilder;
     private String accessToken;
+    private List<HttpRequestInterceptor> requestInterceptorList = new ArrayList<>();
 
     protected ArtifactoryClientBuilder() {
         super();
@@ -95,6 +98,19 @@ public class ArtifactoryClientBuilder {
         return this;
     }
 
+    /**
+     * Add an Http request interceptor to the underlying Http client builder used by the artifactory client
+     * <br>
+     * For further details see
+     * {@link org.apache.http.impl.client.HttpClientBuilder#addInterceptorLast(org.apache.http.HttpRequestInterceptor)}
+     * @param httpRequestInterceptor request interceptor that allows manipulating and examining of outgoing requests
+     * @return ArtifactoryClientBuilder
+     */
+    public ArtifactoryClientBuilder addInterceptorLast(HttpRequestInterceptor httpRequestInterceptor) {
+        this.requestInterceptorList.add(httpRequestInterceptor);
+        return this;
+    }
+
     private CloseableHttpClient createClientBuilder(URI uri) {
         ArtifactoryHttpClient artifactoryHttpClient = new ArtifactoryHttpClient();
         artifactoryHttpClient.hostFromUrl(uri.toString());
@@ -125,6 +141,9 @@ public class ArtifactoryClientBuilder {
         }
         else {
             artifactoryHttpClient.trustSelfSignCert(!ignoreSSLIssues);
+        }
+        for (HttpRequestInterceptor httpRequestInterceptor : requestInterceptorList) {
+            artifactoryHttpClient.addInterceptorLast(httpRequestInterceptor);
         }
         return artifactoryHttpClient.build();
     }

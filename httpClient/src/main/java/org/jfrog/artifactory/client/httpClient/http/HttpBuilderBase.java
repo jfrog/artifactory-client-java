@@ -2,7 +2,9 @@ package org.jfrog.artifactory.client.httpClient.http;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.*;
-import org.apache.http.auth.*;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.Credentials;
+import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.config.AuthSchemes;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.config.Registry;
@@ -15,7 +17,10 @@ import org.apache.http.conn.socket.PlainConnectionSocketFactory;
 import org.apache.http.conn.ssl.DefaultHostnameVerifier;
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.impl.client.*;
+import org.apache.http.impl.client.BasicCredentialsProvider;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.DefaultRoutePlanner;
 import org.apache.http.impl.conn.DefaultSchemePortResolver;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
@@ -27,7 +32,8 @@ import org.apache.http.ssl.SSLContexts;
 import org.jfrog.artifactory.client.httpClient.http.auth.ProxyPreemptiveAuthInterceptor;
 
 import javax.net.ssl.SSLContext;
-import java.net.*;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -115,6 +121,11 @@ public abstract class HttpBuilderBase<T extends HttpBuilderBase> {
 
     public T socketTimeout(int soTimeout) {
         config.setSocketTimeout(soTimeout);
+        return self();
+    }
+
+    public T addInterceptorLast(HttpRequestInterceptor httpRequestInterceptor) {
+        builder.addInterceptorLast(httpRequestInterceptor);
         return self();
     }
 
