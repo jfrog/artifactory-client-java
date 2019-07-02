@@ -25,7 +25,7 @@ Add the following dependency to your `pom.xml` file:
 <dependency>
     <groupId>org.jfrog.artifactory.client</groupId>
     <artifactId>artifactory-java-client-services</artifactId>
-    <version>2.8.3</version>
+    <version>2.8.4</version>
 </dependency>
 ```
 #### Gradle
@@ -60,6 +60,18 @@ Artifactory artifactory = ArtifactoryClientBuilder.create()
     .setPassword("password")
     .setSslContextBuilder(SSLContexts.custom()
         .loadTrustMaterial( <your trust strategy here> ))
+    .build();
+```
+
+Adding a request interceptor for logging or modifying outgoing requests:
+```
+Artifactory artifactory = ArtifactoryClientBuilder.create()
+    .setUrl("ArtifactoryUrl")
+    .setUsername("username")
+    .setPassword("password")
+    .addInterceptorLast((request, httpContext) -> {
+                System.out.println("Artifactory request: "+ request.getRequestLine());
+            })
     .build();
 ```
 
