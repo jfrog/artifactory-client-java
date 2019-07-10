@@ -11,11 +11,16 @@ dependencies {
     compile 'org.apache.httpcomponents:httpclient:4.4.1'
     compile 'commons-io:commons-io:2.4'
     compile 'org.apache.commons:commons-lang3:3.7'
-    compile group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
     compile addJackson('jackson-core')
     compile addJackson('jackson-annotations')
     compile addJackson('jackson-databind')
     testCompile group: 'org.testng', name: 'testng', version: '6.5.2'
+    /*
+     * Don't depend upon a specific logging implementation as a compile or runtime dependency.
+     * https://github.com/jfrog/artifactory-client-java/issues/43
+     * https://github.com/jfrog/artifactory-client-java/issues/232
+     */
+    testRuntime group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
 }
 
 task createReleasePropertiesFile(type:Exec) {
