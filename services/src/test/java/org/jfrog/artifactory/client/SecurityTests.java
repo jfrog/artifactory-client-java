@@ -221,7 +221,6 @@ public class SecurityTests extends ArtifactoryTestsBase {
         User user = userBuilder.name(USER_NAME).email("test@test.com").admin(false).profileUpdatable(true).password("test1234").build();
         artifactory.security().createOrUpdate(user);
         String resp = curl(artifactory.security().getSecurityUsersApi().substring(1));
-        System.out.println(resp);
         assertTrue(resp.contains(USER_NAME));
     }
 

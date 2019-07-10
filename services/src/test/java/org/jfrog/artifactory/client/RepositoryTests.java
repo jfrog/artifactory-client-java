@@ -246,7 +246,7 @@ public class RepositoryTests extends ArtifactoryTestsBase {
             .clientTlsCertificate(clientTlsCertificate)
             .build();
 
-        artifactory.repositories().create(1, changedRepository);
+        artifactory.repositories().update(changedRepository);
         RemoteRepository repository = (RemoteRepository) artifactory.repository(changedRepository.getKey()).get();
 
         assertNotNull(repository);
@@ -257,14 +257,14 @@ public class RepositoryTests extends ArtifactoryTestsBase {
      * Tests whether the builder sets the bypassHead request correctly (true)
      */
     @Test
-    public void testRemoteRepoBypassHead() throws Exception {
+    public void testRemoteRepoBypassHead() {
         RemoteRepository changedRepository = artifactory.repositories().builders().builderFrom(remoteRepository)
                 .key("testRemoteRepoBypassHead")
                 .description("create remote repo with bypassHead=true")
                 .bypassHeadRequests(true)
                 .build();
 
-        artifactory.repositories().create(1, changedRepository);
+        artifactory.repositories().update(changedRepository);
         RemoteRepository repository = (RemoteRepository) artifactory.repository(changedRepository.getKey()).get();
 
         assertNotNull(repository);
@@ -282,7 +282,7 @@ public class RepositoryTests extends ArtifactoryTestsBase {
                 .bypassHeadRequests(false)
                 .build();
 
-        artifactory.repositories().create(1, changedRepository);
+        artifactory.repositories().update(changedRepository);
         RemoteRepository repository = (RemoteRepository) artifactory.repository(changedRepository.getKey()).get();
 
         assertNotNull(repository);
