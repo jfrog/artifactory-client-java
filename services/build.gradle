@@ -47,13 +47,14 @@ configurations {
     all*.exclude group: 'commons-logging', module: 'commons-logging'
 }
 
-fatJar {
-    classifier = 'all'
+jar {
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
 }
 
 artifacts {
     archives sourcesJar,
             javadocJar,
-            jar, fatJar
+            jar
 }
-
