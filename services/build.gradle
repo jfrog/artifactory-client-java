@@ -1,5 +1,4 @@
 apply plugin: 'groovy'
-apply plugin: 'eu.appsatori.fatjar'
 
 dependencies {
     compile project(':artifactory-java-client-api')
@@ -51,6 +50,7 @@ jar {
     from {
         configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
     }
+    exclude 'META-INF/*.RSA', 'META-INF/*.SF','META-INF/*.DSA'
 }
 
 artifacts {
