@@ -72,7 +72,7 @@ class UploadableArtifactImpl extends ArtifactBase<UploadableArtifact> implements
         if (atomic) {
             headers.put('X-Explode-Archive-Atomic','true')
         }
-        int size = file ? file.size() : -1;
+        long size = file ? file.size() : -1;
         return artifactory.put("/$repo/$path${params}", ContentType.APPLICATION_OCTET_STREAM, null, headers, content, size, String, null);
     }
 
@@ -84,7 +84,7 @@ class UploadableArtifactImpl extends ArtifactBase<UploadableArtifact> implements
         if (listener) {
             content = new ProgressInputStream(content, file.size(), listener)
         }
-        int size =  file ? file.size() : -1;
+        long size =  file ? file.size() : -1;
         return (org.jfrog.artifactory.client.model.File)artifactory.put("/$repo/$path${params}", ContentType.APPLICATION_OCTET_STREAM, null, headers, content, size, FileImpl, org.jfrog.artifactory.client.model.File);
     }
 
