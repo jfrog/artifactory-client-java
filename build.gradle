@@ -10,7 +10,6 @@ buildscript {
 }
 
 allprojects {
-
     apply plugin: 'maven'
     apply plugin: 'maven-publish'
     apply plugin: 'com.jfrog.artifactory'
@@ -22,13 +21,23 @@ allprojects {
     project.tasks.withType(Jar).each {
         it.version = currentVersion
     }
-
-    artifactory {
-        contextUrl = 'https://oss.jfrog.org'
-    }
 }
 
 artifactoryPublish.skip = true
+
+artifactory {
+    contextUrl = 'https://oss.jfrog.org'
+    resolve {
+        repository {
+            repoKey = 'libs-release'
+        }
+    }
+    publish {
+        defaults {
+            publications 'main'
+        }
+    }
+}
 
 subprojects {
     apply plugin: 'java'
@@ -46,21 +55,7 @@ subprojects {
         compile 'com.fasterxml.jackson.core:jackson-databind:2.9.5'
         compile 'com.fasterxml.jackson.core:jackson-annotations:2.4.6'
     }
-
-    artifactory {
-        contextUrl = 'https://oss.jfrog.org'
-        resolve {
-            repository {
-                repoKey = 'libs-release'
-            }
-        }
-        publish {
-            defaults {
-                publications 'main'
-            }
-        }
-    }
-
+    
     task sourcesJar(type: Jar, dependsOn: classes) {
         classifier = 'sources'
         from sourceSets.main.allSource
