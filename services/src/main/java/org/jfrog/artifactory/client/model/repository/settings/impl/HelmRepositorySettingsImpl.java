@@ -19,7 +19,4 @@ public class HelmRepositorySettingsImpl extends AbstractRepositorySettings imple
     public PackageType getPackageType() {
         return PackageTypeImpl.helm;
     }
-
-    
-    
 }
