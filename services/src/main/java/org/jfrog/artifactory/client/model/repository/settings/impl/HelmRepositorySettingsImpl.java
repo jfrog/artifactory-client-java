@@ -10,7 +10,7 @@ import org.jfrog.artifactory.client.model.repository.settings.HelmRepositorySett
  */
 public class HelmRepositorySettingsImpl extends AbstractRepositorySettings implements HelmRepositorySettings {
     private static String defaultLayout = "simple-default";
-    
+    private Integer virtualRetrievalCachePeriodSecs;
 
     public HelmRepositorySettingsImpl() {
         super(defaultLayout);
@@ -18,5 +18,13 @@ public class HelmRepositorySettingsImpl extends AbstractRepositorySettings imple
 
     public PackageType getPackageType() {
         return PackageTypeImpl.helm;
+    }
+
+    public Integer getVirtualRetrievalCachePeriodSecs() {
+        return virtualRetrievalCachePeriodSecs;
+    }
+
+    public void setVirtualRetrievalCachePeriodSecs(Integer virtualRetrievalCachePeriodSecs) {
+        this.virtualRetrievalCachePeriodSecs = virtualRetrievalCachePeriodSecs;
     }
 }
