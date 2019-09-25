@@ -29,7 +29,8 @@ public enum PackageTypeImpl implements PackageType {
     composer,
     conan,
     chef,
-    puppet;
+    puppet,
+    helm;
 
     @Override
     public boolean isCustom() {

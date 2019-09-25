@@ -39,7 +39,8 @@ import org.jfrog.artifactory.client.model.repository.settings.impl.*;
     @JsonSubTypes.Type(value = ChefRepositorySettingsImpl.class, name = "chef"),
     @JsonSubTypes.Type(value = CranRepositorySettingsImpl.class, name = "cran"),
     @JsonSubTypes.Type(value = CondaRepositorySettingsImpl.class, name = "conda"),
-    @JsonSubTypes.Type(value = PuppetRepositorySettingsImpl.class, name = "puppet")
+    @JsonSubTypes.Type(value = PuppetRepositorySettingsImpl.class, name = "puppet"),
+    @JsonSubTypes.Type(value = HelmRepositorySettingsImpl.class, name = "helm")
 })
 
 public abstract class RepositorySettingsMixIn {
