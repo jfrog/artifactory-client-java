@@ -258,35 +258,34 @@ public class RepositoryTests extends ArtifactoryTestsBase {
      */
     @Test
     public void testRemoteRepoBypassHead() {
-        RemoteRepository changedRepository = artifactory.repositories().builders().builderFrom(remoteRepository)
-                .key("testRemoteRepoBypassHead")
-                .description("create remote repo with bypassHead=true")
-                .bypassHeadRequests(true)
-                .build();
-
-        artifactory.repositories().update(changedRepository);
-        RemoteRepository repository = (RemoteRepository) artifactory.repository(changedRepository.getKey()).get();
-
-        assertNotNull(repository);
-        assertEquals(repository.isBypassHeadRequests(), true);
+        testRemoteRepoBypassHead(true);
     }
 
     /**
      * Tests whether the builder sets the bypassHead request correctly (false)
      */
     @Test
-    public void testRemoteRepoNotBypassHead() throws Exception {
-        RemoteRepository changedRepository = artifactory.repositories().builders().builderFrom(remoteRepository)
-                .description("create remote repo with bypassHead=false")
-                .key("testRemoteRepoNotBypassHead")
-                .bypassHeadRequests(false)
-                .build();
+    public void testRemoteRepoNotBypassHead() {
+        testRemoteRepoBypassHead(false);
+    }
 
-        artifactory.repositories().update(changedRepository);
-        RemoteRepository repository = (RemoteRepository) artifactory.repository(changedRepository.getKey()).get();
+    private void testRemoteRepoBypassHead(boolean bypassHead) {
+        String repoKey = "testRemoteRepoBypassHead-" + bypassHead;
+        try {
+            RemoteRepository changedRepository = artifactory.repositories().builders().builderFrom(remoteRepository)
+                    .key(repoKey)
+                    .description("create remote repo with bypassHead=" + bypassHead)
+                    .bypassHeadRequests(bypassHead)
+                    .build();
 
-        assertNotNull(repository);
-        assertEquals(repository.isBypassHeadRequests(), false);
+            artifactory.repositories().create(1, changedRepository);
+            RemoteRepository repository = (RemoteRepository) artifactory.repository(changedRepository.getKey()).get();
+
+            assertNotNull(repository);
+            assertEquals(repository.isBypassHeadRequests(), bypassHead);
+        } finally {
+            deleteRepoIfExists(repoKey);
+        }
     }
 
     @Test
