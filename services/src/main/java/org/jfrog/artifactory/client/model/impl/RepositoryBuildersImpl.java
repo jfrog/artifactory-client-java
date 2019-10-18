@@ -38,7 +38,8 @@ public class RepositoryBuildersImpl implements RepositoryBuilders {
                 .unusedArtifactsCleanupEnabled(from.isUnusedArtifactsCleanupEnabled()).unusedArtifactsCleanupPeriodHours(from.getUnusedArtifactsCleanupPeriodHours())
                 .shareConfiguration(from.isShareConfiguration()).synchronizeProperties(from.isSynchronizeProperties()).repoLayoutRef(from.getRepoLayoutRef())
                 .assumedOfflinePeriodSecs(from.getAssumedOfflinePeriodSecs()).archiveBrowsingEnabled(from.isArchiveBrowsingEnabled())
-                .listRemoteFolderItems(from.isListRemoteFolderItems()).contentSync(from.getContentSync());
+                .listRemoteFolderItems(from.isListRemoteFolderItems()).contentSync(from.getContentSync()).customProperties(from.getCustomProperties())
+                .clientTlsCertificate(from.getClientTlsCertificate()).xraySettings(from.getXraySettings());
     }
 
     public LocalRepositoryBuilder localRepositoryBuilder() {
@@ -49,7 +50,7 @@ public class RepositoryBuildersImpl implements RepositoryBuilders {
         return new LocalRepositoryBuilderImpl().repositorySettings(from.getRepositorySettings())
                 .blackedOut(from.isBlackedOut()).description(from.getDescription()).excludesPattern(from.getExcludesPattern())
                 .includesPattern(from.getIncludesPattern()).key(from.getKey()).notes(from.getNotes()).propertySets(from.getPropertySets())
-                .archiveBrowsingEnabled(from.isArchiveBrowsingEnabled());
+                .archiveBrowsingEnabled(from.isArchiveBrowsingEnabled()).customProperties(from.getCustomProperties()).xraySettings(from.getXraySettings());
     }
 
     public VirtualRepositoryBuilder virtualRepositoryBuilder() {
@@ -60,6 +61,7 @@ public class RepositoryBuildersImpl implements RepositoryBuilders {
         return new VirtualRepositoryBuilderImpl().repositorySettings(from.getRepositorySettings()).description(from.getDescription())
                 .excludesPattern(from.getExcludesPattern()).includesPattern(from.getIncludesPattern()).key(from.getKey()).notes(from.getNotes())
                 .artifactoryRequestsCanRetrieveRemoteArtifacts(from.isArtifactoryRequestsCanRetrieveRemoteArtifacts())
-                .repositories(from.getRepositories()).defaultDeploymentRepo(from.getDefaultDeploymentRepo());
+                .repositories(from.getRepositories()).defaultDeploymentRepo(from.getDefaultDeploymentRepo())
+                .customProperties(from.getCustomProperties()).xraySettings(from.getXraySettings());
     }
 }
