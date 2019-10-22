@@ -30,7 +30,8 @@ public enum PackageTypeImpl implements PackageType {
     conan,
     chef,
     puppet,
-    helm;
+    helm,
+    go;
 
     @Override
     public boolean isCustom() {
