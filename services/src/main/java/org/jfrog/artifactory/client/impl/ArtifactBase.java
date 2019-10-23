@@ -1,8 +1,12 @@
 package org.jfrog.artifactory.client.impl;
 
-import org.jfrog.artifactory.client.Artifact;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.jfrog.artifactory.client.Artifact;
 
 /**
  * Created by eyalb on 21/06/2018.
@@ -28,11 +32,13 @@ public abstract class ArtifactBase<T extends Artifact> implements Artifact<T> {
         return this;
     }
 
-    protected String parseParams(HashMap<String, Object[]> props, String delimiter) {
+    protected String parseParams(HashMap<String, Object[]> props, String delimiter) throws UnsupportedEncodingException {
         StringBuilder sb = new StringBuilder();
         for (Map.Entry<String, Object[]> entry : props.entrySet()) {
+            String urlEncodedKey = URLEncoder.encode(entry.getKey(), StandardCharsets.UTF_8.toString());
             for (Object value : entry.getValue()) {
-                sb.append(";").append(entry.getKey()).append(delimiter).append(value);
+                String urlEncodedValue = URLEncoder.encode(String.valueOf(value), StandardCharsets.UTF_8.toString());
+                sb.append(";").append(urlEncodedKey).append(delimiter).append(urlEncodedValue);
             }
         }
         return sb.toString();

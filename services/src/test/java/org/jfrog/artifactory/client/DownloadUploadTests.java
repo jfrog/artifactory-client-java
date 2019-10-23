@@ -188,6 +188,13 @@ public class DownloadUploadTests extends ArtifactoryTestsBase {
         assertTrue(curlAndStrip("api/storage/" + localRepository.getKey() + "/" + PATH + "?properties").contains("{\"build\":[\"28\"],\"colors\":[\"red\"],\"released\":[\"false\"]}"));
     }
 
+    @Test(dependsOnMethods = "testUploadWithSingleProperty")
+    public void testUploadWithUrlUnsafeProperties() throws IOException {
+        artifactory.repository(localRepository.getKey()).upload(PATH, this.getClass().getResourceAsStream("/sample.txt"))
+                .withProperty("contains.url.unsafe", "test+value").doUpload();
+        assertTrue(curlAndStrip("api/storage/" + localRepository.getKey() + "/" + PATH + "?properties").contains("{\"contains.url.unsafe\":[\"test+value\"]}"));
+    }
+
     //TODO (jb) enable once RTFACT-5126 is fixed
     @Test(enabled = false, dependsOnMethods = "testUploadWithSingleProperty")
     public void testUploadWithMultiplePropertyValues() throws IOException {
