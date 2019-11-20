@@ -129,21 +129,25 @@ public class RestCallTests extends ArtifactoryTestsBase {
     public void testPatchProxy() throws Exception {
         final String proxyName = "proxy1";
         String yaml = "proxies:\n"
-                      + "  " + proxyName + ":\n"
-                      + "    host: hostproxy1\n"
-                      + "    port: 0 \n"
-                      + "    defaultProxy: false\n";
+                + "  " + proxyName + ":\n"
+                + "    host: hostproxy1\n"
+                + "    port: 0 \n";
+        String artifactory7Yaml = yaml + "    platformDefault: false\n";
 
         ArtifactoryRequest patchProxyRequest = new ArtifactoryRequestImpl()
-            .method(ArtifactoryRequest.Method.PATCH)
-            .apiUrl("api/system/configuration")
-            .requestType(ArtifactoryRequest.ContentType.YAML)
-            .requestBody(yaml);
-
+                .method(ArtifactoryRequest.Method.PATCH)
+                .apiUrl("api/system/configuration")
+                .requestType(ArtifactoryRequest.ContentType.YAML)
+                .requestBody(artifactory7Yaml);
         ArtifactoryResponse response = artifactory.restCall(patchProxyRequest);
 
         assertNotNull(response);
-        assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
+        if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
+            String artifactory6Yaml = yaml + "    defaultProxy: false\n";
+            response = artifactory.restCall(patchProxyRequest.requestBody(artifactory6Yaml));
+            assertNotNull(response);
+            assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
+        }
 
         String updatedXml = artifactory.system().configuration();
         assertTrue(updatedXml.contains(proxyName));
