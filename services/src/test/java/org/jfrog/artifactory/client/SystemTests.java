@@ -25,7 +25,7 @@ public class SystemTests extends ArtifactoryTestsBase {
         assertTrue(version.getVersion().contains("."));
         String revision = version.getRevision();
         // From version 5.5.0, running a snapshot produced also dev revision.
-        if (revision.equals("${buildNumber.prop}") || revision.equals("dev") ) {
+        if (revision.equals("${buildNumber.prop}") || revision.equals("dev")) {
             assertTrue(version.getVersion().contains("-SNAPSHOT"));
         } else {
             int rev = Integer.parseInt(revision);
@@ -64,18 +64,23 @@ public class SystemTests extends ArtifactoryTestsBase {
     public void testPatchOfProxy() {
         final String proxyName = "proxy1";
         String yaml = "proxies:\n"
-                      + "  " + proxyName + ":\n"
-                      + "    host: hostproxy1\n"
-                      + "    port: 0 \n"
-                      + "    defaultProxy: false\n";
-        artifactory.system().yamlConfiguration(yaml);
+                + "  " + proxyName + ":\n"
+                + "    host: hostproxy1\n"
+                + "    port: 0 \n";
+        String artifactory7Yaml = yaml + "    platformDefault: false\n";
+        artifactory.system().yamlConfiguration(artifactory7Yaml); // First, try Artifactory 7 style yaml
 
         String updatedXml = artifactory.system().configuration();
-        assertTrue(updatedXml.contains(proxyName));
+        if (!updatedXml.contains(proxyName)) { // If request failed, try Artifactory 6 style yaml
+            String artifactory6Yaml = yaml + "    defaultProxy: false\n";
+            artifactory.system().yamlConfiguration(artifactory6Yaml);
+            updatedXml = artifactory.system().configuration();
+            assertTrue(updatedXml.contains(proxyName));
+        }
 
         // Restore
         String deleteProxy = "proxies:\n"
-                      + "  " + proxyName + ": null\n";
+                + "  " + proxyName + ": null\n";
         artifactory.system().yamlConfiguration(deleteProxy);
     }
 
