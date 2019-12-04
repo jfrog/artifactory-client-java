@@ -68,10 +68,10 @@ public class SystemTests extends ArtifactoryTestsBase {
                 + "    host: hostproxy1\n"
                 + "    port: 0 \n";
         String artifactory7Yaml = yaml + "    platformDefault: false\n";
-        artifactory.system().yamlConfiguration(artifactory7Yaml);
+        artifactory.system().yamlConfiguration(artifactory7Yaml); // First, try Artifactory 7 style yaml
 
         String updatedXml = artifactory.system().configuration();
-        if (!updatedXml.contains(proxyName)) {
+        if (!updatedXml.contains(proxyName)) { // If request failed, try Artifactory 6 style yaml
             String artifactory6Yaml = yaml + "    defaultProxy: false\n";
             artifactory.system().yamlConfiguration(artifactory6Yaml);
             updatedXml = artifactory.system().configuration();

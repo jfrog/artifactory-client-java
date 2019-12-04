@@ -139,10 +139,10 @@ public class RestCallTests extends ArtifactoryTestsBase {
                 .apiUrl("api/system/configuration")
                 .requestType(ArtifactoryRequest.ContentType.YAML)
                 .requestBody(artifactory7Yaml);
-        ArtifactoryResponse response = artifactory.restCall(patchProxyRequest);
+        ArtifactoryResponse response = artifactory.restCall(patchProxyRequest); // First, try Artifactory 7 style yaml
 
         assertNotNull(response);
-        if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
+        if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) { // If status != 200, try Artifactory 6 style yaml
             String artifactory6Yaml = yaml + "    defaultProxy: false\n";
             response = artifactory.restCall(patchProxyRequest.requestBody(artifactory6Yaml));
             assertNotNull(response);
