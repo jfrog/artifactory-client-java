@@ -1,14 +1,26 @@
 package org.jfrog.artifactory.client.impl.util;
 
+import static com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS;
+import static com.fasterxml.jackson.databind.introspect.VisibilityChecker.Std.defaultInstance;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.Iterator;
+import java.util.Map;
+
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.*;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleAbstractTypeResolver;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.fasterxml.jackson.core.JsonParseException;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.Consts;
 import org.apache.http.HttpResponse;
@@ -17,17 +29,9 @@ import org.apache.http.util.EntityUtils;
 import org.jfrog.artifactory.client.ArtifactoryRequest;
 import org.jfrog.artifactory.client.impl.jackson.RepositoryMixIn;
 import org.jfrog.artifactory.client.impl.jackson.RepositorySettingsMixIn;
+import org.jfrog.artifactory.client.model.PackageType;
 import org.jfrog.artifactory.client.model.Repository;
 import org.jfrog.artifactory.client.model.repository.settings.RepositorySettings;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.util.*;
-
-import static com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS;
-import static com.fasterxml.jackson.databind.introspect.VisibilityChecker.Std.defaultInstance;
 
 /**
  * @author Alexei Vainshtein
@@ -136,4 +140,17 @@ public class Util {
         }
         return queryPath.toString();
     }
+
+    public static Class<? extends RepositorySettings> getRepositorySettingsClassForPackageType(PackageType packageType) {
+        JsonSubTypes annotation = RepositorySettingsMixIn.class.getDeclaredAnnotation(JsonSubTypes.class);
+
+        for (JsonSubTypes.Type type : annotation.value()) {
+            if (type.name().equals(packageType.name())) {
+                return (Class<? extends RepositorySettings>)type.value();
+            }
+        }
+
+        return null;
+    }
+
 }
