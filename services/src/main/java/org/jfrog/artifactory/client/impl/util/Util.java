@@ -8,7 +8,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.module.SimpleAbstractTypeResolver;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.fasterxml.jackson.core.JsonParseException;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.Consts;
 import org.apache.http.HttpResponse;
@@ -115,7 +114,7 @@ public class Util {
     public static <T> T parseObjectWithTypeReference(String content, TypeReference typeReference) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         configureObjectMapper(objectMapper);
-        return objectMapper.readValue(content, typeReference);
+        return (T) objectMapper.readValue(content, typeReference);
     }
 
     public static String encodeParams(String param) throws UnsupportedEncodingException {
