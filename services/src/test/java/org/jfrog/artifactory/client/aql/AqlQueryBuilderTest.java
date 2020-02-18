@@ -4,14 +4,14 @@ import org.testng.annotations.Test;
 
 import java.util.Arrays;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 
 import static org.jfrog.artifactory.client.aql.AqlItem.aqlItem;
 import static org.jfrog.artifactory.client.aql.AqlItem.or;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
 
 
 public class AqlQueryBuilderTest {

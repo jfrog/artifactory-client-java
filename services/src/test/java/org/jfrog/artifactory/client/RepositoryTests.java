@@ -4,7 +4,7 @@ import java.io.*;
 import java.util.*;
 
 import static java.util.Arrays.*;
-import static org.apache.commons.lang.StringUtils.*;
+import static org.apache.commons.lang3.StringUtils.*;
 import org.apache.http.*;
 import org.apache.http.client.*;
 import org.jfrog.artifactory.client.model.*;

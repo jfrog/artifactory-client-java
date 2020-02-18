@@ -7,13 +7,15 @@ dependencies {
     compile addSlf4J('slf4j-api')
     compile addSlf4J('log4j-over-slf4j')
     compile addSlf4J('jcl-over-slf4j')
-    compile 'org.apache.httpcomponents:httpclient:4.4.1'
-    compile 'commons-io:commons-io:2.4'
-    compile 'org.apache.commons:commons-lang3:3.7'
+//    compile 'org.apache.httpcomponents:httpclient:4.5.11'
+//    compile 'commons-codec:commons-codec:1.14'
+    compile 'commons-io:commons-io:2.6'
+//    compile 'org.apache.commons:commons-lang3:3.9'
     compile addJackson('jackson-core')
     compile addJackson('jackson-annotations')
     compile addJackson('jackson-databind')
-    testCompile group: 'org.testng', name: 'testng', version: '6.5.2'
+    testCompile 'org.hamcrest:hamcrest-core:2.2'
+    testCompile group: 'org.testng', name: 'testng', version: '7.1.0'
     /*
      * Don't depend upon a specific logging implementation as a compile or runtime dependency.
      * https://github.com/jfrog/artifactory-client-java/issues/43

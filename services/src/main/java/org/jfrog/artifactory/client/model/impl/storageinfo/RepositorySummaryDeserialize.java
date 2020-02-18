@@ -14,10 +14,10 @@ import java.util.List;
 /**
  * @author Aviad Shikloshi
  */
-public class RepositorySummaryDeserialize extends JsonDeserializer<List<RepositorySummary>> {
+public class RepositorySummaryDeserialize extends JsonDeserializer<List<RepositorySummaryImpl>> {
 
     @Override
-    public List<RepositorySummary> deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException, JsonProcessingException {
+    public List<RepositorySummaryImpl> deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException, JsonProcessingException {
 
         ObjectMapper mapper = new ObjectMapper();
         return mapper.readValue(jp, new TypeReference<List<RepositorySummaryImpl>>() {});

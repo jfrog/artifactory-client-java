@@ -6,9 +6,10 @@ import org.jfrog.artifactory.client.model.impl.LocalReplicationImpl
 import org.jfrog.artifactory.client.model.repository.settings.RepositorySettings
 import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
-import static junit.framework.Assert.assertTrue
 
-public class ReplicationTests extends BaseRepositoryTests {
+import static org.testng.Assert.assertTrue
+
+class ReplicationTests extends BaseRepositoryTests {
 
     @Override
     RepositorySettings getRepositorySettings(RepositoryType repositoryType) {
@@ -58,12 +59,13 @@ public class ReplicationTests extends BaseRepositoryTests {
 
         def replications = artifactory.repository(localRepo.getKey()).replications
 
-        // This call throws a groovyx.net.http.HttpResponseException with the message "Bad Request"
         try {
             replications.delete()
         } catch (Exception e) {
-            assertTrue(e instanceof HttpResponseException);
-            assertTrue(((HttpResponseException) e).getStatusCode() == 400);
+            boolean isInstanceOf = e instanceof HttpResponseException
+            assertTrue(isInstanceOf);
+            def statusCode = ((HttpResponseException) e).getStatusCode()
+            assertTrue(statusCode == 400);
         }
     }
 }

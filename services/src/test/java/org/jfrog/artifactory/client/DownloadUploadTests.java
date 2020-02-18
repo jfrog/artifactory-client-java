@@ -1,10 +1,10 @@
 package org.jfrog.artifactory.client;
 
 import org.apache.http.client.HttpResponseException;
-import junit.framework.Assert;
 import org.jfrog.artifactory.client.model.File;
 import org.jfrog.artifactory.client.model.Item;
 import org.jfrog.artifactory.client.model.impl.FolderImpl;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.io.FileInputStream;

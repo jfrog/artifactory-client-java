@@ -1,8 +1,8 @@
 package org.jfrog.artifactory.client;
 
-import junit.framework.Assert;
 import org.jfrog.artifactory.client.model.SystemInfo;
 import org.jfrog.artifactory.client.model.Version;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import static org.testng.Assert.assertNotNull;
