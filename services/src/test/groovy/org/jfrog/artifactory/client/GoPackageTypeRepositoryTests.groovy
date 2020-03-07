@@ -61,7 +61,7 @@ public class GoPackageTypeRepositoryTests extends BaseRepositoryTests {
             assertThat(repoLayout, CoreMatchers.is(expectedSettings.getRepoLayout()))
             
             // not applicable to remote repos
-            assertThat(externalDependenciesEnabled, CoreMatchers.nullValue())
+            assertThat(externalDependenciesEnabled, CoreMatchers.is(false))
         }
     }
     
