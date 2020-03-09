@@ -5,25 +5,24 @@ package org.jfrog.artifactory.client.model;
  * @since 22/11/12
  */
 public enum Privilege {
-    ADMIN('m'), DELETE('d'), DEPLOY('w'), ANNOTATE('n'), READ('r');
+    ADMIN("m"), DELETE("d"), DEPLOY("w"), ANNOTATE("n"), READ("r");
 
-    private Privilege(char abbreviation) {
+    Privilege(String abbreviation) {
         this.abbreviation = abbreviation;
     }
 
-    private char abbreviation;
+    private String abbreviation;
 
-    public char getAbbreviation() {
+    public String getAbbreviation() {
         return abbreviation;
     }
 
-    public static Privilege fromAbbreviation(char abbreviation){
+    public static Privilege fromAbbreviation(String abbreviation){
         for (Privilege privilege : values()) {
-            if (privilege.abbreviation == abbreviation) {
+            if (privilege.abbreviation.equals(abbreviation)) {
                 return privilege;
             }
         }
         throw new IllegalArgumentException("No Privilege for "+abbreviation+" found.");
     }
-
 }

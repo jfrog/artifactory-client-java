@@ -106,7 +106,7 @@ class ItemHandleImpl implements ItemHandle {
     private Set<? extends ItemPermission> mapToItemPermissions(Map<String, List> map, Class<? extends Subject> type) {
         map.collect { String key, List value ->
             List<Privilege> permissions = value.collect() {
-                Privilege.fromAbbreviation(it as char)
+                Privilege.fromAbbreviation(it)
             }
             new ItemPermissionImpl(new RepoPathImpl(repo, path), type == User ? new UserImpl(key) : new GroupImpl(key), permissions)
         }
