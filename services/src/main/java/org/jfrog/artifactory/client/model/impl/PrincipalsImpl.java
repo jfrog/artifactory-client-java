@@ -27,8 +27,8 @@ public class PrincipalsImpl implements Principals {
     // Using the most simple bean to facilitate Jackson de/serialization
     // So no constructor with Beans usage should exist
 
-    private Map<String, Set<Character>> users = new HashMap<>();
-    private Map<String, Set<Character>> groups = new HashMap<>();
+    private Map<String, Set<String>> users = new HashMap<>();
+    private Map<String, Set<String>> groups = new HashMap<>();
 
     protected void setPrincipals(List<Principal> users, List<Principal> groups) {
         this.users = setMapPrivilegesFrom(users);
@@ -45,29 +45,29 @@ public class PrincipalsImpl implements Principals {
         return getListPrincipalFrom(this.groups);
     }
 
-    private static Map<String, Set<Character>> setMapPrivilegesFrom(List<Principal> list) {
-        Map<String, Set<Character>> map = new HashMap<>();
+    private static Map<String, Set<String>> setMapPrivilegesFrom(List<Principal> list) {
+        Map<String, Set<String>> map = new HashMap<>();
         if (list != null && !list.isEmpty()) {
             for (Principal principal : list) {
-                Set<Character> characters = new HashSet<>(principal.getPrivileges().size());
+                Set<String> strings = new HashSet<>(principal.getPrivileges().size());
                 for (Privilege privilege : principal.getPrivileges()) {
-                    characters.add(privilege.getAbbreviation());
+                    strings.add(privilege.getAbbreviation());
                 }
-                map.put(principal.getName(), characters);
+                map.put(principal.getName(), strings);
             }
         }
         return map;
     }
 
-    private static List<Principal> getListPrincipalFrom(Map<String, Set<Character>> map) {
+    private static List<Principal> getListPrincipalFrom(Map<String, Set<String>> map) {
         if (map == null) {
             return Collections.emptyList();
         }
         List<Principal> list = new ArrayList<>();
-        for (Entry<String, Set<Character>> e : map.entrySet()) {
+        for (Entry<String, Set<String>> e : map.entrySet()) {
             Set<Privilege> set = new HashSet<>();
-            for (Character c : e.getValue()) {
-                set.add(Privilege.fromAbbreviation(c));
+            for (String str : e.getValue()) {
+                set.add(Privilege.fromAbbreviation(str));
             }
             list.add(new PrincipalImpl(e.getKey(), set));
         }
