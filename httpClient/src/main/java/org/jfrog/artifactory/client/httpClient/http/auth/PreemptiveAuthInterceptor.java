@@ -35,5 +35,11 @@ public class PreemptiveAuthInterceptor implements HttpRequestInterceptor {
                 authState.update(new BasicScheme(), creds);
             }
         }
+        // Remove Authorization header for hosts which are not the Artifactory URL.(On redirection Authorization headers are carried Fix for: Issue #282)
+        if(clientContext.getRedirectLocations() != null) {
+            if (!clientContext.getAttribute("Artifactory-Origin-Url").equals(clientContext.getTargetHost().getHostName()) && request.getHeaders("Authorization") != null) {
+              request.removeHeaders("Authorization");
+            }
+        }
     }
 }

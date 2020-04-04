@@ -11,6 +11,10 @@ import org.apache.http.entity.ContentType;
 import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
+
+import org.apache.http.protocol.BasicHttpContext;
+import org.apache.http.protocol.HttpContext;
+
 import org.jfrog.artifactory.client.*;
 import org.jfrog.artifactory.client.impl.util.Util;
 
@@ -243,8 +247,11 @@ public class ArtifactoryImpl implements Artifactory {
 
         httpGet.setURI(URI.create(url + path));
         httpGet = (HttpGet) addAccessTokenHeaderIfNeeded(httpGet);
+        //Add origin attribute to context so it can be used in the interceptor
+        HttpContext context = new BasicHttpContext();
+        context.setAttribute("Artifactory-Origin-Url", httpGet.getURI().getHost());
 
-        HttpResponse httpResponse = httpClient.execute(httpGet);
+        HttpResponse httpResponse = httpClient.execute(httpGet, context);
         int status = httpResponse.getStatusLine().getStatusCode();
         if (status != HttpStatus.SC_OK && status != HttpStatus.SC_NO_CONTENT && status != HttpStatus.SC_ACCEPTED) {
             throw newHttpResponseException(httpResponse);
