@@ -28,11 +28,9 @@ public class PreemptiveAuthInterceptor implements HttpRequestInterceptor {
 
     @Override
     public void process(HttpRequest request, HttpContext context) throws HttpException, IOException {
-
         if (!shouldSetAuthScheme(request, context)) {
             return;
         }
-
         HttpClientContext clientContext = HttpClientContext.adapt(context);
         AuthState authState = clientContext.getTargetAuthState();
         // If there's no auth scheme available yet, try to initialize it preemptively
@@ -52,21 +50,21 @@ public class PreemptiveAuthInterceptor implements HttpRequestInterceptor {
         }
     }
 
-    private boolean shouldSetAuthScheme(final HttpRequest request, final HttpContext context) {
-            // Get the original host name (before the redirect).
-            String originalHost = (String)context.getAttribute(ORIGINAL_HOST_CONTEXT_PARAM);
-            if (originalHost == null) {
-                // No redirect was performed.
-                return true;
-            }
-            String host;
-            try {
-                // In case of a redirect, get the new target host.
-                host = new URI(((HttpRequestWrapper) request).getOriginal().getRequestLine().getUri()).getHost();
-            } catch (URISyntaxException e) {
-                throw new RuntimeException(e);
-            }
-            // Return true if the original host and the target host are identical.
-            return host.equals(originalHost);
-    }
+	private boolean shouldSetAuthScheme(final HttpRequest request, final HttpContext context) {
+		// Get the original host name (before the redirect).
+		String originalHost = (String) context.getAttribute(ORIGINAL_HOST_CONTEXT_PARAM);
+		if (originalHost == null) {
+			// No redirect was performed.
+			return true;
+		}
+		String host;
+		try {
+			// In case of a redirect, get the new target host.
+			host = new URI(((HttpRequestWrapper) request).getOriginal().getRequestLine().getUri()).getHost();
+		} catch (URISyntaxException e) {
+			throw new RuntimeException(e);
+		}
+		// Return true if the original host and the target host are identical.
+		return host.equals(originalHost);
+	}
 }

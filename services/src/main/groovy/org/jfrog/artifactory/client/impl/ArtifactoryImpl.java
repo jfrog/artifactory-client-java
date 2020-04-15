@@ -346,7 +346,7 @@ public class ArtifactoryImpl implements Artifactory {
 
     public HttpResponse execute(HttpUriRequest request) throws IOException {
         HttpClientContext clientContext = HttpClientContext.create();
-        if(clientContext.getAttribute(ORIGINAL_HOST_CONTEXT_PARAM) == null) {
+        if (clientContext.getAttribute(ORIGINAL_HOST_CONTEXT_PARAM) == null) {
         	clientContext.setAttribute(ORIGINAL_HOST_CONTEXT_PARAM, request.getURI().getHost());
         }
         if (StringUtils.isNotEmpty(accessToken)) {
