@@ -13,6 +13,7 @@ import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.jfrog.artifactory.client.*;
+import org.jfrog.artifactory.client.httpClient.http.auth.PreemptiveAuthInterceptor;
 import org.jfrog.artifactory.client.impl.util.Util;
 
 import java.io.IOException;
@@ -28,8 +29,6 @@ import java.util.Map;
  * @since 25/07/12
  */
 public class ArtifactoryImpl implements Artifactory {
-
-	private static final String ORIGINAL_HOST_CONTEXT_PARAM = "original.host.context.param";
 
     private String username;
     private String url;
@@ -344,8 +343,8 @@ public class ArtifactoryImpl implements Artifactory {
 
     public HttpResponse execute(HttpUriRequest request) throws IOException {
         HttpClientContext clientContext = HttpClientContext.create();
-        if (clientContext.getAttribute(ORIGINAL_HOST_CONTEXT_PARAM) == null) {
-        	clientContext.setAttribute(ORIGINAL_HOST_CONTEXT_PARAM, request.getURI().getHost());
+        if (clientContext.getAttribute(PreemptiveAuthInterceptor.ORIGINAL_HOST_CONTEXT_PARAM) == null) {
+        	clientContext.setAttribute(PreemptiveAuthInterceptor.ORIGINAL_HOST_CONTEXT_PARAM, request.getURI().getHost());
         }
         if (StringUtils.isNotEmpty(accessToken)) {
             clientContext.setUserToken(accessToken);

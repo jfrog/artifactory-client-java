@@ -24,7 +24,7 @@ import java.net.URISyntaxException;
  */
 public class PreemptiveAuthInterceptor implements HttpRequestInterceptor {
 
-    private static final String ORIGINAL_HOST_CONTEXT_PARAM = "original.host.context.param";
+    public static final String ORIGINAL_HOST_CONTEXT_PARAM = "original.host.context.param";
 
     @Override
     public void process(HttpRequest request, HttpContext context) throws HttpException, IOException {
