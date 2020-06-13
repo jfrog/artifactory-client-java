@@ -38,17 +38,21 @@ abstract class BaseRepositoryTests extends ArtifactoryTestsBase {
     protected XraySettings xraySettings
     protected Map<String, Object> customProperties
 
+    public static final REPO_NAME_PREFIX = "rt-client-java"
+    protected long repoUniqueId = System.currentTimeMillis()
+
     abstract RepositorySettings getRepositorySettings(RepositoryType repositoryType)
 
     @BeforeMethod
     protected void setUp() {
+        String id = Long.toString(repoUniqueId)
         if (prepareGenericRepo) {
             RepositorySettings settings = getRepositorySettings(RepositoryTypeImpl.LOCAL)
 
             XraySettings genericXraySettings = new XraySettingsImpl()
             genericRepo = artifactory.repositories().builders().localRepositoryBuilder()
-                    .key("cutsman-repo-${rnd.nextInt()}")
-                    .description("description-${rnd.nextInt()}")
+                    .key("$REPO_NAME_PREFIX-generic-$id")
+                    .description("generic-$id")
                     .notes("notes-${rnd.nextInt()}")
                     .archiveBrowsingEnabled(rnd.nextBoolean())
                     .blackedOut(rnd.nextBoolean())
@@ -63,8 +67,8 @@ abstract class BaseRepositoryTests extends ArtifactoryTestsBase {
         if (prepareLocalRepo) {
             RepositorySettings settings = getRepositorySettings()
             localRepo = artifactory.repositories().builders().localRepositoryBuilder()
-                .key("cutsman-repo-${rnd.nextInt()}")
-                .description("description-${rnd.nextInt()}")
+                .key("$REPO_NAME_PREFIX-local-$id")
+                .description("local-$id")
                 .notes("notes-${rnd.nextInt()}")
                 .archiveBrowsingEnabled(rnd.nextBoolean())
                 .blackedOut(rnd.nextBoolean())
@@ -81,14 +85,12 @@ abstract class BaseRepositoryTests extends ArtifactoryTestsBase {
             RepositorySettings settings = getRepositorySettings()
             ContentSync contentSync = new ContentSyncImpl()
             remoteRepo = artifactory.repositories().builders().remoteRepositoryBuilder()
-                .key("cutsman-repo-${rnd.nextInt()}")
-                .description("description-${rnd.nextInt()}")
+                .key("$REPO_NAME_PREFIX-remote-$id")
+                .description("remote-$id")
                 .notes("notes-${rnd.nextInt()}")
                 .allowAnyHostAuth(rnd.nextBoolean())
                 .archiveBrowsingEnabled(rnd.nextBoolean())
                 .assumedOfflinePeriodSecs(rnd.nextLong())
-                // .blackedOut(rnd.nextBoolean())
-                // .blackedOut(false)
                 .enableCookieManagement(rnd.nextBoolean())
                 .excludesPattern("org/${rnd.nextInt()}/**")
                 .failedRetrievalCachePeriodSecs(rnd.nextInt())
@@ -99,14 +101,11 @@ abstract class BaseRepositoryTests extends ArtifactoryTestsBase {
                 .offline(rnd.nextBoolean())
                 .password("password_${rnd.nextInt()}")
                 .propertySets(Collections.emptyList()) // no property sets configured
-                // .proxy("") // no proxy configured
                 .retrievalCachePeriodSecs(rnd.nextInt())
                 .shareConfiguration(rnd.nextBoolean())
                 .socketTimeoutMillis(rnd.nextInt())
                 .storeArtifactsLocally(rnd.nextBoolean())
                 .synchronizeProperties(rnd.nextBoolean())
-                // .unusedArtifactsCleanupEnabled(rnd.nextBoolean())
-                // .unusedArtifactsCleanupEnabled(true)
                 .unusedArtifactsCleanupPeriodHours(Math.abs(rnd.nextInt()))
                 .url("http://jfrog.com/${rnd.nextInt()}")
                 .username("user_${rnd.nextInt()}")
@@ -124,8 +123,8 @@ abstract class BaseRepositoryTests extends ArtifactoryTestsBase {
             repos.add(genericRepo.getKey())
 
             virtualRepo = artifactory.repositories().builders().virtualRepositoryBuilder()
-                .key("cutsman-repo-${rnd.nextInt()}")
-                .description("description-${rnd.nextInt()}")
+                .key("$REPO_NAME_PREFIX-virtual-$id")
+                .description("virtual-$id")
                 .notes("notes-${rnd.nextInt()}")
                 .artifactoryRequestsCanRetrieveRemoteArtifacts(rnd.nextBoolean())
                 .excludesPattern("org/${rnd.nextInt()}/**")
@@ -140,24 +139,13 @@ abstract class BaseRepositoryTests extends ArtifactoryTestsBase {
 
     @AfterMethod
     protected void tearDown() {
+        // Invoking sequence is important!
+        deleteRepoIfExists(genericRepo?.getKey())
         deleteRepoIfExists(localRepo?.getKey())
         deleteRepoIfExists(remoteRepo?.getKey())
         deleteRepoIfExists(virtualRepo?.getKey())
-        //Invoking sequence is important!
-        deleteRepoIfExists(genericRepo?.getKey())
-    }
 
-    private Collection<String> nextRepos() {
-        def repos = [
-            'ext-release-local',
-            'ext-snapshots-local',
-            'libs-release-local',
-            'libs-snapshots-local',
-            'plugins-releases-local',
-            'plugins-snapshots-local'
-        ]
-
-        Collections.singleton(repos.getAt(rnd.nextInt(repos.size())))
+        repoUniqueId++
     }
 
     protected static <T> void assertThat(T actual, Matcher<? super T> matcher) {
@@ -177,5 +165,4 @@ abstract class BaseRepositoryTests extends ArtifactoryTestsBase {
             throw new AssertionError(description.toString())
         }
     }
-
 }

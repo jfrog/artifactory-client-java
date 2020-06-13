@@ -693,7 +693,6 @@ We created [sample projects](https://github.com/JFrogDev/project-examples/tree/m
 We welcome community contribution through pull requests.
 
 ### Guidelines
-* Before creating your first pull request, please join our contributors community by signing [JFrog's CLA](https://secure.echosign.com/public/hostedForm?formid=5IYKLZ2RXB543N).
 * If the existing tests do not already cover your changes, please add tests..
 * Pull requests should be created on the *dev* branch.
 
