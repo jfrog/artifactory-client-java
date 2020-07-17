@@ -39,7 +39,7 @@ public interface Searches {
      * GroupId, artifactId, version and classifier, as well as repositories.
      * <p><b>Notes:</b> Requires Artifactory Pro
      * <p><b>Security:</b> Requires a privileged user (can be anonymous)
-     * @since: Artifactory 2.6.0
+     * @since Artifactory 2.6.0
      * @return this object
      */
     Searches artifactsLatestVersion();
