@@ -218,7 +218,7 @@ public class SecurityTests extends ArtifactoryTestsBase {
     @Test
     public void testCreateUser() throws Exception {
         UserBuilder userBuilder = artifactory.security().builders().userBuilder();
-        User user = userBuilder.name(USER_NAME).email("test@test.com").admin(false).profileUpdatable(true).password("test1234").build();
+        User user = userBuilder.name(USER_NAME).email("test@test.com").admin(false).profileUpdatable(true).password("YouShallNotPass123!").build();
         artifactory.security().createOrUpdate(user);
         String resp = curl(artifactory.security().getSecurityUsersApi().substring(1));
         assertTrue(resp.contains(USER_NAME));
