@@ -16,6 +16,8 @@ public interface UploadableArtifact extends Artifact<UploadableArtifact> {
 
     String doUploadAndExplode(boolean atomic);
 
+    UploadableArtifact withSize(long size);
+
     UploadableArtifact withListener(UploadListener listener);
 
     UploadableArtifact bySha1Checksum();

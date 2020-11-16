@@ -94,6 +94,30 @@ public class DownloadUploadTests extends ArtifactoryTestsBase {
     }
 
     @Test
+    public void testUploadInputStreamWithListener() throws URISyntaxException, IOException {
+        java.io.File file = new java.io.File(this.getClass().getResource("/sample.txt").toURI());
+        try (InputStream in = Files.newInputStream(file.toPath())){
+            final long[] uploaded = {0};
+            final NumberFormat format = DecimalFormat.getPercentInstance();
+            format.setMaximumFractionDigits(4);
+            File deployed = artifactory.repository(localRepository.getKey())
+                    .upload(PATH, in)
+                    .withSize(file.length())
+                    .withListener((bytesRead, totalBytes) -> {
+                System.out.println("Uploaded " + format.format((double) bytesRead / totalBytes));
+                uploaded[0] = bytesRead;
+            }).doUpload();
+            assertNotNull(deployed);
+            assertEquals(deployed.getRepo(), localRepository.getKey());
+            assertEquals(deployed.getPath(), "/" + PATH);
+            assertEquals(deployed.getCreatedBy(), username);
+            assertEquals(deployed.getDownloadUri(), url + localRepository.getKey() + "/" + PATH);
+            assertTrue(deployed.getSize() == SAMPLE_FILE_SIZE || deployed.getSize() == SAMPLE_FILE_SIZE_WIN_ENDINGS);
+            assertTrue(uploaded[0] == SAMPLE_FILE_SIZE || uploaded[0] == SAMPLE_FILE_SIZE_WIN_ENDINGS);
+        }
+    }
+
+    @Test
     public void testUploadWithListener() throws URISyntaxException, IOException {
         java.io.File file = new java.io.File(this.getClass().getResource("/sample.txt").toURI());
         final long[] uploaded = {0};
