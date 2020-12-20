@@ -26,12 +26,6 @@ allprojects {
 artifactoryPublish.skip = true
 
 artifactory {
-    contextUrl = 'https://oss.jfrog.org'
-    resolve {
-        repository {
-            repoKey = 'libs-release'
-        }
-    }
     publish {
         defaults {
             publications 'main'
