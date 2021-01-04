@@ -159,8 +159,9 @@ public class RestCallTests extends ArtifactoryTestsBase {
 
     @Test(dependsOnMethods = {"testGetBuildInfo"})
     public void testDeleteBuild() throws Exception {
-        String deleteResponse = deleteBuild("TestBuild");
-        assertTrue(deleteResponse.contains("All 'TestBuild' builds have been deleted successfully"));
+        deleteBuild("TestBuild");
+        String builds = getBuilds();
+        assertFalse(builds.contains("TestBuild"));
     }
 
     @Test
@@ -205,6 +206,13 @@ public class RestCallTests extends ArtifactoryTestsBase {
                 .addQueryParam("buildNumbers", (String) buildBody.get("number"))
                 .addQueryParam("deleteAll", "1")
                 .addQueryParam("artifacts", "1");
+        return artifactory.restCall(deleteBuild).getRawBody();
+    }
+    private String getBuilds() throws Exception {
+        ArtifactoryRequest deleteBuild = new ArtifactoryRequestImpl()
+                .apiUrl("api/build/")
+                .method(ArtifactoryRequest.Method.GET)
+                .responseType(ArtifactoryRequest.ContentType.TEXT);
         return artifactory.restCall(deleteBuild).getRawBody();
     }
 
