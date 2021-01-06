@@ -208,6 +208,7 @@ public class RestCallTests extends ArtifactoryTestsBase {
                 .addQueryParam("artifacts", "1");
         return artifactory.restCall(deleteBuild).getRawBody();
     }
+
     private String getBuilds() throws Exception {
         ArtifactoryRequest deleteBuild = new ArtifactoryRequestImpl()
                 .apiUrl("api/build/")
