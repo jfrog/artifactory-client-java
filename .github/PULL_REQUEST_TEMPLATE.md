@@ -1,0 +1,3 @@
+- [ ] All [tests](https://github.com/jfrog/artifactory-client-java#building-and-testing-the-sources) passed. If this feature is not already covered by the tests, I added new tests.
+- [ ] This pull request is on the dev branch.
+-----
