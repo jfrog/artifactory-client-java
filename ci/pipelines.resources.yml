@@ -5,6 +5,7 @@ resources:
       path: jfrog/artifactory-client-java
       gitProvider: github
       buildOn:
+        commit: true
         pullRequestCreate: true
       cancelPendingRunsOn:
         pullRequestUpdate: true
