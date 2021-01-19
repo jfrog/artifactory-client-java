@@ -54,6 +54,9 @@ pipelines:
               --server-id-resolve ojo --repo-resolve jcenter
               --server-id-deploy ojo --repo-deploy oss-release-local
 
+            # Sync changes with dev
+            - git merge origin/dev
+
             # Update version
             - sed -i "s/\(currentVersion=\).*\$/\1${NEXT_VERSION}/" gradle.properties
             - git commit -am "[artifactory-release] Release version ${NEXT_VERSION} [skipRun]" --allow-empty
@@ -73,6 +76,7 @@ pipelines:
             - sed -i "s/\(currentVersion=\).*\$/\1${NEXT_DEVELOPMENT_VERSION}/" gradle.properties
             - git commit -am "[artifactory-release] Next development version [skipRun]"
             - git push
+            - git push origin dev
 
           onComplete:
             - *UPDATE_COMMIT_STATUS
