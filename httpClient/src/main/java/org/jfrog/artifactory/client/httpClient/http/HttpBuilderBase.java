@@ -15,7 +15,6 @@ import org.apache.http.conn.socket.ConnectionSocketFactory;
 import org.apache.http.conn.socket.LayeredConnectionSocketFactory;
 import org.apache.http.conn.socket.PlainConnectionSocketFactory;
 import org.apache.http.conn.ssl.DefaultHostnameVerifier;
-import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -43,16 +42,19 @@ import java.util.concurrent.TimeUnit;
  *
  * @author Yossi Shaul
  */
-public abstract class HttpBuilderBase<T extends HttpBuilderBase> {
+@SuppressWarnings("UnusedReturnValue")
+public abstract class HttpBuilderBase<T extends HttpBuilderBase<?>> {
+
+    private final BasicCredentialsProvider credsProvider;
+    // Signifies what auth scheme will be used by the client
+    private final JFrogAuthScheme chosenAuthScheme = JFrogAuthScheme.BASIC;
+    private final RequestConfig.Builder config = RequestConfig.custom();
 
     protected HttpClientBuilder builder = HttpClients.custom();
-    private RequestConfig.Builder config = RequestConfig.custom();
     private HttpHost defaultHost;
-    private BasicCredentialsProvider credsProvider;
-    private JFrogAuthScheme chosenAuthScheme = JFrogAuthScheme.BASIC; //Signifies what auth scheme will be used by the client
-    private boolean cookieSupportEnabled = false;
     private boolean trustSelfSignCert = false;
     private SSLContextBuilder sslContextBuilder;
+    private SSLContext sslContext;
     private int maxConnectionsTotal = DEFAULT_MAX_CONNECTIONS;
     private int maxConnectionsPerRoute = DEFAULT_MAX_CONNECTIONS;
     private int connectionPoolTimeToLive = CONNECTION_POOL_TIME_TO_LIVE;
@@ -67,9 +69,8 @@ public abstract class HttpBuilderBase<T extends HttpBuilderBase> {
             builder.setRoutePlanner(new DefaultHostRoutePlanner(defaultHost));
         }
         PoolingHttpClientConnectionManager connectionMgr = configConnectionManager();
-        CloseableHttpClientDecorator client = new CloseableHttpClientDecorator(builder.build(), connectionMgr,
+        return new CloseableHttpClientDecorator(builder.build(), connectionMgr,
                 chosenAuthScheme == JFrogAuthScheme.SPNEGO);
-        return client;
     }
 
     private T self() {
@@ -158,6 +159,15 @@ public abstract class HttpBuilderBase<T extends HttpBuilderBase> {
     }
 
     /**
+     * @param sslContext SSLContext
+     * @return {@link T}
+     */
+    public T sslContext(SSLContext sslContext) {
+        this.sslContext = sslContext;
+        return self();
+    }
+
+    /**
      * Configures preemptive authentication on this client. Ignores blank username input.
      */
     public T authentication(String username, String password) {
@@ -180,8 +190,8 @@ public abstract class HttpBuilderBase<T extends HttpBuilderBase> {
         return self();
     }
 
-    public HttpBuilderBase.ProxyConfigBuilder proxy(String host, int port) {
-        return new HttpBuilderBase.ProxyConfigBuilder(host, port);
+    public HttpBuilderBase<?>.ProxyConfigBuilder proxy(String host, int port) {
+        return new HttpBuilderBase<?>.ProxyConfigBuilder(host, port);
     }
 
     public class ProxyConfigBuilder {
@@ -195,7 +205,7 @@ public abstract class HttpBuilderBase<T extends HttpBuilderBase> {
             config.setProxy(new HttpHost(host, port));
         }
 
-        public HttpBuilderBase.ProxyConfigBuilder authentication(String username, String password) {
+        public HttpBuilderBase<?>.ProxyConfigBuilder authentication(String username, String password) {
             creds = new UsernamePasswordCredentials(username, password);
             //This will demote the NTLM authentication scheme so that the proxy won't barf
             //when we try to give it traditional credentials. If the proxy doesn't do NTLM
@@ -218,7 +228,7 @@ public abstract class HttpBuilderBase<T extends HttpBuilderBase> {
     }
 
     public boolean isCookieSupportEnabled() {
-        return cookieSupportEnabled;
+        return false;
     }
 
     /**
@@ -227,41 +237,35 @@ public abstract class HttpBuilderBase<T extends HttpBuilderBase> {
      * @return keep-alive strategy to be used for connection pool
      */
     public static ConnectionKeepAliveStrategy createConnectionKeepAliveStrategy() {
-        return new ConnectionKeepAliveStrategy() {
-            @Override
-            public long getKeepAliveDuration(HttpResponse response, HttpContext context) {
-                // Honor 'keep-alive' header
-                HeaderElementIterator it = new BasicHeaderElementIterator(
-                        response.headerIterator(HTTP.CONN_KEEP_ALIVE));
-                while (it.hasNext()) {
-                    HeaderElement he = it.nextElement();
-                    String param = he.getName();
-                    String value = he.getValue();
-                    if (value != null && param.equalsIgnoreCase("timeout")) {
-                        try {
-                            return Long.parseLong(value) * 1000;
-                        } catch (NumberFormatException ignore) {
-                        }
+        return (response, context) -> {
+            // Honor 'keep-alive' header
+            HeaderElementIterator it = new BasicHeaderElementIterator(
+                    response.headerIterator(HTTP.CONN_KEEP_ALIVE));
+            while (it.hasNext()) {
+                HeaderElement he = it.nextElement();
+                String param = he.getName();
+                String value = he.getValue();
+                if (value != null && param.equalsIgnoreCase("timeout")) {
+                    try {
+                        return Long.parseLong(value) * 1000;
+                    } catch (NumberFormatException ignore) {
                     }
                 }
-                return 30 * 1000;
             }
+            return 30 * 1000;
         };
     }
 
     protected PoolingHttpClientConnectionManager configConnectionManager() {
-        if (!isCookieSupportEnabled()) {
-            builder.disableCookieManagement();
-        }
+        builder.disableCookieManagement();
         if (hasCredentials()) {
             builder.setDefaultCredentialsProvider(credsProvider);
         }
         RequestConfig defaultRequestConfig = config.build();
         builder.setDefaultRequestConfig(defaultRequestConfig);
 
-        /**
-         * Connection management
-         */
+
+        // Connection management
         builder.setKeepAliveStrategy(createConnectionKeepAliveStrategy());
 
         builder.setMaxConnTotal(maxConnectionsTotal);
@@ -280,17 +284,11 @@ public abstract class HttpBuilderBase<T extends HttpBuilderBase> {
     private PoolingHttpClientConnectionManager createConnectionMgr() {
         PoolingHttpClientConnectionManager connectionMgr;
 
-        // prepare SSLContext
-        SSLContext sslContext = buildSslContext();
+        // Prepare SSLContext
+        SSLContext sslContext = this.sslContext != null ? this.sslContext : buildSslContext();
+        LayeredConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(sslContext, new DefaultHostnameVerifier());
+
         ConnectionSocketFactory plainsf = PlainConnectionSocketFactory.getSocketFactory();
-        // we allow to disable host name verification against CA certificate,
-        // notice: in general this is insecure and should be avoided in production,
-        // (this type of configuration is useful for development purposes)
-        boolean noHostVerification = false;
-        LayeredConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(
-                sslContext,
-                noHostVerification ? NoopHostnameVerifier.INSTANCE : new DefaultHostnameVerifier()
-        );
         Registry<ConnectionSocketFactory> r = RegistryBuilder.<ConnectionSocketFactory>create()
                 .register("http", plainsf)
                 .register("https", sslsf)

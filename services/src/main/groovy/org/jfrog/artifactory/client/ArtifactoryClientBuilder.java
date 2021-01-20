@@ -9,6 +9,7 @@ import org.jfrog.artifactory.client.httpClient.http.HttpBuilderBase;
 import org.jfrog.artifactory.client.impl.ArtifactoryImpl;
 import org.jfrog.artifactory.client.impl.util.ArtifactoryHttpClient;
 
+import javax.net.ssl.SSLContext;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -23,7 +24,10 @@ import java.util.Properties;
  * @author Lior Hasson
  * @author Alexei Vainshtein
  */
+@SuppressWarnings("UnusedReturnValue")
 public class ArtifactoryClientBuilder {
+
+    private final List<HttpRequestInterceptor> requestInterceptorList = new ArrayList<>();
 
     private String url;
     private String username;
@@ -33,9 +37,9 @@ public class ArtifactoryClientBuilder {
     private ProxyConfig proxy;
     private String userAgent;
     private boolean ignoreSSLIssues;
+    private SSLContext sslContext;
     private SSLContextBuilder sslContextBuilder;
     private String accessToken;
-    private List<HttpRequestInterceptor> requestInterceptorList = new ArrayList<>();
 
     protected ArtifactoryClientBuilder() {
         super();
@@ -93,6 +97,11 @@ public class ArtifactoryClientBuilder {
         return this;
     }
 
+    public ArtifactoryClientBuilder setSslContext(SSLContext sslContext) {
+        this.sslContext = sslContext;
+        return this;
+    }
+
     public ArtifactoryClientBuilder setAccessToken(String accessToken) {
         this.accessToken = accessToken;
         return this;
@@ -103,6 +112,7 @@ public class ArtifactoryClientBuilder {
      * <br>
      * For further details see
      * {@link org.apache.http.impl.client.HttpClientBuilder#addInterceptorLast(org.apache.http.HttpRequestInterceptor)}
+     *
      * @param httpRequestInterceptor request interceptor that allows manipulating and examining of outgoing requests
      * @return ArtifactoryClientBuilder
      */
@@ -136,10 +146,11 @@ public class ArtifactoryClientBuilder {
             artifactoryHttpClient.socketTimeout(socketTimeout);
         }
 
-        if (sslContextBuilder != null) {
+        if (sslContext != null) {
+            artifactoryHttpClient.sslContext(sslContext);
+        } else if (sslContextBuilder != null) {
             artifactoryHttpClient.sslContextBuilder(sslContextBuilder);
-        }
-        else {
+        } else {
             artifactoryHttpClient.trustSelfSignCert(!ignoreSSLIssues);
         }
         for (HttpRequestInterceptor httpRequestInterceptor : requestInterceptorList) {
@@ -154,6 +165,9 @@ public class ArtifactoryClientBuilder {
             uri = new URIBuilder(url).build();
         } catch (URISyntaxException e) {
             throw new IllegalArgumentException("Invalid Artifactory URL: " + url + ".", e);
+        }
+        if (this.sslContext != null && ignoreSSLIssues) {
+            throw new IllegalStateException("SslContext can't be set with ignoreSSLIssues=true.");
         }
 
         if (StringUtils.isBlank(userAgent)) {
