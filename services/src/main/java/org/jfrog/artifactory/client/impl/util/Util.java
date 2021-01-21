@@ -58,7 +58,7 @@ public class Util {
         objectMapper.addMixIn(Repository.class, RepositoryMixIn.class);
         objectMapper.addMixIn(RepositorySettings.class, RepositorySettingsMixIn.class);
         objectMapper.configure(WRITE_DATES_AS_TIMESTAMPS, false);
-        objectMapper.setVisibilityChecker(defaultInstance().withFieldVisibility(JsonAutoDetect.Visibility.ANY));
+        objectMapper.setVisibility(defaultInstance().withFieldVisibility(JsonAutoDetect.Visibility.ANY));
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         objectMapper.configure(SerializationFeature.FAIL_ON_UNWRAPPED_TYPE_IDENTIFIERS, false);
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
@@ -66,11 +66,8 @@ public class Util {
 
     public static String responseToString(HttpResponse httpResponse) throws IOException {
         if (httpResponse.getEntity() != null) {
-            InputStream in = httpResponse.getEntity().getContent();
-            try {
+            try(InputStream in = httpResponse.getEntity().getContent();) {
                 return IOUtils.toString(in, "UTF-8");
-            } finally {
-                IOUtils.closeQuietly(in);
             }
         }
         return null;
@@ -116,7 +113,7 @@ public class Util {
         return objectMapper.readValue(text, target);
     }
 
-    public static <T> T parseObjectWithTypeReference(String content, TypeReference typeReference) throws IOException {
+    public static <T> T parseObjectWithTypeReference(String content, TypeReference<T> typeReference) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         configureObjectMapper(objectMapper);
         return objectMapper.readValue(content, typeReference);
