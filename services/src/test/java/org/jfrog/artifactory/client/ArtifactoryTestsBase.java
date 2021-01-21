@@ -23,8 +23,8 @@ import java.util.Arrays;
 import java.util.Properties;
 
 import static org.apache.commons.codec.binary.Base64.encodeBase64;
-import static org.apache.commons.lang.StringUtils.isEmpty;
-import static org.apache.commons.lang.StringUtils.remove;
+import static org.apache.commons.lang3.StringUtils.isEmpty;
+import static org.apache.commons.lang3.StringUtils.remove;
 import static org.testng.Assert.fail;
 
 /**
