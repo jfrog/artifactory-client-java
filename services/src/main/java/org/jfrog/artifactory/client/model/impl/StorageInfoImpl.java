@@ -7,7 +7,6 @@ import org.jfrog.artifactory.client.model.RepositorySummary;
 import org.jfrog.artifactory.client.model.StorageInfo;
 import org.jfrog.artifactory.client.model.impl.storageinfo.BinariesSummaryImpl;
 import org.jfrog.artifactory.client.model.impl.storageinfo.FileStorageSummaryImpl;
-import org.jfrog.artifactory.client.model.impl.storageinfo.RepositorySummaryDeserialize;
 
 import java.util.List;
 
@@ -42,7 +41,6 @@ public class StorageInfoImpl implements StorageInfo {
         return repositoriesSummaryList;
     }
 
-    @JsonDeserialize(using= RepositorySummaryDeserialize.class)
     public void setRepositoriesSummaryList(List<RepositorySummary> repositoriesSummaryList) {
         this.repositoriesSummaryList = repositoriesSummaryList;
     }

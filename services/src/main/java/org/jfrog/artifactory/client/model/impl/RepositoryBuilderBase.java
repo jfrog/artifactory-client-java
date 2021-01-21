@@ -1,6 +1,6 @@
 package org.jfrog.artifactory.client.model.impl;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jfrog.artifactory.client.model.PackageType;
 import org.jfrog.artifactory.client.model.Repository;
 import org.jfrog.artifactory.client.model.RepositoryType;
