@@ -6,22 +6,79 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
  * @author Aviad Shikloshi
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public interface RepositorySummary {
+public class RepositorySummary {
 
-    String getRepoKey();
+    private String repoKey;
+    private String repoType;
+    private Integer foldersCount;
+    private Integer filesCount;
+    private String usedSpace;
+    private Integer itemsCount;
+    private String packageType;
+    private String percentage;
 
-    String getRepoType();
+    public String getRepoKey() {
+        return repoKey;
+    }
 
-    Integer getFoldersCount();
+    public void setRepoKey(String repoKey) {
+        this.repoKey = repoKey;
+    }
 
-    Integer getFilesCount();
+    public String getRepoType() {
+        return repoType;
+    }
 
-    String getUsedSpace();
+    public void setRepoType(String repoType) {
+        this.repoType = repoType;
+    }
 
-    Integer getItemsCount();
+    public Integer getFoldersCount() {
+        return foldersCount;
+    }
 
-    String getPackageType();
+    public void setFoldersCount(Integer foldersCount) {
+        this.foldersCount = foldersCount;
+    }
 
-    String getPercentage();
+    public Integer getFilesCount() {
+        return filesCount;
+    }
+
+    public void setFilesCount(Integer filesCount) {
+        this.filesCount = filesCount;
+    }
+
+    public String getUsedSpace() {
+        return usedSpace;
+    }
+
+    public void setUsedSpace(String usedSpace) {
+        this.usedSpace = usedSpace;
+    }
+
+    public Integer getItemsCount() {
+        return itemsCount;
+    }
+
+    public void setItemsCount(Integer itemsCount) {
+        this.itemsCount = itemsCount;
+    }
+
+    public String getPackageType() {
+        return packageType;
+    }
+
+    public void setPackageType(String packageType) {
+        this.packageType = packageType;
+    }
+
+    public String getPercentage() {
+        return percentage;
+    }
+
+    public void setPercentage(String percentage) {
+        this.percentage = percentage;
+    }
 
 }
