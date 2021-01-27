@@ -16,7 +16,7 @@ import java.util.Set;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public interface RepositoryHandle {
 
-    ItemHandle folder(String folderName);
+    FolderHandle folder(String folderName);
 
     ItemHandle file(String filePath);
 

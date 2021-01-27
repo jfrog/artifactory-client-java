@@ -4,6 +4,7 @@ import org.apache.http.client.HttpResponseException;
 import org.jfrog.artifactory.client.impl.ArtifactoryRequestImpl;
 import org.jfrog.artifactory.client.impl.CopyMoveException;
 import org.jfrog.artifactory.client.model.File;
+import org.jfrog.artifactory.client.model.FileList;
 import org.jfrog.artifactory.client.model.Folder;
 import org.jfrog.artifactory.client.model.Item;
 import org.jfrog.artifactory.client.model.LocalRepository;
@@ -13,9 +14,11 @@ import org.testng.annotations.Test;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 
 import static org.testng.Assert.*;
 
@@ -28,6 +31,22 @@ public class ItemTests extends ArtifactoryTestsBase {
 
     protected static final String NEW_LOCAL_FROM = "new-local-from";
     protected static final String NEW_LOCAL_TO = "new-local-to";
+
+    @Test
+    public void testFolderList() throws IOException {
+        artifactory.repository(getJCenterRepoName()).download("junit/junit/4.10/junit-4.10-sources.jar").doDownload();
+
+        FileList list = artifactory.repository(getJcenterCacheName()).folder("junit").list(true,true,true);
+        assertNotNull(list);
+        assertEquals(list.getFiles().size(),3);
+        assertEquals(list.getFiles().get(2).getSha1(),"6c98d6766e72d5575f96c9479d1c1d3b865c6e25");
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(1317323539000L);
+        assertEquals(list.getFiles().get(2).getLastModified().getTime(),calendar.getTime().getTime());
+
+        FileList list2 = artifactory.repository(getJcenterCacheName()).folder("junit").list(true,false,false);
+        assertEquals(list2.getFiles().size(),1);
+    }
 
     @Test
     public void testFolderInfo() throws IOException {

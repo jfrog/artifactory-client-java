@@ -191,7 +191,16 @@ for (RepositorySummary repoSummary : artifactory.storage().getStorageInfo().getR
 ##### Getting Items
 ```
 ItemHandle fileItem = artifactory.repository("RepoName").file("path/to/file.txt");
-ItemHandle folderItem = artifactory.repository("RepoName").folder("path/to/folder");
+FolderHandle folderItem = artifactory.repository("RepoName").folder("path/to/folder");
+```
+
+##### Getting All Items Under A Folder
+```
+FolderHandle folder = artifactory.repository("RepoName").folder("path/to/folder");
+boolean deep = true;
+boolean listFolders = true;
+boolean timeStamps = true;
+FileList list = folder.list(deep, listFolders, timeStamps);
 ```
 
 ##### Copying Items
