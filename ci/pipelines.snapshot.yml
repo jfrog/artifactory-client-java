@@ -36,7 +36,7 @@ pipelines:
 
             # Configure JFrog CLI
             - ./jfrog rt c ojo --url $int_ojo_rt_url --access-token=$int_ojo_rt_token
-            - ./jfrog rt gradlec --use-wrapper --deploy-ivy-desc=false --deploy-maven-desc=true
+            - ./jfrog rt gradlec --use-wrapper --deploy-ivy-desc=false --deploy-maven-desc=true --uses-plugin
               --server-id-resolve ojo --repo-resolve remote-repos
               --server-id-deploy ojo --repo-deploy oss-snapshot-local
 
