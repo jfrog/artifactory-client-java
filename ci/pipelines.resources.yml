@@ -1,0 +1,19 @@
+resources:
+  - name: javaClientSnapshotGit
+    type: GitRepo
+    configuration:
+      path: jfrog/artifactory-client-java
+      gitProvider: github
+      buildOn:
+        commit: true
+        pullRequestCreate: true
+      cancelPendingRunsOn:
+        pullRequestUpdate: true
+
+  - name: javaClientReleaseGit
+    type: GitRepo
+    configuration:
+      path: jfrog/artifactory-client-java
+      gitProvider: github
+      buildOn:
+        commit: false
