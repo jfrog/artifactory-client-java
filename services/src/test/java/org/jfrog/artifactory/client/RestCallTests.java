@@ -2,17 +2,17 @@ package org.jfrog.artifactory.client;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpStatus;
 import org.jfrog.artifactory.client.impl.ArtifactoryRequestImpl;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Map;
 
+import static org.jfrog.artifactory.client.Utils.createBuildBody;
+import static org.jfrog.artifactory.client.Utils.uploadBuild;
 import static org.testng.Assert.*;
 
 /**
@@ -98,19 +98,9 @@ public class RestCallTests extends ArtifactoryTestsBase {
         return artifactory.restCall(renameRequest).getRawBody();
     }
 
-    private void uploadBuild() throws Exception {
-        ArtifactoryRequest buildRequest = new ArtifactoryRequestImpl()
-                .method(ArtifactoryRequest.Method.PUT)
-                .requestType(ArtifactoryRequest.ContentType.JSON)
-                .responseType(ArtifactoryRequest.ContentType.JSON)
-                .apiUrl("api/build")
-                .requestBody(buildBody);
-        artifactory.restCall(buildRequest);
-    }
-
     @Test
     public void testGetBuildInfo() throws Exception {
-        uploadBuild();
+        uploadBuild(artifactory, buildBody);
         ArtifactoryRequest buildInfoRequest = new ArtifactoryRequestImpl()
                 .method(ArtifactoryRequest.Method.GET)
                 .apiUrl("api/build/" + buildBody.get("name") + "/" + buildBody.get("number"))
@@ -256,13 +246,5 @@ public class RestCallTests extends ArtifactoryTestsBase {
             }
         }
         return false;
-    }
-
-    private Map<String, Object> createBuildBody() throws IOException {
-        String buildStarted = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(System.currentTimeMillis());
-        String buildInfoJson = IOUtils.toString(this.getClass().getResourceAsStream("/build.json"), "UTF-8");
-        buildInfoJson = StringUtils.replace(buildInfoJson, "{build.start.time}", buildStarted);
-        ObjectMapper mapper = new ObjectMapper();
-        return mapper.readValue(buildInfoJson, Map.class);
     }
 }
