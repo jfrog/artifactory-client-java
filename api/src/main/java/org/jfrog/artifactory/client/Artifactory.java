@@ -30,6 +30,8 @@ public interface Artifactory extends ApiInterface, AutoCloseable {
 
     Searches searches();
 
+    Builds builds();
+
     Security security();
 
     Storage storage();

@@ -4,7 +4,7 @@ import org.jfrog.artifactory.client.model.BuildNumber;
 
 /**
  * @author yahavi
- **/
+ */
 public class BuildNumberImpl implements BuildNumber {
     private String started;
     private String uri;

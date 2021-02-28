@@ -1,7 +1,6 @@
 package org.jfrog.artifactory.client;
 
 import org.apache.commons.lang3.StringUtils;
-import org.jfrog.artifactory.client.impl.BuildsImpl;
 import org.jfrog.artifactory.client.model.AllBuilds;
 import org.jfrog.artifactory.client.model.Build;
 import org.jfrog.artifactory.client.model.BuildNumber;
@@ -22,23 +21,22 @@ import static org.testng.Assert.*;
  */
 public class BuildsTests extends ArtifactoryTestsBase {
 
+    private static final String BUILDS_API = "/api/build";
     private Map<String, Object> buildBody;
-    private BuildsImpl builds;
 
     @BeforeClass
     public void setUp() throws IOException {
         buildBody = createBuildBody();
         uploadBuild(artifactory, buildBody);
-        builds = new BuildsImpl(artifactory);
     }
 
     @Test
     public void testGetAllBuilds() throws Exception {
         // Get all builds
-        AllBuilds allBuilds = builds.getAllBuilds();
+        AllBuilds allBuilds = artifactory.builds().getAllBuilds();
         assertNotNull(allBuilds);
-        assertTrue(StringUtils.endsWith(allBuilds.getUri(), BuildsImpl.BUILDS_API),
-                allBuilds.getUri() + " is expected to ends with '" + BuildsImpl.BUILDS_API + "'");
+        assertTrue(StringUtils.endsWith(allBuilds.getUri(), BUILDS_API),
+                allBuilds.getUri() + " is expected to ends with '" + BUILDS_API + "'");
         List<Build> actualBuilds = allBuilds.getBuilds();
         assertNotNull(actualBuilds);
 
@@ -55,9 +53,9 @@ public class BuildsTests extends ArtifactoryTestsBase {
     public void testGetBuildRuns() throws IOException {
         // Get build runs of "/TestBuild"
         String expectedBuildName = getExpectedBuildName();
-        BuildRuns buildRuns = builds.getBuildRuns(expectedBuildName);
+        BuildRuns buildRuns = artifactory.builds().getBuildRuns(expectedBuildName);
         assertNotNull(buildRuns);
-        assertEquals(buildRuns.getUri(), artifactory.getUri() + "/artifactory" + BuildsImpl.BUILDS_API + "/" + expectedBuildName);
+        assertEquals(buildRuns.getUri(), artifactory.getUri() + "/artifactory" + BUILDS_API + "/" + expectedBuildName);
 
         String expectedBuildNumber = "/" + getExpectedBuildNumber();
         BuildNumber buildNumber = buildRuns.getBuildsNumbers().stream()

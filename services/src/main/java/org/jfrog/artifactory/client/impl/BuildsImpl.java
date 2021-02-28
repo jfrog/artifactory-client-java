@@ -13,22 +13,25 @@ import java.io.IOException;
  * @author yahavi
  **/
 public class BuildsImpl implements Builds {
-
-    public static final String BUILDS_API = "/api/build";
-
     private final Artifactory artifactory;
+    private final String baseApiPath;
 
-    public BuildsImpl(Artifactory artifactory) {
+    public BuildsImpl(Artifactory artifactory, String baseApiPath) {
         this.artifactory = artifactory;
+        this.baseApiPath = baseApiPath;
     }
 
     @Override
     public AllBuilds getAllBuilds() throws IOException {
-        return artifactory.get(BUILDS_API, AllBuildsImpl.class, AllBuilds.class);
+        return artifactory.get(getBuilderApi(), AllBuildsImpl.class, AllBuilds.class);
     }
 
     @Override
     public BuildRuns getBuildRuns(String buildName) throws IOException {
-        return artifactory.get(BUILDS_API + "/" + buildName, BuildRunsImpl.class, BuildRuns.class);
+        return artifactory.get(getBuilderApi() + buildName, BuildRunsImpl.class, BuildRuns.class);
+    }
+
+    public String getBuilderApi() {
+        return baseApiPath + "/build/";
     }
 }

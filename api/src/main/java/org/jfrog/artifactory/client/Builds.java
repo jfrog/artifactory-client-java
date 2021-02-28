@@ -5,6 +5,9 @@ import org.jfrog.artifactory.client.model.BuildRuns;
 
 import java.io.IOException;
 
+/**
+ * @author yahavi
+ */
 public interface Builds {
     AllBuilds getAllBuilds() throws IOException;
 

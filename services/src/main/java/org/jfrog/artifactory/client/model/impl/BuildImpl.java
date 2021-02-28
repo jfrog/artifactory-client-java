@@ -4,7 +4,7 @@ import org.jfrog.artifactory.client.model.Build;
 
 /**
  * @author yahavi
- **/
+ */
 public class BuildImpl implements Build {
     private String lastStarted;
     private String uri;
