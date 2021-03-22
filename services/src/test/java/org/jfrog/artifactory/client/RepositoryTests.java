@@ -1,20 +1,24 @@
 package org.jfrog.artifactory.client;
 
-import java.io.*;
-import java.util.*;
-
-import static java.util.Arrays.*;
-import static org.apache.commons.lang3.StringUtils.*;
-import org.apache.http.*;
-import org.apache.http.client.*;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.HttpResponseException;
 import org.jfrog.artifactory.client.model.*;
-import org.jfrog.artifactory.client.model.impl.*;
-import static org.jfrog.artifactory.client.model.impl.RepositoryTypeImpl.*;
-import org.jfrog.artifactory.client.model.repository.settings.*;
+import org.jfrog.artifactory.client.model.impl.LocalRepoChecksumPolicyTypeImpl;
+import org.jfrog.artifactory.client.model.repository.settings.RepositorySettings;
 import org.jfrog.artifactory.client.model.repository.settings.impl.*;
-import org.jfrog.artifactory.client.model.xray.settings.impl.*;
+import org.jfrog.artifactory.client.model.xray.settings.impl.XraySettingsImpl;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
+
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+
+import static java.util.Arrays.asList;
+import static org.apache.commons.lang3.StringUtils.countMatches;
+import static org.jfrog.artifactory.client.model.impl.RepositoryTypeImpl.*;
 import static org.testng.Assert.*;
-import org.testng.annotations.*;
 
 /**
  * @author jbaruch
@@ -30,33 +34,33 @@ public class RepositoryTests extends ArtifactoryTestsBase {
     @BeforeClass
     protected void setUp() throws Exception {
         localRepository2 = artifactory.repositories().builders().localRepositoryBuilder()
-            .key(localRepository.getKey() + "2")
-            .build();
+                .key(localRepository.getKey() + "2")
+                .build();
         remoteRepository = artifactory.repositories().builders().remoteRepositoryBuilder()
-            .key("remote-" + localRepository.getKey())
-            .url("http://test.com/")
-            .repositorySettings(new GenericRepositorySettingsImpl())
-            .build();
+                .key("remote-" + localRepository.getKey())
+                .url("http://test.com/")
+                .repositorySettings(new GenericRepositorySettingsImpl())
+                .build();
         virtualRepository = artifactory.repositories().builders().virtualRepositoryBuilder()
-            .key(NEW_VIRTUAL)
-            .repositories(Arrays.asList(localRepository.getKey(), localRepository2.getKey(), getJCenterRepoName()))
-            .build();
+                .key(NEW_VIRTUAL)
+                .repositories(Arrays.asList(localRepository.getKey(), localRepository2.getKey(), getJCenterRepoName()))
+                .build();
     }
 
     @AfterClass
-    protected void tearDown() throws Exception {
+    protected void tearDown() {
         deleteRepoIfExists(localRepository2.getKey());
         deleteRepoIfExists("remote-" + localRepository.getKey());
         deleteRepoIfExists(NEW_VIRTUAL);
     }
 
-    @Test(groups = "repositoryBasics")
-    public void testDelete() throws Exception {
+    @Test
+    public void testDelete() {
         //all the assertions are taken care of in deleteRepoIfExists
         deleteRepoIfExists(localRepository.getKey());
     }
 
-    @Test(groups = "repositoryBasics", dependsOnMethods = "testDelete")
+    @Test(dependsOnMethods = "testDelete")
     public void testCreate() throws Exception {
         String result = artifactory.repositories().create(2, localRepository);
         assertTrue(result.startsWith("Successfully created repository"));
@@ -84,17 +88,17 @@ public class RepositoryTests extends ArtifactoryTestsBase {
         try {
             anonymousArtifactory.repository(localRepository.getKey()).folder("myFolder").create();
         } catch (HttpResponseException e) {
-            assertTrue(e.getStatusCode() == HttpStatus.SC_UNAUTHORIZED);
+            assertEquals(e.getStatusCode(), HttpStatus.SC_UNAUTHORIZED);
         }
     }
 
     @Test(dependsOnMethods = "testCreate")
-    public void testCreateDirectoryWithIllegalName() throws IOException {
+    public void testCreateDirectoryWithIllegalName() {
         try {
             artifactory.repository(localRepository.getKey()).folder("myFolder?").create();
         } catch (Exception e) {
             assertTrue(e instanceof HttpResponseException);
-            assertTrue(((HttpResponseException)e).getStatusCode() == 500);
+            assertEquals(((HttpResponseException) e).getStatusCode(), 409);
         }
     }
 
@@ -103,16 +107,16 @@ public class RepositoryTests extends ArtifactoryTestsBase {
         RepositorySettings genericRepo = new MavenRepositorySettingsImpl();
 
         LocalRepository changedRepository = artifactory.repositories().builders().builderFrom(localRepository)
-            .description("new_description")
-            .repositorySettings(genericRepo)
-            .build();
+                .description("new_description")
+                .repositorySettings(genericRepo)
+                .build();
 
         artifactory.repositories().update(changedRepository);
         assertTrue(curlAndStrip("api/repositories/" + localRepository.getKey()).contains("\"description\":\"new_description\""));
     }
 
     @Test(dependsOnMethods = "testCreate")
-    public void testReplicationStatus() throws Exception {
+    public void testReplicationStatus() {
         assertEquals(artifactory.repository(localRepository.getKey()).replicationStatus().getStatus(), "never_run");
     }
 
@@ -152,7 +156,7 @@ public class RepositoryTests extends ArtifactoryTestsBase {
     }
 
     @Test
-    public void testGetRemote() throws Exception {
+    public void testGetRemote() {
         String jcenterRepoName = getJCenterRepoName();
         Repository repository = artifactory.repository(jcenterRepoName).get();
         assertNotNull(repository);
@@ -161,7 +165,7 @@ public class RepositoryTests extends ArtifactoryTestsBase {
         assertEquals(jcenter.getKey(), jcenterRepoName);
         assertEquals(jcenter.getRclass().toString(), "remote");
         //urls of jcenter are different for aol and standalone
-        assertTrue(jcenter.getUrl().equals(JCENTER_URL));
+        assertEquals(jcenter.getUrl(), JCENTER_URL);
         assertEquals(jcenter.getUsername(), "");
         assertEquals(jcenter.getPassword(), "");
         assertEquals(jcenter.getNotes(), "");
@@ -183,7 +187,7 @@ public class RepositoryTests extends ArtifactoryTestsBase {
     }
 
     @Test(dependsOnMethods = "testCreate")
-    public void testGetLocal() throws Exception {
+    public void testGetLocal() {
         Repository repository = artifactory.repository(localRepository.getKey()).get();
         assertNotNull(repository);
         assertTrue(LocalRepository.class.isAssignableFrom(repository.getClass()));
@@ -202,7 +206,7 @@ public class RepositoryTests extends ArtifactoryTestsBase {
     }
 
     @Test(dependsOnMethods = "testCreate")
-    public void testGetVirtual() throws Exception {
+    public void testGetVirtual() {
         Repository repository = artifactory.repository(virtualRepository.getKey()).get();
         assertNotNull(repository);
         assertTrue(VirtualRepository.class.isAssignableFrom(repository.getClass()));
@@ -218,7 +222,7 @@ public class RepositoryTests extends ArtifactoryTestsBase {
     }
 
     @Test(dependsOnMethods = "testCreate")
-    public void testRepositoryIsFolder() throws IOException {
+    public void testRepositoryIsFolder() {
         try {
             assertTrue(artifactory.repository(localRepository.getKey()).isFolder("myFolder"));
         } catch (Exception e) {
@@ -227,30 +231,10 @@ public class RepositoryTests extends ArtifactoryTestsBase {
     }
 
     @Test(dependsOnMethods = "testCreate")
-    public void testRepositoryExists() throws IOException {
+    public void testRepositoryExists() {
         assertTrue(artifactory.repository(localRepository.getKey()).exists());
         String notExistsRepoName = Long.toString(System.currentTimeMillis());
         assertFalse(artifactory.repository(notExistsRepoName).exists());
-    }
-
-    /**
-     * We have not ability to create certificate through java client.
-     * @TODOs Remove `(enabled = false)`. Create certificate with name "clientTlsCertificate".
-     */
-    @Test(enabled = false)
-    public void testClientTlsCertificate() throws Exception {
-        String clientTlsCertificate = "clientTlsCertificate";
-
-        RemoteRepository changedRepository = artifactory.repositories().builders().builderFrom(remoteRepository)
-            .description("create remote repo with clientTlsCertificate")
-            .clientTlsCertificate(clientTlsCertificate)
-            .build();
-
-        artifactory.repositories().update(changedRepository);
-        RemoteRepository repository = (RemoteRepository) artifactory.repository(changedRepository.getKey()).get();
-
-        assertNotNull(repository);
-        assertEquals(repository.getClientTlsCertificate(), clientTlsCertificate);
     }
 
     /**
@@ -297,31 +281,31 @@ public class RepositoryTests extends ArtifactoryTestsBase {
         XraySettingsImpl expectedXray = new XraySettingsImpl();
 
         LocalRepository expectedRepo = artifactory.repositories().builders().localRepositoryBuilder()
-            .key("key").repositorySettings(expectedSettings).xraySettings(expectedXray).build();
+                .key("key").repositorySettings(expectedSettings).xraySettings(expectedXray).build();
 
         RpmRepositorySettingsImpl otherSettings = new RpmRepositorySettingsImpl();
         otherSettings.setCalculateYumMetadata(true);
-        assertFalse(expectedSettings.equals(otherSettings));
+        assertNotEquals(otherSettings, expectedSettings);
         assertNotEquals(expectedSettings.hashCode(), otherSettings.hashCode());
 
         otherSettings.setListRemoteFolderItems(true);
-        assertTrue(otherSettings.equals(otherSettings));
+        assertEquals(otherSettings, otherSettings);
         assertEquals(expectedSettings.hashCode(), otherSettings.hashCode());
 
         XraySettingsImpl otherXray = new XraySettingsImpl();
         otherXray.setXrayIndex(true);
         expectedXray.setXrayIndex(false);
-        assertFalse(expectedXray.equals(otherXray));
+        assertNotEquals(otherXray, expectedXray);
         assertNotEquals(expectedXray.hashCode(), otherXray.hashCode());
 
         otherXray.setXrayIndex(false);
-        assertTrue(expectedXray.equals(otherXray));
+        assertEquals(otherXray, expectedXray);
         assertEquals(expectedXray.hashCode(), otherXray.hashCode());
 
         LocalRepository otherRepo = artifactory.repositories().builders().localRepositoryBuilder()
-            .key("key").repositorySettings(otherSettings).xraySettings(otherXray).build();
+                .key("key").repositorySettings(otherSettings).xraySettings(otherXray).build();
 
-        assertTrue(expectedRepo.equals(otherRepo));
+        assertEquals(otherRepo, expectedRepo);
         assertEquals(expectedRepo.hashCode(), otherRepo.hashCode());
 
         //test more settings types
@@ -343,7 +327,6 @@ public class RepositoryTests extends ArtifactoryTestsBase {
         assertEquals(puppetSettings.hashCode(), otherPuppetSettings.hashCode());
 
         VagrantRepositorySettingsImpl vagrantSettings = new VagrantRepositorySettingsImpl();
-        assertNotEquals(puppetSettings, vagrantSettings);
         assertNotEquals(puppetSettings.hashCode(), vagrantSettings.hashCode());
     }
 }
