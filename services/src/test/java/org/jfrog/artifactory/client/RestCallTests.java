@@ -9,6 +9,7 @@ import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Map;
@@ -58,7 +59,7 @@ public class RestCallTests extends ArtifactoryTestsBase {
                 .method(ArtifactoryRequest.Method.PUT)
                 .apiUrl("api/gpg/key/public")
                 .requestType(ArtifactoryRequest.ContentType.TEXT)
-                .requestBody(IOUtils.toString(this.getClass().getResourceAsStream("/public.key"), "UTF-8"))
+                .requestBody(IOUtils.toString(this.getClass().getResourceAsStream("/public.key"), StandardCharsets.UTF_8))
                 .responseType(ArtifactoryRequest.ContentType.TEXT);
         String gpgResponse = artifactory.restCall(gpgRequest).getRawBody();
         assertTrue(gpgResponse.contains("Successfully configured the gpg public key"));
@@ -78,7 +79,6 @@ public class RestCallTests extends ArtifactoryTestsBase {
         for (Map<String, String> map : responseBody) {
             assertTrue(map.containsKey("key"));
             assertTrue(map.containsKey("type"));
-            assertTrue(map.containsKey("url"));
         }
     }
 
@@ -260,7 +260,7 @@ public class RestCallTests extends ArtifactoryTestsBase {
 
     private Map<String, Object> createBuildBody() throws IOException {
         String buildStarted = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(System.currentTimeMillis());
-        String buildInfoJson = IOUtils.toString(this.getClass().getResourceAsStream("/build.json"), "UTF-8");
+        String buildInfoJson = IOUtils.toString(this.getClass().getResourceAsStream("/build.json"), StandardCharsets.UTF_8);
         buildInfoJson = StringUtils.replace(buildInfoJson, "{build.start.time}", buildStarted);
         ObjectMapper mapper = new ObjectMapper();
         return mapper.readValue(buildInfoJson, Map.class);
