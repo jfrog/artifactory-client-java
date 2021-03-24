@@ -38,10 +38,9 @@ class RepositoryHandleImpl implements RepositoryHandle {
         this.repoKey = repoKey
     }
 
-    //TODO: [by yl] Use a FileHandler and a FolderHandler instead or returning Items
     @Override
-    ItemHandle folder(String folderName) {
-        new ItemHandleImpl(artifactory, baseApiPath, repoKey, folderName, FolderImpl)
+    FolderHandle folder(String folderName) {
+        new FolderHandleImpl(artifactory, baseApiPath, repoKey, folderName, FolderImpl)
     }
 
     @Override
