@@ -13,6 +13,7 @@ import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import static org.testng.Assert.*;
 
@@ -20,7 +21,8 @@ import static org.testng.Assert.*;
  * @author Aviad Shikloshi
  */
 public class RestCallTests extends ArtifactoryTestsBase {
-
+    private static final long PERM_TARGET_SLEEP_INTERVAL_MILLIS = TimeUnit.SECONDS.toMillis(10);
+    private static final int PERM_TARGET_RETRIES = 12;
     private Map<String, Object> buildBody;
 
     @BeforeTest
@@ -184,8 +186,7 @@ public class RestCallTests extends ArtifactoryTestsBase {
         artifactory.restCall(req);
 
         // Verify permission target created:
-        List permissions = getPermissionTargets();
-        assertTrue(findPermissionInList(permissions, permissionName));
+        assetPermissionTarget(permissionName, true);
 
         // Delete permission target:
         req = new ArtifactoryRequestImpl()
@@ -194,8 +195,7 @@ public class RestCallTests extends ArtifactoryTestsBase {
         artifactory.restCall(req);
 
         // Verify permission target deleted:
-        permissions = getPermissionTargets();
-        assertFalse(findPermissionInList(permissions, permissionName));
+        assetPermissionTarget(permissionName, false);
     }
 
     private String deleteBuild(String name) throws Exception {
@@ -226,6 +226,17 @@ public class RestCallTests extends ArtifactoryTestsBase {
 
         List<String> responseBody = response.parseBody(List.class);
         return responseBody;
+    }
+
+    private void assetPermissionTarget(String permissionName, boolean expectExist) throws Exception {
+        for (int i = 0; i < PERM_TARGET_RETRIES; i++) {
+            List permissions = getPermissionTargets();
+            if (findPermissionInList(permissions, permissionName) == expectExist) {
+                return;
+            }
+            Thread.sleep(PERM_TARGET_SLEEP_INTERVAL_MILLIS);
+        }
+        fail("Permission " + permissionName + " is expected to " + (expectExist ? "" : "not ") + "exist.");
     }
 
     private Map<String, Object> createPermissionTargetBody(String permissionName) throws IOException {
