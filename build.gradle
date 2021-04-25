@@ -1,12 +1,17 @@
-import static java.lang.System.getenv
-
 buildscript {
     repositories {
-        jcenter()
+        mavenCentral()
+        maven {
+            url "https://oss.jfrog.org/artifactory/libs-release"
+        }
     }
     dependencies {
         classpath(group: 'org.jfrog.buildinfo', name: 'build-info-extractor-gradle', version: '4+')
     }
+}
+
+plugins {
+    id 'io.github.gradle-nexus.publish-plugin' version '1.0.0'
 }
 
 allprojects {
@@ -39,13 +44,18 @@ artifactory {
     }
 }
 
+nexusPublishing {
+    repositories {
+        sonatype()
+    }
+}
+
 subprojects {
     apply plugin: 'java'
 
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
 
-    final env = getenv()
     dependencies {
         compile 'org.apache.httpcomponents:httpclient:4.5.13'
         compile 'org.apache.commons:commons-lang3:3.11'
@@ -53,22 +63,15 @@ subprojects {
         compile 'com.fasterxml.jackson.core:jackson-databind:2.11.4'
         compile 'com.fasterxml.jackson.core:jackson-annotations:2.11.4'
     }
-    
+
     task sourcesJar(type: Jar, dependsOn: classes) {
-        classifier = 'sources'
+        archiveClassifier.set('sources')
         from sourceSets.main.allSource
     }
 
     task javadocJar(type: Jar, dependsOn: javadoc) {
-        classifier = 'javadoc'
+        archiveClassifier.set('javadoc')
         from javadoc.destinationDir
-    }
-
-    // add javadoc/source jar tasks as artifacts
-    artifacts {
-        archives sourcesJar,
-			javadocJar,
-			jar
     }
 
     test {
@@ -78,7 +81,7 @@ subprojects {
             events "started", "passed", "skipped", "failed", "standardOut", "standardError"
             minGranularity 0
         }
-	ignoreFailures = System.getenv("IGNORE_FAILURES") ? System.getenv("IGNORE_FAILURES").toBoolean() : false
+        ignoreFailures = System.getenv("IGNORE_FAILURES") ? System.getenv("IGNORE_FAILURES").toBoolean() : false
     }
 
     publishing {
@@ -86,31 +89,30 @@ subprojects {
             main(MavenPublication) {
                 from components.java
                 artifact sourcesJar
-                //artifact javadocJar
+                artifact javadocJar
 
                 pom.withXml {
                     asNode().with {
                         appendNode('packaging', 'jar')
                         appendNode('name', 'artifactory-java-client')
                         appendNode('description', 'Java client for working with Artifactory')
-                        appendNode('url', 'https://github.com/JFrogDev/artifactory-client-java')
+                        appendNode('url', 'https://github.com/jfrog/artifactory-client-java')
                         appendNode('licenses').with {
                             appendNode('license').with {
                                 appendNode('name', 'The Apache Software License, Version 2.0')
-                                appendNode('url', 'http://www.apache.org/licenses/LICENSE-2.0')
+                                appendNode('url', 'https://www.apache.org/licenses/LICENSE-2.0')
                             }
                         }
                         appendNode('developers').with {
                             appendNode('developer').with {
-                                appendNode('id', 'jbaruch')
-                                appendNode('name', 'Baruch Sadogursky')
-                                appendNode('email', 'jbaruch@jfrog.com')
+                                appendNode('name', 'JFrog')
+                                appendNode('email', 'eco-system@jfrog.com')
                             }
                         }
                         appendNode('scm').with {
-                            appendNode('connection', 'git@github.com:JFrogDev/artifactory-client-java.git')
-                            appendNode('developerConnection', 'git@github.com:JFrogDev/artifactory-client-java.git')
-                            appendNode('url', 'https://github.com/JFrogDev/artifactory-client-java')
+                            appendNode('connection', 'scm:git:git://github.com/jfrog/artifactory-client-java.git')
+                            appendNode('developerConnection', 'scm:git:git@github.com:jfrog/artifactory-client-java.git')
+                            appendNode('url', 'https://github.com/jfrog/artifactory-client-java')
                         }
                     }
                     asNode().dependencies.'*'.findAll() {

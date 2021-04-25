@@ -1,5 +1,3 @@
-updateCommitStatus: &UPDATE_COMMIT_STATUS update_commit_status javaClientReleaseGit --context "$step_name"
-
 pipelines:
   - name: release_java_client
     configuration:
@@ -24,9 +22,9 @@ pipelines:
           integrations:
             - name: ojo
             - name: github_generic
+            - name: mvn_central
         execution:
           onStart:
-            - *UPDATE_COMMIT_STATUS
             - restore_cache_files gradle_cache $res_javaClientReleaseGit_resourcePath/.gradle
           onExecute:
             - cd $res_javaClientReleaseGit_resourcePath
@@ -72,6 +70,13 @@ pipelines:
               ./jfrog rt gradle clean artifactoryPublish -x test
             - ./jfrog rt bp
 
+            # Publish to Maven Central
+            - >
+              env -i PATH=$PATH HOME=$HOME
+              ORG_GRADLE_PROJECT_sonatypeUsername=$int_mvn_central_user
+              ORG_GRADLE_PROJECT_sonatypePassword=$int_mvn_central_password
+              ./gradlew clean build publishToSonatype closeSonatypeStagingRepository -x test
+
             # Update next development version
             - sed -i "s/\(currentVersion=\).*\$/\1${NEXT_DEVELOPMENT_VERSION}/" gradle.properties
             - git commit -am "[artifactory-release] Next development version [skipRun]"
@@ -79,7 +84,5 @@ pipelines:
             - git push origin dev
 
           onComplete:
-            - *UPDATE_COMMIT_STATUS
-
             # Save gradle cache
             - add_cache_files $res_javaClientReleaseGit_resourcePath/.gradle gradle_cache
