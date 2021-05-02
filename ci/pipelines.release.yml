@@ -33,6 +33,7 @@ pipelines:
             - export CI=true
             - export JFROG_CLI_BUILD_NAME=artifactory-client-java
             - export JFROG_CLI_BUILD_NUMBER=$run_number
+            - export GRADLE_OPTS=-Dorg.gradle.daemon=false
 
             # Configure git
             - git checkout master
@@ -64,17 +65,17 @@ pipelines:
 
             # Run build and publish
             - >
-              env -i PATH=$PATH HOME=$HOME GRADLE_OPTS=-Dorg.gradle.daemon=false
-              JFROG_CLI_BUILD_NAME=$JFROG_CLI_BUILD_NAME
-              JFROG_CLI_BUILD_NUMBER=$JFROG_CLI_BUILD_NUMBER
+              ORG_GRADLE_PROJECT_signingKey=$(echo $int_mvn_central_signingKey | base64 -d)
+              ORG_GRADLE_PROJECT_signingPassword=$int_mvn_central_signingPassword
               ./jfrog rt gradle clean artifactoryPublish -x test
             - ./jfrog rt bp
 
             # Publish to Maven Central
             - >
-              env -i PATH=$PATH HOME=$HOME
               ORG_GRADLE_PROJECT_sonatypeUsername=$int_mvn_central_user
               ORG_GRADLE_PROJECT_sonatypePassword=$int_mvn_central_password
+              ORG_GRADLE_PROJECT_signingKey=$(echo $int_mvn_central_signingKey | base64 -d)
+              ORG_GRADLE_PROJECT_signingPassword=$int_mvn_central_signingPassword
               ./gradlew clean build publishToSonatype closeSonatypeStagingRepository -x test
 
             # Update next development version

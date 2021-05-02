@@ -52,6 +52,7 @@ nexusPublishing {
 
 subprojects {
     apply plugin: 'java'
+    apply plugin: 'signing'
 
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
@@ -125,5 +126,13 @@ subprojects {
                 }
             }
         }
+    }
+
+    signing {
+        required { !version.endsWith('-SNAPSHOT') }
+        def signingKey = findProperty("signingKey")
+        def signingPassword = findProperty("signingPassword")
+        useInMemoryPgpKeys(signingKey, signingPassword)
+        sign publishing.publications.main
     }
 }
