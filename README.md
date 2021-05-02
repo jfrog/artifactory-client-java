@@ -44,7 +44,7 @@ Add the following dependency to your `pom.xml` file:
 <dependency>
     <groupId>org.jfrog.artifactory.client</groupId>
     <artifactId>artifactory-java-client-services</artifactId>
-    <version>2.9.1</version>
+    <version>2.9.2</version>
 </dependency>
 ```
 
@@ -54,7 +54,7 @@ Add the following snippets to your `build.gradle` file:
 
 ```groovy
 repositories {
-    jcenter()
+    mavenCentral()
 }
 dependencies {
     compile 'org.jfrog.artifactory.client:artifactory-java-client-services:+'
