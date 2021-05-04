@@ -793,6 +793,4 @@ This client is available under the [Apache License, Version 2.0](http://www.apac
 
 ## Release Notes
 
-Release notes are available on [Bintray](https://bintray.com/jfrog/artifactory-tools/artifactory-client-java#release).
-
-(c) All rights reserved JFrog
+The release notes are available [here](RELEASE.md#release-notes).
