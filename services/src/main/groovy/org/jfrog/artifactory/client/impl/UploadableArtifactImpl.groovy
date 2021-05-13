@@ -19,6 +19,7 @@ class UploadableArtifactImpl extends ArtifactBase<UploadableArtifact> implements
     private File file
     private String path
     private InputStream content
+    private long size = -1
     private ArtifactoryImpl artifactory
     private String sha1
 
@@ -46,7 +47,7 @@ class UploadableArtifactImpl extends ArtifactBase<UploadableArtifact> implements
         if (sha1) {
             Map<String, String> headers = ['X-Checksum-Deploy': "true", 'X-Checksum-Sha1': sha1]
             try {
-                int size = file ? file.length() : -1;
+                long size = file ? file.length() : size;
                 artifactory.put("/$repo/$path${params}", ContentType.DEFAULT_BINARY, null, headers, null, size , FileImpl, org.jfrog.artifactory.client.model.File)
             } catch (HttpResponseException e) {
                 if (e.statusCode == 404 && content != null) {
@@ -81,18 +82,26 @@ class UploadableArtifactImpl extends ArtifactBase<UploadableArtifact> implements
     }
 
     private uploadContent(String params, Map<String, String>  headers) {
+        long size =  file ? file.size() : size;
         if (listener) {
-            content = new ProgressInputStream(content, file.size(), listener)
+            if (size < 0) {
+                throw new IllegalStateException('Can\'t attach listener to content of unknown size. '
+                        + 'Upload a File instead of an InputStream or set the content size with withSize().')
+            };
+            content = new ProgressInputStream(content, size, listener)
         }
-        long size =  file ? file.size() : -1;
+
         return (org.jfrog.artifactory.client.model.File)artifactory.put("/$repo/$path${params}", ContentType.APPLICATION_OCTET_STREAM, null, headers, content, size, FileImpl, org.jfrog.artifactory.client.model.File);
     }
 
     @Override
+    UploadableArtifact withSize(long size) {
+        this.size = size
+        this
+    }
+
+    @Override
     UploadableArtifact withListener(UploadListener listener) {
-        if (!file) {
-            throw new IllegalStateException('Can\'t attach listener to content of unknown size. Try uploading a file instead of an input stream.')
-        };
         this.listener = listener
         this
     }
