@@ -45,7 +45,7 @@ Add the following dependency to your `pom.xml` file:
 <dependency>
     <groupId>org.jfrog.artifactory.client</groupId>
     <artifactId>artifactory-java-client-services</artifactId>
-    <version>2.9.1</version>
+    <version>2.9.2</version>
 </dependency>
 ```
 
@@ -55,7 +55,7 @@ Add the following snippets to your `build.gradle` file:
 
 ```groovy
 repositories {
-    jcenter()
+    mavenCentral()
 }
 dependencies {
     compile 'org.jfrog.artifactory.client:artifactory-java-client-services:+'
@@ -103,12 +103,19 @@ Artifactory artifactory = ArtifactoryClientBuilder.create()
 
 #### Uploading and downloading artifacts
 
-##### Uploading an Artifacts
 
-```groovy
-java.io.File file = new java.io.File("fileToUpload.txt");
-File result = artifactory.repository("RepoName").upload("path/to/newName.txt", file).doUpload();
-```
+##### Uploading an Artifact
+* Using java.io.File as source:
+     ```groovy
+     java.io.File file = new java.io.File("fileToUpload.txt");  
+     File result = artifactory.repository("RepoName").upload("path/to/newName.txt", file).doUpload();
+     ```
+* Using an InputStream as source:
+     ```groovy
+     try (InputStream inputStream = Files.newInputStream(Paths.get("fileToUpload.txt"))) {
+         File result = artifactory.repository("RepoName").upload("path/to/newName.txt", inputStream).doUpload();
+     }
+     ```
 
 ##### Upload and explode an Archive
 
@@ -127,6 +134,35 @@ File deployed = artifactory.repository("RepoName")
         .withProperty("color", "red")
         .doUpload();
 ```
+
+##### Uploading and Artifact with an UploadListener
+Can be used for tracking the progress of the current upload:
+```groovy
+java.io.File file = new java.io.File("fileToUpload.txt");  
+File result = artifactory.repository("RepoName")
+        .upload("path/to/newName.txt", file)
+        .withListener((bytesRead, totalBytes) -> {
+            System.out.println("Uploaded " + format.format((double) bytesRead / totalBytes));
+        })
+        .doUpload();
+```
+The code snippet above would print the percentage of the current upload status.
+
+**Important:** The totalBytes is calculated from the size of the input File. In case the source is a `java.io.File` object, the upload will use the `File.length()` to determine the total number of bytes. If the source is an `InputStream`, the total size of the upload must be specified using the `withSize(long size)` method.
+e.g.:
+```groovy
+Path sourceFile = Paths.get("fileToUpload.txt");
+try (InputStream inputStream = Files.newInputStream(sourceFile)) {
+        File result = artifactory.repository("RepoName")
+                .upload("path/to/newName.txt", inputStream)
+                .withSize(Files.size(sourceFile))
+                .withListener((bytesRead, totalBytes) -> {
+                    System.out.println("Uploaded " + format.format((double) bytesRead / totalBytes));
+                })
+                .doUpload();
+    }
+```
+
 
 ##### Copy an Artifact by SHA-1
 
@@ -806,6 +842,4 @@ This client is available under the [Apache License, Version 2.0](http://www.apac
 
 ## Release Notes
 
-Release notes are available on [Bintray](https://bintray.com/jfrog/artifactory-tools/artifactory-client-java#release).
-
-(c) All rights reserved JFrog
+The release notes are available [here](RELEASE.md#release-notes).

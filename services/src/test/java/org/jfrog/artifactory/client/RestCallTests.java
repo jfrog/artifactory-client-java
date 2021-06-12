@@ -2,16 +2,19 @@ package org.jfrog.artifactory.client;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpStatus;
 import org.jfrog.artifactory.client.impl.ArtifactoryRequestImpl;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
-import static org.jfrog.artifactory.client.Utils.createBuildBody;
 import static org.jfrog.artifactory.client.Utils.uploadBuild;
 import static org.testng.Assert.*;
 
@@ -19,7 +22,8 @@ import static org.testng.Assert.*;
  * @author Aviad Shikloshi
  */
 public class RestCallTests extends ArtifactoryTestsBase {
-
+    private static final long PERM_TARGET_SLEEP_INTERVAL_MILLIS = TimeUnit.SECONDS.toMillis(10);
+    private static final int PERM_TARGET_RETRIES = 12;
     private Map<String, Object> buildBody;
 
     @BeforeTest
@@ -58,7 +62,7 @@ public class RestCallTests extends ArtifactoryTestsBase {
                 .method(ArtifactoryRequest.Method.PUT)
                 .apiUrl("api/gpg/key/public")
                 .requestType(ArtifactoryRequest.ContentType.TEXT)
-                .requestBody(IOUtils.toString(this.getClass().getResourceAsStream("/public.key"), "UTF-8"))
+                .requestBody(IOUtils.toString(this.getClass().getResourceAsStream("/public.key"), StandardCharsets.UTF_8))
                 .responseType(ArtifactoryRequest.ContentType.TEXT);
         String gpgResponse = artifactory.restCall(gpgRequest).getRawBody();
         assertTrue(gpgResponse.contains("Successfully configured the gpg public key"));
@@ -78,7 +82,6 @@ public class RestCallTests extends ArtifactoryTestsBase {
         for (Map<String, String> map : responseBody) {
             assertTrue(map.containsKey("key"));
             assertTrue(map.containsKey("type"));
-            assertTrue(map.containsKey("url"));
         }
     }
 
@@ -174,8 +177,7 @@ public class RestCallTests extends ArtifactoryTestsBase {
         artifactory.restCall(req);
 
         // Verify permission target created:
-        List permissions = getPermissionTargets();
-        assertTrue(findPermissionInList(permissions, permissionName));
+        assetPermissionTarget(permissionName, true);
 
         // Delete permission target:
         req = new ArtifactoryRequestImpl()
@@ -184,8 +186,7 @@ public class RestCallTests extends ArtifactoryTestsBase {
         artifactory.restCall(req);
 
         // Verify permission target deleted:
-        permissions = getPermissionTargets();
-        assertFalse(findPermissionInList(permissions, permissionName));
+        assetPermissionTarget(permissionName, false);
     }
 
     private String deleteBuild(String name) throws Exception {
@@ -218,6 +219,17 @@ public class RestCallTests extends ArtifactoryTestsBase {
         return responseBody;
     }
 
+    private void assetPermissionTarget(String permissionName, boolean expectExist) throws Exception {
+        for (int i = 0; i < PERM_TARGET_RETRIES; i++) {
+            List permissions = getPermissionTargets();
+            if (findPermissionInList(permissions, permissionName) == expectExist) {
+                return;
+            }
+            Thread.sleep(PERM_TARGET_SLEEP_INTERVAL_MILLIS);
+        }
+        fail("Permission " + permissionName + " is expected to " + (expectExist ? "" : "not ") + "exist.");
+    }
+
     private Map<String, Object> createPermissionTargetBody(String permissionName) throws IOException {
         String json =
                 "{" +
@@ -246,5 +258,13 @@ public class RestCallTests extends ArtifactoryTestsBase {
             }
         }
         return false;
+    }
+
+    private Map<String, Object> createBuildBody() throws IOException {
+        String buildStarted = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(System.currentTimeMillis());
+        String buildInfoJson = IOUtils.toString(this.getClass().getResourceAsStream("/build.json"), StandardCharsets.UTF_8);
+        buildInfoJson = StringUtils.replace(buildInfoJson, "{build.start.time}", buildStarted);
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.readValue(buildInfoJson, Map.class);
     }
 }

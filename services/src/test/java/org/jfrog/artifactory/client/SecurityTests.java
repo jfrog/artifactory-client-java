@@ -1,5 +1,6 @@
 package org.jfrog.artifactory.client;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.client.HttpResponseException;
 import org.jfrog.artifactory.client.model.*;
 import org.jfrog.artifactory.client.model.builder.GroupBuilder;
@@ -10,10 +11,12 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.Test;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import static junit.framework.Assert.*;
 import static org.jfrog.artifactory.client.model.Privilege.*;
@@ -29,7 +32,9 @@ public class SecurityTests extends ArtifactoryTestsBase {
     private static final String GROUP_NAME = "test_group" + ("" + System.currentTimeMillis()).substring(5);
     private static final String GROUP_ADMIN_NAME = "test_admin_group" + ("" + System.currentTimeMillis()).substring(5);
     private static final String GROUP_EXTERNAL_NAME = "test_group_external" + ("" + System.currentTimeMillis()).substring(5);
-    private static final String PERMISSION_Target_NAME = "test_permission" + ("" + System.currentTimeMillis()).substring(5);
+    private static final String PERMISSION_TARGET_NAME = "test_permission" + ("" + System.currentTimeMillis()).substring(5);
+    private static final int PERM_TARGET_RETRIES = 12;
+    private static final long PERM_TARGET_SLEEP_INTERVAL_MILLIS = TimeUnit.SECONDS.toMillis(10);
 
     @AfterMethod
     public void leaveItClean() {
@@ -120,7 +125,7 @@ public class SecurityTests extends ArtifactoryTestsBase {
     }
 
     @Test(groups = "create")
-    public void testCreatePermissionTarget() {
+    public void testCreatePermissionTarget() throws Exception {
         // WARN: This test is using default Artifactory users/groups
         Principal userAno = artifactory.security().builders().principalBuilder().name("anonymous").privileges(Privilege.READ).build();
         Principal groupRead = artifactory.security().builders().principalBuilder().name("readers").privileges(Privilege.READ, Privilege.ANNOTATE)
@@ -129,22 +134,12 @@ public class SecurityTests extends ArtifactoryTestsBase {
         Principals principals = artifactory.security().builders().principalsBuilder().users(userAno).groups(groupRead).build();
 
         PermissionTargetBuilder permissionBuilder = artifactory.security().builders().permissionTargetBuilder();
-        PermissionTarget permission = permissionBuilder.name(PERMISSION_Target_NAME).repositories("ANY REMOTE").includesPattern("com/company")
+        PermissionTarget permission = permissionBuilder.name(PERMISSION_TARGET_NAME).repositories("ANY REMOTE").includesPattern("com/company")
                 .excludesPattern("org/blacklist/,org/bug/").principals(principals).build();
+        artifactory.security().createOrReplacePermissionTarget(permission);
 
-        try {
-            artifactory.security().createOrReplacePermissionTarget(permission);
-        } catch (Exception e) {
-            if (e instanceof HttpResponseException) {
-                throw new UnsupportedOperationException(((HttpResponseException) e).getMessage(), e);
-            }
-            throw new UnsupportedOperationException(e);
-        }
-
-        PermissionTarget permissionTargetRes = artifactory.security().permissionTarget(PERMISSION_Target_NAME);
+        PermissionTarget permissionTargetRes = getAndAssertPermissionTarget("ANY REMOTE");
         assertNotNull(permissionTargetRes);
-        assertEquals(permissionTargetRes.getName(), PERMISSION_Target_NAME);
-        assertEquals("ANY REMOTE", permissionTargetRes.getRepositories().get(0));
         assertNotNull(permissionTargetRes.getPrincipals());
         assertEquals(permissionTargetRes.getPrincipals().getUsers().get(0).getName(), "anonymous");
         assertEquals(permissionTargetRes.getPrincipals().getUsers().get(0).getPrivileges(), userAno.getPrivileges());
@@ -154,34 +149,50 @@ public class SecurityTests extends ArtifactoryTestsBase {
     }
 
     @Test(dependsOnMethods = "testCreatePermissionTarget")
-    public void testReplacePermissionTarget() {
+    public void testReplacePermissionTarget() throws Exception {
         // WARN: This test is using default Artifactory users/groups
-        PermissionTarget permissionTarget = artifactory.security().permissionTarget(PERMISSION_Target_NAME);
+        PermissionTarget permissionTarget = artifactory.security().permissionTarget(PERMISSION_TARGET_NAME);
         assertNotNull(permissionTarget);
         Principal userAno = artifactory.security().builders().principalBuilder().name("anonymous").privileges(Privilege.READ, ANNOTATE).build();
 
         Principals principals = artifactory.security().builders().principalsBuilder().users(userAno).build();
 
         PermissionTargetBuilder permissionBuilder = artifactory.security().builders().permissionTargetBuilder();
-        PermissionTarget permission = permissionBuilder.name(PERMISSION_Target_NAME).repositories(getJCenterRepoName()).principals(principals).build();
+        PermissionTarget permission = permissionBuilder.name(PERMISSION_TARGET_NAME).repositories(getJCenterRepoName()).principals(principals).build();
+        artifactory.security().createOrReplacePermissionTarget(permission);
 
-        try {
-            artifactory.security().createOrReplacePermissionTarget(permission);
-        } catch (Exception e) {
-            if (e instanceof HttpResponseException) {
-                throw new UnsupportedOperationException(((HttpResponseException) e).getMessage(), e);
-            }
-            throw new UnsupportedOperationException(e);
-        }
-
-        PermissionTarget permissionTargetRes = artifactory.security().permissionTarget(PERMISSION_Target_NAME);
+        PermissionTarget permissionTargetRes = getAndAssertPermissionTarget(getJCenterRepoName());
         assertNotNull(permissionTargetRes);
-        assertEquals(permissionTargetRes.getName(), PERMISSION_Target_NAME);
-        assertEquals(getJCenterRepoName(), permissionTargetRes.getRepositories().get(0));
         assertNotNull(permissionTargetRes.getPrincipals());
         assertEquals(permissionTargetRes.getPrincipals().getUsers().get(0).getName(), "anonymous");
         assertEquals(permissionTargetRes.getPrincipals().getUsers().get(0).getPrivileges(), userAno.getPrivileges());
         assertEquals(permissionTargetRes.getPrincipals().getGroups().size(), 0);
+    }
+
+    /**
+     * Get and assert permission target with PERMISSION_TARGET_NAME as its name and the input expectedRepoName as its repository.
+     *
+     * @param expectedRepoName - The expected repository name
+     * @return the permission target. Never null.
+     * @throws Exception in case of permission target not found.
+     */
+    private PermissionTarget getAndAssertPermissionTarget(String expectedRepoName) throws Exception {
+        Exception permissionTargetException = null;
+        for (int i = 0; i < PERM_TARGET_RETRIES; i++) {
+            try {
+                PermissionTarget permissionTarget = artifactory.security().permissionTarget(PERMISSION_TARGET_NAME);
+                String actualRepoName = permissionTarget.getRepositories().get(0);
+                if (StringUtils.equals(actualRepoName, expectedRepoName)) {
+                    // Permission target found and validated
+                    return permissionTarget;
+                }
+                permissionTargetException = new IOException("Permission target repo is '" + actualRepoName + "', but expected to be '" + expectedRepoName + "'.");
+            } catch (Exception e) {
+                permissionTargetException = e;
+            }
+            Thread.sleep(PERM_TARGET_SLEEP_INTERVAL_MILLIS);
+        }
+        throw permissionTargetException;
     }
 
     @Test
@@ -260,7 +271,7 @@ public class SecurityTests extends ArtifactoryTestsBase {
     @AfterClass
     public void tearDown() {
         try {
-            artifactory.security().deletePermissionTarget(PERMISSION_Target_NAME);
+            artifactory.security().deletePermissionTarget(PERMISSION_TARGET_NAME);
         } catch (Exception ignore) {
         }
     }
