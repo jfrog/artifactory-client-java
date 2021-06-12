@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
+import java.util.Map;
 
 /**
  * @author jbaruch
@@ -29,6 +30,8 @@ public interface Artifactory extends ApiInterface, AutoCloseable {
 
     Searches searches();
 
+    Builds builds();
+
     Security security();
 
     Storage storage();
@@ -40,6 +43,29 @@ public interface Artifactory extends ApiInterface, AutoCloseable {
     ArtifactoryResponse restCall(ArtifactoryRequest artifactoryRequest) throws IOException;
 
     InputStream getInputStream(String path) throws IOException;
+
+    default public <T> T get(String path, Class<? extends T> object, Class<T> interfaceObject) throws IOException {
+        return null;
+    }
+
+    default public <T> T post(String path, org.apache.http.entity.ContentType contentType, String content,
+                              Map<String, String> headers, Class<? extends T> object, Class<T> interfaceObject) throws IOException {
+        return null;
+    }
+
+    default public <T> T patch(String path, org.apache.http.entity.ContentType contentType, String content,
+                               Map<String, String> headers, Class<? extends T> object, Class<T> interfaceObject) throws IOException {
+        return null;
+    }
+
+    default public <T> T put(String path, org.apache.http.entity.ContentType contentType, String content,
+                             Map<String, String> headers, InputStream inputStream, long length, Class<? extends T> object, Class<T> interfaceObject) throws IOException {
+        return null;
+    }
+
+    default public String delete(String path) throws IOException {
+        return null;
+    }
 
     void close();
 }
