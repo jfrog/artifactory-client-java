@@ -14,7 +14,8 @@ import java.util.Map;
 
 import static org.jfrog.artifactory.client.Utils.createBuildBody;
 import static org.jfrog.artifactory.client.Utils.uploadBuild;
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertTrue;
 
 /**
  * @author yahavi
@@ -35,8 +36,8 @@ public class BuildsTests extends ArtifactoryTestsBase {
         // Get all builds
         AllBuilds allBuilds = artifactory.builds().getAllBuilds();
         assertNotNull(allBuilds);
-        assertTrue(StringUtils.endsWith(allBuilds.getUri(), BUILDS_API),
-                allBuilds.getUri() + " is expected to ends with '" + BUILDS_API + "'");
+        assertTrue(StringUtils.contains(allBuilds.getUri(), BUILDS_API),
+                allBuilds.getUri() + " is expected to contains '" + BUILDS_API + "'");
         List<Build> actualBuilds = allBuilds.getBuilds();
         assertNotNull(actualBuilds);
 
@@ -55,7 +56,8 @@ public class BuildsTests extends ArtifactoryTestsBase {
         String expectedBuildName = getExpectedBuildName();
         BuildRuns buildRuns = artifactory.builds().getBuildRuns(expectedBuildName);
         assertNotNull(buildRuns);
-        assertEquals(buildRuns.getUri(), artifactory.getUri() + "/artifactory" + BUILDS_API + "/" + expectedBuildName);
+        String expectedStartUrl = artifactory.getUri() + "/artifactory" + BUILDS_API + "/" + expectedBuildName;
+        assertTrue(buildRuns.getUri().startsWith(expectedStartUrl), buildRuns.getUri() + " was expected to start with: " + expectedStartUrl);
 
         String expectedBuildNumber = "/" + getExpectedBuildNumber();
         BuildNumber buildNumber = buildRuns.getBuildsNumbers().stream()
