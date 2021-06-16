@@ -1,7 +1,10 @@
 package org.jfrog.artifactory.client;
 
+import org.jfrog.artifactory.client.model.AqlItem;
 import org.jfrog.artifactory.client.model.File;
 import org.jfrog.artifactory.client.model.RepoPath;
+import org.jfrog.filespecs.entities.FileSpec;
+import org.jfrog.filespecs.entities.InvalidFileSpecException;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -36,13 +39,21 @@ public class SearchTests extends ArtifactoryTestsBase {
 
         InputStream inputStream = this.getClass().getResourceAsStream("/sample.zip");
         assertNotNull(inputStream);
-        final String targetPath = "com/example/" + artifactId + "/1.0.0/" + artifactId + "-1.0.0-zip.jar";
+        String targetPath = "com/example/" + artifactId + "/1.0.0/" + artifactId + "-1.0.0-zip.jar";
         File deployed = artifactory.repository(localRepository.getKey()).upload(targetPath, inputStream)
                 .withProperty(colorsProp, "red", "green", "blue")
                 .withProperty(buildProp, "28")
                 .withProperty(releasedProp, true)
                 .doUpload();
         assertNotNull(deployed);
+
+        for (int i = 2; i <= 3; i++) {
+            inputStream = this.getClass().getResourceAsStream("/sample.txt");
+            assertNotNull(inputStream);
+            targetPath = "com/example/" + artifactId + "/" + i + ".0.0/" + artifactId + "-" + i + ".0.0-zip.jar";
+            deployed = artifactory.repository(localRepository.getKey()).upload(targetPath, inputStream).doUpload();
+            assertNotNull(deployed);
+        }
     }
 
     @Test
@@ -185,5 +196,15 @@ public class SearchTests extends ArtifactoryTestsBase {
         long startTime = now - 86400000L;
         List<RepoPath> results = artifactory.searches().artifactsCreatedInDateRange(startTime, now).doSearch();
         assertFalse(results.isEmpty());
+    }
+
+    @Test
+    public void testArtifactsByFileSpec() throws InvalidFileSpecException {
+        FileSpec fileSpec = FileSpec.fromString(String.format("{\"files\": [{\"pattern\": \"%s/*1.0.0*\"}, {\"pattern\": \"%s/*3.0.0*\"}]}",
+                localRepository.getKey(), localRepository.getKey()));
+        List<AqlItem> results = artifactory.searches().artifactsByFileSpec(fileSpec);
+        assertEquals(results.size(), 2);
+        assertEquals(results.get(0).getName(), artifactId + "-1.0.0-zip.jar");
+        assertEquals(results.get(1).getName(), artifactId + "-3.0.0-zip.jar");
     }
 }

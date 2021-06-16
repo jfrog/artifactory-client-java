@@ -1,15 +1,20 @@
 package org.jfrog.artifactory.client.impl
 
 import org.apache.http.client.HttpResponseException
+import org.apache.http.entity.ContentType
 import org.jfrog.artifactory.client.Artifactory
 import org.jfrog.artifactory.client.PropertyFilters
 import org.jfrog.artifactory.client.Searches
 import org.jfrog.artifactory.client.impl.util.Util
+import org.jfrog.artifactory.client.model.AqlItem
+import org.jfrog.artifactory.client.model.AqlSearchResults
 import org.jfrog.artifactory.client.model.RepoPath
 import org.jfrog.artifactory.client.model.SearchResult
 import org.jfrog.artifactory.client.model.SearchResultImpl
 import org.jfrog.artifactory.client.model.SearchResultReport
 import org.jfrog.artifactory.client.model.impl.RepoPathImpl
+import org.jfrog.filespecs.entities.FileSpec
+import org.jfrog.filespecs.entities.FilesGroup
 
 /**
  *
@@ -145,6 +150,17 @@ class SearchesImpl implements Searches {
 
     PropertyFilters itemsByProperty() {
         new PropertyFiltersImpl(this)
+    }
+
+    @Override
+    List<AqlItem> artifactsByFileSpec(FileSpec fileSpec) {
+        String url = "${getSearcherApi()}/aql"
+        List<AqlItem> results = new ArrayList<>()
+        for (String groupAql : fileSpec.toAql()) {
+            AqlSearchResults groupResults = artifactory.post(url, ContentType.TEXT_PLAIN, groupAql, null, AqlSearchResults, null)
+            results.addAll(groupResults.getResults())
+        }
+        return results
     }
 
     String getSearcherApi() {

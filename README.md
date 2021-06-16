@@ -269,6 +269,8 @@ Searches artifactsCreatedInDateRange(long fromMillis, long toMillis);
 Searches artifactsByGavc();
 
 Searches artifactsLatestVersion();
+
+List<AqlItem> artifactsByFileSpec(FileSpec fileSpec);
 ```
 
 ##### Searching Files in Repositories
@@ -340,6 +342,13 @@ String latestVersion = artifactory.searches().artifactsLatestVersion()
         .artifactId("com.example.test")
         .repositories("liba-release-local")
         .doRawSearch();
+```
+
+##### Searching Files Using File Specs
+
+```groovy
+FileSpec fileSpec = FileSpec.fromString("{\"files\": [{\"pattern\": \"liba-release-local/*test*\"}]}");
+List<AqlItem> results = artifactory.searches().artifactsByFileSpec(fileSpec);
 ```
 
 #### Managing Items (files and folders)
