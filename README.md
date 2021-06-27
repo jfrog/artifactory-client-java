@@ -19,6 +19,7 @@ searches, upload and download artifacts to or from Artifactory and a lot more.
         - [Uploading and downloading artifacts](#uploading-and-downloading-artifacts)
         - [File, Folder and Repository Info](#file-folder-and-repository-info)
         - [Search](#search)
+        - [Builds](#builds)
         - [Managing Items (files and folders)](#managing-items-files-and-folders)
         - [Managing Repositories](#managing-repositories)
         - [Managing Users](#managing-users)
@@ -349,6 +350,18 @@ String latestVersion = artifactory.searches().artifactsLatestVersion()
 ```groovy
 FileSpec fileSpec = FileSpec.fromString("{\"files\": [{\"pattern\": \"liba-release-local/*test*\"}]}");
 List<AqlItem> results = artifactory.searches().artifactsByFileSpec(fileSpec);
+```
+
+#### Builds
+
+##### Get All Builds
+```groovy
+AllBuilds allBuilds = artifactory.builds().getAllBuilds();
+```
+
+##### Get Build Runs
+```groovy
+BuildRuns buildRuns = artifactory.builds().getBuildRuns("BuildName");
 ```
 
 #### Managing Items (files and folders)

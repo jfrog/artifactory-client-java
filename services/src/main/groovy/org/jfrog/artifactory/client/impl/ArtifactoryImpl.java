@@ -102,6 +102,10 @@ public class ArtifactoryImpl implements Artifactory {
         return new SearchesImpl(this, API_BASE);
     }
 
+    public Builds builds() {
+        return new BuildsImpl(this, API_BASE);
+    }
+
     public Security security() {
         return new SecurityImpl(this, API_BASE);
     }
@@ -145,13 +149,13 @@ public class ArtifactoryImpl implements Artifactory {
 
             case POST:
                 httpRequest = new HttpPost();
-                setEntity((HttpPost)httpRequest, artifactoryRequest.getBody(), contentType);
+                setEntity((HttpPost) httpRequest, artifactoryRequest.getBody(), contentType);
 
                 break;
 
             case PUT:
                 httpRequest = new HttpPut();
-                setEntity((HttpPut)httpRequest, artifactoryRequest.getBody(), contentType);
+                setEntity((HttpPut) httpRequest, artifactoryRequest.getBody(), contentType);
 
                 break;
 
@@ -162,7 +166,7 @@ public class ArtifactoryImpl implements Artifactory {
 
             case PATCH:
                 httpRequest = new HttpPatch();
-                setEntity((HttpPatch)httpRequest, artifactoryRequest.getBody(), contentType);
+                setEntity((HttpPatch) httpRequest, artifactoryRequest.getBody(), contentType);
                 break;
 
             case OPTIONS:
@@ -193,10 +197,9 @@ public class ArtifactoryImpl implements Artifactory {
             return;
         }
         if (body instanceof InputStream) {
-            httpRequest.setEntity(new InputStreamEntity((InputStream)body));
-        } else
-        if (body instanceof String) {
-            httpRequest.setEntity(new StringEntity((String)body, contentType));
+            httpRequest.setEntity(new InputStreamEntity((InputStream) body));
+        } else if (body instanceof String) {
+            httpRequest.setEntity(new StringEntity((String) body, contentType));
         } else {
             String bodyText = Util.getStringFromObject(body);
             if (StringUtils.isNotBlank(bodyText)) {
@@ -272,7 +275,7 @@ public class ArtifactoryImpl implements Artifactory {
     }
 
     public <T> T patch(String path, org.apache.http.entity.ContentType contentType, String content, Map<String, String>
-        headers, Class<? extends T> object, Class<T> interfaceObject) throws IOException {
+            headers, Class<? extends T> object, Class<T> interfaceObject) throws IOException {
         HttpPatch httpPatch = new HttpPatch();
         httpPatch.setURI(URI.create(url + path));
 
@@ -344,7 +347,7 @@ public class ArtifactoryImpl implements Artifactory {
     public HttpResponse execute(HttpUriRequest request) throws IOException {
         HttpClientContext clientContext = HttpClientContext.create();
         if (clientContext.getAttribute(PreemptiveAuthInterceptor.ORIGINAL_HOST_CONTEXT_PARAM) == null) {
-        	clientContext.setAttribute(PreemptiveAuthInterceptor.ORIGINAL_HOST_CONTEXT_PARAM, request.getURI().getHost());
+            clientContext.setAttribute(PreemptiveAuthInterceptor.ORIGINAL_HOST_CONTEXT_PARAM, request.getURI().getHost());
         }
         if (StringUtils.isNotEmpty(accessToken)) {
             clientContext.setUserToken(accessToken);

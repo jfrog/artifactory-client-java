@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import static org.jfrog.artifactory.client.Utils.uploadBuild;
 import static org.testng.Assert.*;
 
 /**
@@ -100,19 +101,9 @@ public class RestCallTests extends ArtifactoryTestsBase {
         return artifactory.restCall(renameRequest).getRawBody();
     }
 
-    private void uploadBuild() throws Exception {
-        ArtifactoryRequest buildRequest = new ArtifactoryRequestImpl()
-                .method(ArtifactoryRequest.Method.PUT)
-                .requestType(ArtifactoryRequest.ContentType.JSON)
-                .responseType(ArtifactoryRequest.ContentType.JSON)
-                .apiUrl("api/build")
-                .requestBody(buildBody);
-        artifactory.restCall(buildRequest);
-    }
-
     @Test
     public void testGetBuildInfo() throws Exception {
-        uploadBuild();
+        uploadBuild(artifactory, buildBody);
         ArtifactoryRequest buildInfoRequest = new ArtifactoryRequestImpl()
                 .method(ArtifactoryRequest.Method.GET)
                 .apiUrl("api/build/" + buildBody.get("name") + "/" + buildBody.get("number"))
