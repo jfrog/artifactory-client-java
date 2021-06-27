@@ -3,7 +3,7 @@ package org.jfrog.artifactory.client;
 import org.jfrog.artifactory.client.model.AqlItem;
 import org.jfrog.artifactory.client.model.File;
 import org.jfrog.artifactory.client.model.RepoPath;
-import org.jfrog.filespecs.entities.FileSpec;
+import org.jfrog.filespecs.FileSpec;
 import org.jfrog.filespecs.entities.InvalidFileSpecException;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;

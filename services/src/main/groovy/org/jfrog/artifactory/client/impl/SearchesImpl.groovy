@@ -13,8 +13,7 @@ import org.jfrog.artifactory.client.model.SearchResult
 import org.jfrog.artifactory.client.model.SearchResultImpl
 import org.jfrog.artifactory.client.model.SearchResultReport
 import org.jfrog.artifactory.client.model.impl.RepoPathImpl
-import org.jfrog.filespecs.entities.FileSpec
-import org.jfrog.filespecs.entities.FilesGroup
+import org.jfrog.filespecs.FileSpec
 
 /**
  *

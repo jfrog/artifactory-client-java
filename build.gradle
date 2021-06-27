@@ -63,6 +63,7 @@ subprojects {
         compile 'com.fasterxml.jackson.core:jackson-core:2.11.4'
         compile 'com.fasterxml.jackson.core:jackson-databind:2.11.4'
         compile 'com.fasterxml.jackson.core:jackson-annotations:2.11.4'
+        compile 'com.jfrog.filespecs:file-specs-java:1.0.x-SNAPSHOT'
     }
 
     task sourcesJar(type: Jar, dependsOn: classes) {
