@@ -30,29 +30,32 @@ public class SearchTests extends ArtifactoryTestsBase {
     private String artifactId = "com.example.searchtests-";
 
     @BeforeClass
-    public void setup() {
+    public void setup() throws IOException {
         long now = System.currentTimeMillis();
         colorsProp += now;
         buildProp += now;
         releasedProp += now;
         artifactId += now;
 
-        InputStream inputStream = this.getClass().getResourceAsStream("/sample.zip");
-        assertNotNull(inputStream);
-        String targetPath = "com/example/" + artifactId + "/1.0.0/" + artifactId + "-1.0.0-zip.jar";
-        File deployed = artifactory.repository(localRepository.getKey()).upload(targetPath, inputStream)
-                .withProperty(colorsProp, "red", "green", "blue")
-                .withProperty(buildProp, "28")
-                .withProperty(releasedProp, true)
-                .doUpload();
-        assertNotNull(deployed);
-
-        for (int i = 2; i <= 3; i++) {
-            inputStream = this.getClass().getResourceAsStream("/sample.txt");
+        try (InputStream inputStream = this.getClass().getResourceAsStream("/sample.zip")) {
             assertNotNull(inputStream);
-            targetPath = "com/example/" + artifactId + "/" + i + ".0.0/" + artifactId + "-" + i + ".0.0-zip.jar";
-            deployed = artifactory.repository(localRepository.getKey()).upload(targetPath, inputStream).doUpload();
+            String targetPath = "com/example/" + artifactId + "/1.0.0/" + artifactId + "-1.0.0-zip.jar";
+            File deployed = artifactory.repository(localRepository.getKey()).upload(targetPath, inputStream)
+                    .withProperty(colorsProp, "red", "green", "blue")
+                    .withProperty(buildProp, "28")
+                    .withProperty(releasedProp, true)
+                    .doUpload();
             assertNotNull(deployed);
+        }
+
+        // Upload the sample file two more times with different versions and without properties
+        for (int i = 2; i <= 3; i++) {
+            try (InputStream inputStream = this.getClass().getResourceAsStream("/sample.txt")) {
+                assertNotNull(inputStream);
+                String targetPath = "com/example/" + artifactId + "/" + i + ".0.0/" + artifactId + "-" + i + ".0.0-zip.jar";
+                File deployed = artifactory.repository(localRepository.getKey()).upload(targetPath, inputStream).doUpload();
+                assertNotNull(deployed);
+            }
         }
     }
 
