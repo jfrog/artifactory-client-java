@@ -2,7 +2,7 @@ buildscript {
     repositories {
         mavenCentral()
         maven {
-            url "https://oss.jfrog.org/artifactory/libs-release"
+            url "https://releases.jfrog.io/artifactory/oss-releases"
         }
     }
     dependencies {
@@ -15,6 +15,13 @@ plugins {
 }
 
 allprojects {
+    repositories {
+        mavenCentral()
+        maven {
+            url "https://releases.jfrog.io/artifactory/oss-releases"
+        }
+    }
+
     apply plugin: 'maven'
     apply plugin: 'maven-publish'
     apply plugin: 'com.jfrog.artifactory'
@@ -31,12 +38,6 @@ allprojects {
 artifactoryPublish.skip = true
 
 artifactory {
-    contextUrl = 'https://oss.jfrog.org'
-    resolve {
-        repository {
-            repoKey = 'libs-release'
-        }
-    }
     publish {
         defaults {
             publications 'main'
@@ -63,6 +64,7 @@ subprojects {
         compile 'com.fasterxml.jackson.core:jackson-core:2.11.4'
         compile 'com.fasterxml.jackson.core:jackson-databind:2.11.4'
         compile 'com.fasterxml.jackson.core:jackson-annotations:2.11.4'
+        compile 'org.jfrog.filespecs:file-specs-java:1.0.0'
     }
 
     task sourcesJar(type: Jar, dependsOn: classes) {
