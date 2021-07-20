@@ -1,5 +1,7 @@
 package org.jfrog.artifactory.client
 
+
+import org.apache.commons.lang3.ObjectUtils
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.StringDescription
@@ -37,6 +39,7 @@ abstract class BaseRepositoryTests extends ArtifactoryTestsBase {
 
     protected XraySettings xraySettings
     protected Map<String, Object> customProperties
+    protected Boolean storeArtifactsLocallyInRemoteRepo
 
     public static final REPO_NAME_PREFIX = "rt-client-java"
     protected long repoUniqueId = System.currentTimeMillis()
@@ -67,53 +70,53 @@ abstract class BaseRepositoryTests extends ArtifactoryTestsBase {
         if (prepareLocalRepo) {
             RepositorySettings settings = getRepositorySettings()
             localRepo = artifactory.repositories().builders().localRepositoryBuilder()
-                .key("$REPO_NAME_PREFIX-local-$id")
-                .description("local-$id")
-                .notes("notes-${rnd.nextInt()}")
-                .archiveBrowsingEnabled(rnd.nextBoolean())
-                .blackedOut(rnd.nextBoolean())
-                .excludesPattern("org/${rnd.nextInt()}/**")
-                .includesPattern("org/${rnd.nextInt()}/**")
-                .propertySets(Collections.emptyList()) // no property sets configured
-                .repositorySettings(settings)
-                .xraySettings(xraySettings)
-                .customProperties(customProperties)
-                .build()
+                    .key("$REPO_NAME_PREFIX-local-$id")
+                    .description("local-$id")
+                    .notes("notes-${rnd.nextInt()}")
+                    .archiveBrowsingEnabled(rnd.nextBoolean())
+                    .blackedOut(rnd.nextBoolean())
+                    .excludesPattern("org/${rnd.nextInt()}/**")
+                    .includesPattern("org/${rnd.nextInt()}/**")
+                    .propertySets(Collections.emptyList()) // no property sets configured
+                    .repositorySettings(settings)
+                    .xraySettings(xraySettings)
+                    .customProperties(customProperties)
+                    .build()
         }
 
         if (prepareRemoteRepo) {
             RepositorySettings settings = getRepositorySettings()
             ContentSync contentSync = new ContentSyncImpl()
             remoteRepo = artifactory.repositories().builders().remoteRepositoryBuilder()
-                .key("$REPO_NAME_PREFIX-remote-$id")
-                .description("remote-$id")
-                .notes("notes-${rnd.nextInt()}")
-                .allowAnyHostAuth(rnd.nextBoolean())
-                .archiveBrowsingEnabled(rnd.nextBoolean())
-                .assumedOfflinePeriodSecs(rnd.nextLong())
-                .enableCookieManagement(rnd.nextBoolean())
-                .excludesPattern("org/${rnd.nextInt()}/**")
-                .failedRetrievalCachePeriodSecs(rnd.nextInt())
-                .hardFail(rnd.nextBoolean())
-                .includesPattern("org/${rnd.nextInt()}/**")
-                .localAddress("http://jfrog.com/${rnd.nextInt()}")
-                .missedRetrievalCachePeriodSecs(rnd.nextInt())
-                .offline(rnd.nextBoolean())
-                .password("password_${rnd.nextInt()}")
-                .propertySets(Collections.emptyList()) // no property sets configured
-                .retrievalCachePeriodSecs(rnd.nextInt())
-                .shareConfiguration(rnd.nextBoolean())
-                .socketTimeoutMillis(rnd.nextInt())
-                .storeArtifactsLocally(rnd.nextBoolean())
-                .synchronizeProperties(rnd.nextBoolean())
-                .unusedArtifactsCleanupPeriodHours(Math.abs(rnd.nextInt()))
-                .url("http://jfrog.com/${rnd.nextInt()}")
-                .username("user_${rnd.nextInt()}")
-                .repositorySettings(settings)
-                .xraySettings(xraySettings)
-                .contentSync(contentSync)
-                .customProperties(customProperties)
-                .build()
+                    .key("$REPO_NAME_PREFIX-remote-$id")
+                    .description("remote-$id")
+                    .notes("notes-${rnd.nextInt()}")
+                    .allowAnyHostAuth(rnd.nextBoolean())
+                    .archiveBrowsingEnabled(rnd.nextBoolean())
+                    .assumedOfflinePeriodSecs(rnd.nextLong())
+                    .enableCookieManagement(rnd.nextBoolean())
+                    .excludesPattern("org/${rnd.nextInt()}/**")
+                    .failedRetrievalCachePeriodSecs(rnd.nextInt())
+                    .hardFail(rnd.nextBoolean())
+                    .includesPattern("org/${rnd.nextInt()}/**")
+                    .localAddress("http://jfrog.com/${rnd.nextInt()}")
+                    .missedRetrievalCachePeriodSecs(rnd.nextInt())
+                    .offline(rnd.nextBoolean())
+                    .password("password_${rnd.nextInt()}")
+                    .propertySets(Collections.emptyList()) // no property sets configured
+                    .retrievalCachePeriodSecs(rnd.nextInt())
+                    .shareConfiguration(rnd.nextBoolean())
+                    .socketTimeoutMillis(rnd.nextInt())
+                    .storeArtifactsLocally(ObjectUtils.defaultIfNull(storeArtifactsLocallyInRemoteRepo, rnd.nextBoolean()))
+                    .synchronizeProperties(rnd.nextBoolean())
+                    .unusedArtifactsCleanupPeriodHours(Math.abs(rnd.nextInt()))
+                    .url("http://jfrog.com/${rnd.nextInt()}")
+                    .username("user_${rnd.nextInt()}")
+                    .repositorySettings(settings)
+                    .xraySettings(xraySettings)
+                    .contentSync(contentSync)
+                    .customProperties(customProperties)
+                    .build()
         }
 
         if (prepareVirtualRepo) {
@@ -123,17 +126,17 @@ abstract class BaseRepositoryTests extends ArtifactoryTestsBase {
             repos.add(genericRepo.getKey())
 
             virtualRepo = artifactory.repositories().builders().virtualRepositoryBuilder()
-                .key("$REPO_NAME_PREFIX-virtual-$id")
-                .description("virtual-$id")
-                .notes("notes-${rnd.nextInt()}")
-                .artifactoryRequestsCanRetrieveRemoteArtifacts(rnd.nextBoolean())
-                .excludesPattern("org/${rnd.nextInt()}/**")
-                .includesPattern("org/${rnd.nextInt()}/**")
-                .repositories(repos)
-                .repositorySettings(settings)
-                .customProperties(customProperties)
-                .defaultDeploymentRepo(repos.last())
-                .build()
+                    .key("$REPO_NAME_PREFIX-virtual-$id")
+                    .description("virtual-$id")
+                    .notes("notes-${rnd.nextInt()}")
+                    .artifactoryRequestsCanRetrieveRemoteArtifacts(rnd.nextBoolean())
+                    .excludesPattern("org/${rnd.nextInt()}/**")
+                    .includesPattern("org/${rnd.nextInt()}/**")
+                    .repositories(repos)
+                    .repositorySettings(settings)
+                    .customProperties(customProperties)
+                    .defaultDeploymentRepo(repos.last())
+                    .build()
         }
     }
 
