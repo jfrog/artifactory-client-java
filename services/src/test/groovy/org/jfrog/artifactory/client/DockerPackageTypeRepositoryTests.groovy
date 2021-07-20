@@ -33,6 +33,7 @@ public class DockerPackageTypeRepositoryTests extends BaseRepositoryTests {
 
     @BeforeMethod
     protected void setUp() {
+        storeArtifactsLocallyInRemoteRepo = true
         super.setUp()
     }
 
