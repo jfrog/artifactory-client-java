@@ -3,7 +3,6 @@ package org.jfrog.artifactory.client;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.HttpStatus;
 import org.jfrog.artifactory.client.impl.ArtifactoryRequestImpl;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
@@ -116,38 +115,6 @@ public class RestCallTests extends ArtifactoryTestsBase {
         assertTrue(buildInfo.containsKey("version"));
         assertTrue(buildInfo.containsKey("name"));
         assertTrue(buildInfo.containsKey("number"));
-    }
-
-    @Test
-    public void testPatchProxy() throws Exception {
-        final String proxyName = "proxy1";
-        String yaml = "proxies:\n"
-                + "  " + proxyName + ":\n"
-                + "    host: hostproxy1\n"
-                + "    port: 0 \n";
-        String artifactory7Yaml = yaml + "    platformDefault: false\n";
-
-        ArtifactoryRequest patchProxyRequest = new ArtifactoryRequestImpl()
-                .method(ArtifactoryRequest.Method.PATCH)
-                .apiUrl("api/system/configuration")
-                .requestType(ArtifactoryRequest.ContentType.YAML)
-                .requestBody(artifactory7Yaml);
-        ArtifactoryResponse response = artifactory.restCall(patchProxyRequest); // First, try Artifactory 7 style yaml
-
-        assertNotNull(response);
-        if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) { // If status != 200, try Artifactory 6 style yaml
-            String artifactory6Yaml = yaml + "    defaultProxy: false\n";
-            response = artifactory.restCall(patchProxyRequest.requestBody(artifactory6Yaml));
-            assertNotNull(response);
-            assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
-        }
-
-        String updatedXml = artifactory.system().configuration();
-        assertTrue(updatedXml.contains(proxyName));
-
-        // Remove proxy
-        patchProxyRequest.requestBody("proxies:\n  " + proxyName + ": null\n");
-        artifactory.restCall(patchProxyRequest);
     }
 
     @Test(dependsOnMethods = {"testGetBuildInfo"})
