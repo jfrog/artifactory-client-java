@@ -36,55 +36,6 @@ public class SystemTests extends ArtifactoryTestsBase {
     }
 
     @Test
-    public void testDownloadOfSystemConfiguration() {
-        String xml = artifactory.system().configuration();
-        assertTrue(xml.contains("backups"));
-        assertTrue(xml.contains("localRepositories"));
-        assertTrue(xml.contains("repoLayouts"));
-    }
-
-    @Test
-    public void testUploadOfSystemConfiguration() {
-        String oldXml = artifactory.system().configuration();
-        String changedXml = oldXml.replace("<excludeBuilds>false</excludeBuilds>", "<excludeBuilds>true</excludeBuilds>");
-
-        artifactory.system().configuration(changedXml);
-
-        String updatedXml = artifactory.system().configuration();
-        assertTrue(updatedXml.contains("backups"));
-        assertTrue(updatedXml.contains("localRepositories"));
-        assertTrue(updatedXml.contains("repoLayouts"));
-
-        // Restore
-        String restoredXml = updatedXml.replace("<excludeBuilds>true</excludeBuilds>", "<excludeBuilds>false</excludeBuilds>");
-        artifactory.system().configuration(restoredXml);
-    }
-
-    @Test
-    public void testPatchOfProxy() {
-        final String proxyName = "proxy1";
-        String yaml = "proxies:\n"
-                + "  " + proxyName + ":\n"
-                + "    host: hostproxy1\n"
-                + "    port: 0 \n";
-        String artifactory7Yaml = yaml + "    platformDefault: false\n";
-        artifactory.system().yamlConfiguration(artifactory7Yaml); // First, try Artifactory 7 style yaml
-
-        String updatedXml = artifactory.system().configuration();
-        if (!updatedXml.contains(proxyName)) { // If request failed, try Artifactory 6 style yaml
-            String artifactory6Yaml = yaml + "    defaultProxy: false\n";
-            artifactory.system().yamlConfiguration(artifactory6Yaml);
-            updatedXml = artifactory.system().configuration();
-            assertTrue(updatedXml.contains(proxyName));
-        }
-
-        // Restore
-        String deleteProxy = "proxies:\n"
-                + "  " + proxyName + ": null\n";
-        artifactory.system().yamlConfiguration(deleteProxy);
-    }
-
-    @Test
     public void testSystemInfo() {
         SystemInfo info = artifactory.system().info();
         Assert.assertNotNull(info);
