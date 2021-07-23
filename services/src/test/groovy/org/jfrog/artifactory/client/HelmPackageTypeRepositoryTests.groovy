@@ -4,16 +4,18 @@ import org.hamcrest.CoreMatchers
 import org.jfrog.artifactory.client.model.RepositoryType
 import org.jfrog.artifactory.client.model.repository.settings.RepositorySettings
 import org.jfrog.artifactory.client.model.repository.settings.impl.HelmRepositorySettingsImpl
-import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
-import static org.testng.Assert.assertFalse
 
 /**
  * test that client correctly sends and receives repository configuration with `helm` package type
  *
  * @author Glen Lockhart (glen@openet.com)
  */
-public class HelmPackageTypeRepositoryTests extends BaseRepositoryTests {
+class HelmPackageTypeRepositoryTests extends BaseRepositoryTests {
+
+    HelmPackageTypeRepositoryTests() {
+        remoteRepoUrl = "https://repo.chartcenter.io"
+    }
 
     @Override
     RepositorySettings getRepositorySettings(RepositoryType repositoryType) {
@@ -21,18 +23,13 @@ public class HelmPackageTypeRepositoryTests extends BaseRepositoryTests {
 
         settings.with {
             //virtual
-            virtualRetrievalCachePeriodSecs = 7210;
+            virtualRetrievalCachePeriodSecs = 7210
         }
         return settings
     }
 
-    @BeforeMethod
-    protected void setUp() {
-        super.setUp()
-    }
-
     @Test(groups = "helmPackageTypeRepo")
-    public void testHelmLocalRepo() {
+    void testHelmLocalRepo() {
         artifactory.repositories().create(0, localRepo)
         def expectedSettings = localRepo.repositorySettings
 
@@ -43,14 +40,14 @@ public class HelmPackageTypeRepositoryTests extends BaseRepositoryTests {
         resp.getRepositorySettings().with {
             assertThat(packageType, CoreMatchers.is(expectedSettings.getPackageType()))
             assertThat(repoLayout, CoreMatchers.is(expectedSettings.getRepoLayout()))
-            
+
             //not applicable to local repos
-            assertThat(virtualRetrievalCachePeriodSecs, CoreMatchers.nullValue());
+            assertThat(virtualRetrievalCachePeriodSecs, CoreMatchers.nullValue())
         }
     }
-    
+
     @Test(groups = "helmPackageTypeRepo")
-    public void testHelmRemoteRepo() {
+    void testHelmRemoteRepo() {
         artifactory.repositories().create(0, remoteRepo)
         def expectedSettings = remoteRepo.repositorySettings
 
@@ -61,14 +58,14 @@ public class HelmPackageTypeRepositoryTests extends BaseRepositoryTests {
         resp.getRepositorySettings().with {
             assertThat(packageType, CoreMatchers.is(expectedSettings.getPackageType()))
             assertThat(repoLayout, CoreMatchers.is(expectedSettings.getRepoLayout()))
-            
+
             //not applicable to remote repos
-            assertThat(virtualRetrievalCachePeriodSecs, CoreMatchers.nullValue());
+            assertThat(virtualRetrievalCachePeriodSecs, CoreMatchers.nullValue())
         }
     }
-    
+
     @Test(groups = "helmPackageTypeRepo")
-    public void testHelmVirtualRepo() {
+    void testHelmVirtualRepo() {
         artifactory.repositories().create(0, virtualRepo)
         def expectedSettings = virtualRepo.repositorySettings
 
@@ -79,8 +76,8 @@ public class HelmPackageTypeRepositoryTests extends BaseRepositoryTests {
         resp.getRepositorySettings().with {
             assertThat(packageType, CoreMatchers.is(expectedSettings.getPackageType()))
             assertThat(repoLayout, CoreMatchers.is(expectedSettings.getRepoLayout()))
-            
-            assertThat(virtualRetrievalCachePeriodSecs, CoreMatchers.is(expectedSettings.getVirtualRetrievalCachePeriodSecs()));
+
+            assertThat(virtualRetrievalCachePeriodSecs, CoreMatchers.is(expectedSettings.getVirtualRetrievalCachePeriodSecs()))
         }
     }
 }

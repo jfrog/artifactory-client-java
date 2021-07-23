@@ -9,7 +9,7 @@ import org.jfrog.artifactory.client.model.repository.settings.GitLfsRepositorySe
  * @author Ivan Vasylivskyi (ivanvas@jfrog.com)
  */
 public class GitLfsRepositorySettingsImpl extends AbstractRepositorySettings implements GitLfsRepositorySettings {
-    private static String defaultLayout = "simple-default";
+    public static String defaultLayout = "simple-default";
     private Boolean listRemoteFolderItems;
 
     public GitLfsRepositorySettingsImpl() {

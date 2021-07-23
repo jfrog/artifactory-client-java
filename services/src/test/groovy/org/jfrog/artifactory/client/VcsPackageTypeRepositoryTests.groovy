@@ -15,7 +15,7 @@ import org.testng.annotations.Test
  *
  * @author Ivan Vasylivskyi (ivanvas@jfrog.com)
  */
-public class VcsPackageTypeRepositoryTests extends BaseRepositoryTests {
+class VcsPackageTypeRepositoryTests extends BaseRepositoryTests {
 
     @Override
     RepositorySettings getRepositorySettings(RepositoryType repositoryType) {
@@ -46,7 +46,7 @@ public class VcsPackageTypeRepositoryTests extends BaseRepositoryTests {
     }
 
     @Test(groups = "vcsPackageTypeRepo")
-    public void testVcsRemoteRepo() {
+    void testVcsRemoteRepo() {
         artifactory.repositories().create(0, remoteRepo)
         def expectedSettings = remoteRepo.repositorySettings
 

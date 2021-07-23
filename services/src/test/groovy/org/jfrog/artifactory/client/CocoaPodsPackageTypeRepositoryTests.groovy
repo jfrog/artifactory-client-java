@@ -11,10 +11,10 @@ import org.testng.annotations.Test
 
 /**
  * test that client correctly sends and receives repository configuration with `cocoapods` package type
- * 
+ *
  * @author Ivan Vasylivskyi (ivanvas@jfrog.com)
  */
-public class CocoaPodsPackageTypeRepositoryTests extends BaseRepositoryTests {
+class CocoaPodsPackageTypeRepositoryTests extends BaseRepositoryTests {
 
     @Override
     RepositorySettings getRepositorySettings(RepositoryType repositoryType) {
@@ -26,7 +26,7 @@ public class CocoaPodsPackageTypeRepositoryTests extends BaseRepositoryTests {
             maxUniqueSnapshots = rnd.nextInt()
             podsSpecsRepoUrl = "http://jfrog.com/${rnd.nextInt()}"
             vcsGitDownloadUrl = "http://jfrog.com/${rnd.nextInt()}"
-            vcsGitProvider  = VcsGitProvider.CUSTOM
+            vcsGitProvider = VcsGitProvider.CUSTOM
             vcsType = VcsType.values()[rnd.nextInt(VcsType.values().length)]
         }
 
@@ -42,7 +42,7 @@ public class CocoaPodsPackageTypeRepositoryTests extends BaseRepositoryTests {
     }
 
     @Test(groups = "cocoapodsPackageTypeRepo")
-    public void testCocoaPodsLocalRepo() {
+    void testCocoaPodsLocalRepo() {
         artifactory.repositories().create(0, localRepo)
         def expectedSettings = localRepo.repositorySettings
 
@@ -55,7 +55,8 @@ public class CocoaPodsPackageTypeRepositoryTests extends BaseRepositoryTests {
 
             // remote
             assertThat(listRemoteFolderItems, CoreMatchers.nullValue())
-            assertThat(maxUniqueSnapshots, CoreMatchers.is(expectedSettings.getMaxUniqueSnapshots())) // always in resp payload
+            assertThat(maxUniqueSnapshots, CoreMatchers.is(expectedSettings.getMaxUniqueSnapshots()))
+            // always in resp payload
             assertThat(podsSpecsRepoUrl, CoreMatchers.nullValue())
             assertThat(vcsGitDownloadUrl, CoreMatchers.nullValue())
             assertThat(vcsGitProvider, CoreMatchers.nullValue())
@@ -64,7 +65,7 @@ public class CocoaPodsPackageTypeRepositoryTests extends BaseRepositoryTests {
     }
 
     @Test(groups = "cocoapodsPackageTypeRepo")
-    public void testCocoaPodsRemoteRepo() {
+    void testCocoaPodsRemoteRepo() {
         artifactory.repositories().create(0, remoteRepo)
         def expectedSettings = remoteRepo.repositorySettings
 

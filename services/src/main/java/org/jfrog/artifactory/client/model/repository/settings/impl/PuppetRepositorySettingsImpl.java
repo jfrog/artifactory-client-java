@@ -6,7 +6,7 @@ import org.jfrog.artifactory.client.model.repository.settings.AbstractRepository
 import org.jfrog.artifactory.client.model.repository.settings.PuppetRepositorySettings;
 
 public class PuppetRepositorySettingsImpl extends AbstractRepositorySettings implements PuppetRepositorySettings {
-    private static String defaultLayout = "puppet-default";
+    public static String defaultLayout = "puppet-default";
 
     public PuppetRepositorySettingsImpl() {
         super(defaultLayout);
@@ -19,8 +19,6 @@ public class PuppetRepositorySettingsImpl extends AbstractRepositorySettings imp
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof PuppetRepositorySettingsImpl)) return false;
-
-        return true;
+        return o instanceof PuppetRepositorySettingsImpl;
     }
 }

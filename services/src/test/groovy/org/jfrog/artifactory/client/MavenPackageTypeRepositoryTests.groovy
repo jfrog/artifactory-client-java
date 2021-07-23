@@ -13,10 +13,14 @@ import org.testng.annotations.Test
 
 /**
  * test that client correctly sends and receives repository configuration with `maven` package type
- * 
+ *
  * @author Ivan Vasylivskyi (ivanvas@jfrog.com)
  */
-public class MavenPackageTypeRepositoryTests extends BaseRepositoryTests {
+class MavenPackageTypeRepositoryTests extends BaseRepositoryTests {
+
+    MavenPackageTypeRepositoryTests() {
+        remoteRepoUrl = "https://repo.maven.apache.org/maven2"
+    }
 
     @Override
     RepositorySettings getRepositorySettings(RepositoryType repositoryType) {
@@ -35,7 +39,7 @@ public class MavenPackageTypeRepositoryTests extends BaseRepositoryTests {
             fetchJarsEagerly = true
             fetchSourcesEagerly = true
             listRemoteFolderItems = true
-            rejectInvalidJars= true
+            rejectInvalidJars = true
             remoteRepoChecksumPolicyType = RemoteRepoChecksumPolicyTypeImpl.ignore_and_generate
 
             // virtual
@@ -53,7 +57,7 @@ public class MavenPackageTypeRepositoryTests extends BaseRepositoryTests {
     }
 
     @Test(groups = "mavenPackageTypeRepo")
-    public void testMavenLocalRepo() {
+    void testMavenLocalRepo() {
         artifactory.repositories().create(0, localRepo)
         def expectedSettings = localRepo.repositorySettings
 
@@ -86,7 +90,7 @@ public class MavenPackageTypeRepositoryTests extends BaseRepositoryTests {
     }
 
     @Test(groups = "mavenPackageTypeRepo")
-    public void testMavenRemoteRepo() {
+    void testMavenRemoteRepo() {
         artifactory.repositories().create(0, remoteRepo)
         def expectedSettings = remoteRepo.repositorySettings
 
@@ -100,10 +104,13 @@ public class MavenPackageTypeRepositoryTests extends BaseRepositoryTests {
             // local
             assertThat(checksumPolicyType, CoreMatchers.nullValue())
             assertThat(handleReleases, CoreMatchers.is(expectedSettings.getHandleReleases())) // always in resp payload
-            assertThat(maxUniqueSnapshots, CoreMatchers.is(expectedSettings.getMaxUniqueSnapshots())) // always in resp payload
-            assertThat(maxUniqueSnapshots, CoreMatchers.is(expectedSettings.getMaxUniqueSnapshots()))  // always in resp payload
+            assertThat(maxUniqueSnapshots, CoreMatchers.is(expectedSettings.getMaxUniqueSnapshots()))
+            // always in resp payload
+            assertThat(maxUniqueSnapshots, CoreMatchers.is(expectedSettings.getMaxUniqueSnapshots()))
+            // always in resp payload
             assertThat(snapshotVersionBehavior, CoreMatchers.nullValue())
-            assertThat(suppressPomConsistencyChecks, CoreMatchers.is(expectedSettings.getSuppressPomConsistencyChecks())) // always sent by artifactory
+            assertThat(suppressPomConsistencyChecks, CoreMatchers.is(expectedSettings.getSuppressPomConsistencyChecks()))
+            // always sent by artifactory
 
             // remote
             assertThat(fetchJarsEagerly, CoreMatchers.is(expectedSettings.getFetchJarsEagerly()))
@@ -119,7 +126,7 @@ public class MavenPackageTypeRepositoryTests extends BaseRepositoryTests {
     }
 
     @Test(groups = "mavenPackageTypeRepo")
-    public void testMavenVirtualRepo() {
+    void testMavenVirtualRepo() {
         artifactory.repositories().create(0, virtualRepo)
         def expectedSettings = virtualRepo.repositorySettings
 
@@ -146,9 +153,11 @@ public class MavenPackageTypeRepositoryTests extends BaseRepositoryTests {
             assertThat(remoteRepoChecksumPolicyType, CoreMatchers.nullValue())
 
             // virtual
-            assertThat(forceMavenAuthentication, CoreMatchers.is(expectedSettings.getForceMavenAuthentication())) // empty = keyPair is not set
+            assertThat(forceMavenAuthentication, CoreMatchers.is(expectedSettings.getForceMavenAuthentication()))
+            // empty = keyPair is not set
             assertThat(keyPair, CoreMatchers.is('')) // empty = keyPair is not set
-            assertThat(pomRepositoryReferencesCleanupPolicy, CoreMatchers.is(expectedSettings.getPomRepositoryReferencesCleanupPolicy())) // always sent by artifactory
+            assertThat(pomRepositoryReferencesCleanupPolicy, CoreMatchers.is(expectedSettings.getPomRepositoryReferencesCleanupPolicy()))
+            // always sent by artifactory
         }
     }
 

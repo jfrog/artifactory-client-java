@@ -6,13 +6,12 @@ import org.jfrog.artifactory.client.model.repository.settings.RepositorySettings
 import org.jfrog.artifactory.client.model.repository.settings.impl.ComposerRepositorySettingsImpl
 import org.jfrog.artifactory.client.model.repository.settings.vcs.VcsGitProvider
 import org.jfrog.artifactory.client.model.repository.settings.vcs.VcsType
-import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
 
 /**
  * Test that client correctly sends and receives repository configuration with `composer` package type
  */
-public class ComposerPackageTypeRepositoryTests extends BaseRepositoryTests {
+class ComposerPackageTypeRepositoryTests extends BaseRepositoryTests {
 
     @Override
     RepositorySettings getRepositorySettings(RepositoryType repositoryType) {
@@ -31,13 +30,8 @@ public class ComposerPackageTypeRepositoryTests extends BaseRepositoryTests {
         return settings
     }
 
-    @BeforeMethod
-    protected void setUp() {
-        super.setUp()
-    }
-
     @Test(groups = "composerPackageTypeRepo")
-    public void testComposerLocalRepo() {
+    void testComposerLocalRepo() {
         artifactory.repositories().create(0, localRepo)
         def expectedSettings = localRepo.repositorySettings
 
@@ -50,7 +44,8 @@ public class ComposerPackageTypeRepositoryTests extends BaseRepositoryTests {
 
             // remote
             assertThat(listRemoteFolderItems, CoreMatchers.nullValue())
-            assertThat(maxUniqueSnapshots, CoreMatchers.is(expectedSettings.getMaxUniqueSnapshots())) // always in resp payload
+            assertThat(maxUniqueSnapshots, CoreMatchers.is(expectedSettings.getMaxUniqueSnapshots()))
+            // always in resp payload
             assertThat(composerRegistryUrl, CoreMatchers.nullValue())
             assertThat(vcsGitDownloadUrl, CoreMatchers.nullValue())
             assertThat(vcsGitProvider, CoreMatchers.nullValue())
@@ -59,7 +54,7 @@ public class ComposerPackageTypeRepositoryTests extends BaseRepositoryTests {
     }
 
     @Test(groups = "composerPackageTypeRepo")
-    public void testComposerRemoteRepo() {
+    void testComposerRemoteRepo() {
         artifactory.repositories().create(0, remoteRepo)
         def expectedSettings = remoteRepo.repositorySettings
 
@@ -81,7 +76,7 @@ public class ComposerPackageTypeRepositoryTests extends BaseRepositoryTests {
     }
 
     @Test(groups = "composerPackageTypeRepo")
-    public void testComposerVirtualRepo() {
+    void testComposerVirtualRepo() {
         artifactory.repositories().create(0, virtualRepo)
         def expectedSettings = virtualRepo.repositorySettings
 

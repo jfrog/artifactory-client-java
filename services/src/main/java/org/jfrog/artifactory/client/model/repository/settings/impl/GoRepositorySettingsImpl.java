@@ -1,17 +1,17 @@
 package org.jfrog.artifactory.client.model.repository.settings.impl;
 
-import java.util.Collection;
-import java.util.Objects;
-
 import org.jfrog.artifactory.client.model.PackageType;
 import org.jfrog.artifactory.client.model.impl.PackageTypeImpl;
 import org.jfrog.artifactory.client.model.repository.settings.GoRepositorySettings;
+
+import java.util.Collection;
+import java.util.Objects;
 
 /**
  * @author David Csakvari
  */
 public class GoRepositorySettingsImpl extends VcsRepositorySettingsImpl implements GoRepositorySettings {
-    private static String defaultLayout = "go-default";
+    public static String defaultLayout = "go-default";
 
     private Boolean externalDependenciesEnabled;
 
@@ -30,7 +30,7 @@ public class GoRepositorySettingsImpl extends VcsRepositorySettingsImpl implemen
         return externalDependenciesEnabled;
     }
 
-    void setExternalDependenciesEnabled(Boolean externalDependenciesEnabled) {
+    public void setExternalDependenciesEnabled(Boolean externalDependenciesEnabled) {
         this.externalDependenciesEnabled = externalDependenciesEnabled;
     }
 

@@ -9,10 +9,14 @@ import org.testng.annotations.Test
 
 /**
  * test that client correctly sends and receives repository configuration with `debian` package type
- * 
+ *
  * @author Ivan Vasylivskyi (ivanvas@jfrog.com)
  */
-public class DebianPackageTypeRepositoryTests extends BaseRepositoryTests {
+class DebianPackageTypeRepositoryTests extends BaseRepositoryTests {
+
+    DebianPackageTypeRepositoryTests() {
+        remoteRepoUrl = "http://archive.ubuntu.com/ubuntu/"
+    }
 
     @Override
     RepositorySettings getRepositorySettings(RepositoryType repositoryType) {
@@ -38,7 +42,7 @@ public class DebianPackageTypeRepositoryTests extends BaseRepositoryTests {
     }
 
     @Test(groups = "debianPackageTypeRepo")
-    public void testDebianLocalRepo() {
+    void testDebianLocalRepo() {
         artifactory.repositories().create(0, localRepo)
         def expectedSettings = localRepo.repositorySettings
 
@@ -58,7 +62,7 @@ public class DebianPackageTypeRepositoryTests extends BaseRepositoryTests {
     }
 
     @Test(groups = "debianPackageTypeRepo")
-    public void testDebianRemoteRepo() {
+    void testDebianRemoteRepo() {
         artifactory.repositories().create(0, remoteRepo)
         def expectedSettings = remoteRepo.repositorySettings
 

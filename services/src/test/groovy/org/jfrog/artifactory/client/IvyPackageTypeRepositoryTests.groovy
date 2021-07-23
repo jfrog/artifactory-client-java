@@ -8,7 +8,6 @@ import org.jfrog.artifactory.client.model.impl.SnapshotVersionBehaviorImpl
 import org.jfrog.artifactory.client.model.repository.PomCleanupPolicy
 import org.jfrog.artifactory.client.model.repository.settings.RepositorySettings
 import org.jfrog.artifactory.client.model.repository.settings.impl.IvyRepositorySettingsImpl
-import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
 
 /**
@@ -16,7 +15,11 @@ import org.testng.annotations.Test
  *
  * @author Ivan Vasylivskyi (ivanvas@jfrog.com)
  */
-public class IvyPackageTypeRepositoryTests extends BaseRepositoryTests {
+class IvyPackageTypeRepositoryTests extends BaseRepositoryTests {
+
+    IvyPackageTypeRepositoryTests() {
+        remoteRepoUrl = "https://repo.maven.apache.org/maven2"
+    }
 
     @Override
     RepositorySettings getRepositorySettings(RepositoryType repositoryType) {
@@ -46,13 +49,8 @@ public class IvyPackageTypeRepositoryTests extends BaseRepositoryTests {
         return settings
     }
 
-    @BeforeMethod
-    protected void setUp() {
-        super.setUp()
-    }
-
     @Test(groups = "ivyPackageTypeRepo")
-    public void testIvyLocalRepo() {
+    void testIvyLocalRepo() {
         artifactory.repositories().create(0, localRepo)
         def expectedSettings = localRepo.repositorySettings
 
@@ -85,7 +83,7 @@ public class IvyPackageTypeRepositoryTests extends BaseRepositoryTests {
     }
 
     @Test(groups = "ivyPackageTypeRepo")
-    public void testIvyRemoteRepo() {
+    void testIvyRemoteRepo() {
         artifactory.repositories().create(0, remoteRepo)
         def expectedSettings = remoteRepo.repositorySettings
 
@@ -99,8 +97,10 @@ public class IvyPackageTypeRepositoryTests extends BaseRepositoryTests {
             // local
             assertThat(checksumPolicyType, CoreMatchers.nullValue())
             assertThat(handleReleases, CoreMatchers.is(expectedSettings.getHandleReleases())) // always in resp payload
-            assertThat(maxUniqueSnapshots, CoreMatchers.is(expectedSettings.getMaxUniqueSnapshots())) // always in resp payload
-            assertThat(maxUniqueSnapshots, CoreMatchers.is(expectedSettings.getMaxUniqueSnapshots()))  // always in resp payload
+            assertThat(maxUniqueSnapshots, CoreMatchers.is(expectedSettings.getMaxUniqueSnapshots()))
+            // always in resp payload
+            assertThat(maxUniqueSnapshots, CoreMatchers.is(expectedSettings.getMaxUniqueSnapshots()))
+            // always in resp payload
             assertThat(snapshotVersionBehavior, CoreMatchers.nullValue())
             assertThat(suppressPomConsistencyChecks, CoreMatchers.is(expectedSettings.getSuppressPomConsistencyChecks()))
             // always sent by artifactory
@@ -119,7 +119,7 @@ public class IvyPackageTypeRepositoryTests extends BaseRepositoryTests {
     }
 
     @Test(groups = "ivyPackageTypeRepo")
-    public void testIvyVirtualRepo() {
+    void testIvyVirtualRepo() {
         artifactory.repositories().create(0, virtualRepo)
         def expectedSettings = virtualRepo.repositorySettings
 

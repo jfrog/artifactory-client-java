@@ -12,7 +12,11 @@ import org.testng.annotations.Test
  *
  * @author Ivan Vasylivskyi (ivanvas@jfrog.com)
  */
-public class OpkgPackageTypeRepositoryTests extends BaseRepositoryTests {
+class OpkgPackageTypeRepositoryTests extends BaseRepositoryTests {
+
+    OpkgPackageTypeRepositoryTests() {
+        remoteRepoUrl = "https://www.nuget.org"
+    }
 
     @Override
     RepositorySettings getRepositorySettings(RepositoryType repositoryType) {
@@ -35,7 +39,7 @@ public class OpkgPackageTypeRepositoryTests extends BaseRepositoryTests {
     }
 
     @Test(groups = "opkgPackageTypeRepo")
-    public void testOpkgLocalRepo() {
+    void testOpkgLocalRepo() {
         artifactory.repositories().create(0, localRepo)
         def expectedSettings = localRepo.repositorySettings
 
@@ -50,7 +54,7 @@ public class OpkgPackageTypeRepositoryTests extends BaseRepositoryTests {
     }
 
     @Test(groups = "opkgPackageTypeRepo")
-    public void testOpkgRemoteRepo() {
+    void testOpkgRemoteRepo() {
         artifactory.repositories().create(0, remoteRepo)
         def expectedSettings = remoteRepo.repositorySettings
 

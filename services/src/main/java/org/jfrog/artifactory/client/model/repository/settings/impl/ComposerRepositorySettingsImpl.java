@@ -5,7 +5,7 @@ import org.jfrog.artifactory.client.model.impl.PackageTypeImpl;
 import org.jfrog.artifactory.client.model.repository.settings.ComposerRepositorySettings;
 
 public class ComposerRepositorySettingsImpl extends VcsRepositorySettingsImpl implements ComposerRepositorySettings {
-    private static String defaultLayout = "composer-default";
+    public static String defaultLayout = "composer-default";
     private String composerRegistryUrl;
 
     public ComposerRepositorySettingsImpl() {

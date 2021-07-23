@@ -40,6 +40,7 @@ abstract class BaseRepositoryTests extends ArtifactoryTestsBase {
     protected XraySettings xraySettings
     protected Map<String, Object> customProperties
     protected Boolean storeArtifactsLocallyInRemoteRepo
+    protected String remoteRepoUrl = "https://github.com"
 
     public static final REPO_NAME_PREFIX = "rt-client-java"
     protected long repoUniqueId = System.currentTimeMillis()
@@ -99,7 +100,6 @@ abstract class BaseRepositoryTests extends ArtifactoryTestsBase {
                     .failedRetrievalCachePeriodSecs(rnd.nextInt())
                     .hardFail(rnd.nextBoolean())
                     .includesPattern("org/${rnd.nextInt()}/**")
-                    .localAddress("http://jfrog.com/${rnd.nextInt()}")
                     .missedRetrievalCachePeriodSecs(rnd.nextInt())
                     .offline(rnd.nextBoolean())
                     .password("password_${rnd.nextInt()}")
@@ -110,7 +110,7 @@ abstract class BaseRepositoryTests extends ArtifactoryTestsBase {
                     .storeArtifactsLocally(ObjectUtils.defaultIfNull(storeArtifactsLocallyInRemoteRepo, rnd.nextBoolean()))
                     .synchronizeProperties(rnd.nextBoolean())
                     .unusedArtifactsCleanupPeriodHours(Math.abs(rnd.nextInt()))
-                    .url("http://jfrog.com/${rnd.nextInt()}")
+                    .url(remoteRepoUrl)
                     .username("user_${rnd.nextInt()}")
                     .repositorySettings(settings)
                     .xraySettings(xraySettings)
@@ -165,7 +165,7 @@ abstract class BaseRepositoryTests extends ArtifactoryTestsBase {
                     .appendText("\n     but: ")
                     .appendValue(actual)
 
-            throw new AssertionError(description.toString())
+            throw new AssertionError(description)
         }
     }
 }

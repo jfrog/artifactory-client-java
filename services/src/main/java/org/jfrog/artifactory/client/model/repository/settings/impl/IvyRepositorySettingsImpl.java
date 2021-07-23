@@ -8,7 +8,7 @@ import org.jfrog.artifactory.client.model.repository.settings.IvyRepositorySetti
  * @author Ivan Vasylivskyi (ivanvas@jfrog.com)
  */
 public class IvyRepositorySettingsImpl extends MavenRepositorySettingsImpl implements IvyRepositorySettings {
-    private static String defaultLayout = "ivy-default";
+    public static String defaultLayout = "ivy-default";
 
     public IvyRepositorySettingsImpl() {
         super(defaultLayout);
@@ -23,8 +23,6 @@ public class IvyRepositorySettingsImpl extends MavenRepositorySettingsImpl imple
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof IvyRepositorySettingsImpl)) return false;
-        if (!super.equals(o)) return false;
-
-        return true;
+        return super.equals(o);
     }
 }

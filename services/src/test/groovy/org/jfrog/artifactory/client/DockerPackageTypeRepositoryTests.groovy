@@ -13,7 +13,11 @@ import org.testng.annotations.Test
  *
  * @author Ivan Vasylivskyi (ivanvas@jfrog.com)
  */
-public class DockerPackageTypeRepositoryTests extends BaseRepositoryTests {
+class DockerPackageTypeRepositoryTests extends BaseRepositoryTests {
+
+    DockerPackageTypeRepositoryTests() {
+        remoteRepoUrl = "https://registry-1.docker.io"
+    }
 
     @Override
     RepositorySettings getRepositorySettings(RepositoryType repositoryType) {
@@ -38,7 +42,7 @@ public class DockerPackageTypeRepositoryTests extends BaseRepositoryTests {
     }
 
     @Test(groups = "dockerPackageTypeRepo")
-    public void testDockerLocalRepo() {
+    void testDockerLocalRepo() {
         artifactory.repositories().create(0, localRepo)
         def expectedSettings = localRepo.repositorySettings
 
@@ -59,7 +63,7 @@ public class DockerPackageTypeRepositoryTests extends BaseRepositoryTests {
     }
 
     @Test(groups = "dockerPackageTypeRepo")
-    public void testDockerRemoteRepo() {
+    void testDockerRemoteRepo() {
         artifactory.repositories().create(0, remoteRepo)
         def expectedSettings = remoteRepo.repositorySettings
 
@@ -71,7 +75,8 @@ public class DockerPackageTypeRepositoryTests extends BaseRepositoryTests {
             assertThat(repoLayout, CoreMatchers.is(expectedSettings.getRepoLayout()))
 
             // local
-            assertThat(dockerApiVersion, CoreMatchers.is(expectedSettings.getDockerApiVersion())) // always in resp payload
+            assertThat(dockerApiVersion, CoreMatchers.is(expectedSettings.getDockerApiVersion()))
+            // always in resp payload
 
             // remote
             assertThat(enableTokenAuthentication, CoreMatchers.is(expectedSettings.getEnableTokenAuthentication()))
@@ -80,7 +85,7 @@ public class DockerPackageTypeRepositoryTests extends BaseRepositoryTests {
     }
 
     @Test(groups = "dockerPackageTypeRepo")
-    public void testDockerVirtualRepo() {
+    void testDockerVirtualRepo() {
         artifactory.repositories().create(0, virtualRepo)
         def expectedSettings = virtualRepo.repositorySettings
 

@@ -4,25 +4,24 @@ import org.hamcrest.CoreMatchers
 import org.jfrog.artifactory.client.model.RepositoryType
 import org.jfrog.artifactory.client.model.repository.settings.RepositorySettings
 import org.jfrog.artifactory.client.model.repository.settings.impl.ConanRepositorySettingsImpl
-import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
 
 /**
  * Test that client correctly sends and receives repository configuration with `conan` package type
  */
-public class ConanPackageTypeRepositoryTests extends BaseRepositoryTests {
+class ConanPackageTypeRepositoryTests extends BaseRepositoryTests {
+
+    ConanPackageTypeRepositoryTests() {
+        remoteRepoUrl = "https://conan.io/center"
+    }
+
     @Override
     RepositorySettings getRepositorySettings(RepositoryType repositoryType) {
         return new ConanRepositorySettingsImpl()
     }
 
-    @BeforeMethod
-    protected void setUp() {
-        super.setUp()
-    }
-
     @Test(groups = "conanPackageTypeRepo")
-    public void testConanLocalRepo() {
+    void testConanLocalRepo() {
         artifactory.repositories().create(0, localRepo)
         def expectedSettings = localRepo.repositorySettings
 
@@ -36,7 +35,7 @@ public class ConanPackageTypeRepositoryTests extends BaseRepositoryTests {
     }
 
     @Test(groups = "conanPackageTypeRepo")
-    public void testConanRemoteRepo() {
+    void testConanRemoteRepo() {
         artifactory.repositories().create(0, remoteRepo)
         def expectedSettings = remoteRepo.repositorySettings
 
@@ -50,7 +49,7 @@ public class ConanPackageTypeRepositoryTests extends BaseRepositoryTests {
     }
 
     @Test(groups = "conanPackageTypeRepo")
-    public void testConanVirtualRepo() {
+    void testConanVirtualRepo() {
         artifactory.repositories().create(0, virtualRepo)
         def expectedSettings = virtualRepo.repositorySettings
 

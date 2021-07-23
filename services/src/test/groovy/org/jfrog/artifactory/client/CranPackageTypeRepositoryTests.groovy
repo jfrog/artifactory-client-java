@@ -4,26 +4,24 @@ import org.hamcrest.CoreMatchers
 import org.jfrog.artifactory.client.model.RepositoryType
 import org.jfrog.artifactory.client.model.repository.settings.RepositorySettings
 import org.jfrog.artifactory.client.model.repository.settings.impl.CranRepositorySettingsImpl
-import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
 
 /**
  * Test that client correctly sends and receives repository configuration with `cran` package type
  */
-public class CranPackageTypeRepositoryTests extends BaseRepositoryTests {
+class CranPackageTypeRepositoryTests extends BaseRepositoryTests {
+
+    CranPackageTypeRepositoryTests() {
+        remoteRepoUrl = "https://cran.r-project.org/"
+    }
 
     @Override
     RepositorySettings getRepositorySettings(RepositoryType repositoryType) {
         return new CranRepositorySettingsImpl()
     }
 
-    @BeforeMethod
-    protected void setUp() {
-        super.setUp()
-    }
-
     @Test(groups = "cranPackageTypeRepo")
-    public void testCranLocalRepo() {
+    void testCranLocalRepo() {
         artifactory.repositories().create(0, localRepo)
         def expectedSettings = localRepo.repositorySettings
 
@@ -37,7 +35,7 @@ public class CranPackageTypeRepositoryTests extends BaseRepositoryTests {
     }
 
     @Test(groups = "cranPackageTypeRepo")
-    public void testCranRemoteRepo() {
+    void testCranRemoteRepo() {
         artifactory.repositories().create(0, remoteRepo)
         def expectedSettings = remoteRepo.repositorySettings
 
@@ -51,7 +49,7 @@ public class CranPackageTypeRepositoryTests extends BaseRepositoryTests {
     }
 
     @Test(groups = "cranPackageTypeRepo")
-    public void testCranVirtualRepo() {
+    void testCranVirtualRepo() {
         artifactory.repositories().create(0, virtualRepo)
         def expectedSettings = virtualRepo.repositorySettings
 

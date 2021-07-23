@@ -4,7 +4,6 @@ import org.hamcrest.CoreMatchers
 import org.jfrog.artifactory.client.model.RepositoryType
 import org.jfrog.artifactory.client.model.repository.settings.RepositorySettings
 import org.jfrog.artifactory.client.model.repository.settings.impl.GemsRepositorySettingsImpl
-import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
 
 /**
@@ -12,7 +11,11 @@ import org.testng.annotations.Test
  *
  * @author Ivan Vasylivskyi (ivanvas@jfrog.com)
  */
-public class GemsPackageTypeRepositoryTests extends BaseRepositoryTests {
+class GemsPackageTypeRepositoryTests extends BaseRepositoryTests {
+
+    GemsPackageTypeRepositoryTests() {
+        remoteRepoUrl = "https://rubygems.org"
+    }
 
     @Override
     RepositorySettings getRepositorySettings(RepositoryType repositoryType) {
@@ -26,13 +29,8 @@ public class GemsPackageTypeRepositoryTests extends BaseRepositoryTests {
         return settings
     }
 
-    @BeforeMethod
-    protected void setUp() {
-        super.setUp()
-    }
-
     @Test(groups = "gemsPackageTypeRepo")
-    public void testGemsLocalRepo() {
+    void testGemsLocalRepo() {
         artifactory.repositories().create(0, localRepo)
         def expectedSettings = localRepo.repositorySettings
 
@@ -47,7 +45,7 @@ public class GemsPackageTypeRepositoryTests extends BaseRepositoryTests {
     }
 
     @Test(groups = "gemsPackageTypeRepo")
-    public void testGemsRemoteRepo() {
+    void testGemsRemoteRepo() {
         artifactory.repositories().create(0, remoteRepo)
         def expectedSettings = remoteRepo.repositorySettings
 
@@ -62,7 +60,7 @@ public class GemsPackageTypeRepositoryTests extends BaseRepositoryTests {
     }
 
     @Test(groups = "gemsPackageTypeRepo")
-    public void testGemsVirtualRepo() {
+    void testGemsVirtualRepo() {
         artifactory.repositories().create(0, virtualRepo)
         def expectedSettings = virtualRepo.repositorySettings
 

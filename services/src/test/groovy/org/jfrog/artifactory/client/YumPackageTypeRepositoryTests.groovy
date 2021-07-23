@@ -14,7 +14,11 @@ import org.testng.annotations.Test
  *
  * @author Ivan Vasylivskyi (ivanvas@jfrog.com)
  */
-public class YumPackageTypeRepositoryTests extends BaseRepositoryTests {
+class YumPackageTypeRepositoryTests extends BaseRepositoryTests {
+
+    YumPackageTypeRepositoryTests() {
+        remoteRepoUrl = "http://mirror.centos.org/centos"
+    }
 
     @Override
     RepositorySettings getRepositorySettings(RepositoryType repositoryType) {
@@ -42,7 +46,7 @@ public class YumPackageTypeRepositoryTests extends BaseRepositoryTests {
     }
 
     @Test(groups = "yumPackageTypeRepo")
-    public void testYumLocalRepo() {
+    void testYumLocalRepo() {
         artifactory.repositories().create(0, localRepo)
         def expectedSettings = localRepo.repositorySettings
 
@@ -67,7 +71,7 @@ public class YumPackageTypeRepositoryTests extends BaseRepositoryTests {
     }
 
     @Test(groups = "yumPackageTypeRepo")
-    public void testYumRemoteRepo() {
+    void testYumRemoteRepo() {
         artifactory.repositories().create(0, remoteRepo)
         def expectedSettings = remoteRepo.repositorySettings
 

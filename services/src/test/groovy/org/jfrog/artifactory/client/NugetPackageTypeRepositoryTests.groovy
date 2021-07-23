@@ -12,7 +12,11 @@ import org.testng.annotations.Test
  *
  * @author Ivan Vasylivskyi (ivanvas@jfrog.com)
  */
-public class NugetPackageTypeRepositoryTests extends BaseRepositoryTests {
+class NugetPackageTypeRepositoryTests extends BaseRepositoryTests {
+
+    NugetPackageTypeRepositoryTests() {
+        remoteRepoUrl = "https://www.nuget.org"
+    }
 
     @Override
     RepositorySettings getRepositorySettings(RepositoryType repositoryType) {
@@ -41,7 +45,7 @@ public class NugetPackageTypeRepositoryTests extends BaseRepositoryTests {
     }
 
     @Test(groups = "nugetPackageTypeRepo")
-    public void testNugetLocalRepo() {
+    void testNugetLocalRepo() {
         artifactory.repositories().create(0, localRepo)
         def expectedSettings = localRepo.repositorySettings
 
@@ -70,7 +74,7 @@ public class NugetPackageTypeRepositoryTests extends BaseRepositoryTests {
     }
 
     @Test(groups = "nugetPackageTypeRepo")
-    public void testNugetRemoteRepo() {
+    void testNugetRemoteRepo() {
         artifactory.repositories().create(0, remoteRepo)
         def expectedSettings = remoteRepo.repositorySettings
 
@@ -97,7 +101,7 @@ public class NugetPackageTypeRepositoryTests extends BaseRepositoryTests {
     }
 
     @Test(groups = "nugetPackageTypeRepo")
-    public void testNugetVirtualRepo() {
+    void testNugetVirtualRepo() {
         artifactory.repositories().create(0, virtualRepo)
         def expectedSettings = virtualRepo.repositorySettings
 

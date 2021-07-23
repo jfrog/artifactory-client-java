@@ -12,7 +12,11 @@ import org.testng.annotations.Test
  *
  * @author Ivan Vasylivskyi (ivanvas@jfrog.com)
  */
-public class RpmPackageTypeRepositoryTests extends BaseRepositoryTests {
+class RpmPackageTypeRepositoryTests extends BaseRepositoryTests {
+
+    RpmPackageTypeRepositoryTests() {
+        remoteRepoUrl = "http://mirror.centos.org/centos"
+    }
 
     @Override
     RepositorySettings getRepositorySettings(RepositoryType repositoryType) {
@@ -41,7 +45,7 @@ public class RpmPackageTypeRepositoryTests extends BaseRepositoryTests {
     }
 
     @Test(groups = "rpmPackageTypeRepo")
-    public void testRpmLocalRepo() {
+    void testRpmLocalRepo() {
         artifactory.repositories().create(0, localRepo)
         def expectedSettings = localRepo.repositorySettings
 
@@ -66,7 +70,7 @@ public class RpmPackageTypeRepositoryTests extends BaseRepositoryTests {
     }
 
     @Test(groups = "rpmPackageTypeRepo")
-    public void testRpmRemoteRepo() {
+    void testRpmRemoteRepo() {
         artifactory.repositories().create(0, remoteRepo)
         def expectedSettings = remoteRepo.repositorySettings
 
