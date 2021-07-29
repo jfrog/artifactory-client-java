@@ -8,6 +8,7 @@ import org.jfrog.artifactory.client.model.repository.settings.vcs.VcsGitProvider
 import org.jfrog.artifactory.client.model.repository.settings.vcs.VcsType
 import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
+
 import static org.testng.Assert.assertFalse
 
 /**
@@ -15,7 +16,7 @@ import static org.testng.Assert.assertFalse
  *
  * @author Ivan Vasylivskyi (ivanvas@jfrog.com)
  */
-public class BowerPackageTypeRepositoryTests extends BaseRepositoryTests {
+class BowerPackageTypeRepositoryTests extends BaseRepositoryTests {
 
     @Override
     RepositorySettings getRepositorySettings(RepositoryType repositoryType) {
@@ -46,7 +47,7 @@ public class BowerPackageTypeRepositoryTests extends BaseRepositoryTests {
     }
 
     @Test(groups = "bowerPackageTypeRepo")
-    public void testBowerLocalRepo() {
+    void testBowerLocalRepo() {
         artifactory.repositories().create(0, localRepo)
         def expectedSettings = localRepo.repositorySettings
 
@@ -59,7 +60,8 @@ public class BowerPackageTypeRepositoryTests extends BaseRepositoryTests {
 
             // remote
             assertThat(listRemoteFolderItems, CoreMatchers.nullValue())
-            assertThat(maxUniqueSnapshots, CoreMatchers.is(expectedSettings.getMaxUniqueSnapshots())) // always in resp payload
+            assertThat(maxUniqueSnapshots, CoreMatchers.is(expectedSettings.getMaxUniqueSnapshots()))
+            // always in resp payload
             assertThat(bowerRegistryUrl, CoreMatchers.nullValue())
             assertThat(vcsGitDownloadUrl, CoreMatchers.nullValue())
             assertThat(vcsGitProvider, CoreMatchers.nullValue())
@@ -73,7 +75,7 @@ public class BowerPackageTypeRepositoryTests extends BaseRepositoryTests {
     }
 
     @Test(groups = "bowerPackageTypeRepo")
-    public void testBowerRemoteRepo() {
+    void testBowerRemoteRepo() {
         artifactory.repositories().create(0, remoteRepo)
         def expectedSettings = remoteRepo.repositorySettings
 
@@ -100,7 +102,7 @@ public class BowerPackageTypeRepositoryTests extends BaseRepositoryTests {
     }
 
     @Test(groups = "bowerPackageTypeRepo")
-    public void testBowerVirtualRepo() {
+    void testBowerVirtualRepo() {
         artifactory.repositories().create(0, virtualRepo)
         def expectedSettings = virtualRepo.repositorySettings
 

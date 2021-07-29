@@ -9,7 +9,7 @@ import org.jfrog.artifactory.client.model.repository.settings.RpmRepositorySetti
  * @author Ivan Vasylivskyi (ivanvas@jfrog.com)
  */
 public class RpmRepositorySettingsImpl extends AbstractRepositorySettings implements RpmRepositorySettings {
-    private static String defaultLayout = "simple-default";
+    public static String defaultLayout = "simple-default";
     private Integer yumRootDepth;
     private String groupFileNames;
     private Boolean calculateYumMetadata;

@@ -5,30 +5,24 @@ import org.jfrog.artifactory.client.model.RepositoryType
 import org.jfrog.artifactory.client.model.impl.RepositoryTypeImpl
 import org.jfrog.artifactory.client.model.repository.settings.RepositorySettings
 import org.jfrog.artifactory.client.model.repository.settings.impl.GenericRepositorySettingsImpl
-import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
 
 import static org.testng.Assert.assertTrue
 
 /**
  * test that client correctly sends and receives general repository configuration
- * 
+ *
  * @author Ivan Vasylivskyi (ivanvas@jfrog.com)
  */
-public class GeneralRepositoryTests extends BaseRepositoryTests {
+class GeneralRepositoryTests extends BaseRepositoryTests {
 
     @Override
     RepositorySettings getRepositorySettings(RepositoryType repositoryType) {
         return new GenericRepositorySettingsImpl()
     }
 
-    @BeforeMethod
-    protected void setUp() {
-        super.setUp()
-    }
-
     @Test(groups = "generalRepo")
-    public void testLocalRepo() {
+    void testLocalRepo() {
         artifactory.repositories().create(0, localRepo)
         assertTrue(curl(LIST_PATH).contains(localRepo.getKey()))
 
@@ -49,7 +43,7 @@ public class GeneralRepositoryTests extends BaseRepositoryTests {
     }
 
     @Test(groups = "generalRepo")
-    public void testRemoteRepo() {
+    void testRemoteRepo() {
         artifactory.repositories().create(0, remoteRepo)
         assertTrue(curl(LIST_PATH).contains(remoteRepo.getKey()))
 
@@ -85,7 +79,7 @@ public class GeneralRepositoryTests extends BaseRepositoryTests {
     }
 
     @Test(groups = "generalRepo")
-    public void testVirtualRepo() {
+    void testVirtualRepo() {
         artifactory.repositories().create(0, virtualRepo)
         assertTrue(curl(LIST_PATH).contains(virtualRepo.getKey()))
 

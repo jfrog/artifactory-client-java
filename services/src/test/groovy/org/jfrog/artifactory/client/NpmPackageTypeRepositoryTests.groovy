@@ -4,8 +4,8 @@ import org.hamcrest.CoreMatchers
 import org.jfrog.artifactory.client.model.RepositoryType
 import org.jfrog.artifactory.client.model.repository.settings.RepositorySettings
 import org.jfrog.artifactory.client.model.repository.settings.impl.NpmRepositorySettingsImpl
-import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
+
 import static org.testng.Assert.assertFalse
 
 /**
@@ -13,7 +13,11 @@ import static org.testng.Assert.assertFalse
  *
  * @author Ivan Vasylivskyi (ivanvas@jfrog.com)
  */
-public class NpmPackageTypeRepositoryTests extends BaseRepositoryTests {
+class NpmPackageTypeRepositoryTests extends BaseRepositoryTests {
+
+    NpmPackageTypeRepositoryTests() {
+        remoteRepoUrl = "https://registry.npmjs.org"
+    }
 
     @Override
     RepositorySettings getRepositorySettings(RepositoryType repositoryType) {
@@ -33,13 +37,8 @@ public class NpmPackageTypeRepositoryTests extends BaseRepositoryTests {
         return settings
     }
 
-    @BeforeMethod
-    protected void setUp() {
-        super.setUp()
-    }
-
     @Test(groups = "npmPackageTypeRepo")
-    public void testNpmLocalRepo() {
+    void testNpmLocalRepo() {
         artifactory.repositories().create(0, localRepo)
         def expectedSettings = localRepo.repositorySettings
 
@@ -62,7 +61,7 @@ public class NpmPackageTypeRepositoryTests extends BaseRepositoryTests {
     }
 
     @Test(groups = "npmPackageTypeRepo")
-    public void testNpmRemoteRepo() {
+    void testNpmRemoteRepo() {
         artifactory.repositories().create(0, remoteRepo)
         def expectedSettings = remoteRepo.repositorySettings
 
@@ -84,7 +83,7 @@ public class NpmPackageTypeRepositoryTests extends BaseRepositoryTests {
     }
 
     @Test(groups = "npmPackageTypeRepo")
-    public void testNpmVirtualRepo() {
+    void testNpmVirtualRepo() {
         artifactory.repositories().create(0, virtualRepo)
         def expectedSettings = virtualRepo.repositorySettings
 

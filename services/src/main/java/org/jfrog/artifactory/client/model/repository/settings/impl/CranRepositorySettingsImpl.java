@@ -6,7 +6,7 @@ import org.jfrog.artifactory.client.model.repository.settings.AbstractRepository
 import org.jfrog.artifactory.client.model.repository.settings.CranRepositorySettings;
 
 public class CranRepositorySettingsImpl extends AbstractRepositorySettings implements CranRepositorySettings {
-    private static String defaultLayout = "simple-default";
+    public static String defaultLayout = "simple-default";
 
     public CranRepositorySettingsImpl() {
         super(defaultLayout);
@@ -19,8 +19,6 @@ public class CranRepositorySettingsImpl extends AbstractRepositorySettings imple
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof CranRepositorySettingsImpl)) return false;
-
-        return true;
+        return o instanceof CranRepositorySettingsImpl;
     }
 }

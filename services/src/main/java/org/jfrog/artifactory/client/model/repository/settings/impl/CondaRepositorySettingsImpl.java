@@ -6,21 +6,19 @@ import org.jfrog.artifactory.client.model.repository.settings.AbstractRepository
 import org.jfrog.artifactory.client.model.repository.settings.CondaRepositorySettings;
 
 public class CondaRepositorySettingsImpl extends AbstractRepositorySettings implements CondaRepositorySettings {
-  private static String defaultLayout = "simple-default";
+    public static String defaultLayout = "simple-default";
 
-  public CondaRepositorySettingsImpl() {
-    super(defaultLayout);
-  }
+    public CondaRepositorySettingsImpl() {
+        super(defaultLayout);
+    }
 
-  public PackageType getPackageType() {
-    return PackageTypeImpl.conda;
-  }
+    public PackageType getPackageType() {
+        return PackageTypeImpl.conda;
+    }
 
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (!(o instanceof CondaRepositorySettingsImpl)) return false;
-
-    return true;
-  }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        return o instanceof CondaRepositorySettingsImpl;
+    }
 }

@@ -13,7 +13,7 @@ import org.jfrog.artifactory.client.model.repository.settings.MavenRepositorySet
  * @author Ivan Vasylivskyi (ivanvas@jfrog.com)
  */
 public class MavenRepositorySettingsImpl extends AbstractRepositorySettings implements MavenRepositorySettings {
-    protected static String defaultLayout = "maven-2-default";
+    public static String defaultLayout = "maven-2-default";
     private Integer maxUniqueSnapshots;
     private Boolean handleReleases;
     private Boolean handleSnapshots;

@@ -9,7 +9,7 @@ import org.jfrog.artifactory.client.model.repository.settings.NugetRepositorySet
  * @author Ivan Vasylivskyi (ivanvas@jfrog.com)
  */
 public class NugetRepositorySettingsImpl extends AbstractRepositorySettings implements NugetRepositorySettings {
-    private static String defaultLayout = "nuget-default";
+    public static String defaultLayout = "nuget-default";
     private Integer maxUniqueSnapshots;
     private Boolean forceNugetAuthentication;
     private String feedContextPath;
@@ -57,9 +57,13 @@ public class NugetRepositorySettingsImpl extends AbstractRepositorySettings impl
         this.downloadContextPath = downloadContextPath;
     }
 
-    public String getV3FeedUrl() { return v3FeedUrl; }
+    public String getV3FeedUrl() {
+        return v3FeedUrl;
+    }
 
-    public void setV3FeedUrl(String v3FeedUrl) { this.v3FeedUrl = v3FeedUrl; }
+    public void setV3FeedUrl(String v3FeedUrl) {
+        this.v3FeedUrl = v3FeedUrl;
+    }
 
     public Boolean getListRemoteFolderItems() {
         return listRemoteFolderItems;

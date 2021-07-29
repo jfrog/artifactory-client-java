@@ -8,7 +8,7 @@ import org.jfrog.artifactory.client.model.repository.settings.SbtRepositorySetti
  * @author Ivan Vasylivskyi (ivanvas@jfrog.com)
  */
 public class SbtRepositorySettingsImpl extends MavenRepositorySettingsImpl implements SbtRepositorySettings {
-    private static String defaultLayout = "sbt-default";
+    public static String defaultLayout = "sbt-default";
 
     public SbtRepositorySettingsImpl() {
         super(defaultLayout);
@@ -23,8 +23,6 @@ public class SbtRepositorySettingsImpl extends MavenRepositorySettingsImpl imple
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof SbtRepositorySettingsImpl)) return false;
-        if (!super.equals(o)) return false;
-
-        return true;
+        return super.equals(o);
     }
 }

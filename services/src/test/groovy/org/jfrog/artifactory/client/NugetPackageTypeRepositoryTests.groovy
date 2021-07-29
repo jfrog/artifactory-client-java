@@ -12,7 +12,11 @@ import org.testng.annotations.Test
  *
  * @author Ivan Vasylivskyi (ivanvas@jfrog.com)
  */
-public class NugetPackageTypeRepositoryTests extends BaseRepositoryTests {
+class NugetPackageTypeRepositoryTests extends BaseRepositoryTests {
+
+    NugetPackageTypeRepositoryTests() {
+        remoteRepoUrl = "https://www.nuget.org"
+    }
 
     @Override
     RepositorySettings getRepositorySettings(RepositoryType repositoryType) {
@@ -41,7 +45,7 @@ public class NugetPackageTypeRepositoryTests extends BaseRepositoryTests {
     }
 
     @Test(groups = "nugetPackageTypeRepo")
-    public void testNugetLocalRepo() {
+    void testNugetLocalRepo() {
         artifactory.repositories().create(0, localRepo)
         def expectedSettings = localRepo.repositorySettings
 
@@ -70,7 +74,7 @@ public class NugetPackageTypeRepositoryTests extends BaseRepositoryTests {
     }
 
     @Test(groups = "nugetPackageTypeRepo")
-    public void testNugetRemoteRepo() {
+    void testNugetRemoteRepo() {
         artifactory.repositories().create(0, remoteRepo)
         def expectedSettings = remoteRepo.repositorySettings
 
@@ -82,8 +86,8 @@ public class NugetPackageTypeRepositoryTests extends BaseRepositoryTests {
             assertThat(repoLayout, CoreMatchers.is(expectedSettings.getRepoLayout()))
 
             // local
-            assertThat(maxUniqueSnapshots, CoreMatchers.is(expectedSettings.getMaxUniqueSnapshots()))
             // always in resp payload
+            assertThat(maxUniqueSnapshots, CoreMatchers.is(expectedSettings.getMaxUniqueSnapshots()))
             assertThat(downloadContextPath, CoreMatchers.is(expectedSettings.getDownloadContextPath()))
             assertThat(feedContextPath, CoreMatchers.is(expectedSettings.getFeedContextPath()))
             assertThat(v3FeedUrl, CoreMatchers.is(expectedSettings.getV3FeedUrl()))
@@ -97,7 +101,7 @@ public class NugetPackageTypeRepositoryTests extends BaseRepositoryTests {
     }
 
     @Test(groups = "nugetPackageTypeRepo")
-    public void testNugetVirtualRepo() {
+    void testNugetVirtualRepo() {
         artifactory.repositories().create(0, virtualRepo)
         def expectedSettings = virtualRepo.repositorySettings
 
@@ -109,7 +113,8 @@ public class NugetPackageTypeRepositoryTests extends BaseRepositoryTests {
             assertThat(repoLayout, CoreMatchers.is(expectedSettings.getRepoLayout()))
 
             // local
-            assertThat(maxUniqueSnapshots, CoreMatchers.is(CoreMatchers.nullValue())) // always in resp payload
+            // always in resp payload
+            assertThat(maxUniqueSnapshots, CoreMatchers.is(CoreMatchers.nullValue()))
             assertThat(downloadContextPath, CoreMatchers.is(CoreMatchers.nullValue()))
             assertThat(feedContextPath, CoreMatchers.is(CoreMatchers.nullValue()))
 
@@ -118,7 +123,6 @@ public class NugetPackageTypeRepositoryTests extends BaseRepositoryTests {
 
             // local + remote
             assertThat(forceNugetAuthentication, CoreMatchers.is(expectedSettings.getForceNugetAuthentication()))
-            // always in resp payload
         }
     }
 

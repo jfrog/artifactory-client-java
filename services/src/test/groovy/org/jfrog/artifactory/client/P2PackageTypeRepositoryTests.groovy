@@ -17,7 +17,11 @@ import org.testng.annotations.Test
  *
  * @author Ivan Vasylivskyi (ivanvas@jfrog.com)
  */
-public class P2PackageTypeRepositoryTests extends BaseRepositoryTests {
+class P2PackageTypeRepositoryTests extends BaseRepositoryTests {
+
+    P2PackageTypeRepositoryTests() {
+        remoteRepoUrl = "https://download.eclipse.org/releases/photon"
+    }
 
     @Override
     RepositorySettings getRepositorySettings(RepositoryType repositoryType) {
@@ -60,7 +64,7 @@ public class P2PackageTypeRepositoryTests extends BaseRepositoryTests {
     }
 
     @Test(groups = "p2PackageTypeRepo")
-    public void testP2RemoteRepo() {
+    void testP2RemoteRepo() {
         artifactory.repositories().create(0, remoteRepo)
         def expectedSettings = remoteRepo.repositorySettings
 
@@ -73,9 +77,10 @@ public class P2PackageTypeRepositoryTests extends BaseRepositoryTests {
 
             // local
             assertThat(checksumPolicyType, CoreMatchers.nullValue())
-            assertThat(handleReleases, CoreMatchers.is(expectedSettings.getHandleReleases())) // always in resp payload
-            assertThat(maxUniqueSnapshots, CoreMatchers.is(expectedSettings.getMaxUniqueSnapshots())) // always in resp payload
-            assertThat(maxUniqueSnapshots, CoreMatchers.is(expectedSettings.getMaxUniqueSnapshots()))  // always in resp payload
+            // always in resp payload
+            assertThat(handleReleases, CoreMatchers.is(expectedSettings.getHandleReleases()))
+            assertThat(maxUniqueSnapshots, CoreMatchers.is(expectedSettings.getMaxUniqueSnapshots()))
+            assertThat(maxUniqueSnapshots, CoreMatchers.is(expectedSettings.getMaxUniqueSnapshots()))
             assertThat(snapshotVersionBehavior, CoreMatchers.nullValue())
             assertThat(suppressPomConsistencyChecks, CoreMatchers.is(expectedSettings.getSuppressPomConsistencyChecks()))
             // always sent by artifactory
@@ -94,7 +99,7 @@ public class P2PackageTypeRepositoryTests extends BaseRepositoryTests {
     }
 
     @Test(groups = "p2PackageTypeRepo")
-    public void testP2VirtualRepo() {
+    void testP2VirtualRepo() {
         artifactory.repositories().create(0, virtualRepo)
         def expectedSettings = virtualRepo.repositorySettings
 

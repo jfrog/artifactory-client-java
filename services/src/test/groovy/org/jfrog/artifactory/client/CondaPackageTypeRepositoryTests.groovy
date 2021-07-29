@@ -1,27 +1,27 @@
 package org.jfrog.artifactory.client
+
 import org.hamcrest.CoreMatchers
 import org.jfrog.artifactory.client.model.RepositoryType
 import org.jfrog.artifactory.client.model.repository.settings.RepositorySettings
 import org.jfrog.artifactory.client.model.repository.settings.impl.CondaRepositorySettingsImpl
-import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
+
 /**
  * Test that client correctly sends and receives repository configuration with `conda` package type
  */
-public class CondaPackageTypeRepositoryTests extends BaseRepositoryTests {
+class CondaPackageTypeRepositoryTests extends BaseRepositoryTests {
+
+    CondaPackageTypeRepositoryTests() {
+        remoteRepoUrl = "https://repo.anaconda.com/pkgs/main"
+    }
 
     @Override
     RepositorySettings getRepositorySettings(RepositoryType repositoryType) {
         return new CondaRepositorySettingsImpl()
     }
 
-    @BeforeMethod
-    protected void setUp() {
-        super.setUp()
-    }
-
     @Test(groups = "condaPackageTypeRepo")
-    public void testCondaLocalRepo() {
+    void testCondaLocalRepo() {
         artifactory.repositories().create(0, localRepo)
         def expectedSettings = localRepo.repositorySettings
 
@@ -35,7 +35,7 @@ public class CondaPackageTypeRepositoryTests extends BaseRepositoryTests {
     }
 
     @Test(groups = "condaPackageTypeRepo")
-    public void testCondaRemoteRepo() {
+    void testCondaRemoteRepo() {
         artifactory.repositories().create(0, remoteRepo)
         def expectedSettings = remoteRepo.repositorySettings
 
@@ -49,7 +49,7 @@ public class CondaPackageTypeRepositoryTests extends BaseRepositoryTests {
     }
 
     @Test(groups = "condaPackageTypeRepo")
-    public void testCondaVirtualRepo() {
+    void testCondaVirtualRepo() {
         artifactory.repositories().create(0, virtualRepo)
         def expectedSettings = virtualRepo.repositorySettings
 

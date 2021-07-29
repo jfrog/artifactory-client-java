@@ -8,10 +8,10 @@ import org.jfrog.artifactory.client.model.repository.settings.impl.MavenReposito
 import org.junit.Assert
 import org.testng.annotations.Test
 
-public class UtilTests {
+class UtilTests {
 
     @Test(groups = "utilTests")
-    public void getRepositorySettingsForTypeTest() {
+    void getRepositorySettingsForTypeTest() {
         Assert.assertThat(Util.getRepositorySettingsClassForPackageType(PackageTypeImpl.bower), CoreMatchers.equalTo(BowerRepositorySettingsImpl.class))
         Assert.assertThat(Util.getRepositorySettingsClassForPackageType(PackageTypeImpl.maven), CoreMatchers.equalTo(MavenRepositorySettingsImpl.class))
     }

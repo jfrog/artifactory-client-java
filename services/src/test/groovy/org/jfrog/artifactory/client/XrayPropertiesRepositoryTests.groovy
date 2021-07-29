@@ -13,51 +13,56 @@ import org.testng.annotations.Test
  * @author Ihor Banadiga (ihorb@jfrog.com)
  */
 class XrayPropertiesRepositoryTests extends BaseRepositoryTests {
-  @Override
-  RepositorySettings getRepositorySettings(RepositoryType repositoryType) {
-    return new MavenRepositorySettingsImpl()
-  }
 
-  @BeforeMethod
-  protected void setUp() {
-    xraySettings = new XraySettingsImpl()
-
-    xraySettings.with {
-      // local
-      xrayIndex = true;
+    XrayPropertiesRepositoryTests() {
+        remoteRepoUrl = "https://repo.maven.apache.org/maven2"
     }
 
-    super.setUp()
-  }
-
-  @Test(groups = "xrayProperties")
-  public void testXrayPropertiesLocalRepo() {
-    artifactory.repositories().create(0, localRepo)
-
-    def resp = artifactory.repository(localRepo.getKey()).get()
-    resp.getXraySettings().with {
-      assertThat(xrayIndex, CoreMatchers.is(xraySettings.getXrayIndex()))
+    @Override
+    RepositorySettings getRepositorySettings(RepositoryType repositoryType) {
+        return new MavenRepositorySettingsImpl()
     }
-  }
 
-  @Test(groups = "xrayProperties")
-  public void testXrayPropertiesRemoteRepo() {
-    artifactory.repositories().create(0, remoteRepo)
+    @BeforeMethod
+    protected void setUp() {
+        xraySettings = new XraySettingsImpl()
 
-    def resp = artifactory.repository(remoteRepo.getKey()).get()
-    resp.getXraySettings().with {
-      assertThat(xrayIndex, CoreMatchers.is(xraySettings.getXrayIndex()))
+        xraySettings.with {
+            // local
+            xrayIndex = true
+        }
+
+        super.setUp()
     }
-  }
 
-  @Test(groups = "xrayProperties")
-  public void testXrayPropertiesVirtualRepo() {
-    artifactory.repositories().create(0, virtualRepo)
+    @Test(groups = "xrayProperties")
+    void testXrayPropertiesLocalRepo() {
+        artifactory.repositories().create(0, localRepo)
 
-    VirtualRepository resp = artifactory.repository(virtualRepo.getKey()).get() as VirtualRepository
-
-    resp.getXraySettings().with {
-      assertThat(xrayIndex, CoreMatchers.nullValue())
+        def resp = artifactory.repository(localRepo.getKey()).get()
+        resp.getXraySettings().with {
+            assertThat(xrayIndex, CoreMatchers.is(xraySettings.getXrayIndex()))
+        }
     }
-  }
+
+    @Test(groups = "xrayProperties")
+    void testXrayPropertiesRemoteRepo() {
+        artifactory.repositories().create(0, remoteRepo)
+
+        def resp = artifactory.repository(remoteRepo.getKey()).get()
+        resp.getXraySettings().with {
+            assertThat(xrayIndex, CoreMatchers.is(xraySettings.getXrayIndex()))
+        }
+    }
+
+    @Test(groups = "xrayProperties")
+    void testXrayPropertiesVirtualRepo() {
+        artifactory.repositories().create(0, virtualRepo)
+
+        VirtualRepository resp = artifactory.repository(virtualRepo.getKey()).get() as VirtualRepository
+
+        resp.getXraySettings().with {
+            assertThat(xrayIndex, CoreMatchers.nullValue())
+        }
+    }
 }

@@ -8,7 +8,7 @@ import org.jfrog.artifactory.client.model.repository.settings.CocoaPodsRepositor
  * @author Ivan Vasylivskyi (ivanvas@jfrog.com)
  */
 public class CocoaPodsRepositorySettingsImpl extends VcsRepositorySettingsImpl implements CocoaPodsRepositorySettings {
-    private static String defaultLayout = "simple-default";
+    public static String defaultLayout = "simple-default";
     private String podsSpecsRepoUrl;
 
     public CocoaPodsRepositorySettingsImpl() {

@@ -12,7 +12,7 @@ import org.testng.annotations.Test
  *
  * @author Ivan Vasylivskyi (ivanvas@jfrog.com)
  */
-public class GitLfsPackageTypeRepositoryTests extends BaseRepositoryTests {
+class GitLfsPackageTypeRepositoryTests extends BaseRepositoryTests {
 
     @Override
     RepositorySettings getRepositorySettings(RepositoryType repositoryType) {
@@ -32,7 +32,7 @@ public class GitLfsPackageTypeRepositoryTests extends BaseRepositoryTests {
     }
 
     @Test(groups = "gitlfsPackageTypeRepo")
-    public void testGitLfsLocalRepo() {
+    void testGitLfsLocalRepo() {
         artifactory.repositories().create(0, localRepo)
         def expectedSettings = localRepo.repositorySettings
 
@@ -47,7 +47,7 @@ public class GitLfsPackageTypeRepositoryTests extends BaseRepositoryTests {
     }
 
     @Test(groups = "gitlfsPackageTypeRepo")
-    public void testGitLfsRemoteRepo() {
+    void testGitLfsRemoteRepo() {
         artifactory.repositories().create(0, remoteRepo)
         def expectedSettings = remoteRepo.repositorySettings
 
@@ -62,7 +62,7 @@ public class GitLfsPackageTypeRepositoryTests extends BaseRepositoryTests {
     }
 
     @Test(groups = "gitlfsPackageTypeRepo")
-    public void testGitLfsVirtualRepo() {
+    void testGitLfsVirtualRepo() {
         artifactory.repositories().create(0, virtualRepo)
         def expectedSettings = virtualRepo.repositorySettings
 

@@ -9,7 +9,7 @@ import org.jfrog.artifactory.client.model.repository.settings.VagrantRepositoryS
  * @author Ivan Vasylivskyi (ivanvas@jfrog.com)
  */
 public class VagrantRepositorySettingsImpl extends AbstractRepositorySettings implements VagrantRepositorySettings {
-    private static String defaultLayout = "simple-default";
+    public static String defaultLayout = "simple-default";
 
     public VagrantRepositorySettingsImpl() {
         super(defaultLayout);
@@ -22,8 +22,6 @@ public class VagrantRepositorySettingsImpl extends AbstractRepositorySettings im
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof VagrantRepositorySettingsImpl)) return false;
-
-        return true;
+        return o instanceof VagrantRepositorySettingsImpl;
     }
 }

@@ -9,7 +9,7 @@ import org.jfrog.artifactory.client.model.repository.settings.GenericRepositoryS
  * @author Ivan Vasylivskyi (ivanvas@jfrog.com)
  */
 public class GenericRepositorySettingsImpl extends AbstractRepositorySettings implements GenericRepositorySettings {
-    private static String defaultLayout = "simple-default";
+    public static String defaultLayout = "simple-default";
     private Boolean listRemoteFolderItems;
 
     public GenericRepositorySettingsImpl() {

@@ -10,7 +10,7 @@ import org.jfrog.artifactory.client.model.repository.settings.docker.DockerApiVe
  * @author Ivan Vasylivskyi (ivanvas@jfrog.com)
  */
 public class DockerRepositorySettingsImpl extends AbstractRepositorySettings implements DockerRepositorySettings {
-    private static String defaultLayout = "simple-default";
+    public static String defaultLayout = "simple-default";
     private DockerApiVersion dockerApiVersion;
     private Boolean enableTokenAuthentication;
     private Boolean listRemoteFolderItems;
