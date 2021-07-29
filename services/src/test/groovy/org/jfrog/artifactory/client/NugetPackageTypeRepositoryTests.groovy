@@ -86,8 +86,8 @@ class NugetPackageTypeRepositoryTests extends BaseRepositoryTests {
             assertThat(repoLayout, CoreMatchers.is(expectedSettings.getRepoLayout()))
 
             // local
-            assertThat(maxUniqueSnapshots, CoreMatchers.is(expectedSettings.getMaxUniqueSnapshots()))
             // always in resp payload
+            assertThat(maxUniqueSnapshots, CoreMatchers.is(expectedSettings.getMaxUniqueSnapshots()))
             assertThat(downloadContextPath, CoreMatchers.is(expectedSettings.getDownloadContextPath()))
             assertThat(feedContextPath, CoreMatchers.is(expectedSettings.getFeedContextPath()))
             assertThat(v3FeedUrl, CoreMatchers.is(expectedSettings.getV3FeedUrl()))
@@ -113,7 +113,8 @@ class NugetPackageTypeRepositoryTests extends BaseRepositoryTests {
             assertThat(repoLayout, CoreMatchers.is(expectedSettings.getRepoLayout()))
 
             // local
-            assertThat(maxUniqueSnapshots, CoreMatchers.is(CoreMatchers.nullValue())) // always in resp payload
+            // always in resp payload
+            assertThat(maxUniqueSnapshots, CoreMatchers.is(CoreMatchers.nullValue()))
             assertThat(downloadContextPath, CoreMatchers.is(CoreMatchers.nullValue()))
             assertThat(feedContextPath, CoreMatchers.is(CoreMatchers.nullValue()))
 
@@ -122,7 +123,6 @@ class NugetPackageTypeRepositoryTests extends BaseRepositoryTests {
 
             // local + remote
             assertThat(forceNugetAuthentication, CoreMatchers.is(expectedSettings.getForceNugetAuthentication()))
-            // always in resp payload
         }
     }
 

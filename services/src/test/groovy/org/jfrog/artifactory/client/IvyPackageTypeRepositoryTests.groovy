@@ -96,11 +96,10 @@ class IvyPackageTypeRepositoryTests extends BaseRepositoryTests {
 
             // local
             assertThat(checksumPolicyType, CoreMatchers.nullValue())
-            assertThat(handleReleases, CoreMatchers.is(expectedSettings.getHandleReleases())) // always in resp payload
-            assertThat(maxUniqueSnapshots, CoreMatchers.is(expectedSettings.getMaxUniqueSnapshots()))
             // always in resp payload
+            assertThat(handleReleases, CoreMatchers.is(expectedSettings.getHandleReleases()))
             assertThat(maxUniqueSnapshots, CoreMatchers.is(expectedSettings.getMaxUniqueSnapshots()))
-            // always in resp payload
+            assertThat(maxUniqueSnapshots, CoreMatchers.is(expectedSettings.getMaxUniqueSnapshots()))
             assertThat(snapshotVersionBehavior, CoreMatchers.nullValue())
             assertThat(suppressPomConsistencyChecks, CoreMatchers.is(expectedSettings.getSuppressPomConsistencyChecks()))
             // always sent by artifactory
