@@ -141,7 +141,8 @@ public class RestCallTests extends ArtifactoryTestsBase {
                 .apiUrl("api/security/permissions/" + permissionName)
                 .requestType(ArtifactoryRequest.ContentType.JSON)
                 .requestBody(map);
-        artifactory.restCall(req);
+        ArtifactoryResponse response = artifactory.restCall(req);
+        assertTrue(response.isSuccessResponse(), response.getRawBody());
 
         // Verify permission target created:
         assetPermissionTarget(permissionName, true);
@@ -150,7 +151,8 @@ public class RestCallTests extends ArtifactoryTestsBase {
         req = new ArtifactoryRequestImpl()
                 .method(ArtifactoryRequest.Method.DELETE)
                 .apiUrl("api/security/permissions/" + permissionName);
-        artifactory.restCall(req);
+        response = artifactory.restCall(req);
+        assertTrue(response.isSuccessResponse(), response.getRawBody());
 
         // Verify permission target deleted:
         assetPermissionTarget(permissionName, false);
