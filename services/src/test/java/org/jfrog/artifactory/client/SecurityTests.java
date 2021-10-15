@@ -5,6 +5,7 @@ import org.apache.http.client.HttpResponseException;
 import org.jfrog.artifactory.client.model.*;
 import org.jfrog.artifactory.client.model.builder.GroupBuilder;
 import org.jfrog.artifactory.client.model.builder.PermissionTargetBuilder;
+import org.jfrog.artifactory.client.model.builder.SecurityBuilders;
 import org.jfrog.artifactory.client.model.builder.UserBuilder;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
@@ -266,6 +267,29 @@ public class SecurityTests extends ArtifactoryTestsBase {
     public void testEffectiveRepoPermissions() {
         Set<ItemPermission> itemPermissions = artifactory.repository(localRepository.getKey()).effectivePermissions();
         assertItemPermissions(itemPermissions);
+    }
+
+    @Test
+    public void testBuilderFromPermissionTarget() {
+        Principal userAno = artifactory.security().builders().principalBuilder().name("anonymous").privileges(Privilege.READ).build();
+        Principal groupRead = artifactory.security().builders().principalBuilder().name("readers").privileges(Privilege.READ).build();
+        SecurityBuilders securityBuilders = artifactory.security().builders();
+        Principals principals = securityBuilders.principalsBuilder().users(userAno).groups(groupRead).build();
+
+        PermissionTargetBuilder permissionBuilder = artifactory.security().builders().permissionTargetBuilder();
+        PermissionTarget permission = permissionBuilder.name("test-perm").repositories("test-repo").includesPattern("com/company")
+                .excludesPattern("org/denylist/,org/bug/").principals(principals).build();
+
+        PermissionTarget copiedPermission = securityBuilders.builderFrom(permission).build();
+        assertEquals(copiedPermission.getName(), "test-perm");
+        assertEquals(copiedPermission.getRepositories().size(), 1);
+        assertEquals(copiedPermission.getRepositories().get(0), "test-repo");
+        assertEquals(copiedPermission.getIncludesPattern(), "com/company");
+        assertEquals(copiedPermission.getExcludesPattern(), "org/denylist/,org/bug/");
+        assertEquals(copiedPermission.getPrincipals().getUsers().get(0).getName(), "anonymous");
+        assertEquals(copiedPermission.getPrincipals().getUsers().get(0).getPrivileges(), userAno.getPrivileges());
+        assertEquals(copiedPermission.getPrincipals().getGroups().get(0).getName(), "readers");
+        assertEquals(copiedPermission.getPrincipals().getGroups().get(0).getPrivileges(), groupRead.getPrivileges());
     }
 
     @AfterClass

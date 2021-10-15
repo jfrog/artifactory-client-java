@@ -35,7 +35,14 @@ public class SecurityBuildersImpl implements SecurityBuilders {
     }
 
     public PermissionTargetBuilder builderFrom(PermissionTarget from) {
-        return null;//TODO implement copy builder for PermissionTarget
+        PermissionTargetBuilder builder = new PermissionTargetBuilderImpl();
+        builder
+            .name(from.getName())
+            .includesPattern(from.getIncludesPattern())
+            .excludesPattern(from.getExcludesPattern())
+            .repositories(from.getRepositories().toArray(new String[0]))
+            .principals(from.getPrincipals());
+        return builder;
     }
 
     public PrincipalsBuilder principalsBuilder() {
