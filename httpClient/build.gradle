@@ -3,9 +3,5 @@ group 'org.jfrog.artifactory.client'
 apply plugin: 'java'
 
 repositories {
-    jcenter()
-}
-
-dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.11'
+    mavenCentral()
 }

@@ -41,8 +41,6 @@ public class CloseableHttpClientDecorator extends CloseableHttpClient { //implem
 
     /**
      * Release resources and unregister itself from {@link CloseableObserver}
-     *
-     * @throws IOException
      */
     @Override
     public void close() throws IOException {
