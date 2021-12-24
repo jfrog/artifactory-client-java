@@ -169,6 +169,8 @@ public abstract class HttpBuilderBase<T extends HttpBuilderBase<?>> {
 
     /**
      * Configures preemptive authentication on this client. Ignores blank username input.
+     *
+     * @return {@link T}
      */
     public T authentication(String username, String password) {
         return authentication(username, password, false);
@@ -176,6 +178,8 @@ public abstract class HttpBuilderBase<T extends HttpBuilderBase<?>> {
 
     /**
      * Configures preemptive authentication on this client. Ignores blank username input.
+     *
+     * @return {@link T}
      */
     public T authentication(String username, String password, boolean allowAnyHost) {
         if (StringUtils.isNotBlank(username)) {

@@ -6,7 +6,7 @@ import org.jfrog.artifactory.client.model.impl.LocalReplicationImpl
 import org.jfrog.artifactory.client.model.repository.settings.RepositorySettings
 import org.testng.annotations.Test
 
-import static junit.framework.Assert.assertTrue
+import static org.testng.Assert.assertTrue;
 
 class ReplicationTests extends BaseRepositoryTests {
 

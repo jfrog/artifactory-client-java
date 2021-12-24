@@ -5,15 +5,16 @@ import org.jfrog.artifactory.client.impl.util.Util
 import org.jfrog.artifactory.client.model.impl.PackageTypeImpl
 import org.jfrog.artifactory.client.model.repository.settings.impl.BowerRepositorySettingsImpl
 import org.jfrog.artifactory.client.model.repository.settings.impl.MavenRepositorySettingsImpl
-import org.junit.Assert
 import org.testng.annotations.Test
+
+import static org.testng.Assert.assertEquals
 
 class UtilTests {
 
     @Test(groups = "utilTests")
     void getRepositorySettingsForTypeTest() {
-        Assert.assertThat(Util.getRepositorySettingsClassForPackageType(PackageTypeImpl.bower), CoreMatchers.equalTo(BowerRepositorySettingsImpl.class))
-        Assert.assertThat(Util.getRepositorySettingsClassForPackageType(PackageTypeImpl.maven), CoreMatchers.equalTo(MavenRepositorySettingsImpl.class))
+        assertEquals(Util.getRepositorySettingsClassForPackageType(PackageTypeImpl.bower), CoreMatchers.equalTo(BowerRepositorySettingsImpl.class))
+        assertEquals(Util.getRepositorySettingsClassForPackageType(PackageTypeImpl.maven), CoreMatchers.equalTo(MavenRepositorySettingsImpl.class))
     }
 
 }

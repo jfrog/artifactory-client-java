@@ -1,6 +1,5 @@
 package org.jfrog.artifactory.client;
 
-import junit.framework.Assert;
 import org.jfrog.artifactory.client.model.SystemInfo;
 import org.jfrog.artifactory.client.model.Version;
 import org.testng.annotations.Test;
@@ -38,23 +37,23 @@ public class SystemTests extends ArtifactoryTestsBase {
     @Test
     public void testSystemInfo() {
         SystemInfo info = artifactory.system().info();
-        Assert.assertNotNull(info);
-        Assert.assertTrue(info.getCommittedVirtualMemorySize() >= 0L);
-        Assert.assertTrue(info.getTotalSwapSpaceSize() >= 0L);
-        Assert.assertTrue(info.getFreeSwapSpaceSize() >= 0L);
-        Assert.assertTrue(info.getProcessCpuTime() >= 0L);
-        Assert.assertTrue(info.getTotalPhysicalMemorySize() >= 0L);
-        Assert.assertTrue(info.getOpenFileDescriptorCount() >= 0L);
-        Assert.assertTrue(info.getMaxFileDescriptorCount() >= 0L);
-        Assert.assertTrue(info.getProcessCpuLoad() >= 0.0D);
-        Assert.assertTrue(info.getSystemCpuLoad() >= 0.0D);
-        Assert.assertTrue(info.getFreePhysicalMemorySize() >= 0L);
-        Assert.assertTrue(info.getNumberOfCores() >= 0L);
-        Assert.assertTrue(info.getHeapMemoryUsage() >= 0L);
-        Assert.assertTrue(info.getNoneHeapMemoryUsage() >= 0L);
-        Assert.assertTrue(info.getThreadCount() >= 0);
-        Assert.assertTrue(info.getNoneHeapMemoryMax() >= 0L);
-        Assert.assertTrue(info.getHeapMemoryMax() >= 0L);
-        Assert.assertTrue(info.getJvmUpTime() >= 0L);
+        assertNotNull(info);
+        assertTrue(info.getCommittedVirtualMemorySize() >= 0L);
+        assertTrue(info.getTotalSwapSpaceSize() >= 0L);
+        assertTrue(info.getFreeSwapSpaceSize() >= 0L);
+        assertTrue(info.getProcessCpuTime() >= 0L);
+        assertTrue(info.getTotalPhysicalMemorySize() >= 0L);
+        assertTrue(info.getOpenFileDescriptorCount() >= 0L);
+        assertTrue(info.getMaxFileDescriptorCount() >= 0L);
+        assertTrue(info.getProcessCpuLoad() >= 0.0D);
+        assertTrue(info.getSystemCpuLoad() >= 0.0D);
+        assertTrue(info.getFreePhysicalMemorySize() >= 0L);
+        assertTrue(info.getNumberOfCores() >= 0L);
+        assertTrue(info.getHeapMemoryUsage() >= 0L);
+        assertTrue(info.getNoneHeapMemoryUsage() >= 0L);
+        assertTrue(info.getThreadCount() >= 0);
+        assertTrue(info.getNoneHeapMemoryMax() >= 0L);
+        assertTrue(info.getHeapMemoryMax() >= 0L);
+        assertTrue(info.getJvmUpTime() >= 0L);
     }
 }

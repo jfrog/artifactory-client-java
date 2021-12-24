@@ -1,7 +1,6 @@
 package org.jfrog.artifactory.client;
 
 import org.apache.http.client.HttpResponseException;
-import junit.framework.Assert;
 import org.jfrog.artifactory.client.model.File;
 import org.jfrog.artifactory.client.model.Item;
 import org.jfrog.artifactory.client.model.impl.FolderImpl;
@@ -19,7 +18,7 @@ import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.testng.Assert.*;
@@ -50,11 +49,9 @@ public class DownloadUploadTests extends ArtifactoryTestsBase {
 
     /**
      * This test requires a 'set_property' user plugin
-     *
-     * @throws IOException
      */
     @Test
-    public void testUploadWithSinglePropertyOnArbitraryLocationNoKeep() throws IOException {
+    public void testUploadWithSinglePropertyOnArbitraryLocationNoKeep() {
         InputStream inputStream = this.getClass().getResourceAsStream("/sample.txt");
         assertNotNull(inputStream);
         File deployed = artifactory.repository(localRepository.getKey()).upload(PATH, inputStream).withProperty("color", "red")
@@ -74,8 +71,6 @@ public class DownloadUploadTests extends ArtifactoryTestsBase {
 
     /**
      * This test requires a 'set_property' user plugin
-     *
-     * @throws IOException
      */
     @Test
     public void testUploadWithSinglePropertyOnArbitraryLocationAndKeep() throws IOException {
@@ -96,7 +91,7 @@ public class DownloadUploadTests extends ArtifactoryTestsBase {
     @Test
     public void testUploadInputStreamWithListener() throws URISyntaxException, IOException {
         java.io.File file = new java.io.File(this.getClass().getResource("/sample.txt").toURI());
-        try (InputStream in = Files.newInputStream(file.toPath())){
+        try (InputStream in = Files.newInputStream(file.toPath())) {
             final long[] uploaded = {0};
             final NumberFormat format = DecimalFormat.getPercentInstance();
             format.setMaximumFractionDigits(4);
@@ -104,9 +99,9 @@ public class DownloadUploadTests extends ArtifactoryTestsBase {
                     .upload(PATH, in)
                     .withSize(file.length())
                     .withListener((bytesRead, totalBytes) -> {
-                System.out.println("Uploaded " + format.format((double) bytesRead / totalBytes));
-                uploaded[0] = bytesRead;
-            }).doUpload();
+                        System.out.println("Uploaded " + format.format((double) bytesRead / totalBytes));
+                        uploaded[0] = bytesRead;
+                    }).doUpload();
             assertNotNull(deployed);
             assertEquals(deployed.getRepo(), localRepository.getKey());
             assertEquals(deployed.getPath(), "/" + PATH);
@@ -123,12 +118,9 @@ public class DownloadUploadTests extends ArtifactoryTestsBase {
         final long[] uploaded = {0};
         final NumberFormat format = DecimalFormat.getPercentInstance();
         format.setMaximumFractionDigits(4);
-        File deployed = artifactory.repository(localRepository.getKey()).upload(PATH, file).withListener(new UploadListener() {
-            @Override
-            public void uploadProgress(long bytesRead, long totalBytes) {
-                System.out.println("Uploaded " + format.format((double) bytesRead / totalBytes));
-                uploaded[0] = bytesRead;
-            }
+        File deployed = artifactory.repository(localRepository.getKey()).upload(PATH, file).withListener((bytesRead, totalBytes) -> {
+            System.out.println("Uploaded " + format.format((double) bytesRead / totalBytes));
+            uploaded[0] = bytesRead;
         }).doUpload();
         assertNotNull(deployed);
         assertEquals(deployed.getRepo(), localRepository.getKey());
@@ -148,27 +140,20 @@ public class DownloadUploadTests extends ArtifactoryTestsBase {
         java.io.File file = new java.io.File(this.getClass().getResource("/sample.txt").toURI());
         Path tempFile = Files.createTempFile(null, null);
         java.nio.file.Files.copy(new FileInputStream(file), tempFile, StandardCopyOption.REPLACE_EXISTING);
-        Files.write(tempFile, Arrays.asList(Double.toHexString(Math.random())), Charset.defaultCharset(), StandardOpenOption.APPEND);
+        Files.write(tempFile, Collections.singletonList(Double.toHexString(Math.random())), Charset.defaultCharset(), StandardOpenOption.APPEND);
         java.io.File temp = tempFile.toFile();
         temp.deleteOnExit();
         final long[] uploaded = {0};
         //first upload, should upload content, watch the listener
-        artifactory.repository(localRepository.getKey()).upload(PATH, temp).withListener(new UploadListener() {
-            @Override
-            public void uploadProgress(long bytesRead, long totalBytes) {
-                System.out.println("Uploaded " + ((int) ((double) bytesRead / totalBytes * 100)) + "%.");
-                uploaded[0] = bytesRead;
-            }
+        artifactory.repository(localRepository.getKey()).upload(PATH, temp).withListener((bytesRead, totalBytes) -> {
+            System.out.println("Uploaded " + ((int) ((double) bytesRead / totalBytes * 100)) + "%.");
+            uploaded[0] = bytesRead;
         }).bySha1Checksum().doUpload();
         assertEquals(uploaded[0], temp.length());
 
         //second upload, shouldn't upload a thing!
-        File deployed = artifactory.repository(localRepository.getKey()).upload(PATH, temp).withListener(new UploadListener() {
-            @Override
-            public void uploadProgress(long bytesRead, long totalBytes) {
-                Assert.fail("Checksum deploy shouldn't notify listener, since nothing should be uploaded");
-            }
-        }).bySha1Checksum().doUpload();
+        File deployed = artifactory.repository(localRepository.getKey()).upload(PATH, temp).withListener((bytesRead, totalBytes) ->
+                fail("Checksum deploy shouldn't notify listener, since nothing should be uploaded")).bySha1Checksum().doUpload();
         assertNotNull(deployed);
         assertEquals(deployed.getRepo(), localRepository.getKey());
         assertEquals(deployed.getPath(), "/" + PATH);
@@ -179,7 +164,7 @@ public class DownloadUploadTests extends ArtifactoryTestsBase {
 
 
     @Test
-    public void testUploadWithMavenGAVC() throws IOException {
+    public void testUploadWithMavenGAVC() {
         InputStream inputStream = this.getClass().getResourceAsStream("/sample.zip");
         assertNotNull(inputStream);
         final String targetPath = "com/example/com.example.test/1.0.0/com.example.test-1.0.0-zip.jar";
@@ -194,7 +179,7 @@ public class DownloadUploadTests extends ArtifactoryTestsBase {
     }
 
     @Test(dependsOnMethods = "testUploadWithSingleProperty")
-    public void testUploadExplodeArchive() throws IOException {
+    public void testUploadExplodeArchive() {
         artifactory.repository(localRepository.getKey()).upload("sample/sample.zip", this.getClass().getResourceAsStream("/sample.zip"))
                 .doUploadAndExplode();
         List<Item> items = ((FolderImpl) artifactory.repository(localRepository.getKey()).folder("sample").info()).getChildren();

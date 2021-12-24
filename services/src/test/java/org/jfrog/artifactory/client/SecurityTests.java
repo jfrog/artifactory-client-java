@@ -6,7 +6,6 @@ import org.jfrog.artifactory.client.model.*;
 import org.jfrog.artifactory.client.model.builder.GroupBuilder;
 import org.jfrog.artifactory.client.model.builder.PermissionTargetBuilder;
 import org.jfrog.artifactory.client.model.builder.UserBuilder;
-import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.Test;
@@ -18,9 +17,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import static junit.framework.Assert.*;
 import static org.jfrog.artifactory.client.model.Privilege.*;
-import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.*;
 
 /**
  * @author freds
@@ -238,9 +236,9 @@ public class SecurityTests extends ArtifactoryTestsBase {
     @Test(groups = "security")
     public void testEffectiveItemPermissions() throws Exception {
         InputStream inputStream = this.getClass().getResourceAsStream("/sample.txt");
-        Assert.assertNotNull(inputStream);
+        assertNotNull(inputStream);
         File deployed = artifactory.repository(localRepository.getKey()).upload(PATH, inputStream).doUpload();
-        Assert.assertNotNull(deployed);
+        assertNotNull(deployed);
         Set<ItemPermission> itemPermissions = artifactory.repository(localRepository.getKey()).file(PATH).effectivePermissions();
         assertItemPermissions(itemPermissions);
     }
