@@ -136,7 +136,7 @@ public class ArtifactoryImpl implements Artifactory {
         String requestPath = "/" + artifactoryRequest.getApiUrl();
 
         ContentType contentType = null;
-        if(artifactoryRequest.getRequestType() != null){
+        if (artifactoryRequest.getRequestType() != null) {
             contentType = Util.getContentType(artifactoryRequest.getRequestType());
         }
 
