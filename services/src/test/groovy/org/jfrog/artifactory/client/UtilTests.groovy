@@ -1,6 +1,5 @@
 package org.jfrog.artifactory.client
 
-import org.hamcrest.CoreMatchers
 import org.jfrog.artifactory.client.impl.util.Util
 import org.jfrog.artifactory.client.model.impl.PackageTypeImpl
 import org.jfrog.artifactory.client.model.repository.settings.impl.BowerRepositorySettingsImpl
@@ -13,8 +12,8 @@ class UtilTests {
 
     @Test(groups = "utilTests")
     void getRepositorySettingsForTypeTest() {
-        assertEquals(Util.getRepositorySettingsClassForPackageType(PackageTypeImpl.bower), CoreMatchers.equalTo(BowerRepositorySettingsImpl.class))
-        assertEquals(Util.getRepositorySettingsClassForPackageType(PackageTypeImpl.maven), CoreMatchers.equalTo(MavenRepositorySettingsImpl.class))
+        assertEquals(Util.getRepositorySettingsClassForPackageType(PackageTypeImpl.bower), BowerRepositorySettingsImpl.class)
+        assertEquals(Util.getRepositorySettingsClassForPackageType(PackageTypeImpl.maven), MavenRepositorySettingsImpl.class)
     }
 
 }
