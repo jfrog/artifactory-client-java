@@ -1,0 +1,66 @@
+pipelines:
+  - name: create_artifactory_java_client_snapshot
+    configuration:
+      runtime:
+        type: image
+        image:
+          auto:
+            language: java
+            versions:
+              - "8.0.0"
+
+    steps:
+      - name: Snapshot
+        type: Bash
+        configuration:
+          inputResources:
+            - name: javaClientSnapshotGit
+          integrations:
+            - name: entplus_deployer
+        execution:
+          onStart:
+            # Save gradle cache
+            - restore_cache_files gradle_cache $res_javaClientSnapshotGit_resourcePath/.gradle
+          onExecute:
+            - cd $res_javaClientSnapshotGit_resourcePath
+
+            # Set env
+            - export CI=true
+            - export JFROG_BUILD_STATUS=PASS
+            - export JFROG_CLI_BUILD_NAME=ecosystem-artifactory-client-java-dev
+            - export JFROG_CLI_BUILD_NUMBER=$run_number
+            - export JFROG_CLI_BUILD_PROJECT=ecosys
+            - export GRADLE_OPTS=-Dorg.gradle.daemon=false
+
+            # Configure JFrog CLI
+            - curl -fL https://install-cli.jfrog.io | sh
+            - jf c rm --quiet
+            - jf c add internal --url=$int_entplus_deployer_url --user=$int_entplus_deployer_user --password=$int_entplus_deployer_apikey
+            - jf gradlec --use-wrapper --deploy-ivy-desc=false --deploy-maven-desc --uses-plugin --repo-resolve ecosys-maven-remote --repo-deploy ecosys-oss-snapshot-local
+
+            # Run audit
+            - jf audit
+
+            # Delete former snapshots to make sure the release bundle will not contain the same artifacts
+            - jf rt del "ecosys-oss-snapshot-local/org/jfrog/artifactory/client/artifactory-java-client-api/*" --quiet
+            - jf rt del "ecosys-oss-snapshot-local/org/jfrog/artifactory/client/artifactory-java-client-services/*" --quiet
+            - jf rt del "ecosys-oss-snapshot-local/org/jfrog/artifactory/client/artifactory-java-client-httpClient/*" --quiet
+
+            # Run install and publish
+            - >
+              env -i PATH=$PATH HOME=$HOME
+              GRADLE_OPTS=-Dorg.gradle.daemon=false
+              JFROG_CLI_BUILD_NAME=$JFROG_CLI_BUILD_NAME
+              JFROG_CLI_BUILD_NUMBER=$JFROG_CLI_BUILD_NUMBER
+              JFROG_CLI_BUILD_PROJECT=$JFROG_CLI_BUILD_PROJECT
+              jf gradle clean aP -x test
+            - jf rt bag && jf rt bce
+            - jf rt bp
+
+            # Distribute release bundle
+            - jf ds rbc artifactory-java-client-snapshot $run_number --spec=./release/specs/dev-rbc-filespec.json --sign
+            - jf ds rbd artifactory-java-client-snapshot $run_number --site="releases.jfrog.io" --sync
+
+          onComplete:
+            # Save gradle cache
+            - add_cache_files $res_javaClientSnapshotGit_resourcePath/.gradle gradle_cache
