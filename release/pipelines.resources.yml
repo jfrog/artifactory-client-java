@@ -5,7 +5,7 @@ resources:
       path: jfrog/artifactory-client-java
       gitProvider: il_automation
       branches:
-        include: master
+        include: dev
 
   - name: javaClientReleaseGit
     type: GitRepo
