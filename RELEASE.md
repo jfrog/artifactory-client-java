@@ -1,5 +1,12 @@
 # Release Notes
 
+## 2.10.0 (January 9, 2022)
+- Allow uploading artifacts with progress.
+- Add builds API for downloading basic build information from Artifactory.
+- Support search by file specs.
+- Allow REST requests without Content-Type header.
+- Dependencies updates.
+
 ## 2.9.2 (May 2, 2021)
 
 - Migrate project to Maven Central.
