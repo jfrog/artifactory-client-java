@@ -65,14 +65,9 @@ pipelines:
 
             # Run build and publish
             - >
-              env -i PATH=$PATH HOME=$HOME
-              GRADLE_OPTS=-Dorg.gradle.daemon=false
-              JFROG_CLI_BUILD_NAME=$JFROG_CLI_BUILD_NAME
-              JFROG_CLI_BUILD_NUMBER=$JFROG_CLI_BUILD_NUMBER
-              JFROG_CLI_BUILD_PROJECT=$JFROG_CLI_BUILD_PROJECT
               ORG_GRADLE_PROJECT_signingKey=$(echo $int_mvn_central_signingKey | base64 -d)
               ORG_GRADLE_PROJECT_signingPassword=$int_mvn_central_signingPassword
-              jf gradle clean artifactoryPublish -x test
+              jf gradle clean aP -x test
             - jf rt bag && jf rt bce
             - jf rt bp
 
