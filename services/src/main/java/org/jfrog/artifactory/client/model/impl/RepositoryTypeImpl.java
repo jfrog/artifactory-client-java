@@ -14,10 +14,13 @@ import java.util.List;
 public enum RepositoryTypeImpl implements RepositoryType {
     LOCAL(LocalRepositoryImpl.class, new TypeReference<List<LocalRepositoryImpl>>() {
     }),
+    FEDERATED(FederatedRepositoryImpl.class, new TypeReference<List<FederatedRepositoryImpl>>() {
+    }),
     REMOTE(RemoteRepositoryImpl.class, new TypeReference<List<RemoteRepositoryImpl>>() {
     }),
     VIRTUAL(VirtualRepositoryImpl.class, new TypeReference<List<VirtualRepositoryImpl>>() {
     });
+
 
     RepositoryTypeImpl(Class<? extends RepositoryBase> typeClass, TypeReference typeReference) {
         this.typeClass = typeClass;

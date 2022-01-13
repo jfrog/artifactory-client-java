@@ -15,8 +15,18 @@ public class LightweightRepositoryImpl implements LightweightRepository {
     private RepositoryType type;
     private String url;
     private String configuration;
+    private String packageType;
 
     private LightweightRepositoryImpl() {
+    }
+
+    @Override
+    public String getPackageType() {
+        return packageType;
+    }
+
+    public void setPackageType(String packageType) {
+        this.packageType = packageType;
     }
 
     @Override
