@@ -81,7 +81,7 @@ pipelines:
               ORG_GRADLE_PROJECT_sonatypePassword=$int_mvn_central_password
               ORG_GRADLE_PROJECT_signingKey=$(echo $int_mvn_central_signingKey | base64 -d)
               ORG_GRADLE_PROJECT_signingPassword=$int_mvn_central_signingPassword
-              ./gradlew clean build publishToSonatype closeSonatypeStagingRepository -x test
+              ./gradlew clean build publishToSonatype closeAndReleaseSonatypeStagingRepository -x test
 
             # Update next development version
             - git clean -fd
