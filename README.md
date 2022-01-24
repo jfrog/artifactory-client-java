@@ -434,7 +434,9 @@ String result = artifactory.repositories().create(2, repository);
 
 ```groovy
 DockerRepositorySettings settings = new DockerRepositorySettingsImpl();
+List<FederatedMember> federatedMembers = new ArrayList<FederatedMember>();
 FederatedMember federatedMember =  new FederatedMember("http://<JPDURL>/artifactory/"+NewRepoName, true);
+federatedMembers.add(federatedMember);
 Repository repository = artifactory.repositories()
         .builders()
         .federatedRepositoryBuilder()
