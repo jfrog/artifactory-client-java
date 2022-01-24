@@ -51,7 +51,8 @@ public class RepositoryBuildersImpl implements RepositoryBuilders {
                 .archiveBrowsingEnabled(from.isArchiveBrowsingEnabled()).customProperties(from.getCustomProperties()).xraySettings(from.getXraySettings());
     }
 
-    public FederatedRepositoryBuilder federatedRepositoryBuilder() {return new FederatedRepositoryBuilderImpl();
+    public FederatedRepositoryBuilder federatedRepositoryBuilder() {
+        return new FederatedRepositoryBuilderImpl();
     }
 
     public FederatedRepositoryBuilder builderFrom(FederatedRepository from) {

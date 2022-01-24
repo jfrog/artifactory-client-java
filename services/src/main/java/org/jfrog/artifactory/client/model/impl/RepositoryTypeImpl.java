@@ -21,7 +21,6 @@ public enum RepositoryTypeImpl implements RepositoryType {
     VIRTUAL(VirtualRepositoryImpl.class, new TypeReference<List<VirtualRepositoryImpl>>() {
     });
 
-
     RepositoryTypeImpl(Class<? extends RepositoryBase> typeClass, TypeReference typeReference) {
         this.typeClass = typeClass;
         this.typeReference = typeReference;

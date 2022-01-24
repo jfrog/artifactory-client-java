@@ -45,7 +45,6 @@ public class FederatedRepositoryImpl extends NonVirtualRepositoryBase implements
                 '}';
     }
 
-
     public List<FederatedMember> getMembers() {
         return members;
     }
@@ -53,5 +52,4 @@ public class FederatedRepositoryImpl extends NonVirtualRepositoryBase implements
     private void setMembers(List<FederatedMember> members) {
         this.members = members;
     }
-
 }

@@ -403,11 +403,13 @@ String result = artifactory.repository("RepoName").delete("path/to/item");
 import static org.jfrog.artifactory.client.model.impl.RepositoryTypeImpl.LOCAL;
 import static org.jfrog.artifactory.client.model.impl.RepositoryTypeImpl.REMOTE;
 import static org.jfrog.artifactory.client.model.impl.RepositoryTypeImpl.VIRTUAL;
+import static org.jfrog.artifactory.client.model.impl.RepositoryTypeImpl.FEDERATED;
 
 ...
 List<LightweightRepository> localRepoList = artifactory.repositories().list(LOCAL);
 List<LightweightRepository> remoteRepoList = artifactory.repositories().list(REMOTE);
 List<LightweightRepository> virtualRepoList = artifactory.repositories().list(VIRTUAL);
+List<LightweightRepository> federatedRepoList = artifactory.repositories().list(FEDERATED);
 ```
 
 ##### Creating Repositories
@@ -421,6 +423,24 @@ Repository repository = artifactory.repositories()
         .localRepositoryBuilder()
         .key("NewRepoName")
         .description("new local repository")
+        .repositorySettings(settings)
+        .build();
+
+String result = artifactory.repositories().create(2, repository);
+```
+
+
+##### Creating Federated Repositories
+
+```groovy
+DockerRepositorySettings settings = new DockerRepositorySettingsImpl();
+FederatedMember federatedMember =  new FederatedMember("http://<JPDURL>/artifactory/"+NewRepoName, true);
+Repository repository = artifactory.repositories()
+        .builders()
+        .federatedRepositoryBuilder()
+        .members(federatedMembers)
+        .key("NewRepoName")
+        .description("new federated repository")
         .repositorySettings(settings)
         .build();
 

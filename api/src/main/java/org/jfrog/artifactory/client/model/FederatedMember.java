@@ -30,7 +30,6 @@ public class FederatedMember {
         return url;
     }
 
-
     public boolean isEnabled() {
         return enabled;
     }
