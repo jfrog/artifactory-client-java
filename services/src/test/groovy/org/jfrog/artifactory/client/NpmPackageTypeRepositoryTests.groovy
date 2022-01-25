@@ -61,6 +61,29 @@ class NpmPackageTypeRepositoryTests extends BaseRepositoryTests {
     }
 
     @Test(groups = "npmPackageTypeRepo")
+    void testNpmFederatedRepo() {
+        artifactory.repositories().create(0, federatedRepo)
+        def expectedSettings = federatedRepo.repositorySettings
+
+        def resp = artifactory.repository(federatedRepo.getKey()).get()
+        assertThat(resp, CoreMatchers.notNullValue())
+        assertThat(resp.repoLayoutRef, CoreMatchers.is(NpmRepositorySettingsImpl.defaultLayout))
+
+        resp.getRepositorySettings().with {
+            assertThat(packageType, CoreMatchers.is(expectedSettings.getPackageType()))
+            assertThat(repoLayout, CoreMatchers.is(expectedSettings.getRepoLayout()))
+
+            // remote
+            assertThat(listRemoteFolderItems, CoreMatchers.nullValue())
+
+            // virtual
+            assertThat(externalDependenciesEnabled, CoreMatchers.nullValue())
+            assertThat(externalDependenciesPatterns, CoreMatchers.nullValue())
+            assertThat(externalDependenciesRemoteRepo, CoreMatchers.nullValue())
+        }
+    }
+
+    @Test(groups = "npmPackageTypeRepo")
     void testNpmRemoteRepo() {
         artifactory.repositories().create(0, remoteRepo)
         def expectedSettings = remoteRepo.repositorySettings

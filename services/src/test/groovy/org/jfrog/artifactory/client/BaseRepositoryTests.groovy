@@ -2,10 +2,15 @@ package org.jfrog.artifactory.client
 
 
 import org.apache.commons.lang3.ObjectUtils
+import org.apache.commons.lang3.StringUtils
+import org.codehaus.groovy.util.StringUtil
 import org.hamcrest.Description
 import org.hamcrest.Matcher
+import java.util.List
+import java.util.ArrayList
 import org.hamcrest.StringDescription
 import org.jfrog.artifactory.client.model.ContentSync
+import org.jfrog.artifactory.client.model.FederatedMember
 import org.jfrog.artifactory.client.model.Repository
 import org.jfrog.artifactory.client.model.RepositoryType
 import org.jfrog.artifactory.client.model.impl.ContentSyncImpl
@@ -30,10 +35,12 @@ abstract class BaseRepositoryTests extends ArtifactoryTestsBase {
     protected boolean prepareGenericRepo = true
     protected boolean prepareLocalRepo = true
     protected boolean prepareRemoteRepo = true
+    protected boolean prepareFederatedRepo = true
     protected boolean prepareVirtualRepo = true
 
     protected Repository genericRepo
     protected Repository localRepo
+    protected Repository federatedRepo
     protected Repository remoteRepo
     protected Repository virtualRepo
 
@@ -74,6 +81,32 @@ abstract class BaseRepositoryTests extends ArtifactoryTestsBase {
                     .key("$REPO_NAME_PREFIX-local-$id")
                     .description("local-$id")
                     .notes("notes-${rnd.nextInt()}")
+                    .archiveBrowsingEnabled(rnd.nextBoolean())
+                    .blackedOut(rnd.nextBoolean())
+                    .excludesPattern("org/${rnd.nextInt()}/**")
+                    .includesPattern("org/${rnd.nextInt()}/**")
+                    .propertySets(Collections.emptyList()) // no property sets configured
+                    .repositorySettings(settings)
+                    .xraySettings(xraySettings)
+                    .customProperties(customProperties)
+                    .build()
+        }
+        if (prepareFederatedRepo) {
+            List<FederatedMember> members = new ArrayList<FederatedMember>()
+            if(federationUrl!=null && StringUtils.isNoneBlank(federationUrl))
+            {
+                if (!federationUrl.endsWith("/")) {
+                    federationUrl += "/";
+                }
+                FederatedMember member = new FederatedMember( federationUrl+"$REPO_NAME_PREFIX-fed-$id", true)
+                members.add(member)
+            }
+            RepositorySettings settings = getRepositorySettings()
+            federatedRepo = artifactory.repositories().builders().federatedRepositoryBuilder()
+                    .key("$REPO_NAME_PREFIX-fed-$id")
+                    .description("fed-$id")
+                    .notes("notes-${rnd.nextInt()}")
+                    .members(members)
                     .archiveBrowsingEnabled(rnd.nextBoolean())
                     .blackedOut(rnd.nextBoolean())
                     .excludesPattern("org/${rnd.nextInt()}/**")
@@ -147,7 +180,7 @@ abstract class BaseRepositoryTests extends ArtifactoryTestsBase {
         deleteRepoIfExists(localRepo?.getKey())
         deleteRepoIfExists(remoteRepo?.getKey())
         deleteRepoIfExists(virtualRepo?.getKey())
-
+        deleteRepoIfExists(federatedRepo?.getKey())
         repoUniqueId++
     }
 

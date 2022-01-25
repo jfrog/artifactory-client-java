@@ -49,6 +49,19 @@ class PypiPackageTypeRepositoryTests extends BaseRepositoryTests {
     }
 
     @Test(groups = "pypiPackageTypeRepo")
+    void testPypiFederatedRepo() {
+        artifactory.repositories().create(0, federatedRepo)
+        def expectedSettings = federatedRepo.repositorySettings
+
+        def resp = artifactory.repository(federatedRepo.getKey()).get()
+        resp.getRepositorySettings().with {
+            assertThat(packageType, CoreMatchers.is(expectedSettings.getPackageType()))
+            assertThat(repoLayout, CoreMatchers.is(expectedSettings.getRepoLayout()))
+            assertThat(listRemoteFolderItems, CoreMatchers.nullValue())
+        }
+    }
+
+    @Test(groups = "pypiPackageTypeRepo")
     void testPypiRemoteRepo() {
         artifactory.repositories().create(0, remoteRepo)
         def expectedSettings = remoteRepo.repositorySettings

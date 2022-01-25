@@ -75,6 +75,34 @@ class BowerPackageTypeRepositoryTests extends BaseRepositoryTests {
     }
 
     @Test(groups = "bowerPackageTypeRepo")
+    void testBowerFederatedRepo() {
+        artifactory.repositories().create(0, federatedRepo)
+        def expectedSettings = federatedRepo.repositorySettings
+
+        def resp = artifactory.repository(federatedRepo.getKey()).get()
+        assertThat(resp, CoreMatchers.notNullValue())
+        assertThat(resp.repoLayoutRef, CoreMatchers.is(BowerRepositorySettingsImpl.defaultLayout))
+        resp.getRepositorySettings().with {
+            assertThat(packageType, CoreMatchers.is(expectedSettings.getPackageType()))
+            assertThat(repoLayout, CoreMatchers.is(expectedSettings.getRepoLayout()))
+
+            // remote
+            assertThat(listRemoteFolderItems, CoreMatchers.nullValue())
+            assertThat(maxUniqueSnapshots, CoreMatchers.is(expectedSettings.getMaxUniqueSnapshots()))
+            // always in resp payload
+            assertThat(bowerRegistryUrl, CoreMatchers.nullValue())
+            assertThat(vcsGitDownloadUrl, CoreMatchers.nullValue())
+            assertThat(vcsGitProvider, CoreMatchers.nullValue())
+            assertThat(vcsType, CoreMatchers.nullValue())
+
+            // virtual
+            assertThat(externalDependenciesEnabled, CoreMatchers.nullValue())
+            assertThat(externalDependenciesPatterns, CoreMatchers.nullValue())
+            assertThat(externalDependenciesRemoteRepo, CoreMatchers.nullValue())
+        }
+    }
+
+    @Test(groups = "bowerPackageTypeRepo")
     void testBowerRemoteRepo() {
         artifactory.repositories().create(0, remoteRepo)
         def expectedSettings = remoteRepo.repositorySettings

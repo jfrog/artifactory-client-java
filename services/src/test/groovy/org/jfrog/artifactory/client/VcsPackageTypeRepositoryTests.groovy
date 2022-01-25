@@ -41,6 +41,7 @@ class VcsPackageTypeRepositoryTests extends BaseRepositoryTests {
         // only remote repository supported
         prepareLocalRepo = false
         prepareVirtualRepo = false
+        prepareFederatedRepo = false
 
         super.setUp()
     }

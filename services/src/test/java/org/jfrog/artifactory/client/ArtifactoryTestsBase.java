@@ -8,6 +8,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.jfrog.artifactory.client.model.FederatedMember;
 import org.jfrog.artifactory.client.model.LocalRepository;
 import org.jfrog.artifactory.client.model.Repository;
 import org.jfrog.artifactory.client.model.repository.settings.impl.MavenRepositorySettingsImpl;
@@ -20,6 +21,7 @@ import java.io.InputStreamReader;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Properties;
 
 import static org.apache.commons.codec.binary.Base64.encodeBase64;
@@ -48,6 +50,7 @@ public abstract class ArtifactoryTestsBase {
     protected String fileMd5;
     protected String fileSha1;
     protected LocalRepository localRepository;
+    protected String federationUrl;
 
     @BeforeClass
     public void init() throws IOException {
@@ -59,12 +62,13 @@ public abstract class ArtifactoryTestsBase {
             props.load(inputStream);
         }
 
-        url = readParam(props, "url");
+        url = readParam(props, "url",false);
         if (!url.endsWith("/")) {
             url += "/";
         }
-        username = readParam(props, "username");
-        password = readParam(props, "password");
+        username = readParam(props, "username",false);
+        password = readParam(props, "password",false);
+        federationUrl = readParam(props, "federationUrl",true);
         filePath = "a/b";
         fileSize = 141185;
         fileMd5 = "8f17d4271b86478a2731deebdab8c846";
@@ -98,7 +102,7 @@ public abstract class ArtifactoryTestsBase {
         }
     }
 
-    public static String readParam(Properties props, String paramName) {
+    public static String readParam(Properties props, String paramName, boolean optional) {
         String paramValue = null;
         if (props.size() > 0) {
             paramValue = props.getProperty(CLIENTTESTS_ARTIFACTORY_PROPERTIES_PREFIX + paramName);
@@ -109,7 +113,7 @@ public abstract class ArtifactoryTestsBase {
         if (paramValue == null) {
             paramValue = System.getenv(CLIENTTESTS_ARTIFACTORY_ENV_VAR_PREFIX + paramName.toUpperCase());
         }
-        if (paramValue == null) {
+        if (paramValue == null && !optional) {
             failInit();
         }
         return paramValue;
