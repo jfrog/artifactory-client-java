@@ -847,6 +847,8 @@ Please follow these steps to build and test the code:
 * Startup an Artifactory-Pro instance.
 * Set the *CLIENTTESTS_ARTIFACTORY_URL*, *CLIENTTESTS_ARTIFACTORY_USERNAME* and *CLIENTTESTS_ARTIFACTORY_PASSWORD*
   environment variables with your Artifactory URL, username and password.
+* You can also set *clienttests.artifactory.url*, *clienttests.artifactory.username*,*clienttests.artifactory.password*, 
+  and clienttests.artifactory.federationUrl(only to test federated repository) to run your tests locally with your artifactory url, username and password
 * Run:
 
 ```shell
