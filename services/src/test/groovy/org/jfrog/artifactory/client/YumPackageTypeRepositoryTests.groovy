@@ -85,7 +85,7 @@ class YumPackageTypeRepositoryTests extends BaseRepositoryTests {
 
             // local
             assertThat(calculateYumMetadata, CoreMatchers.is(expectedSettings.getCalculateYumMetadata()))
-s            // assertThat(groupFileNames, CoreMatchers.is(specRepo.getGroupFileNames()))
+            // assertThat(groupFileNames, CoreMatchers.is(specRepo.getGroupFileNames()))
             assertThat(groupFileNames, CoreMatchers.is(CoreMatchers.nullValue()))
             assertThat(yumRootDepth, CoreMatchers.is(expectedSettings.getYumRootDepth()))
 

@@ -8,22 +8,18 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import org.jfrog.artifactory.client.model.FederatedMember;
 import org.jfrog.artifactory.client.model.LocalRepository;
 import org.jfrog.artifactory.client.model.Repository;
 import org.jfrog.artifactory.client.model.repository.settings.impl.MavenRepositorySettingsImpl;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Properties;
-
 import static org.apache.commons.codec.binary.Base64.encodeBase64;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 import static org.apache.commons.lang3.StringUtils.remove;
@@ -68,7 +64,7 @@ public abstract class ArtifactoryTestsBase {
         }
         username = readParam(props, "username",false);
         password = readParam(props, "password",false);
-        federationUrl = readParam(props, "federationUrl",true);
+        federationUrl = readParam(props, "federation_url",true);
         filePath = "a/b";
         fileSize = 141185;
         fileMd5 = "8f17d4271b86478a2731deebdab8c846";

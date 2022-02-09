@@ -91,10 +91,9 @@ abstract class BaseRepositoryTests extends ArtifactoryTestsBase {
                     .customProperties(customProperties)
                     .build()
         }
-        if (prepareFederatedRepo) {
+        if ( prepareFederatedRepo ) {
             List<FederatedMember> members = new ArrayList<FederatedMember>()
-            if(federationUrl!=null && StringUtils.isNoneBlank(federationUrl))
-            {
+            if(federationUrl != null && StringUtils.isNoneBlank(federationUrl)) {
                 if (!federationUrl.endsWith("/")) {
                     federationUrl += "/";
                 }
@@ -179,8 +178,8 @@ abstract class BaseRepositoryTests extends ArtifactoryTestsBase {
         deleteRepoIfExists(genericRepo?.getKey())
         deleteRepoIfExists(localRepo?.getKey())
         deleteRepoIfExists(remoteRepo?.getKey())
-        deleteRepoIfExists(virtualRepo?.getKey())
         deleteRepoIfExists(federatedRepo?.getKey())
+        deleteRepoIfExists(virtualRepo?.getKey())
         repoUniqueId++
     }
 

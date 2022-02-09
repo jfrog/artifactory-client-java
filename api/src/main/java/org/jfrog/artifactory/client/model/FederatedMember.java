@@ -1,6 +1,4 @@
 package org.jfrog.artifactory.client.model;
-
-
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
