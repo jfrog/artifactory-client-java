@@ -845,11 +845,8 @@ gradle clean build -x test
 Please follow these steps to build and test the code:
 
 * Startup an Artifactory-Pro instance.
-* Set the *CLIENTTESTS_ARTIFACTORY_URL*, *CLIENTTESTS_ARTIFACTORY_USERNAME* *CLIENTTESTS_ARTIFACTORY_PASSWORD* and *CLIENTTESTS_ARTIFACTORY_FEDERATION_URL* (optional field, used for Federated Repositories testing)
+* Set the *CLIENTTESTS_ARTIFACTORY_URL*, *CLIENTTESTS_ARTIFACTORY_USERNAME* and *CLIENTTESTS_ARTIFACTORY_PASSWORD* 
   environment variables with your Artifactory URL, username and password.
-* You can also set *clienttests.artifactory.url*, *clienttests.artifactory.username*,*clienttests.artifactory.password*, 
-  and *clienttests.artifactory.federation_url* (optional field, used for Federated Repositories testing) to run your tests locally with your artifactory url, username and password
-  **Note**: For testing Federated repositories - A circle of trust between your instances need to be pre-existing and also currently only one federation url can be passed for running your unit tests.
 * Run:
 
 ```shell

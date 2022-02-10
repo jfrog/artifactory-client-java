@@ -58,13 +58,12 @@ public abstract class ArtifactoryTestsBase {
             props.load(inputStream);
         }
 
-        url = readParam(props, "url",false);
+        url = readParam(props, "url");
         if (!url.endsWith("/")) {
             url += "/";
         }
-        username = readParam(props, "username",false);
-        password = readParam(props, "password",false);
-        federationUrl = readParam(props, "federation_url",true);
+        username = readParam(props, "username");
+        password = readParam(props, "password");
         filePath = "a/b";
         fileSize = 141185;
         fileMd5 = "8f17d4271b86478a2731deebdab8c846";
@@ -98,7 +97,7 @@ public abstract class ArtifactoryTestsBase {
         }
     }
 
-    public static String readParam(Properties props, String paramName, boolean optional) {
+    public static String readParam(Properties props, String paramName) {
         String paramValue = null;
         if (props.size() > 0) {
             paramValue = props.getProperty(CLIENTTESTS_ARTIFACTORY_PROPERTIES_PREFIX + paramName);
@@ -109,7 +108,7 @@ public abstract class ArtifactoryTestsBase {
         if (paramValue == null) {
             paramValue = System.getenv(CLIENTTESTS_ARTIFACTORY_ENV_VAR_PREFIX + paramName.toUpperCase());
         }
-        if (paramValue == null && !optional) {
+        if (paramValue == null) {
             failInit();
         }
         return paramValue;
