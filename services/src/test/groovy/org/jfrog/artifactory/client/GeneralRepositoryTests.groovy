@@ -43,6 +43,27 @@ class GeneralRepositoryTests extends BaseRepositoryTests {
     }
 
     @Test(groups = "generalRepo")
+    void testFederatedRepo() {
+        artifactory.repositories().create(0, federatedRepo)
+        assertTrue(curl(LIST_PATH).contains(federatedRepo.getKey()))
+
+        def resp = artifactory.repository(federatedRepo.getKey()).get()
+        assertThat(resp, CoreMatchers.notNullValue())
+        resp.with {
+            assertThat(rclass, CoreMatchers.is(RepositoryTypeImpl.FEDERATED))
+            assertThat(key, CoreMatchers.is(federatedRepo.getKey()))
+            assertThat(description, CoreMatchers.is(federatedRepo.getDescription()))
+            assertThat(notes, CoreMatchers.is(federatedRepo.getNotes()))
+            assertThat(archiveBrowsingEnabled, CoreMatchers.is(federatedRepo.isArchiveBrowsingEnabled()))
+            assertThat(blackedOut, CoreMatchers.is(federatedRepo.isBlackedOut()))
+            assertThat(excludesPattern, CoreMatchers.is(federatedRepo.getExcludesPattern()))
+            assertThat(includesPattern, CoreMatchers.is(federatedRepo.getIncludesPattern()))
+            assertThat(propertySets, CoreMatchers.is(federatedRepo.getPropertySets()))
+            assertThat(repoLayoutRef, CoreMatchers.is(federatedRepo.getRepoLayoutRef()))
+        }
+    }
+
+    @Test(groups = "generalRepo")
     void testRemoteRepo() {
         artifactory.repositories().create(0, remoteRepo)
         assertTrue(curl(LIST_PATH).contains(remoteRepo.getKey()))

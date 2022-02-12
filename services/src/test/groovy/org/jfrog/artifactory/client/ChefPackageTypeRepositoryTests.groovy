@@ -41,6 +41,20 @@ class ChefPackageTypeRepositoryTests extends BaseRepositoryTests {
     }
 
     @Test(groups = "chefPackageTypeRepo")
+    void testChefFederatedRepo() {
+        artifactory.repositories().create(0, federatedRepo)
+        def expectedSettings = federatedRepo.repositorySettings
+
+        def resp = artifactory.repository(federatedRepo.getKey()).get()
+        assertThat(resp, CoreMatchers.notNullValue())
+        assertThat(resp.repoLayoutRef, CoreMatchers.is(ChefRepositorySettingsImpl.defaultLayout))
+        resp.getRepositorySettings().with {
+            assertThat(packageType, CoreMatchers.is(expectedSettings.getPackageType()))
+            assertThat(repoLayout, CoreMatchers.is(expectedSettings.getRepoLayout()))
+        }
+    }
+
+    @Test(groups = "chefPackageTypeRepo")
     void testChefRemoteRepo() {
         artifactory.repositories().create(0, remoteRepo)
         def expectedSettings = remoteRepo.repositorySettings

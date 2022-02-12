@@ -62,6 +62,26 @@ class DebianPackageTypeRepositoryTests extends BaseRepositoryTests {
     }
 
     @Test(groups = "debianPackageTypeRepo")
+    void testDebianFederatedRepo() {
+        artifactory.repositories().create(0, localRepo)
+        def expectedSettings = localRepo.repositorySettings
+
+        def resp = artifactory.repository(localRepo.getKey()).get()
+        assertThat(resp, CoreMatchers.notNullValue())
+        assertThat(resp.repoLayoutRef, CoreMatchers.is(DebianRepositorySettingsImpl.defaultLayout))
+        resp.getRepositorySettings().with {
+            assertThat(packageType, CoreMatchers.is(expectedSettings.getPackageType()))
+            assertThat(repoLayout, CoreMatchers.is(expectedSettings.getRepoLayout()))
+
+            // local
+            assertThat(debianTrivialLayout, CoreMatchers.is(expectedSettings.getDebianTrivialLayout()))
+
+            // remote
+            assertThat(listRemoteFolderItems, CoreMatchers.is(CoreMatchers.nullValue()))
+        }
+    }
+
+    @Test(groups = "debianPackageTypeRepo")
     void testDebianRemoteRepo() {
         artifactory.repositories().create(0, remoteRepo)
         def expectedSettings = remoteRepo.repositorySettings

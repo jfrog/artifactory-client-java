@@ -59,7 +59,7 @@ class P2PackageTypeRepositoryTests extends BaseRepositoryTests {
     protected void setUp() {
         // only remote ant virtual repository is supported
         prepareLocalRepo = false
-
+        prepareFederatedRepo = false
         super.setUp()
     }
 

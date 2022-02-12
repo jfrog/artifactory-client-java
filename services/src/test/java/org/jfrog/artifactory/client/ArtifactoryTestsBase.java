@@ -13,7 +13,6 @@ import org.jfrog.artifactory.client.model.Repository;
 import org.jfrog.artifactory.client.model.repository.settings.impl.MavenRepositorySettingsImpl;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -21,7 +20,6 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.Properties;
-
 import static org.apache.commons.codec.binary.Base64.encodeBase64;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 import static org.apache.commons.lang3.StringUtils.remove;
@@ -48,6 +46,7 @@ public abstract class ArtifactoryTestsBase {
     protected String fileMd5;
     protected String fileSha1;
     protected LocalRepository localRepository;
+    protected String federationUrl;
 
     @BeforeClass
     public void init() throws IOException {
