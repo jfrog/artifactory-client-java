@@ -1,6 +1,6 @@
 # Release Notes
 
-## 2.10.0 (February 12, 2022)
+## 2.11.0 (February 13, 2022)
 - Support for managing Federated Repositories
 
 ## 2.10.0 (January 9, 2022)
