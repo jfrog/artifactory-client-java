@@ -90,6 +90,39 @@ class MavenPackageTypeRepositoryTests extends BaseRepositoryTests {
     }
 
     @Test(groups = "mavenPackageTypeRepo")
+    void testMavenFederatedRepo() {
+        artifactory.repositories().create(0, federatedRepo)
+        def expectedSettings = federatedRepo.repositorySettings
+
+        def resp = artifactory.repository(federatedRepo.getKey()).get()
+        assertThat(resp, CoreMatchers.notNullValue())
+        assertThat(resp.repoLayoutRef, CoreMatchers.is(MavenRepositorySettingsImpl.defaultLayout))
+        resp.getRepositorySettings().with {
+            assertThat(packageType, CoreMatchers.is(expectedSettings.getPackageType()))
+            assertThat(repoLayout, CoreMatchers.is(expectedSettings.getRepoLayout()))
+
+            // local
+            assertThat(checksumPolicyType, CoreMatchers.is(expectedSettings.getChecksumPolicyType()))
+            assertThat(handleReleases, CoreMatchers.is(expectedSettings.getHandleReleases()))
+            assertThat(handleSnapshots, CoreMatchers.is(expectedSettings.getHandleSnapshots()))
+            assertThat(maxUniqueSnapshots, CoreMatchers.is(expectedSettings.getMaxUniqueSnapshots()))
+            assertThat(snapshotVersionBehavior, CoreMatchers.is(expectedSettings.getSnapshotVersionBehavior()))
+            assertThat(suppressPomConsistencyChecks, CoreMatchers.is(expectedSettings.getSuppressPomConsistencyChecks()))
+
+            // remote
+            assertThat(fetchJarsEagerly, CoreMatchers.nullValue())
+            assertThat(fetchSourcesEagerly, CoreMatchers.nullValue())
+            assertThat(listRemoteFolderItems, CoreMatchers.nullValue())
+            assertThat(rejectInvalidJars, CoreMatchers.nullValue())
+            assertThat(remoteRepoChecksumPolicyType, CoreMatchers.nullValue())
+
+            // virtual
+            assertThat(keyPair, CoreMatchers.nullValue())
+            assertThat(pomRepositoryReferencesCleanupPolicy, CoreMatchers.nullValue())
+        }
+    }
+
+    @Test(groups = "mavenPackageTypeRepo")
     void testMavenRemoteRepo() {
         artifactory.repositories().create(0, remoteRepo)
         def expectedSettings = remoteRepo.repositorySettings

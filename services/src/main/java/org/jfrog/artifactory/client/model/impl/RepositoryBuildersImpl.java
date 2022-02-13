@@ -1,12 +1,10 @@
 package org.jfrog.artifactory.client.model.impl;
 
+import org.jfrog.artifactory.client.model.FederatedRepository;
 import org.jfrog.artifactory.client.model.LocalRepository;
 import org.jfrog.artifactory.client.model.RemoteRepository;
 import org.jfrog.artifactory.client.model.VirtualRepository;
-import org.jfrog.artifactory.client.model.builder.LocalRepositoryBuilder;
-import org.jfrog.artifactory.client.model.builder.RemoteRepositoryBuilder;
-import org.jfrog.artifactory.client.model.builder.RepositoryBuilders;
-import org.jfrog.artifactory.client.model.builder.VirtualRepositoryBuilder;
+import org.jfrog.artifactory.client.model.builder.*;
 
 /**
  * @author jbaruch
@@ -48,6 +46,17 @@ public class RepositoryBuildersImpl implements RepositoryBuilders {
 
     public LocalRepositoryBuilder builderFrom(LocalRepository from) {
         return new LocalRepositoryBuilderImpl().repositorySettings(from.getRepositorySettings())
+                .blackedOut(from.isBlackedOut()).description(from.getDescription()).excludesPattern(from.getExcludesPattern())
+                .includesPattern(from.getIncludesPattern()).key(from.getKey()).notes(from.getNotes()).propertySets(from.getPropertySets())
+                .archiveBrowsingEnabled(from.isArchiveBrowsingEnabled()).customProperties(from.getCustomProperties()).xraySettings(from.getXraySettings());
+    }
+
+    public FederatedRepositoryBuilder federatedRepositoryBuilder() {
+        return new FederatedRepositoryBuilderImpl();
+    }
+
+    public FederatedRepositoryBuilder builderFrom(FederatedRepository from) {
+        return new FederatedRepositoryBuilderImpl().repositorySettings(from.getRepositorySettings()).members(from.getMembers())
                 .blackedOut(from.isBlackedOut()).description(from.getDescription()).excludesPattern(from.getExcludesPattern())
                 .includesPattern(from.getIncludesPattern()).key(from.getKey()).notes(from.getNotes()).propertySets(from.getPropertySets())
                 .archiveBrowsingEnabled(from.isArchiveBrowsingEnabled()).customProperties(from.getCustomProperties()).xraySettings(from.getXraySettings());

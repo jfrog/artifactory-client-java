@@ -1,6 +1,7 @@
 package org.jfrog.artifactory.client.model.builder;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.jfrog.artifactory.client.model.FederatedRepository;
 import org.jfrog.artifactory.client.model.LocalRepository;
 import org.jfrog.artifactory.client.model.RemoteRepository;
 import org.jfrog.artifactory.client.model.VirtualRepository;
@@ -19,6 +20,10 @@ public interface RepositoryBuilders {
     LocalRepositoryBuilder localRepositoryBuilder();
 
     LocalRepositoryBuilder builderFrom(LocalRepository from);
+
+    FederatedRepositoryBuilder federatedRepositoryBuilder();
+
+    FederatedRepositoryBuilder builderFrom(FederatedRepository from);
 
     VirtualRepositoryBuilder virtualRepositoryBuilder();
 

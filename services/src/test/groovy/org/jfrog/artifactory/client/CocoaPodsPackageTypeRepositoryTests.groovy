@@ -65,6 +65,29 @@ class CocoaPodsPackageTypeRepositoryTests extends BaseRepositoryTests {
     }
 
     @Test(groups = "cocoapodsPackageTypeRepo")
+    void testCocoaPodsFederatedRepo() {
+        artifactory.repositories().create(0, federatedRepo)
+        def expectedSettings = federatedRepo.repositorySettings
+
+        def resp = artifactory.repository(federatedRepo.getKey()).get()
+        assertThat(resp, CoreMatchers.notNullValue())
+        assertThat(resp.repoLayoutRef, CoreMatchers.is(CocoaPodsRepositorySettingsImpl.defaultLayout))
+        resp.getRepositorySettings().with {
+            assertThat(packageType, CoreMatchers.is(expectedSettings.getPackageType()))
+            assertThat(repoLayout, CoreMatchers.is(expectedSettings.getRepoLayout()))
+
+            // remote
+            assertThat(listRemoteFolderItems, CoreMatchers.nullValue())
+            assertThat(maxUniqueSnapshots, CoreMatchers.is(expectedSettings.getMaxUniqueSnapshots()))
+            // always in resp payload
+            assertThat(podsSpecsRepoUrl, CoreMatchers.nullValue())
+            assertThat(vcsGitDownloadUrl, CoreMatchers.nullValue())
+            assertThat(vcsGitProvider, CoreMatchers.nullValue())
+            assertThat(vcsType, CoreMatchers.nullValue())
+        }
+    }
+
+    @Test(groups = "cocoapodsPackageTypeRepo")
     void testCocoaPodsRemoteRepo() {
         artifactory.repositories().create(0, remoteRepo)
         def expectedSettings = remoteRepo.repositorySettings

@@ -63,6 +63,27 @@ class DockerPackageTypeRepositoryTests extends BaseRepositoryTests {
     }
 
     @Test(groups = "dockerPackageTypeRepo")
+    void testDockerFederatedRepo() {
+        artifactory.repositories().create(0, federatedRepo)
+        def expectedSettings = federatedRepo.repositorySettings
+
+        def resp = artifactory.repository(federatedRepo.getKey()).get()
+        assertThat(resp, CoreMatchers.notNullValue())
+        assertThat(resp.repoLayoutRef, CoreMatchers.is(DockerRepositorySettingsImpl.defaultLayout))
+        resp.getRepositorySettings().with {
+            assertThat(packageType, CoreMatchers.is(expectedSettings.getPackageType()))
+            assertThat(repoLayout, CoreMatchers.is(expectedSettings.getRepoLayout()))
+
+            // local
+            assertThat(dockerApiVersion, CoreMatchers.is(expectedSettings.getDockerApiVersion()))
+
+            // remote
+            assertThat(enableTokenAuthentication, CoreMatchers.is(CoreMatchers.nullValue()))
+            assertThat(listRemoteFolderItems, CoreMatchers.is(CoreMatchers.nullValue()))
+        }
+    }
+
+    @Test(groups = "dockerPackageTypeRepo")
     void testDockerRemoteRepo() {
         artifactory.repositories().create(0, remoteRepo)
         def expectedSettings = remoteRepo.repositorySettings

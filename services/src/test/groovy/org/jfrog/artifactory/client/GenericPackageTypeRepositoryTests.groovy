@@ -47,6 +47,21 @@ class GenericPackageTypeRepositoryTests extends BaseRepositoryTests {
     }
 
     @Test(groups = "genericPackageTypeRepo")
+    void testGenericFederatedRepo() {
+        artifactory.repositories().create(0, federatedRepo)
+        def expectedSettings = federatedRepo.repositorySettings
+
+        def resp = artifactory.repository(federatedRepo.getKey()).get()
+        assertThat(resp, CoreMatchers.notNullValue())
+        assertThat(resp.repoLayoutRef, CoreMatchers.is(GenericRepositorySettingsImpl.defaultLayout))
+        resp.getRepositorySettings().with {
+            assertThat(packageType, CoreMatchers.is(expectedSettings.getPackageType()))
+            assertThat(repoLayout, CoreMatchers.is(expectedSettings.getRepoLayout()))
+            assertThat(listRemoteFolderItems, CoreMatchers.nullValue())
+        }
+    }
+
+    @Test(groups = "genericPackageTypeRepo")
     void testGenericRemoteRepo() {
         artifactory.repositories().create(0, remoteRepo)
         def expectedSettings = remoteRepo.repositorySettings
