@@ -1,8 +1,8 @@
 apply plugin: 'groovy'
 
 dependencies {
-    implementation project(':artifactory-java-client-api')
-    implementation project(':artifactory-java-client-httpClient')
+    api project(':artifactory-java-client-api')
+    api project(':artifactory-java-client-httpClient')
     implementation addGroovy('groovy')
     implementation addSlf4J('slf4j-api')
     implementation addSlf4J('log4j-over-slf4j')
