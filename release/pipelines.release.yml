@@ -53,11 +53,13 @@ pipelines:
             # Sync changes with dev
             - git merge origin/dev
 
+            # Update version
+            - sed -i "s/\(currentVersion=\).*\$/\1${NEXT_VERSION}/" gradle.properties
+
             # Run audit
             - jf audit
 
-            # Update version
-            - sed -i "s/\(currentVersion=\).*\$/\1${NEXT_VERSION}/" gradle.properties
+            # Commit changes
             - git commit -am "[artifactory-release] Release version ${NEXT_VERSION} [skipRun]" --allow-empty
             - git tag ${NEXT_VERSION}
             - git push
