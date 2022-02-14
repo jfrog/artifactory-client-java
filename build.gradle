@@ -52,7 +52,7 @@ nexusPublishing {
 }
 
 subprojects {
-    apply plugin: 'java'
+    apply plugin: 'java-library'
     apply plugin: 'signing'
 
     sourceCompatibility = 1.8
@@ -67,7 +67,7 @@ subprojects {
         implementation 'com.fasterxml.jackson.core:jackson-core:2.12.6'
         implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.6'
         implementation 'com.fasterxml.jackson.core:jackson-annotations:2.12.6'
-        implementation 'org.jfrog.filespecs:file-specs-java:1.1.1'
+        api 'org.jfrog.filespecs:file-specs-java:1.1.1'
     }
 
     task sourcesJar(type: Jar, dependsOn: classes) {
@@ -120,13 +120,6 @@ subprojects {
                             appendNode('developerConnection', 'scm:git:git@github.com:jfrog/artifactory-client-java.git')
                             appendNode('url', 'https://github.com/jfrog/artifactory-client-java')
                         }
-                    }
-                    asNode().dependencies.'*'.findAll() {
-                        it.scope.text() == 'runtime' && project.configurations.compile.allDependencies.find { dep ->
-                            dep.name == it.artifactId.text()
-                        }
-                    }.each() {
-                        it.scope*.value = 'compile'
                     }
                 }
             }
