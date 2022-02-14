@@ -1,5 +1,8 @@
 # Release Notes
 
+## 2.11.1 (February 14, 2022)
+- Bug fix - Library dependencies are not exported.
+
 ## 2.11.0 (February 13, 2022)
 - Support for managing Federated Repositories
 
