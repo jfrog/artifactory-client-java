@@ -194,6 +194,16 @@ public abstract class HttpBuilderBase<T extends HttpBuilderBase<?>> {
         return self();
     }
 
+    public T addRequestInterceptor(HttpRequestInterceptor interceptor) {
+        this.builder.addInterceptorFirst(interceptor);
+        return this.self();
+    }
+
+    public T addResponseInterceptor(HttpResponseInterceptor interceptor) {
+        this.builder.addInterceptorLast(interceptor);
+        return this.self();
+    }
+
     public HttpBuilderBase<?>.ProxyConfigBuilder proxy(String host, int port) {
         return new HttpBuilderBase<?>.ProxyConfigBuilder(host, port);
     }

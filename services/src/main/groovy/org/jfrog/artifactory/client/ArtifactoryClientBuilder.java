@@ -4,6 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpRequestInterceptor;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.protocol.HttpProcessor;
 import org.apache.http.ssl.SSLContextBuilder;
 import org.jfrog.artifactory.client.httpClient.http.HttpBuilderBase;
 import org.jfrog.artifactory.client.impl.ArtifactoryImpl;
@@ -40,6 +41,8 @@ public class ArtifactoryClientBuilder {
     private SSLContext sslContext;
     private SSLContextBuilder sslContextBuilder;
     private String accessToken;
+
+    private HttpProcessor httpProcessor;
 
     protected ArtifactoryClientBuilder() {
         super();
@@ -107,6 +110,11 @@ public class ArtifactoryClientBuilder {
         return this;
     }
 
+    public ArtifactoryClientBuilder setHttpProcessor(HttpProcessor httpProcessor) {
+        this.httpProcessor = httpProcessor;
+        return this;
+    }
+
     /**
      * Add an Http request interceptor to the underlying Http client builder used by the artifactory client
      * <br>
@@ -156,6 +164,10 @@ public class ArtifactoryClientBuilder {
         for (HttpRequestInterceptor httpRequestInterceptor : requestInterceptorList) {
             artifactoryHttpClient.addInterceptorLast(httpRequestInterceptor);
         }
+
+        artifactoryHttpClient.addRequestInterceptor(httpProcessor);
+        artifactoryHttpClient.addResponseInterceptor(httpProcessor);
+
         return artifactoryHttpClient.build();
     }
 
@@ -229,5 +241,9 @@ public class ArtifactoryClientBuilder {
 
     public String getAccessToken() {
         return accessToken;
+    }
+
+    public HttpProcessor getHttpProcessor() {
+        return this.httpProcessor;
     }
 }
