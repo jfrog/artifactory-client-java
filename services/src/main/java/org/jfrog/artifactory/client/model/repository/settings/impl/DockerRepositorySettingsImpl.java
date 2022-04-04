@@ -58,9 +58,13 @@ public class DockerRepositorySettingsImpl extends AbstractRepositorySettings imp
     }
 
 
-    public Integer getDockerTagRetention() {return dockerTagRetention; }
+    public Integer getDockerTagRetention() {
+        return dockerTagRetention;
+    }
 
-    public void setDockerTagRetention(Integer dockerTagRetention) { this.dockerTagRetention = dockerTagRetention; }
+    public void setDockerTagRetention(Integer dockerTagRetention) {
+        this.dockerTagRetention = dockerTagRetention;
+    }
 
     @Override
     public boolean equals(Object o) {
