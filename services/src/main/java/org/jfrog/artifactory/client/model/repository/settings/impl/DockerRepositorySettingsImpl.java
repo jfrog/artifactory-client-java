@@ -15,6 +15,7 @@ public class DockerRepositorySettingsImpl extends AbstractRepositorySettings imp
     private Boolean enableTokenAuthentication;
     private Boolean listRemoteFolderItems;
     private Integer maxUniqueTags;
+    private Integer dockerTagRetention;
 
     public DockerRepositorySettingsImpl() {
         super(defaultLayout);
@@ -55,6 +56,11 @@ public class DockerRepositorySettingsImpl extends AbstractRepositorySettings imp
     public void setMaxUniqueTags(Integer maxUniqueTags) {
         this.maxUniqueTags = maxUniqueTags;
     }
+
+
+    public Integer getDockerTagRetention() {return dockerTagRetention; }
+
+    public void setDockerTagRetention(Integer dockerTagRetention) { this.dockerTagRetention = dockerTagRetention; }
 
     @Override
     public boolean equals(Object o) {
