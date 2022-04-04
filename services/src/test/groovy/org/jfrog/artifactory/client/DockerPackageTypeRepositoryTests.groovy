@@ -26,6 +26,7 @@ class DockerPackageTypeRepositoryTests extends BaseRepositoryTests {
         settings.with {
             // local
             dockerApiVersion = DockerApiVersion.values()[rnd.nextInt(DockerApiVersion.values().length)]
+            dockerTagRetention = Math.abs(rnd.nextInt())
 
             // remote
             enableTokenAuthentication = rnd.nextBoolean()
@@ -55,6 +56,7 @@ class DockerPackageTypeRepositoryTests extends BaseRepositoryTests {
 
             // local
             assertThat(dockerApiVersion, CoreMatchers.is(expectedSettings.getDockerApiVersion()))
+            assertThat(dockerTagRetention, CoreMatchers.is(expectedSettings.getDockerTagRetention()))
 
             // remote
             assertThat(enableTokenAuthentication, CoreMatchers.is(CoreMatchers.nullValue()))
