@@ -57,7 +57,6 @@ public class DockerRepositorySettingsImpl extends AbstractRepositorySettings imp
         this.maxUniqueTags = maxUniqueTags;
     }
 
-
     public Integer getDockerTagRetention() {
         return dockerTagRetention;
     }
