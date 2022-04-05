@@ -1,5 +1,9 @@
 # Release Notes
 
+## 2.12.0 (April 5, 2022)
+- Add HTTP processor to client.
+- Add Docker tag retention attribute for Docker repositories.
+
 ## 2.11.1 (February 14, 2022)
 - Bug fix - Library dependencies are not exported.
 
