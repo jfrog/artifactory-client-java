@@ -187,7 +187,7 @@ public class ArtifactoryTests {
                 .responseType(ArtifactoryRequest.ContentType.JSON);
 
         try {
-           builder.build().restCall(req);
+            builder.build().restCall(req);
         } catch (IOException ignore) {
         }
         assertEquals(requestInterceptions.intValue(), 1);
