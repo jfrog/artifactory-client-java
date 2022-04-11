@@ -173,7 +173,7 @@ public class ArtifactoryTests {
             }
 
             @Override
-            public void process(HttpResponse response, HttpContext context) throws HttpException, IOException {
+            public void process(HttpResponse response, HttpContext context) {
                 responseInterceptions.incrementAndGet();
             }
         };
