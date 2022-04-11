@@ -76,4 +76,5 @@ public class CloseableHttpClientDecorator extends CloseableHttpClient { //implem
             closeableObserver.onObservedClose(this);
         }
     }
+
 }

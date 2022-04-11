@@ -101,6 +101,23 @@ Artifactory artifactory = ArtifactoryClientBuilder.create()
         .build();
 ```
 
+Using HTTP proxy:
+
+```groovy
+ProxyConfig proxy = new ProxyConfig();
+proxy.setHost("localhost");
+proxy.setPort(9090);
+Artifactory artifactory = ArtifactoryClientBuilder.create()
+        .setUrl("ArtifactoryUrl")
+        .setUsername("username")
+        .setPassword("password")
+        .setProxy(proxy)
+        .setNoProxyHosts(".gom.com,*.jfrog.com,.not.important.host:443")
+        .build();
+```
+**NOTE:** If hosts to ignore proxy are not set through "setNoProxyHosts(String noProxyHosts)" method,
+they are set through NO_PROXY env variable.
+
 #### Uploading and downloading artifacts
 
 

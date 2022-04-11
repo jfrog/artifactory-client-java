@@ -5,3 +5,9 @@ apply plugin: 'java'
 repositories {
     mavenCentral()
 }
+
+dependencies {
+    testImplementation group: 'org.testng', name: 'testng', version: '7.4.0'
+    testImplementation group: 'com.github.tomakehurst', name: 'wiremock-jre8', version: '2.33.2'
+    testImplementation group: 'org.easytesting', name: 'fest-assert', version: '1.4'
+}
