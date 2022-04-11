@@ -1,5 +1,10 @@
 package org.jfrog.artifactory.client;
 
+import org.apache.http.HttpException;
+import org.apache.http.HttpRequest;
+import org.apache.http.HttpResponse;
+import org.apache.http.protocol.HttpContext;
+import org.apache.http.protocol.HttpProcessor;
 import org.jfrog.artifactory.client.impl.ArtifactoryRequestImpl;
 import org.testng.annotations.Test;
 
@@ -153,5 +158,50 @@ public class ArtifactoryTests {
         }
         assertEquals(interceptor1Visits.intValue(), 1);
         assertEquals(interceptor2Visits.intValue(), 1);
+    }
+
+    @Test
+    public void setHttpProcessorTest() {
+        AtomicInteger requestInterceptions = new AtomicInteger(0);
+        AtomicInteger responseInterceptions = new AtomicInteger(0);
+        ArtifactoryClientBuilder builder = ArtifactoryClientBuilder.create();
+
+        HttpProcessor httpProcessor = new HttpProcessor() {
+            @Override
+            public void process(HttpRequest request, HttpContext context) throws HttpException, IOException {
+                requestInterceptions.incrementAndGet();
+            }
+
+            @Override
+            public void process(HttpResponse response, HttpContext context) throws HttpException, IOException {
+                responseInterceptions.incrementAndGet();
+            }
+        };
+
+        builder.setUrl("http://localhost:7/");
+        builder.setHttpProcessor(httpProcessor);
+
+        ArtifactoryRequest req = new ArtifactoryRequestImpl()
+                .method(ArtifactoryRequest.Method.GET)
+                .apiUrl("api/security/permissions")
+                .responseType(ArtifactoryRequest.ContentType.JSON);
+
+        try {
+           builder.build().restCall(req);
+        } catch (IOException ignore) {
+        }
+        assertEquals(requestInterceptions.intValue(), 1);
+        // there should be no response to intercept
+        assertEquals(responseInterceptions.intValue(), 0);
+
+        // verify null interceptor doesn't affect anything
+        builder.setHttpProcessor(null);
+        requestInterceptions.decrementAndGet();
+        try {
+            builder.build().restCall(req);
+        } catch (IOException ignore) {
+        }
+        assertEquals(requestInterceptions.intValue(), 0);
+        assertEquals(responseInterceptions.intValue(), 0);
     }
 }
