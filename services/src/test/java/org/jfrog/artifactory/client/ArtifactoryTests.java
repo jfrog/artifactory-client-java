@@ -168,7 +168,7 @@ public class ArtifactoryTests {
 
         HttpProcessor httpProcessor = new HttpProcessor() {
             @Override
-            public void process(HttpRequest request, HttpContext context) throws HttpException, IOException {
+            public void process(HttpRequest request, HttpContext context) {
                 requestInterceptions.incrementAndGet();
             }
 
