@@ -1,5 +1,8 @@
 # Release Notes
 
+## 2.13.0 (May 9, 2022)
+- Allow configuring no-proxy hosts.
+
 ## 2.12.0 (April 5, 2022)
 - Add HTTP processor to client.
 - Add Docker tag retention attribute for Docker repositories.
