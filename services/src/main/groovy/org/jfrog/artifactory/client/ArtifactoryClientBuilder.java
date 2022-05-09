@@ -7,7 +7,7 @@ import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.protocol.HttpProcessor;
 import org.apache.http.ssl.SSLContextBuilder;
-import org.jfrog.artifactory.client.httpClient.http.HttpBuilderBase;
+import org.jfrog.artifactory.client.httpClient.http.ProxyConfig;
 import org.jfrog.artifactory.client.impl.ArtifactoryImpl;
 import org.jfrog.artifactory.client.impl.util.ArtifactoryHttpClient;
 
@@ -43,6 +43,7 @@ public class ArtifactoryClientBuilder {
     private SSLContextBuilder sslContextBuilder;
     private String accessToken;
     private HttpProcessor httpProcessor;
+    private String noProxyHosts;
 
     protected ArtifactoryClientBuilder() {
         super();
@@ -115,6 +116,11 @@ public class ArtifactoryClientBuilder {
         return this;
     }
 
+    public ArtifactoryClientBuilder setNoProxyHosts(String noProxyHosts) {
+        this.noProxyHosts = noProxyHosts;
+        return this;
+    }
+
     /**
      * Add an Http request interceptor to the underlying Http client builder used by the artifactory client
      * <br>
@@ -138,12 +144,7 @@ public class ArtifactoryClientBuilder {
             artifactoryHttpClient.authentication(username, password);
         }
 
-        if (this.proxy != null) {
-            HttpBuilderBase.ProxyConfigBuilder proxyConfigBuilder = artifactoryHttpClient.proxy(this.proxy.getHost(), this.proxy.getPort());
-            if (this.proxy.getUser() != null) {
-                proxyConfigBuilder.authentication(this.proxy.getUser(), this.proxy.getPassword());
-            }
-        }
+        artifactoryHttpClient.proxy(proxy);
         artifactoryHttpClient.userAgent(userAgent);
 
         if (connectionTimeout != null) {
@@ -167,6 +168,8 @@ public class ArtifactoryClientBuilder {
 
         artifactoryHttpClient.addInterceptorFirst(httpProcessor);
         artifactoryHttpClient.addInterceptorLast((HttpResponseInterceptor) httpProcessor);
+
+        artifactoryHttpClient.noProxyHosts(noProxyHosts);
 
         return artifactoryHttpClient.build();
     }
@@ -245,5 +248,9 @@ public class ArtifactoryClientBuilder {
 
     public HttpProcessor getHttpProcessor() {
         return this.httpProcessor;
+    }
+
+    public String getNoProxyHosts() {
+        return this.noProxyHosts;
     }
 }

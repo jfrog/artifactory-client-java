@@ -1,10 +1,10 @@
 package org.jfrog.artifactory.client;
 
-import org.apache.http.HttpException;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.protocol.HttpProcessor;
+import org.jfrog.artifactory.client.httpClient.http.ProxyConfig;
 import org.jfrog.artifactory.client.impl.ArtifactoryRequestImpl;
 import org.testng.annotations.Test;
 
@@ -105,7 +105,11 @@ public class ArtifactoryTests {
     public void proxyBuilderTest() {
         ArtifactoryClientBuilder builder = ArtifactoryClientBuilder.create();
         builder.setUrl("http://myhost.com:80/");
-        ProxyConfig proxy = new ProxyConfig("localhost", 9090, "http", "user", "password");
+        ProxyConfig proxy = new ProxyConfig();
+        proxy.setHost("localhost");
+        proxy.setPort(9090);
+        proxy.setUsername("user");
+        proxy.setPassword("password");
         builder.setProxy(proxy);
 
         assertEquals(builder.getProxy(), proxy);
@@ -141,10 +145,10 @@ public class ArtifactoryTests {
         builder.addInterceptorLast((request, httpContext) -> {
             interceptor1Visits.incrementAndGet();
         });
-       builder.addInterceptorLast((request, httpContext) -> {
-           // Verify interceptor1 was called before interceptor2
-           assertEquals(interceptor1Visits.intValue(), 1);
-           interceptor2Visits.incrementAndGet();
+        builder.addInterceptorLast((request, httpContext) -> {
+            // Verify interceptor1 was called before interceptor2
+            assertEquals(interceptor1Visits.intValue(), 1);
+            interceptor2Visits.incrementAndGet();
         });
 
         ArtifactoryRequest req = new ArtifactoryRequestImpl()
