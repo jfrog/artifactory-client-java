@@ -10,11 +10,12 @@ import org.jfrog.artifactory.client.model.repository.settings.docker.DockerApiVe
  * @author Ivan Vasylivskyi (ivanvas@jfrog.com)
  */
 public class DockerRepositorySettingsImpl extends AbstractRepositorySettings implements DockerRepositorySettings {
-    private static String defaultLayout = "simple-default";
+    public static String defaultLayout = "simple-default";
     private DockerApiVersion dockerApiVersion;
     private Boolean enableTokenAuthentication;
     private Boolean listRemoteFolderItems;
     private Integer maxUniqueTags;
+    private Integer dockerTagRetention;
 
     public DockerRepositorySettingsImpl() {
         super(defaultLayout);
@@ -54,6 +55,14 @@ public class DockerRepositorySettingsImpl extends AbstractRepositorySettings imp
 
     public void setMaxUniqueTags(Integer maxUniqueTags) {
         this.maxUniqueTags = maxUniqueTags;
+    }
+
+    public Integer getDockerTagRetention() {
+        return dockerTagRetention;
+    }
+
+    public void setDockerTagRetention(Integer dockerTagRetention) {
+        this.dockerTagRetention = dockerTagRetention;
     }
 
     @Override

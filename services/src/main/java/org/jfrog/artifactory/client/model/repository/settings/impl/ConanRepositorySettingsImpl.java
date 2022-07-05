@@ -6,7 +6,7 @@ import org.jfrog.artifactory.client.model.repository.settings.AbstractRepository
 import org.jfrog.artifactory.client.model.repository.settings.ConanRepositorySettings;
 
 public class ConanRepositorySettingsImpl extends AbstractRepositorySettings implements ConanRepositorySettings {
-    private static String defaultLayout = "conan-default";
+    public static String defaultLayout = "conan-default";
 
     public ConanRepositorySettingsImpl() {
         super(defaultLayout);
@@ -19,8 +19,6 @@ public class ConanRepositorySettingsImpl extends AbstractRepositorySettings impl
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof ConanRepositorySettingsImpl)) return false;
-
-        return true;
+        return o instanceof ConanRepositorySettingsImpl;
     }
 }

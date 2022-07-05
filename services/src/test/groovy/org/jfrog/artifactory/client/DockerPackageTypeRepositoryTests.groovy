@@ -13,7 +13,11 @@ import org.testng.annotations.Test
  *
  * @author Ivan Vasylivskyi (ivanvas@jfrog.com)
  */
-public class DockerPackageTypeRepositoryTests extends BaseRepositoryTests {
+class DockerPackageTypeRepositoryTests extends BaseRepositoryTests {
+
+    DockerPackageTypeRepositoryTests() {
+        remoteRepoUrl = "https://registry-1.docker.io"
+    }
 
     @Override
     RepositorySettings getRepositorySettings(RepositoryType repositoryType) {
@@ -22,6 +26,7 @@ public class DockerPackageTypeRepositoryTests extends BaseRepositoryTests {
         settings.with {
             // local
             dockerApiVersion = DockerApiVersion.values()[rnd.nextInt(DockerApiVersion.values().length)]
+            dockerTagRetention = Math.abs(rnd.nextInt())
 
             // remote
             enableTokenAuthentication = rnd.nextBoolean()
@@ -33,15 +38,38 @@ public class DockerPackageTypeRepositoryTests extends BaseRepositoryTests {
 
     @BeforeMethod
     protected void setUp() {
+        storeArtifactsLocallyInRemoteRepo = true
         super.setUp()
     }
 
     @Test(groups = "dockerPackageTypeRepo")
-    public void testDockerLocalRepo() {
+    void testDockerLocalRepo() {
         artifactory.repositories().create(0, localRepo)
         def expectedSettings = localRepo.repositorySettings
 
         def resp = artifactory.repository(localRepo.getKey()).get()
+        assertThat(resp, CoreMatchers.notNullValue())
+        assertThat(resp.repoLayoutRef, CoreMatchers.is(DockerRepositorySettingsImpl.defaultLayout))
+        resp.getRepositorySettings().with {
+            assertThat(packageType, CoreMatchers.is(expectedSettings.getPackageType()))
+            assertThat(repoLayout, CoreMatchers.is(expectedSettings.getRepoLayout()))
+
+            // local
+            assertThat(dockerApiVersion, CoreMatchers.is(expectedSettings.getDockerApiVersion()))
+            assertThat(dockerTagRetention, CoreMatchers.is(expectedSettings.getDockerTagRetention()))
+
+            // remote
+            assertThat(enableTokenAuthentication, CoreMatchers.is(CoreMatchers.nullValue()))
+            assertThat(listRemoteFolderItems, CoreMatchers.is(CoreMatchers.nullValue()))
+        }
+    }
+
+    @Test(groups = "dockerPackageTypeRepo")
+    void testDockerFederatedRepo() {
+        artifactory.repositories().create(0, federatedRepo)
+        def expectedSettings = federatedRepo.repositorySettings
+
+        def resp = artifactory.repository(federatedRepo.getKey()).get()
         assertThat(resp, CoreMatchers.notNullValue())
         assertThat(resp.repoLayoutRef, CoreMatchers.is(DockerRepositorySettingsImpl.defaultLayout))
         resp.getRepositorySettings().with {
@@ -58,7 +86,7 @@ public class DockerPackageTypeRepositoryTests extends BaseRepositoryTests {
     }
 
     @Test(groups = "dockerPackageTypeRepo")
-    public void testDockerRemoteRepo() {
+    void testDockerRemoteRepo() {
         artifactory.repositories().create(0, remoteRepo)
         def expectedSettings = remoteRepo.repositorySettings
 
@@ -70,7 +98,8 @@ public class DockerPackageTypeRepositoryTests extends BaseRepositoryTests {
             assertThat(repoLayout, CoreMatchers.is(expectedSettings.getRepoLayout()))
 
             // local
-            assertThat(dockerApiVersion, CoreMatchers.is(expectedSettings.getDockerApiVersion())) // always in resp payload
+            assertThat(dockerApiVersion, CoreMatchers.is(expectedSettings.getDockerApiVersion()))
+            // always in resp payload
 
             // remote
             assertThat(enableTokenAuthentication, CoreMatchers.is(expectedSettings.getEnableTokenAuthentication()))
@@ -79,7 +108,7 @@ public class DockerPackageTypeRepositoryTests extends BaseRepositoryTests {
     }
 
     @Test(groups = "dockerPackageTypeRepo")
-    public void testDockerVirtualRepo() {
+    void testDockerVirtualRepo() {
         artifactory.repositories().create(0, virtualRepo)
         def expectedSettings = virtualRepo.repositorySettings
 

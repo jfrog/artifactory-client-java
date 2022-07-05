@@ -1,7 +1,10 @@
 package org.jfrog.artifactory.client;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.jfrog.artifactory.client.model.AqlItem;
 import org.jfrog.artifactory.client.model.RepoPath;
+import org.jfrog.filespecs.FileSpec;
+
 import java.util.List;
 
 /**
@@ -58,4 +61,5 @@ public interface Searches {
 
     PropertyFilters itemsByProperty();
 
+    List<AqlItem> artifactsByFileSpec(FileSpec fileSpec);
 }

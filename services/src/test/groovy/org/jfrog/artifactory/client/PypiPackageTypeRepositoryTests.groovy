@@ -9,10 +9,14 @@ import org.testng.annotations.Test
 
 /**
  * test that client correctly sends and receives repository configuration with `pypi` package type
- * 
+ *
  * @author Ivan Vasylivskyi (ivanvas@jfrog.com)
  */
-public class PypiPackageTypeRepositoryTests extends BaseRepositoryTests {
+class PypiPackageTypeRepositoryTests extends BaseRepositoryTests {
+
+    PypiPackageTypeRepositoryTests() {
+        remoteRepoUrl = "https://files.pythonhosted.org"
+    }
 
     @Override
     RepositorySettings getRepositorySettings(RepositoryType repositoryType) {
@@ -32,7 +36,7 @@ public class PypiPackageTypeRepositoryTests extends BaseRepositoryTests {
     }
 
     @Test(groups = "pypiPackageTypeRepo")
-    public void testPypiLocalRepo() {
+    void testPypiLocalRepo() {
         artifactory.repositories().create(0, localRepo)
         def expectedSettings = localRepo.repositorySettings
 
@@ -45,7 +49,20 @@ public class PypiPackageTypeRepositoryTests extends BaseRepositoryTests {
     }
 
     @Test(groups = "pypiPackageTypeRepo")
-    public void testPypiRemoteRepo() {
+    void testPypiFederatedRepo() {
+        artifactory.repositories().create(0, federatedRepo)
+        def expectedSettings = federatedRepo.repositorySettings
+
+        def resp = artifactory.repository(federatedRepo.getKey()).get()
+        resp.getRepositorySettings().with {
+            assertThat(packageType, CoreMatchers.is(expectedSettings.getPackageType()))
+            assertThat(repoLayout, CoreMatchers.is(expectedSettings.getRepoLayout()))
+            assertThat(listRemoteFolderItems, CoreMatchers.nullValue())
+        }
+    }
+
+    @Test(groups = "pypiPackageTypeRepo")
+    void testPypiRemoteRepo() {
         artifactory.repositories().create(0, remoteRepo)
         def expectedSettings = remoteRepo.repositorySettings
 
@@ -61,7 +78,7 @@ public class PypiPackageTypeRepositoryTests extends BaseRepositoryTests {
     }
 
     @Test(groups = "pypiPackageTypeRepo")
-    public void testPypiVirtualRepo() {
+    void testPypiVirtualRepo() {
         artifactory.repositories().create(0, virtualRepo)
         def expectedSettings = virtualRepo.repositorySettings
 

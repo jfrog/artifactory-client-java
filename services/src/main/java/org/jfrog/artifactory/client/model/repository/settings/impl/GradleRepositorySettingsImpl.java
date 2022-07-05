@@ -8,7 +8,7 @@ import org.jfrog.artifactory.client.model.repository.settings.GradleRepositorySe
  * @author Ivan Vasylivskyi (ivanvas@jfrog.com)
  */
 public class GradleRepositorySettingsImpl extends MavenRepositorySettingsImpl implements GradleRepositorySettings {
-    private static String defaultLayout = "maven-2-default";
+    public static String defaultLayout = "maven-2-default";
 
     public GradleRepositorySettingsImpl() {
         super(defaultLayout);
@@ -23,8 +23,6 @@ public class GradleRepositorySettingsImpl extends MavenRepositorySettingsImpl im
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof GradleRepositorySettingsImpl)) return false;
-        if (!super.equals(o)) return false;
-
-        return true;
+        return super.equals(o);
     }
 }

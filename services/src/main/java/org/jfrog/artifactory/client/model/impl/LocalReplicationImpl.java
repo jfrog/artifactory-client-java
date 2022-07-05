@@ -17,7 +17,7 @@ public class LocalReplicationImpl implements LocalReplication {
     private String pathPrefix;
     private String repoKey;
 
-    LocalReplicationImpl() {
+    public LocalReplicationImpl() {
     }
 
     LocalReplicationImpl(String url, long socketTimeoutMillis, String username, String password,
@@ -96,6 +96,54 @@ public class LocalReplicationImpl implements LocalReplication {
     @Override
     public String getRepoKey() {
         return repoKey;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public void setSocketTimeoutMillis(long socketTimeoutMillis) {
+        this.socketTimeoutMillis = socketTimeoutMillis;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setEnableEventReplication(boolean enableEventReplication) {
+        this.enableEventReplication = enableEventReplication;
+    }
+
+    public void setSyncStatistics(boolean syncStatistics) {
+        this.syncStatistics = syncStatistics;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    public void setCronExp(String cronExp) {
+        this.cronExp = cronExp;
+    }
+
+    public void setSyncDeletes(boolean syncDeletes) {
+        this.syncDeletes = syncDeletes;
+    }
+
+    public void setSyncProperties(boolean syncProperties) {
+        this.syncProperties = syncProperties;
+    }
+
+    public void setPathPrefix(String pathPrefix) {
+        this.pathPrefix = pathPrefix;
+    }
+
+    public void setRepoKey(String repoKey) {
+        this.repoKey = repoKey;
     }
 
     @Override

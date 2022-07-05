@@ -11,7 +11,7 @@ import org.jfrog.artifactory.client.model.repository.settings.vcs.VcsType;
  * @author Ivan Vasylivskyi (ivanvas@jfrog.com)
  */
 public class VcsRepositorySettingsImpl extends AbstractRepositorySettings implements VcsRepositorySettings {
-    private static String defaultLayout = "vcs-default";
+    public static String defaultLayout = "vcs-default";
     private VcsGitProvider vcsGitProvider;
     private VcsType vcsType;
     private Integer maxUniqueSnapshots;

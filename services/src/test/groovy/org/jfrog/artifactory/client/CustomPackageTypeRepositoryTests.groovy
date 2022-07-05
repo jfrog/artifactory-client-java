@@ -17,6 +17,10 @@ class CustomPackageTypeRepositoryTests extends BaseRepositoryTests {
     private boolean someListRemoteFolderItems
     private int someYumRootDepth
 
+    CustomPackageTypeRepositoryTests() {
+        remoteRepoUrl = "http://mirror.centos.org/centos"
+    }
+
     @Override
     RepositorySettings getRepositorySettings(RepositoryType repositoryType) {
         CustomPackageTypeImpl customPackageType = new CustomPackageTypeImpl("rpm")
@@ -39,7 +43,7 @@ class CustomPackageTypeRepositoryTests extends BaseRepositoryTests {
 
                 // remote
                 "listRemoteFolderItems": someListRemoteFolderItems
-        ]
+        ] as Map<String, Object>
         super.setUp()
     }
 

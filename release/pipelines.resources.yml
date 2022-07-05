@@ -3,14 +3,16 @@ resources:
     type: GitRepo
     configuration:
       path: jfrog/artifactory-client-java
-      gitProvider: github
-      buildOn:
-        commit: true
+      gitProvider: il_automation
+      branches:
+        include: dev
 
   - name: javaClientReleaseGit
     type: GitRepo
     configuration:
       path: jfrog/artifactory-client-java
-      gitProvider: github
+      gitProvider: il_automation
       buildOn:
         commit: false
+      branches:
+        include: master

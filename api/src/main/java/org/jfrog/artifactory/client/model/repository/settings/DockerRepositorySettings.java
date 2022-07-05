@@ -12,7 +12,10 @@ public interface DockerRepositorySettings extends RepositorySettings {
     // ** local ** //
 
     DockerApiVersion getDockerApiVersion();
+
     Integer getMaxUniqueTags();
+
+    Integer getDockerTagRetention();
 
     // ** remote ** //
 

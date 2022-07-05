@@ -10,7 +10,7 @@ import java.util.Collection;
  * @author Ivan Vasylivskyi (ivanvas@jfrog.com)
  */
 public class BowerRepositorySettingsImpl extends VcsRepositorySettingsImpl implements BowerRepositorySettings {
-    private static String defaultLayout = "bower-default";
+    public static String defaultLayout = "bower-default";
     private String bowerRegistryUrl;
     private Boolean externalDependenciesEnabled;
     private Collection<String> externalDependenciesPatterns;

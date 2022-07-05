@@ -6,12 +6,17 @@ import org.jfrog.artifactory.client.model.repository.settings.RepositorySettings
 import org.jfrog.artifactory.client.model.repository.settings.impl.GoRepositorySettingsImpl
 import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
+
 /**
  * test that client correctly sends and receives repository configuration with `go` package type
  *
  * @author David Csakvari
  */
-public class GoPackageTypeRepositoryTests extends BaseRepositoryTests {
+class GoPackageTypeRepositoryTests extends BaseRepositoryTests {
+
+    GoPackageTypeRepositoryTests() {
+        remoteRepoUrl = "https://proxy.golang.org"
+    }
 
     @Override
     RepositorySettings getRepositorySettings(RepositoryType repositoryType) {
@@ -30,7 +35,7 @@ public class GoPackageTypeRepositoryTests extends BaseRepositoryTests {
     }
 
     @Test(groups = "goPackageTypeRepo")
-    public void testGoLocalRepo() {
+    void testGoLocalRepo() {
         artifactory.repositories().create(0, localRepo)
         def expectedSettings = localRepo.repositorySettings
 
@@ -41,14 +46,14 @@ public class GoPackageTypeRepositoryTests extends BaseRepositoryTests {
         resp.getRepositorySettings().with {
             assertThat(packageType, CoreMatchers.is(expectedSettings.getPackageType()))
             assertThat(repoLayout, CoreMatchers.is(expectedSettings.getRepoLayout()))
-            
+
             // not applicable to local repos
             assertThat(externalDependenciesEnabled, CoreMatchers.nullValue())
         }
     }
-    
+
     @Test(groups = "goPackageTypeRepo")
-    public void testGoRemoteRepo() {
+    void testGoRemoteRepo() {
         artifactory.repositories().create(0, remoteRepo)
         def expectedSettings = remoteRepo.repositorySettings
 
@@ -59,14 +64,14 @@ public class GoPackageTypeRepositoryTests extends BaseRepositoryTests {
         resp.getRepositorySettings().with {
             assertThat(packageType, CoreMatchers.is(expectedSettings.getPackageType()))
             assertThat(repoLayout, CoreMatchers.is(expectedSettings.getRepoLayout()))
-            
+
             // not applicable to remote repos
             assertThat(externalDependenciesEnabled, CoreMatchers.is(false))
         }
     }
-    
+
     @Test(groups = "goPackageTypeRepo")
-    public void testGoVirtualRepo() {
+    void testGoVirtualRepo() {
         artifactory.repositories().create(0, virtualRepo)
         def expectedSettings = virtualRepo.repositorySettings
 
@@ -77,7 +82,7 @@ public class GoPackageTypeRepositoryTests extends BaseRepositoryTests {
         resp.getRepositorySettings().with {
             assertThat(packageType, CoreMatchers.is(expectedSettings.getPackageType()))
             assertThat(repoLayout, CoreMatchers.is(expectedSettings.getRepoLayout()))
-            
+
             assertThat(externalDependenciesEnabled, CoreMatchers.is(true))
         }
     }

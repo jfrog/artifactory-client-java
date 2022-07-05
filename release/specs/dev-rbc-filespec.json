@@ -1,0 +1,16 @@
+{
+  "files": [
+    {
+      "pattern": "ecosys-oss-snapshot-local/(org/jfrog/artifactory/client/artifactory-java-client-api/*/artifactory-java-client-api-*)",
+      "target": "oss-snapshot-local/{1}"
+    },
+    {
+      "pattern": "ecosys-oss-snapshot-local/(org/jfrog/artifactory/client/artifactory-java-client-services/*/artifactory-java-client-services-*)",
+      "target": "oss-snapshot-local/{1}"
+    },
+    {
+      "pattern": "ecosys-oss-snapshot-local/(org/jfrog/artifactory/client/artifactory-java-client-httpClient/*/artifactory-java-client-httpClient-*)",
+      "target": "oss-snapshot-local/{1}"
+    }
+  ]
+}

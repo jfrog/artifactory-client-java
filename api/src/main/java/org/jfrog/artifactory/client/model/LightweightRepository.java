@@ -3,8 +3,8 @@ package org.jfrog.artifactory.client.model;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
- * @author jbaruch
- * @since 30/07/12
+ * @author Siva Singaravelan
+ * @since 01/07/2022
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public interface LightweightRepository {
@@ -15,6 +15,8 @@ public interface LightweightRepository {
     RepositoryType getType();
 
     String getUrl();
+
+    String getPackageType();
 
     String getConfiguration();
 }

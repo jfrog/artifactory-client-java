@@ -10,7 +10,11 @@ import org.testng.annotations.Test
 /**
  * Test that client correctly sends and receives repository configuration with `chef` package type
  */
-public class ChefPackageTypeRepositoryTests extends BaseRepositoryTests {
+class ChefPackageTypeRepositoryTests extends BaseRepositoryTests {
+
+    ChefPackageTypeRepositoryTests() {
+        remoteRepoUrl = "https://supermarket.chef.io"
+    }
 
     @Override
     RepositorySettings getRepositorySettings(RepositoryType repositoryType) {
@@ -23,7 +27,7 @@ public class ChefPackageTypeRepositoryTests extends BaseRepositoryTests {
     }
 
     @Test(groups = "chefPackageTypeRepo")
-    public void testChefLocalRepo() {
+    void testChefLocalRepo() {
         artifactory.repositories().create(0, localRepo)
         def expectedSettings = localRepo.repositorySettings
 
@@ -37,7 +41,21 @@ public class ChefPackageTypeRepositoryTests extends BaseRepositoryTests {
     }
 
     @Test(groups = "chefPackageTypeRepo")
-    public void testChefRemoteRepo() {
+    void testChefFederatedRepo() {
+        artifactory.repositories().create(0, federatedRepo)
+        def expectedSettings = federatedRepo.repositorySettings
+
+        def resp = artifactory.repository(federatedRepo.getKey()).get()
+        assertThat(resp, CoreMatchers.notNullValue())
+        assertThat(resp.repoLayoutRef, CoreMatchers.is(ChefRepositorySettingsImpl.defaultLayout))
+        resp.getRepositorySettings().with {
+            assertThat(packageType, CoreMatchers.is(expectedSettings.getPackageType()))
+            assertThat(repoLayout, CoreMatchers.is(expectedSettings.getRepoLayout()))
+        }
+    }
+
+    @Test(groups = "chefPackageTypeRepo")
+    void testChefRemoteRepo() {
         artifactory.repositories().create(0, remoteRepo)
         def expectedSettings = remoteRepo.repositorySettings
 
@@ -51,7 +69,7 @@ public class ChefPackageTypeRepositoryTests extends BaseRepositoryTests {
     }
 
     @Test(groups = "chefPackageTypeRepo")
-    public void testChefVirtualRepo() {
+    void testChefVirtualRepo() {
         artifactory.repositories().create(0, virtualRepo)
         def expectedSettings = virtualRepo.repositorySettings
 

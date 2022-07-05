@@ -2,7 +2,7 @@ buildscript {
     repositories {
         mavenCentral()
         maven {
-            url "https://oss.jfrog.org/artifactory/libs-release"
+            url "https://releases.jfrog.io/artifactory/oss-releases"
         }
     }
     dependencies {
@@ -15,7 +15,14 @@ plugins {
 }
 
 allprojects {
-    apply plugin: 'maven'
+    repositories {
+        mavenCentral()
+        maven {
+            url "https://releases.jfrog.io/artifactory/oss-releases"
+        }
+    }
+
+
     apply plugin: 'maven-publish'
     apply plugin: 'com.jfrog.artifactory'
 
@@ -31,12 +38,6 @@ allprojects {
 artifactoryPublish.skip = true
 
 artifactory {
-    contextUrl = 'https://oss.jfrog.org'
-    resolve {
-        repository {
-            repoKey = 'libs-release'
-        }
-    }
     publish {
         defaults {
             publications 'main'
@@ -51,18 +52,22 @@ nexusPublishing {
 }
 
 subprojects {
-    apply plugin: 'java'
+    apply plugin: 'java-library'
     apply plugin: 'signing'
 
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
 
     dependencies {
-        compile 'org.apache.httpcomponents:httpclient:4.5.13'
-        compile 'org.apache.commons:commons-lang3:3.11'
-        compile 'com.fasterxml.jackson.core:jackson-core:2.11.4'
-        compile 'com.fasterxml.jackson.core:jackson-databind:2.11.4'
-        compile 'com.fasterxml.jackson.core:jackson-annotations:2.11.4'
+        implementation('org.apache.httpcomponents:httpclient:4.5.13') {
+            exclude group: 'commons-codec', module: 'commons-codec'
+        }
+        implementation 'commons-codec:commons-codec:1.13'
+        implementation 'org.apache.commons:commons-lang3:3.12.0'
+        implementation 'com.fasterxml.jackson.core:jackson-core:2.12.6'
+        implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.6.1'
+        implementation 'com.fasterxml.jackson.core:jackson-annotations:2.12.6'
+        api 'org.jfrog.filespecs:file-specs-java:1.1.1'
     }
 
     task sourcesJar(type: Jar, dependsOn: classes) {
@@ -115,13 +120,6 @@ subprojects {
                             appendNode('developerConnection', 'scm:git:git@github.com:jfrog/artifactory-client-java.git')
                             appendNode('url', 'https://github.com/jfrog/artifactory-client-java')
                         }
-                    }
-                    asNode().dependencies.'*'.findAll() {
-                        it.scope.text() == 'runtime' && project.configurations.compile.allDependencies.find { dep ->
-                            dep.name == it.artifactId.text()
-                        }
-                    }.each() {
-                        it.scope*.value = 'compile'
                     }
                 }
             }

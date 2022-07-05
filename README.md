@@ -19,6 +19,7 @@ searches, upload and download artifacts to or from Artifactory and a lot more.
         - [Uploading and downloading artifacts](#uploading-and-downloading-artifacts)
         - [File, Folder and Repository Info](#file-folder-and-repository-info)
         - [Search](#search)
+        - [Builds](#builds)
         - [Managing Items (files and folders)](#managing-items-files-and-folders)
         - [Managing Repositories](#managing-repositories)
         - [Managing Users](#managing-users)
@@ -44,7 +45,7 @@ Add the following dependency to your `pom.xml` file:
 <dependency>
     <groupId>org.jfrog.artifactory.client</groupId>
     <artifactId>artifactory-java-client-services</artifactId>
-    <version>2.9.2</version>
+    <version>RELEASE</version>
 </dependency>
 ```
 
@@ -100,14 +101,38 @@ Artifactory artifactory = ArtifactoryClientBuilder.create()
         .build();
 ```
 
-#### Uploading and downloading artifacts
-
-##### Uploading an Artifacts
+Using HTTP proxy:
 
 ```groovy
-java.io.File file = new java.io.File("fileToUpload.txt");
-File result = artifactory.repository("RepoName").upload("path/to/newName.txt", file).doUpload();
+ProxyConfig proxy = new ProxyConfig();
+proxy.setHost("localhost");
+proxy.setPort(9090);
+Artifactory artifactory = ArtifactoryClientBuilder.create()
+        .setUrl("ArtifactoryUrl")
+        .setUsername("username")
+        .setPassword("password")
+        .setProxy(proxy)
+        .setNoProxyHosts(".gom.com,*.jfrog.com,.not.important.host:443")
+        .build();
 ```
+**NOTE:** If hosts to ignore proxy are not set through "setNoProxyHosts(String noProxyHosts)" method,
+they are set through NO_PROXY env variable.
+
+#### Uploading and downloading artifacts
+
+
+##### Uploading an Artifact
+* Using java.io.File as source:
+     ```groovy
+     java.io.File file = new java.io.File("fileToUpload.txt");  
+     File result = artifactory.repository("RepoName").upload("path/to/newName.txt", file).doUpload();
+     ```
+* Using an InputStream as source:
+     ```groovy
+     try (InputStream inputStream = Files.newInputStream(Paths.get("fileToUpload.txt"))) {
+         File result = artifactory.repository("RepoName").upload("path/to/newName.txt", inputStream).doUpload();
+     }
+     ```
 
 ##### Upload and explode an Archive
 
@@ -126,6 +151,35 @@ File deployed = artifactory.repository("RepoName")
         .withProperty("color", "red")
         .doUpload();
 ```
+
+##### Uploading and Artifact with an UploadListener
+Can be used for tracking the progress of the current upload:
+```groovy
+java.io.File file = new java.io.File("fileToUpload.txt");  
+File result = artifactory.repository("RepoName")
+        .upload("path/to/newName.txt", file)
+        .withListener((bytesRead, totalBytes) -> {
+            System.out.println("Uploaded " + format.format((double) bytesRead / totalBytes));
+        })
+        .doUpload();
+```
+The code snippet above would print the percentage of the current upload status.
+
+**Important:** The totalBytes is calculated from the size of the input File. In case the source is a `java.io.File` object, the upload will use the `File.length()` to determine the total number of bytes. If the source is an `InputStream`, the total size of the upload must be specified using the `withSize(long size)` method.
+e.g.:
+```groovy
+Path sourceFile = Paths.get("fileToUpload.txt");
+try (InputStream inputStream = Files.newInputStream(sourceFile)) {
+        File result = artifactory.repository("RepoName")
+                .upload("path/to/newName.txt", inputStream)
+                .withSize(Files.size(sourceFile))
+                .withListener((bytesRead, totalBytes) -> {
+                    System.out.println("Uploaded " + format.format((double) bytesRead / totalBytes));
+                })
+                .doUpload();
+    }
+```
+
 
 ##### Copy an Artifact by SHA-1
 
@@ -233,6 +287,8 @@ Searches artifactsCreatedInDateRange(long fromMillis, long toMillis);
 Searches artifactsByGavc();
 
 Searches artifactsLatestVersion();
+
+List<AqlItem> artifactsByFileSpec(FileSpec fileSpec);
 ```
 
 ##### Searching Files in Repositories
@@ -306,6 +362,25 @@ String latestVersion = artifactory.searches().artifactsLatestVersion()
         .doRawSearch();
 ```
 
+##### Searching Files Using File Specs
+
+```groovy
+FileSpec fileSpec = FileSpec.fromString("{\"files\": [{\"pattern\": \"liba-release-local/*test*\"}]}");
+List<AqlItem> results = artifactory.searches().artifactsByFileSpec(fileSpec);
+```
+
+#### Builds
+
+##### Get All Builds
+```groovy
+AllBuilds allBuilds = artifactory.builds().getAllBuilds();
+```
+
+##### Get Build Runs
+```groovy
+BuildRuns buildRuns = artifactory.builds().getBuildRuns("BuildName");
+```
+
 #### Managing Items (files and folders)
 
 ##### Getting Items
@@ -345,11 +420,13 @@ String result = artifactory.repository("RepoName").delete("path/to/item");
 import static org.jfrog.artifactory.client.model.impl.RepositoryTypeImpl.LOCAL;
 import static org.jfrog.artifactory.client.model.impl.RepositoryTypeImpl.REMOTE;
 import static org.jfrog.artifactory.client.model.impl.RepositoryTypeImpl.VIRTUAL;
+import static org.jfrog.artifactory.client.model.impl.RepositoryTypeImpl.FEDERATED;
 
 ...
 List<LightweightRepository> localRepoList = artifactory.repositories().list(LOCAL);
 List<LightweightRepository> remoteRepoList = artifactory.repositories().list(REMOTE);
 List<LightweightRepository> virtualRepoList = artifactory.repositories().list(VIRTUAL);
+List<LightweightRepository> federatedRepoList = artifactory.repositories().list(FEDERATED);
 ```
 
 ##### Creating Repositories
@@ -363,6 +440,26 @@ Repository repository = artifactory.repositories()
         .localRepositoryBuilder()
         .key("NewRepoName")
         .description("new local repository")
+        .repositorySettings(settings)
+        .build();
+
+String result = artifactory.repositories().create(2, repository);
+```
+
+
+##### Creating Federated Repositories
+
+```groovy
+DockerRepositorySettings settings = new DockerRepositorySettingsImpl();
+List<FederatedMember> federatedMembers = new ArrayList<FederatedMember>();
+FederatedMember federatedMember =  new FederatedMember("http://<JPDURL>/artifactory/"+NewRepoName, true);
+federatedMembers.add(federatedMember);
+Repository repository = artifactory.repositories()
+        .builders()
+        .federatedRepositoryBuilder()
+        .members(federatedMembers)
+        .key("NewRepoName")
+        .description("new federated repository")
         .repositorySettings(settings)
         .build();
 
@@ -765,7 +862,7 @@ gradle clean build -x test
 Please follow these steps to build and test the code:
 
 * Startup an Artifactory-Pro instance.
-* Set the *CLIENTTESTS_ARTIFACTORY_URL*, *CLIENTTESTS_ARTIFACTORY_USERNAME* and *CLIENTTESTS_ARTIFACTORY_PASSWORD*
+* Set the *CLIENTTESTS_ARTIFACTORY_URL*, *CLIENTTESTS_ARTIFACTORY_USERNAME* and *CLIENTTESTS_ARTIFACTORY_PASSWORD* 
   environment variables with your Artifactory URL, username and password.
 * Run:
 
@@ -793,6 +890,4 @@ This client is available under the [Apache License, Version 2.0](http://www.apac
 
 ## Release Notes
 
-Release notes are available on [Bintray](https://bintray.com/jfrog/artifactory-tools/artifactory-client-java#release).
-
-(c) All rights reserved JFrog
+The release notes are available [here](RELEASE.md#release-notes).

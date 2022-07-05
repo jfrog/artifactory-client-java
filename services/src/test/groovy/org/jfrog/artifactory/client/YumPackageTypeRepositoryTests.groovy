@@ -14,7 +14,11 @@ import org.testng.annotations.Test
  *
  * @author Ivan Vasylivskyi (ivanvas@jfrog.com)
  */
-public class YumPackageTypeRepositoryTests extends BaseRepositoryTests {
+class YumPackageTypeRepositoryTests extends BaseRepositoryTests {
+
+    YumPackageTypeRepositoryTests() {
+        remoteRepoUrl = "http://mirror.centos.org/centos"
+    }
 
     @Override
     RepositorySettings getRepositorySettings(RepositoryType repositoryType) {
@@ -42,7 +46,7 @@ public class YumPackageTypeRepositoryTests extends BaseRepositoryTests {
     }
 
     @Test(groups = "yumPackageTypeRepo")
-    public void testYumLocalRepo() {
+    void testYumLocalRepo() {
         artifactory.repositories().create(0, localRepo)
         def expectedSettings = localRepo.repositorySettings
 
@@ -67,7 +71,31 @@ public class YumPackageTypeRepositoryTests extends BaseRepositoryTests {
     }
 
     @Test(groups = "yumPackageTypeRepo")
-    public void testYumRemoteRepo() {
+    void testYumFederatedRepo() {
+        artifactory.repositories().create(0, federatedRepo)
+        def expectedSettings = federatedRepo.repositorySettings
+
+        def resp = artifactory.repository(federatedRepo.getKey()).get()
+        assertThat(resp, CoreMatchers.notNullValue())
+        assertThat(resp.repoLayoutRef, CoreMatchers.is(RpmRepositorySettingsImpl.defaultLayout))
+        resp.getRepositorySettings().with {
+            // The package type is 'rpm' since Artifactory 5.0.0
+            assertThat(packageType, CoreMatchers.is(PackageTypeImpl.rpm))
+            assertThat(repoLayout, CoreMatchers.is(expectedSettings.getRepoLayout()))
+
+            // local
+            assertThat(calculateYumMetadata, CoreMatchers.is(expectedSettings.getCalculateYumMetadata()))
+            // assertThat(groupFileNames, CoreMatchers.is(specRepo.getGroupFileNames()))
+            assertThat(groupFileNames, CoreMatchers.is(CoreMatchers.nullValue()))
+            assertThat(yumRootDepth, CoreMatchers.is(expectedSettings.getYumRootDepth()))
+
+            // remote
+            assertThat(listRemoteFolderItems, CoreMatchers.is(CoreMatchers.nullValue()))
+        }
+    }
+
+    @Test(groups = "yumPackageTypeRepo")
+    void testYumRemoteRepo() {
         artifactory.repositories().create(0, remoteRepo)
         def expectedSettings = remoteRepo.repositorySettings
 

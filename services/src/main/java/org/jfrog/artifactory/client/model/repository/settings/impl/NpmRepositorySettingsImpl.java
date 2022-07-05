@@ -11,7 +11,7 @@ import java.util.Collection;
  * @author Ivan Vasylivskyi (ivanvas@jfrog.com)
  */
 public class NpmRepositorySettingsImpl extends AbstractRepositorySettings implements NpmRepositorySettings {
-    private static String defaultLayout = "npm-default";
+    public static String defaultLayout = "npm-default";
     private Boolean listRemoteFolderItems;
     private Boolean externalDependenciesEnabled;
     private Collection<String> externalDependenciesPatterns;

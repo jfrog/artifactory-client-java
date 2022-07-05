@@ -9,10 +9,10 @@ import org.testng.annotations.Test
 
 /**
  * test that client correctly sends and receives repository configuration with `vagrant` package type
- * 
+ *
  * @author Ivan Vasylivskyi (ivanvas@jfrog.com)
  */
-public class VagrantPackageTypeRepositoryTests extends BaseRepositoryTests {
+class VagrantPackageTypeRepositoryTests extends BaseRepositoryTests {
 
     @Override
     RepositorySettings getRepositorySettings(RepositoryType repositoryType) {
@@ -29,7 +29,7 @@ public class VagrantPackageTypeRepositoryTests extends BaseRepositoryTests {
     }
 
     @Test(groups = "vagrantPackageTypeRepo")
-    public void testVagrantLocalRepo() {
+    void testVagrantLocalRepo() {
         artifactory.repositories().create(0, localRepo)
         def expectedSettings = localRepo.repositorySettings
 

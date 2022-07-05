@@ -5,12 +5,15 @@ import org.apache.http.*;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.Credentials;
 import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.RedirectStrategy;
 import org.apache.http.client.config.AuthSchemes;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.config.Registry;
 import org.apache.http.config.RegistryBuilder;
+import org.apache.http.config.SocketConfig;
 import org.apache.http.conn.ConnectionKeepAliveStrategy;
 import org.apache.http.conn.routing.HttpRoute;
+import org.apache.http.conn.routing.HttpRoutePlanner;
 import org.apache.http.conn.socket.ConnectionSocketFactory;
 import org.apache.http.conn.socket.LayeredConnectionSocketFactory;
 import org.apache.http.conn.socket.PlainConnectionSocketFactory;
@@ -45,12 +48,16 @@ import java.util.concurrent.TimeUnit;
 @SuppressWarnings("UnusedReturnValue")
 public abstract class HttpBuilderBase<T extends HttpBuilderBase<?>> {
 
+    private static final String NO_PROXY_HOSTS_ENV = "NO_PROXY";
+
     private final BasicCredentialsProvider credsProvider;
     // Signifies what auth scheme will be used by the client
     private final JFrogAuthScheme chosenAuthScheme = JFrogAuthScheme.BASIC;
     private final RequestConfig.Builder config = RequestConfig.custom();
 
     protected HttpClientBuilder builder = HttpClients.custom();
+    protected HttpHost proxyHost;
+    protected String noProxyHosts;
     private HttpHost defaultHost;
     private boolean trustSelfSignCert = false;
     private SSLContextBuilder sslContextBuilder;
@@ -58,6 +65,7 @@ public abstract class HttpBuilderBase<T extends HttpBuilderBase<?>> {
     private int maxConnectionsTotal = DEFAULT_MAX_CONNECTIONS;
     private int maxConnectionsPerRoute = DEFAULT_MAX_CONNECTIONS;
     private int connectionPoolTimeToLive = CONNECTION_POOL_TIME_TO_LIVE;
+    private RequestConfig defaultRequestConfig;
 
     HttpBuilderBase() {
         credsProvider = new BasicCredentialsProvider();
@@ -65,16 +73,33 @@ public abstract class HttpBuilderBase<T extends HttpBuilderBase<?>> {
     }
 
     public CloseableHttpClient build() {
-        if (defaultHost != null) {
-            builder.setRoutePlanner(new DefaultHostRoutePlanner(defaultHost));
-        }
+        String noProxyHostsList = StringUtils.isBlank(noProxyHosts) ? System.getenv(NO_PROXY_HOSTS_ENV) : noProxyHosts;
+        builder.setRoutePlanner(buildRoutePlanner(noProxyHostsList));
         PoolingHttpClientConnectionManager connectionMgr = configConnectionManager();
         return new CloseableHttpClientDecorator(builder.build(), connectionMgr,
                 chosenAuthScheme == JFrogAuthScheme.SPNEGO);
     }
 
+    protected HttpRoutePlanner buildRoutePlanner(String noProxyHostsList) {
+        return new DefaultHostSpecificProxyRoutePlanner.Builder()
+                .defaultHost(this.defaultHost)
+                .proxyProvider(() -> proxyHost)
+                .noProxyHosts(noProxyHostsList)
+                .build();
+    }
+
     private T self() {
         return (T) this;
+    }
+
+    public T redirectStrategy(RedirectStrategy redirectStrategy) {
+        builder.setRedirectStrategy(redirectStrategy);
+        return self();
+    }
+
+    public T noProxyHosts(String noProxyHosts) {
+        this.noProxyHosts = noProxyHosts;
+        return this.self();
     }
 
     /**
@@ -83,6 +108,25 @@ public abstract class HttpBuilderBase<T extends HttpBuilderBase<?>> {
     public T userAgent(String userAgent) {
         builder.setUserAgent(userAgent);
         return self();
+    }
+
+    public T host(String host) {
+        return this.host(host, 80);
+    }
+
+    public T host(String host, int port) {
+        String scheme = port != 443 ? "http" : "https";
+        return this.host(host, port, scheme);
+    }
+
+    public T host(String host, int port, String scheme) {
+        if (StringUtils.isNotBlank(host)) {
+            this.defaultHost = new HttpHost(host, port, scheme);
+        } else {
+            this.defaultHost = null;
+        }
+
+        return this.self();
     }
 
     /**
@@ -169,6 +213,8 @@ public abstract class HttpBuilderBase<T extends HttpBuilderBase<?>> {
 
     /**
      * Configures preemptive authentication on this client. Ignores blank username input.
+     *
+     * @return {@link T}
      */
     public T authentication(String username, String password) {
         return authentication(username, password, false);
@@ -176,6 +222,8 @@ public abstract class HttpBuilderBase<T extends HttpBuilderBase<?>> {
 
     /**
      * Configures preemptive authentication on this client. Ignores blank username input.
+     *
+     * @return {@link T}
      */
     public T authentication(String username, String password, boolean allowAnyHost) {
         if (StringUtils.isNotBlank(username)) {
@@ -190,22 +238,40 @@ public abstract class HttpBuilderBase<T extends HttpBuilderBase<?>> {
         return self();
     }
 
-    public HttpBuilderBase<?>.ProxyConfigBuilder proxy(String host, int port) {
-        return new HttpBuilderBase<?>.ProxyConfigBuilder(host, port);
+    public T addInterceptorFirst(HttpRequestInterceptor interceptor) {
+        this.builder.addInterceptorFirst(interceptor);
+        return this.self();
     }
 
-    public class ProxyConfigBuilder {
+    public T addInterceptorLast(HttpResponseInterceptor interceptor) {
+        this.builder.addInterceptorLast(interceptor);
+        return this.self();
+    }
+
+    public T proxy(ProxyConfig proxy) {
+        if (proxy == null) {
+            return self();
+        }
+        this.proxyHost = new HttpHost(proxy.getHost(), proxy.getPort());
+        ProxyConfigBuilder proxyBuilder = new ProxyConfigBuilder(proxy.getHost(), proxy.getPort());
+        if (StringUtils.isNotBlank(proxy.getUsername())) {
+            proxyBuilder.authentication(proxy.getUsername(), proxy.getPassword());
+        }
+        return self();
+    }
+
+
+    private class ProxyConfigBuilder {
         private final String proxyHost;
         private final int proxyPort;
         Credentials creds;
 
-        public ProxyConfigBuilder(String host, int port) {
+        private ProxyConfigBuilder(String host, int port) {
             this.proxyHost = host;
             this.proxyPort = port;
-            config.setProxy(new HttpHost(host, port));
         }
 
-        public HttpBuilderBase<?>.ProxyConfigBuilder authentication(String username, String password) {
+        private ProxyConfigBuilder authentication(String username, String password) {
             creds = new UsernamePasswordCredentials(username, password);
             //This will demote the NTLM authentication scheme so that the proxy won't barf
             //when we try to give it traditional credentials. If the proxy doesn't do NTLM
@@ -225,6 +291,10 @@ public abstract class HttpBuilderBase<T extends HttpBuilderBase<?>> {
             }
             credsProvider.setCredentials(new AuthScope(host, port, AuthScope.ANY_REALM), creds);
         }
+    }
+
+    public HttpHost getProxyHost() {
+        return proxyHost;
     }
 
     public boolean isCookieSupportEnabled() {
@@ -261,7 +331,7 @@ public abstract class HttpBuilderBase<T extends HttpBuilderBase<?>> {
         if (hasCredentials()) {
             builder.setDefaultCredentialsProvider(credsProvider);
         }
-        RequestConfig defaultRequestConfig = config.build();
+        defaultRequestConfig = config.build();
         builder.setDefaultRequestConfig(defaultRequestConfig);
 
 
@@ -300,7 +370,18 @@ public abstract class HttpBuilderBase<T extends HttpBuilderBase<?>> {
         connectionMgr.setDefaultMaxPerRoute(maxConnectionsPerRoute);
         HttpHost localhost = new HttpHost("localhost", 80);
         connectionMgr.setMaxPerRoute(new HttpRoute(localhost), maxConnectionsPerRoute);
+        setSocketConfig(connectionMgr);
         return connectionMgr;
+    }
+
+    private void setSocketConfig(PoolingHttpClientConnectionManager connectionMgr) {
+        if (defaultRequestConfig != null) {
+            int connectTimeout = this.defaultRequestConfig.getConnectTimeout();
+            if (connectTimeout > 0) {
+                connectionMgr.setDefaultSocketConfig(
+                        SocketConfig.custom().setSoTimeout(connectTimeout).build());
+            }
+        }
     }
 
     private SSLContext buildSslContext() {

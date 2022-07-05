@@ -6,7 +6,7 @@ import org.jfrog.artifactory.client.model.repository.settings.AbstractRepository
 import org.jfrog.artifactory.client.model.repository.settings.ChefRepositorySettings;
 
 public class ChefRepositorySettingsImpl extends AbstractRepositorySettings implements ChefRepositorySettings {
-    private static String defaultLayout = "simple-default";
+    public static String defaultLayout = "simple-default";
 
     public ChefRepositorySettingsImpl() {
         super(defaultLayout);
@@ -19,8 +19,6 @@ public class ChefRepositorySettingsImpl extends AbstractRepositorySettings imple
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof ChefRepositorySettingsImpl)) return false;
-
-        return true;
+        return o instanceof ChefRepositorySettingsImpl;
     }
 }

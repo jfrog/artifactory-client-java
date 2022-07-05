@@ -1,12 +1,17 @@
 package org.jfrog.artifactory.client;
 
+import org.apache.http.HttpRequest;
+import org.apache.http.HttpResponse;
+import org.apache.http.protocol.HttpContext;
+import org.apache.http.protocol.HttpProcessor;
+import org.jfrog.artifactory.client.httpClient.http.ProxyConfig;
 import org.jfrog.artifactory.client.impl.ArtifactoryRequestImpl;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static junit.framework.Assert.assertEquals;
+import static org.testng.Assert.assertEquals;
 
 /**
  * @author yoavl
@@ -100,7 +105,11 @@ public class ArtifactoryTests {
     public void proxyBuilderTest() {
         ArtifactoryClientBuilder builder = ArtifactoryClientBuilder.create();
         builder.setUrl("http://myhost.com:80/");
-        ProxyConfig proxy = new ProxyConfig("localhost", 9090, "http", "user", "password");
+        ProxyConfig proxy = new ProxyConfig();
+        proxy.setHost("localhost");
+        proxy.setPort(9090);
+        proxy.setUsername("user");
+        proxy.setPassword("password");
         builder.setProxy(proxy);
 
         assertEquals(builder.getProxy(), proxy);
@@ -136,10 +145,10 @@ public class ArtifactoryTests {
         builder.addInterceptorLast((request, httpContext) -> {
             interceptor1Visits.incrementAndGet();
         });
-       builder.addInterceptorLast((request, httpContext) -> {
-           // Verify interceptor1 was called before interceptor2
-           assertEquals(interceptor1Visits.intValue(), 1);
-           interceptor2Visits.incrementAndGet();
+        builder.addInterceptorLast((request, httpContext) -> {
+            // Verify interceptor1 was called before interceptor2
+            assertEquals(interceptor1Visits.intValue(), 1);
+            interceptor2Visits.incrementAndGet();
         });
 
         ArtifactoryRequest req = new ArtifactoryRequestImpl()
@@ -153,5 +162,50 @@ public class ArtifactoryTests {
         }
         assertEquals(interceptor1Visits.intValue(), 1);
         assertEquals(interceptor2Visits.intValue(), 1);
+    }
+
+    @Test
+    public void setHttpProcessorTest() {
+        AtomicInteger requestInterceptions = new AtomicInteger(0);
+        AtomicInteger responseInterceptions = new AtomicInteger(0);
+        ArtifactoryClientBuilder builder = ArtifactoryClientBuilder.create();
+
+        HttpProcessor httpProcessor = new HttpProcessor() {
+            @Override
+            public void process(HttpRequest request, HttpContext context) {
+                requestInterceptions.incrementAndGet();
+            }
+
+            @Override
+            public void process(HttpResponse response, HttpContext context) {
+                responseInterceptions.incrementAndGet();
+            }
+        };
+
+        builder.setUrl("http://localhost:7/");
+        builder.setHttpProcessor(httpProcessor);
+
+        ArtifactoryRequest req = new ArtifactoryRequestImpl()
+                .method(ArtifactoryRequest.Method.GET)
+                .apiUrl("api/security/permissions")
+                .responseType(ArtifactoryRequest.ContentType.JSON);
+
+        try {
+            builder.build().restCall(req);
+        } catch (IOException ignore) {
+        }
+        assertEquals(requestInterceptions.intValue(), 1);
+        // there should be no response to intercept
+        assertEquals(responseInterceptions.intValue(), 0);
+
+        // verify null interceptor doesn't affect anything
+        builder.setHttpProcessor(null);
+        requestInterceptions.decrementAndGet();
+        try {
+            builder.build().restCall(req);
+        } catch (IOException ignore) {
+        }
+        assertEquals(requestInterceptions.intValue(), 0);
+        assertEquals(responseInterceptions.intValue(), 0);
     }
 }

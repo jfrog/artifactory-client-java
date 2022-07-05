@@ -4,20 +4,15 @@ import org.apache.http.client.HttpResponseException
 import org.jfrog.artifactory.client.model.RepositoryType
 import org.jfrog.artifactory.client.model.impl.LocalReplicationImpl
 import org.jfrog.artifactory.client.model.repository.settings.RepositorySettings
-import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
-import static junit.framework.Assert.assertTrue
 
-public class ReplicationTests extends BaseRepositoryTests {
+import static org.testng.Assert.assertTrue;
+
+class ReplicationTests extends BaseRepositoryTests {
 
     @Override
     RepositorySettings getRepositorySettings(RepositoryType repositoryType) {
         return null
-    }
-
-    @BeforeMethod
-    protected void setUp() {
-        super.setUp()
     }
 
     @Test(groups = "replication")
@@ -62,8 +57,8 @@ public class ReplicationTests extends BaseRepositoryTests {
         try {
             replications.delete()
         } catch (Exception e) {
-            assertTrue(e instanceof HttpResponseException);
-            assertTrue(((HttpResponseException) e).getStatusCode() == 400);
+            assertTrue(e instanceof HttpResponseException)
+            assertTrue(((HttpResponseException) e).getStatusCode() == 400)
         }
     }
 }

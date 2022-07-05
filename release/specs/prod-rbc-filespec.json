@@ -1,0 +1,16 @@
+{
+  "files": [
+    {
+      "pattern": "ecosys-oss-release-local/(org/jfrog/artifactory/client/artifactory-java-client-api/${version}/artifactory-java-client-api-*)",
+      "target": "oss-release-local/{1}"
+    },
+    {
+      "pattern": "ecosys-oss-release-local/(org/jfrog/artifactory/client/artifactory-java-client-services/${version}/artifactory-java-client-services-*)",
+      "target": "oss-release-local/{1}"
+    },
+    {
+      "pattern": "ecosys-oss-release-local/(org/jfrog/artifactory/client/artifactory-java-client-httpClient/${version}/artifactory-java-client-httpClient-*)",
+      "target": "oss-release-local/{1}"
+    }
+  ]
+}
