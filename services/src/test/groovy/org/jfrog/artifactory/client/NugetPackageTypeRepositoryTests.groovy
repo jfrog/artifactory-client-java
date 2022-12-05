@@ -87,7 +87,6 @@ class NugetPackageTypeRepositoryTests extends BaseRepositoryTests {
 
             // local
             // always in resp payload
-            assertThat(maxUniqueSnapshots, CoreMatchers.is(expectedSettings.getMaxUniqueSnapshots()))
             assertThat(downloadContextPath, CoreMatchers.is(expectedSettings.getDownloadContextPath()))
             assertThat(feedContextPath, CoreMatchers.is(expectedSettings.getFeedContextPath()))
             assertThat(v3FeedUrl, CoreMatchers.is(expectedSettings.getV3FeedUrl()))

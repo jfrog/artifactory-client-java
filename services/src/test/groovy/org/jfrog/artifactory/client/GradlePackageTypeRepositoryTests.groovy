@@ -98,8 +98,6 @@ class GradlePackageTypeRepositoryTests extends BaseRepositoryTests {
             assertThat(checksumPolicyType, CoreMatchers.nullValue())
             // always in resp payload
             assertThat(handleReleases, CoreMatchers.is(expectedSettings.getHandleReleases()))
-            assertThat(maxUniqueSnapshots, CoreMatchers.is(expectedSettings.getMaxUniqueSnapshots()))
-            assertThat(maxUniqueSnapshots, CoreMatchers.is(expectedSettings.getMaxUniqueSnapshots()))
             assertThat(snapshotVersionBehavior, CoreMatchers.nullValue())
             assertThat(suppressPomConsistencyChecks, CoreMatchers.is(expectedSettings.getSuppressPomConsistencyChecks()))
 

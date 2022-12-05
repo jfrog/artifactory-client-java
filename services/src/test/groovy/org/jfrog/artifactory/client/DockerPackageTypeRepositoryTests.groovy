@@ -25,7 +25,7 @@ class DockerPackageTypeRepositoryTests extends BaseRepositoryTests {
 
         settings.with {
             // local
-            dockerApiVersion = DockerApiVersion.values()[rnd.nextInt(DockerApiVersion.values().length)]
+            dockerApiVersion = DockerApiVersion.V2
             dockerTagRetention = Math.abs(rnd.nextInt())
 
             // remote
