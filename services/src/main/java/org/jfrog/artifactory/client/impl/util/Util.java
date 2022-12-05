@@ -93,7 +93,7 @@ public class Util {
             case JOSE_JSON:
                 return ContentType.create("application/jose+json", Consts.UTF_8);
             case TEXT:
-                return ContentType.TEXT_PLAIN;
+                return ContentType.create("text/plain", Consts.UTF_8);
             case URLENC:
                 return ContentType.APPLICATION_FORM_URLENCODED;
             case XML:
