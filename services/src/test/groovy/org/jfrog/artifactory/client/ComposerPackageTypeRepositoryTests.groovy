@@ -90,7 +90,6 @@ class ComposerPackageTypeRepositoryTests extends BaseRepositoryTests {
 
             // remote
             assertThat(listRemoteFolderItems, CoreMatchers.is(expectedSettings.getListRemoteFolderItems()))
-            assertThat(maxUniqueSnapshots, CoreMatchers.is(expectedSettings.getMaxUniqueSnapshots()))
             assertThat(composerRegistryUrl, CoreMatchers.is(expectedSettings.getComposerRegistryUrl()))
             assertThat(vcsGitDownloadUrl, CoreMatchers.is(expectedSettings.getVcsGitDownloadUrl()))
             assertThat(vcsGitProvider, CoreMatchers.is(expectedSettings.getVcsGitProvider()))

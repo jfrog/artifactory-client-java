@@ -116,7 +116,6 @@ class BowerPackageTypeRepositoryTests extends BaseRepositoryTests {
 
             // remote
             assertThat(listRemoteFolderItems, CoreMatchers.is(expectedSettings.getListRemoteFolderItems()))
-            assertThat(maxUniqueSnapshots, CoreMatchers.is(expectedSettings.getMaxUniqueSnapshots()))
             assertThat(bowerRegistryUrl, CoreMatchers.is(expectedSettings.getBowerRegistryUrl()))
             assertThat(vcsGitDownloadUrl, CoreMatchers.is(expectedSettings.getVcsGitDownloadUrl()))
             assertThat(vcsGitProvider, CoreMatchers.is(expectedSettings.getVcsGitProvider()))

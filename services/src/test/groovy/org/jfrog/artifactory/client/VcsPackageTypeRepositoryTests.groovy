@@ -63,7 +63,6 @@ class VcsPackageTypeRepositoryTests extends BaseRepositoryTests {
             assertThat(vcsGitProvider, CoreMatchers.is(expectedSettings.getVcsGitProvider()))
             assertThat(vcsType, CoreMatchers.is(expectedSettings.getVcsType()))
             assertThat(listRemoteFolderItems, CoreMatchers.is(expectedSettings.getListRemoteFolderItems()))
-            assertThat(maxUniqueSnapshots, CoreMatchers.is(expectedSettings.getMaxUniqueSnapshots()))
         }
     }
 
