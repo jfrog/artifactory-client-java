@@ -1,5 +1,8 @@
 # Release Notes
 
+## 2.13.1 (Jan 29, 2023)
+- Change contentType to enable APIs with chinese parameter.
+
 ## 2.13.0 (May 9, 2022)
 - Allow configuring no-proxy hosts.
 
