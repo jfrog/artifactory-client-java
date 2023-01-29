@@ -51,31 +51,31 @@ pipelines:
             - jf gradlec --use-wrapper --deploy-ivy-desc=false --deploy-maven-desc --uses-plugin --repo-resolve ecosys-maven-remote --repo-deploy ecosys-oss-release-local
 
             # Sync changes with dev
-            - git merge origin/dev
+            #- git merge origin/dev
 
             # Run audit
-            - jf audit
+            #- jf audit
 
             # Update version
-            - sed -i "s/\(currentVersion=\).*\$/\1${NEXT_VERSION}/" gradle.properties
+            #- sed -i "s/\(currentVersion=\).*\$/\1${NEXT_VERSION}/" gradle.properties
 
             # Commit changes
-            - git commit -am "[artifactory-release] Release version ${NEXT_VERSION} [skipRun]" --allow-empty
-            - git tag ${NEXT_VERSION}
-            - git push
-            - git push --tags
+            #- git commit -am "[artifactory-release] Release version ${NEXT_VERSION} [skipRun]" --allow-empty
+            #- git tag ${NEXT_VERSION}
+            #- git push
+            #- git push --tags
 
             # Run build and publish
             - >
               ORG_GRADLE_PROJECT_signingKey=$(echo $int_mvn_central_signingKey | base64 -d)
               ORG_GRADLE_PROJECT_signingPassword=$int_mvn_central_signingPassword
               jf gradle clean aP -x test
-            - jf rt bag && jf rt bce
-            - jf rt bp
+            #- jf rt bag && jf rt bce
+            #- jf rt bp
 
             # Distribute release bundle
-            - jf ds rbc artifactory-client-java $NEXT_VERSION --spec=./release/specs/prod-rbc-filespec.json --spec-vars="version=$NEXT_VERSION" --sign
-            - jf ds rbd artifactory-client-java $NEXT_VERSION --site="releases.jfrog.io" --sync
+            #- jf ds rbc artifactory-client-java $NEXT_VERSION --spec=./release/specs/prod-rbc-filespec.json --spec-vars="version=$NEXT_VERSION" --sign
+            #- jf ds rbd artifactory-client-java $NEXT_VERSION --site="releases.jfrog.io" --sync
 
             # Publish to Maven Central
             - >
