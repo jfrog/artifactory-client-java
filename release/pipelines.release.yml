@@ -74,8 +74,8 @@ pipelines:
             - jf rt bp
 
             # Distribute release bundle
-            - jf ds rbc artifactory-client-java $NEXT_VERSION --spec=./release/specs/prod-rbc-filespec.json --spec-vars="version=$NEXT_VERSION" --sign
-            - jf ds rbd artifactory-client-java $NEXT_VERSION --site="releases.jfrog.io" --sync
+            - jf ds rbc ecosystem-artifactory-client-java $NEXT_VERSION --spec=./release/specs/prod-rbc-filespec.json --spec-vars="version=$NEXT_VERSION" --sign
+            - jf ds rbd ecosystem-artifactory-client-java $NEXT_VERSION --site="releases.jfrog.io" --sync
 
             # Publish to Maven Central
             - >
