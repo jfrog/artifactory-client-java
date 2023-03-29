@@ -143,6 +143,27 @@ public class AqlQueryBuilderTest {
                 + "]})"));
     }
 
+
+    @Test
+    public void limitTest() {
+        String result = new AqlQueryBuilder()
+            .limit(123)
+            .build();
+
+        assertThat(result, notNullValue());
+        assertThat(result, is("items.find().limit(123)"));
+    }
+
+    @Test
+    public void offsetTest() {
+        String result = new AqlQueryBuilder()
+            .offset(123)
+            .build();
+
+        assertThat(result, notNullValue());
+        assertThat(result, is("items.find().offset(123)"));
+    }
+
     @Test
     public void addNestedFilters() {
         final String result = new AqlQueryBuilder()
@@ -190,6 +211,8 @@ public class AqlQueryBuilderTest {
                 .item(aqlItem("property", "value"))
                 .include("name", "repo")
                 .asc("name", "repo")
+                .offset(1)
+                .limit(2)
                 .build();
 
         assertThat(result, notNullValue());
@@ -206,7 +229,9 @@ public class AqlQueryBuilderTest {
                 + "\"property\":\"value\""
                 + "})"
                 + ".include(\"name\",\"repo\")"
-                + ".sort({\"$asc\":[\"name\",\"repo\"]})"));
+                + ".sort({\"$asc\":[\"name\",\"repo\"]})"
+                + ".offset(1)"
+                + ".limit(2)"));
     }
 
     @Test
