@@ -1,9 +1,15 @@
+<div align="center">
+
+# Artifactory Java Client
+
+[![Scanned by Frogbot](https://raw.github.com/jfrog/frogbot/master/images/frogbot-badge.svg)](https://github.com/jfrog/frogbot#readme)
+
 |Branch|Status|
 |:---:|:---:|
 |master|[![Build status](https://ci.appveyor.com/api/projects/status/sarjlbpi6dfgrd5w/branch/master?svg=true)](https://ci.appveyor.com/project/jfrog-ecosystem/artifactory-client-java/branch/master)
 |dev|[![Build status](https://ci.appveyor.com/api/projects/status/sarjlbpi6dfgrd5w/branch/dev?svg=true)](https://ci.appveyor.com/project/jfrog-ecosystem/artifactory-client-java/branch/dev)
 
-# Artifactory Java Client
+</div>
 
 Artifactory Java client provides simple yet powerful Artifactory connection and management within your Java code.
 
