@@ -224,6 +224,16 @@ InputStream iStream = artifactory.repository("RepoName")
         .doDownload();
 ```
 
+##### Downloading Artifact with custom headers
+
+```groovy
+Map<String, String> headers = new HashMap<>();
+headers.put("Range", "bytes=0-10");
+InputStream iStream = artifactory.repository("RepoName")
+        .download("path/to/fileToDownload.txt")
+        .doDownloadWithHeaders(headers);
+```
+
 #### File, Folder and Repository Info
 
 ##### File Info

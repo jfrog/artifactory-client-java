@@ -44,7 +44,13 @@ public interface Artifactory extends ApiInterface, AutoCloseable {
 
     InputStream getInputStream(String path) throws IOException;
 
+    InputStream getInputStreamWithHeaders(String path, Map<String, String> headers) throws IOException;
+
     default public <T> T get(String path, Class<? extends T> object, Class<T> interfaceObject) throws IOException {
+        return null;
+    }
+
+    default public <T> T get(String path, Class<? extends T> object, Class<T> interfaceObject, Map<String, String> headers) throws IOException {
         return null;
     }
 
