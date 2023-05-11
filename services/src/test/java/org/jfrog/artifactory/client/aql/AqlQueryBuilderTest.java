@@ -236,4 +236,12 @@ public class AqlQueryBuilderTest {
         assertThat(result, notNullValue());
         assertThat(result, is("items.find()"));
     }
+
+    @Test
+    public void transitive() {
+        String result = new AqlQueryBuilder().include("size", "name", "repo").transitive().build();
+
+        assertThat(result, notNullValue());
+        assertThat(result, is("items.find().include(\"size\",\"name\",\"repo\").transitive()"));
+    }
 }
