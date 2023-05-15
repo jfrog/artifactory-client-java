@@ -1,5 +1,8 @@
 # Release Notes
 
+## 2.14.0 (May 15, 2023)
+-  Add an option to perform download with custom headers.
+
 ## 2.13.1 (Jan 29, 2023)
 - Change contentType to enable APIs with chinese parameter.
 
