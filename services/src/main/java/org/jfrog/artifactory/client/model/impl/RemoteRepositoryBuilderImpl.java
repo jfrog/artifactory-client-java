@@ -17,7 +17,7 @@ import static org.jfrog.artifactory.client.model.impl.PackageTypeImpl.*;
  */
 public class RemoteRepositoryBuilderImpl extends NonVirtualRepositoryBuilderBase<RemoteRepositoryBuilder, RemoteRepository> implements RemoteRepositoryBuilder {
     private static Set<PackageType> remoteRepositorySupportedTypes = new HashSet<PackageType>(Arrays.asList(
-            bower, cocoapods, cran, conda, debian, docker, gems, generic, gitlfs, gradle, ivy, maven, npm, nuget, opkg, p2, pypi, sbt, vcs, yum, rpm, composer, conan, chef, puppet, helm, go
+            bower, cocoapods, cran, conda, debian, docker, gems, generic, gitlfs, gradle, ivy, maven, npm, nuget, opkg, p2, pypi, sbt, vcs, yum, rpm, composer, conan, chef, puppet, helm, go, cargo
     ));
 
     private String url;

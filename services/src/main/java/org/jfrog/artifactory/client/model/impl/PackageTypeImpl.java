@@ -31,7 +31,8 @@ public enum PackageTypeImpl implements PackageType {
     chef,
     puppet,
     helm,
-    go;
+    go,
+    cargo;
 
     @Override
     public boolean isCustom() {
