@@ -7,7 +7,6 @@ import org.jfrog.artifactory.client.model.repository.settings.impl.CargoReposito
 import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
 
-
 class CargoPackageTypeRepositoryTests extends BaseRepositoryTests {
 
     CargoPackageTypeRepositoryTests() {
@@ -15,7 +14,6 @@ class CargoPackageTypeRepositoryTests extends BaseRepositoryTests {
     }
 
     @Override
-
     RepositorySettings getRepositorySettings(RepositoryType repositoryType) {
         def settings = new CargoRepositorySettingsImpl()
 
@@ -64,7 +62,7 @@ class CargoPackageTypeRepositoryTests extends BaseRepositoryTests {
         resp.getRepositorySettings().with {
             assertThat(packageType, CoreMatchers.is(expectedSettings.getPackageType()))
             assertThat(repoLayout, CoreMatchers.is(expectedSettings.getRepoLayout()))
-            
+
             // remote
             assertThat(cargoInternalIndex, CoreMatchers.is(expectedSettings.cargoInternalIndex))
             assertThat(cargoAnonymousAccess, CoreMatchers.is(expectedSettings.cargoAnonymousAccess))
