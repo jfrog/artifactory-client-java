@@ -10,9 +10,9 @@ import java.util.Objects;
 public class CargoRepositorySettingsImpl extends AbstractRepositorySettings implements CargoRepositorySettings {
     public static String defaultLayout = "simple-default";
     private String gitRegistryUrl;
-
     private Boolean cargoInternalIndex;
     private Boolean cargoAnonymousAccess;
+
     public CargoRepositorySettingsImpl() {
         super(defaultLayout);
     }
@@ -25,6 +25,7 @@ public class CargoRepositorySettingsImpl extends AbstractRepositorySettings impl
     public String getGitRegistryUrl() {
         return gitRegistryUrl;
     }
+
     public void setGitRegistryUrl(String tRegistryUrl) {
         this.gitRegistryUrl = tRegistryUrl;
     }

@@ -47,7 +47,6 @@ class CargoPackageTypeRepositoryTests extends BaseRepositoryTests {
             assertThat(packageType, CoreMatchers.is(expectedSettings.getPackageType()))
             assertThat(repoLayout, CoreMatchers.is(expectedSettings.getRepoLayout()))
 
-
             // remote
             assertThat(cargoInternalIndex, CoreMatchers.is(expectedSettings.cargoInternalIndex))
             assertThat(cargoAnonymousAccess, CoreMatchers.is(expectedSettings.cargoAnonymousAccess))
@@ -85,13 +84,9 @@ class CargoPackageTypeRepositoryTests extends BaseRepositoryTests {
             assertThat(packageType, CoreMatchers.is(expectedSettings.getPackageType()))
             assertThat(repoLayout, CoreMatchers.is(expectedSettings.getRepoLayout()))
 
-
-
             // remote
             assertThat(cargoInternalIndex, CoreMatchers.is(expectedSettings.cargoInternalIndex))
             assertThat(cargoAnonymousAccess, CoreMatchers.is(expectedSettings.cargoAnonymousAccess))
         }
     }
-
-
 }
