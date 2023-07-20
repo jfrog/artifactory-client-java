@@ -42,6 +42,7 @@ public class CargoRepositorySettingsImpl extends AbstractRepositorySettings impl
     public Boolean isCargoAnonymousAccess() {
         return cargoAnonymousAccess;
     }
+    
     public void setCargoAnonymousAccess(Boolean cargoAnonymousAccess) {
         this.cargoAnonymousAccess = cargoAnonymousAccess;
     }
