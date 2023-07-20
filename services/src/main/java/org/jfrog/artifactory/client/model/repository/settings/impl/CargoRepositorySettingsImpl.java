@@ -38,11 +38,12 @@ public class CargoRepositorySettingsImpl extends AbstractRepositorySettings impl
     public void setCargoInternalIndex(Boolean cargoInternalIndex) {
         this.cargoInternalIndex = cargoInternalIndex;
     }
+
     @Override
     public Boolean isCargoAnonymousAccess() {
         return cargoAnonymousAccess;
     }
-    
+
     public void setCargoAnonymousAccess(Boolean cargoAnonymousAccess) {
         this.cargoAnonymousAccess = cargoAnonymousAccess;
     }
