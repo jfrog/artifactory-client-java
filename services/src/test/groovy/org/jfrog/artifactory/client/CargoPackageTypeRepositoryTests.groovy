@@ -64,8 +64,7 @@ class CargoPackageTypeRepositoryTests extends BaseRepositoryTests {
         resp.getRepositorySettings().with {
             assertThat(packageType, CoreMatchers.is(expectedSettings.getPackageType()))
             assertThat(repoLayout, CoreMatchers.is(expectedSettings.getRepoLayout()))
-
-
+            
             // remote
             assertThat(cargoInternalIndex, CoreMatchers.is(expectedSettings.cargoInternalIndex))
             assertThat(cargoAnonymousAccess, CoreMatchers.is(expectedSettings.cargoAnonymousAccess))
