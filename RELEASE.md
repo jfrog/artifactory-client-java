@@ -1,6 +1,6 @@
 # Release Notes
 
-## 2.14.0 (July 21, 2023)
+## 2.15.0 (July 21, 2023)
 -  Support for the Cargo package manager.
 
 ## 2.14.0 (May 15, 2023)
