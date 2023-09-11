@@ -1,6 +1,8 @@
 package org.jfrog.artifactory.client;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpUriRequest;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -42,10 +44,14 @@ public interface Artifactory extends ApiInterface, AutoCloseable {
 
     ArtifactoryResponse restCall(ArtifactoryRequest artifactoryRequest) throws IOException;
 
+    ArtifactoryStreamingResponse streamingRestCall(ArtifactoryRequest artifactoryRequest) throws IOException;
+
     InputStream getInputStream(String path) throws IOException;
 
     InputStream getInputStreamWithHeaders(String path, Map<String, String> headers) throws IOException;
 
+    HttpResponse execute(HttpUriRequest request) throws IOException;
+    
     default public <T> T get(String path, Class<? extends T> object, Class<T> interfaceObject) throws IOException {
         return null;
     }

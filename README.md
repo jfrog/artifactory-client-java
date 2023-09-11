@@ -851,14 +851,35 @@ org.apache.http.Header[] headers = response.getAllHeaders();
 org.apache.http.StatusLine statusLine = response.getStatusLine();
 
 // A convenience method for verifying success
-assert response.isSuccessResponse()
+assert response.isSuccessResponse();
 
 // Get the response raw body
-String rawBody = response.rawBody();
+String rawBody = response.getRawBody();
 
 // If the the response raw body has a JSON format, populate an object with the body content, 
 // by providing a object's class. 
 List<Map<String, String>> parsedBody = response.parseBody(List.class);
+```
+
+Executing an Artifactory streaming REST API
+
+```groovy
+ArtifactoryRequest repositoryRequest = new ArtifactoryRequestImpl().apiUrl("api/repositories")
+        .method(ArtifactoryRequest.Method.GET)
+        .responseType(ArtifactoryRequest.ContentType.JSON);
+ArtifactoryStreamingResponse response = artifactory.streamingRestCall(repositoryRequest);
+
+// Get the response headers
+org.apache.http.Header[] headers = response.getAllHeaders();
+
+// Get the response status information
+org.apache.http.StatusLine statusLine = response.getStatusLine();
+
+// A convenience method for verifying success
+assert response.isSuccessResponse();
+
+// Get the response raw body using input stream
+String rawBody = IOUtils.toString(response.getInputStream(), StandardCharsets.UTF_8);
 ```
 
 ## Building and Testing the Sources

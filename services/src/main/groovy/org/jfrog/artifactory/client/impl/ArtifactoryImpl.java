@@ -132,6 +132,24 @@ public class ArtifactoryImpl implements Artifactory {
      */
     @Override
     public ArtifactoryResponse restCall(ArtifactoryRequest artifactoryRequest) throws IOException {
+        HttpResponse httpResponse = handleArtifactoryRequest(artifactoryRequest);
+        return new ArtifactoryResponseImpl(httpResponse);
+    }
+
+    /**
+     * Create a REST call to artifactory with a generic request
+     *
+     * @param artifactoryRequest that should be sent to artifactory
+     * @return {@link ArtifactoryStreamingResponse} Artifactory response in accordance with the request,
+     * which includes a reference to the inputStream.
+     */
+    @Override
+    public ArtifactoryStreamingResponse streamingRestCall(ArtifactoryRequest artifactoryRequest) throws IOException {
+        HttpResponse httpResponse = handleArtifactoryRequest(artifactoryRequest);
+        return new ArtifactoryStreamingResponseImpl(httpResponse);
+    }
+
+    private HttpResponse handleArtifactoryRequest(ArtifactoryRequest artifactoryRequest) throws IOException {
         HttpRequestBase httpRequest;
 
         String requestPath = "/" + artifactoryRequest.getApiUrl();
@@ -194,7 +212,7 @@ public class ArtifactoryImpl implements Artifactory {
         }
 
         HttpResponse httpResponse = execute(httpRequest);
-        return new ArtifactoryResponseImpl(httpResponse);
+        return httpResponse;
     }
 
     private void setEntity(HttpEntityEnclosingRequestBase httpRequest, Object body, ContentType contentType) throws JsonProcessingException {
@@ -369,6 +387,7 @@ public class ArtifactoryImpl implements Artifactory {
         return Util.responseToString(httpResponse);
     }
 
+    @Override
     public HttpResponse execute(HttpUriRequest request) throws IOException {
         HttpClientContext clientContext = HttpClientContext.create();
         if (clientContext.getAttribute(PreemptiveAuthInterceptor.ORIGINAL_HOST_CONTEXT_PARAM) == null) {
