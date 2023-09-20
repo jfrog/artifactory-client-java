@@ -1,5 +1,8 @@
 # Release Notes
 
+| Release notes moved to https://github.com/jfrog/artifactory-client-java/releases |
+|----------------------------------------------------------------------------------------------------------------------------------------------------------|
+
 ## 2.15.0 (July 21, 2023)
 -  Support for the Cargo package manager.
 
