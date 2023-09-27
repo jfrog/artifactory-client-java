@@ -16,7 +16,7 @@ import static org.jfrog.artifactory.client.model.impl.PackageTypeImpl.*;
  */
 public class FederatedRepositoryBuilderImpl extends NonVirtualRepositoryBuilderBase<FederatedRepositoryBuilder, FederatedRepository> implements FederatedRepositoryBuilder {
     private static Set<PackageType> federatedRepositorySupportedTypes = new HashSet<>(Arrays.asList(
-            bower, cocoapods, cran, conda, debian, docker, gems, generic, gitlfs, gradle, ivy, maven, npm, nuget, opkg, pypi, sbt, vagrant, yum, rpm, composer, conan, chef, puppet, helm, go, cargo
+            bower, cocoapods, cran, conda, debian, docker, gems, generic, gitlfs, gradle, ivy, maven, npm, nuget, opkg, pypi, sbt, vagrant, yum, rpm, composer, conan, chef, puppet, helm, go, cargo, terraform
     ));
 
     protected List<FederatedMember> members = new ArrayList<>();

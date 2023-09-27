@@ -76,7 +76,7 @@ abstract class BaseRepositoryTests extends ArtifactoryTestsBase {
                     .build()
         }
         if (prepareLocalRepo) {
-            RepositorySettings settings = getRepositorySettings()
+            RepositorySettings settings = getRepositorySettings(RepositoryTypeImpl.LOCAL)
             localRepo = artifactory.repositories().builders().localRepositoryBuilder()
                     .key("$REPO_NAME_PREFIX-local-$id")
                     .description("local-$id")
@@ -95,12 +95,12 @@ abstract class BaseRepositoryTests extends ArtifactoryTestsBase {
             List<FederatedMember> members = new ArrayList<FederatedMember>()
             if(federationUrl != null && StringUtils.isNoneBlank(federationUrl)) {
                 if (!federationUrl.endsWith("/")) {
-                    federationUrl += "/";
+                    federationUrl += "/"
                 }
                 FederatedMember member = new FederatedMember( federationUrl+"$REPO_NAME_PREFIX-fed-$id", true)
                 members.add(member)
             }
-            RepositorySettings settings = getRepositorySettings()
+            RepositorySettings settings = getRepositorySettings(RepositoryTypeImpl.FEDERATED)
             federatedRepo = artifactory.repositories().builders().federatedRepositoryBuilder()
                     .key("$REPO_NAME_PREFIX-fed-$id")
                     .description("fed-$id")
@@ -118,7 +118,7 @@ abstract class BaseRepositoryTests extends ArtifactoryTestsBase {
         }
 
         if (prepareRemoteRepo) {
-            RepositorySettings settings = getRepositorySettings()
+            RepositorySettings settings = getRepositorySettings(RepositoryTypeImpl.REMOTE)
             ContentSync contentSync = new ContentSyncImpl()
             remoteRepo = artifactory.repositories().builders().remoteRepositoryBuilder()
                     .key("$REPO_NAME_PREFIX-remote-$id")
@@ -152,7 +152,7 @@ abstract class BaseRepositoryTests extends ArtifactoryTestsBase {
         }
 
         if (prepareVirtualRepo) {
-            RepositorySettings settings = getRepositorySettings()
+            RepositorySettings settings = getRepositorySettings(RepositoryTypeImpl.VIRTUAL)
             artifactory.repositories().create(0, genericRepo)
             def repos = new ArrayList<String>()
             repos.add(genericRepo.getKey())
