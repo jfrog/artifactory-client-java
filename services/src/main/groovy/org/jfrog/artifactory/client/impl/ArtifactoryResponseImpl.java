@@ -1,25 +1,22 @@
 package org.jfrog.artifactory.client.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.StatusLine;
 import org.apache.http.util.EntityUtils;
 import org.jfrog.artifactory.client.ArtifactoryResponse;
 import org.jfrog.artifactory.client.impl.util.Util;
 
 import java.io.IOException;
 
-public class ArtifactoryResponseImpl implements ArtifactoryResponse {
+public class ArtifactoryResponseImpl extends AbstractArtifactoryResponseImpl implements ArtifactoryResponse {
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
-    private HttpResponse httpResponse;
     private String rawBody;
 
     ArtifactoryResponseImpl(HttpResponse httpResponse) throws IOException {
-        this.httpResponse = httpResponse;
+        super(httpResponse);
 
         HttpEntity entity = httpResponse.getEntity();
 
@@ -32,16 +29,6 @@ public class ArtifactoryResponseImpl implements ArtifactoryResponse {
                 EntityUtils.consumeQuietly(entity);
             }
         }
-    }
-
-    @Override
-    public Header[] getAllHeaders() {
-        return this.httpResponse.getAllHeaders();
-    }
-
-    @Override
-    public StatusLine getStatusLine() {
-        return this.httpResponse.getStatusLine();
     }
 
     @Override
@@ -62,7 +49,6 @@ public class ArtifactoryResponseImpl implements ArtifactoryResponse {
     @Override
     public boolean isSuccessResponse() {
         int status = getStatusLine().getStatusCode();
-
         return status >= 200 && status < 300;
     }
 }

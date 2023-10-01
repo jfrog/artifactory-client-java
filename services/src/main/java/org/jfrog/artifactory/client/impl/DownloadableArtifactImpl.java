@@ -5,6 +5,7 @@ import org.jfrog.artifactory.client.DownloadableArtifact;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by eyalb on 21/06/2018.
@@ -22,12 +23,21 @@ public class DownloadableArtifactImpl extends ArtifactBase<DownloadableArtifact>
     }
 
     public InputStream doDownload() throws IOException {
+        String uri = generateUriWithParams();
+        return artifactory.getInputStream(uri);
+    }
+
+    public InputStream doDownloadWithHeaders(Map<String, String> headers) throws IOException {
+        String uri = generateUriWithParams();
+        return artifactory.getInputStreamWithHeaders(uri, headers);
+    }
+
+    private String generateUriWithParams() {
         String params = parseParams(props, "=") + parseParams(mandatoryProps, "+=");
         if (params.length() > 0) {
             params = ";" + params;
         }
-        String uri = String.format("/%s/%s%s", repo, path, params);
-        return artifactory.getInputStream(uri);
+        return String.format("/%s/%s%s", repo, path, params);
     }
 
     public DownloadableArtifact withProperty(String name, Object... values) {

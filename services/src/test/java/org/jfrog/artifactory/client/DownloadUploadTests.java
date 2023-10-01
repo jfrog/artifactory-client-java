@@ -19,7 +19,9 @@ import java.nio.file.StandardOpenOption;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.testng.Assert.*;
 
@@ -283,5 +285,14 @@ public class DownloadUploadTests extends ArtifactoryTestsBase {
                 artifactory.repository(localRepository.getKey()).download(PATH).withProperty("released", false)
                         .withProperty("foo", "bar").withMandatoryProperty("colors", "red").doDownload();
         assertEquals(textFrom(inputStream), textFrom(this.getClass().getResourceAsStream("/sample.txt")));
+    }
+
+    @Test(dependsOnMethods = "testUploadWithSingleProperty")
+    public void testDownloadWithHeaders() throws IOException {
+        Map<String, String> headers = new HashMap<>();
+        headers.put("Range", "bytes=0-10");
+        InputStream inputStream = artifactory.repository(localRepository.getKey()).download(PATH).doDownloadWithHeaders(headers);
+        String actual = textFrom(inputStream);
+        assertEquals(actual, textFrom(this.getClass().getResourceAsStream("/sample.txt")).substring(0, 11));
     }
 }

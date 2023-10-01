@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Map;
 
 /**
  * @author jbaruch
@@ -14,6 +15,7 @@ public interface DownloadableArtifact extends Artifact<DownloadableArtifact> {
 
     InputStream doDownload() throws IOException;
 
+    InputStream doDownloadWithHeaders(Map<String, String> headers) throws IOException;
     DownloadableArtifact withProperty(String name, Object... values);
 
     DownloadableArtifact withProperty(String name, Object value);
