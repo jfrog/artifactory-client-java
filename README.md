@@ -1,9 +1,15 @@
-|Branch|Status|
-|:---:|:---:|
-|master|[![Build status](https://ci.appveyor.com/api/projects/status/sarjlbpi6dfgrd5w/branch/master?svg=true)](https://ci.appveyor.com/project/jfrog-ecosystem/artifactory-client-java/branch/master)
-|dev|[![Build status](https://ci.appveyor.com/api/projects/status/sarjlbpi6dfgrd5w/branch/dev?svg=true)](https://ci.appveyor.com/project/jfrog-ecosystem/artifactory-client-java/branch/dev)
+<div align="center">
 
 # Artifactory Java Client
+
+[![Scanned by Frogbot](https://raw.github.com/jfrog/frogbot/master/images/frogbot-badge.svg)](https://github.com/jfrog/frogbot#readme)
+
+| Branch |Status|
+|:------:|:---:|
+|master|[![Test](https://github.com/jfrog/artifactory-client-java/actions/workflows/tests.yml/badge.svg?branch=master)](https://github.com/jfrog/artifactory-client-java/actions/workflows/tests.yml?query=branch%3Amaster)
+|dev|[![Test](https://github.com/jfrog/artifactory-client-java/actions/workflows/tests.yml/badge.svg?branch=dev)](https://github.com/jfrog/artifactory-client-java/actions/workflows/tests.yml?query=branch%3Adev)
+
+</div>
 
 Artifactory Java client provides simple yet powerful Artifactory connection and management within your Java code.
 
@@ -216,6 +222,16 @@ InputStream iStream = artifactory.repository("RepoName")
         .download("path/to/fileToDownload.txt")
         .withMandatoryProperty("colors", "red")
         .doDownload();
+```
+
+##### Downloading Artifact with custom headers
+
+```groovy
+Map<String, String> headers = new HashMap<>();
+headers.put("Range", "bytes=0-10");
+InputStream iStream = artifactory.repository("RepoName")
+        .download("path/to/fileToDownload.txt")
+        .doDownloadWithHeaders(headers);
 ```
 
 #### File, Folder and Repository Info
@@ -835,14 +851,35 @@ org.apache.http.Header[] headers = response.getAllHeaders();
 org.apache.http.StatusLine statusLine = response.getStatusLine();
 
 // A convenience method for verifying success
-assert response.isSuccessResponse()
+assert response.isSuccessResponse();
 
 // Get the response raw body
-String rawBody = response.rawBody();
+String rawBody = response.getRawBody();
 
 // If the the response raw body has a JSON format, populate an object with the body content, 
 // by providing a object's class. 
 List<Map<String, String>> parsedBody = response.parseBody(List.class);
+```
+
+Executing an Artifactory streaming REST API
+
+```groovy
+ArtifactoryRequest repositoryRequest = new ArtifactoryRequestImpl().apiUrl("api/repositories")
+        .method(ArtifactoryRequest.Method.GET)
+        .responseType(ArtifactoryRequest.ContentType.JSON);
+ArtifactoryStreamingResponse response = artifactory.streamingRestCall(repositoryRequest);
+
+// Get the response headers
+org.apache.http.Header[] headers = response.getAllHeaders();
+
+// Get the response status information
+org.apache.http.StatusLine statusLine = response.getStatusLine();
+
+// A convenience method for verifying success
+assert response.isSuccessResponse();
+
+// Get the response raw body using input stream
+String rawBody = IOUtils.toString(response.getInputStream(), StandardCharsets.UTF_8);
 ```
 
 ## Building and Testing the Sources

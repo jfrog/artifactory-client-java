@@ -21,6 +21,7 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -131,6 +132,24 @@ public class ArtifactoryImpl implements Artifactory {
      */
     @Override
     public ArtifactoryResponse restCall(ArtifactoryRequest artifactoryRequest) throws IOException {
+        HttpResponse httpResponse = handleArtifactoryRequest(artifactoryRequest);
+        return new ArtifactoryResponseImpl(httpResponse);
+    }
+
+    /**
+     * Create a REST call to artifactory with a generic request
+     *
+     * @param artifactoryRequest that should be sent to artifactory
+     * @return {@link ArtifactoryStreamingResponse} Artifactory response in accordance with the request,
+     * which includes a reference to the inputStream.
+     */
+    @Override
+    public ArtifactoryStreamingResponse streamingRestCall(ArtifactoryRequest artifactoryRequest) throws IOException {
+        HttpResponse httpResponse = handleArtifactoryRequest(artifactoryRequest);
+        return new ArtifactoryStreamingResponseImpl(httpResponse);
+    }
+
+    private HttpResponse handleArtifactoryRequest(ArtifactoryRequest artifactoryRequest) throws IOException {
         HttpRequestBase httpRequest;
 
         String requestPath = "/" + artifactoryRequest.getApiUrl();
@@ -193,7 +212,7 @@ public class ArtifactoryImpl implements Artifactory {
         }
 
         HttpResponse httpResponse = execute(httpRequest);
-        return new ArtifactoryResponseImpl(httpResponse);
+        return httpResponse;
     }
 
     private void setEntity(HttpEntityEnclosingRequestBase httpRequest, Object body, ContentType contentType) throws JsonProcessingException {
@@ -220,6 +239,15 @@ public class ArtifactoryImpl implements Artifactory {
         throw newHttpResponseException(httpResponse);
     }
 
+    public InputStream getInputStreamWithHeaders(String path, Map<String, String> headers) throws IOException {
+        HttpResponse httpResponse = get(path, null, null, headers);
+        if (httpResponse.getStatusLine().getStatusCode() == HttpStatus.SC_OK ||
+                httpResponse.getStatusLine().getStatusCode() == HttpStatus.SC_PARTIAL_CONTENT) {
+            return httpResponse.getEntity().getContent();
+        }
+        throw newHttpResponseException(httpResponse);
+    }
+
     private HttpResponseException newHttpResponseException(HttpResponse httpResponse) throws IOException {
         String artifactoryResponse = Util.responseToString(httpResponse);
         StatusLine statusLine = httpResponse.getStatusLine();
@@ -239,12 +267,23 @@ public class ArtifactoryImpl implements Artifactory {
     }
 
     public <T> T get(String path, Class<? extends T> object, Class<T> interfaceObject) throws IOException {
-        HttpGet httpGet = new HttpGet();
+        return this.get(path, object, interfaceObject, new HashMap<>());
+    }
 
+    public <T> T get(String path, Class<? extends T> object, Class<T> interfaceObject, Map<String, String> headers) throws IOException {
+        HttpGet httpGet = new HttpGet();
         httpGet.setURI(URI.create(url + path));
+
+        if (headers != null && !headers.isEmpty()) {
+            for (String key : headers.keySet()) {
+                httpGet.setHeader(key, headers.get(key));
+            }
+        }
+
         HttpResponse httpResponse = execute(httpGet);
         int status = httpResponse.getStatusLine().getStatusCode();
-        if (status != HttpStatus.SC_OK && status != HttpStatus.SC_NO_CONTENT && status != HttpStatus.SC_ACCEPTED) {
+        if (status != HttpStatus.SC_OK && status != HttpStatus.SC_NO_CONTENT &&
+                status != HttpStatus.SC_ACCEPTED && status != HttpStatus.SC_PARTIAL_CONTENT) {
             throw newHttpResponseException(httpResponse);
         }
 
@@ -348,6 +387,7 @@ public class ArtifactoryImpl implements Artifactory {
         return Util.responseToString(httpResponse);
     }
 
+    @Override
     public HttpResponse execute(HttpUriRequest request) throws IOException {
         HttpClientContext clientContext = HttpClientContext.create();
         if (clientContext.getAttribute(PreemptiveAuthInterceptor.ORIGINAL_HOST_CONTEXT_PARAM) == null) {

@@ -16,7 +16,7 @@ pipelines:
           inputResources:
             - name: javaClientSnapshotGit
           integrations:
-            - name: entplus_deployer
+            - name: ecosys_entplus_deployer
         execution:
           onStart:
             # Save gradle cache
@@ -35,7 +35,7 @@ pipelines:
             # Configure JFrog CLI
             - curl -fL https://install-cli.jfrog.io | sh
             - jf c rm --quiet
-            - jf c add internal --url=$int_entplus_deployer_url --user=$int_entplus_deployer_user --password=$int_entplus_deployer_apikey
+            - jf c add internal --url=$int_ecosys_entplus_deployer_url --user=$int_ecosys_entplus_deployer_user --password=$int_ecosys_entplus_deployer_apikey
             - jf gradlec --use-wrapper --deploy-ivy-desc=false --deploy-maven-desc --uses-plugin --repo-resolve ecosys-maven-remote --repo-deploy ecosys-oss-snapshot-local
 
             # Run audit
