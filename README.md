@@ -4,10 +4,10 @@
 
 [![Scanned by Frogbot](https://raw.github.com/jfrog/frogbot/master/images/frogbot-badge.svg)](https://github.com/jfrog/frogbot#readme)
 
-|Branch|Status|
-|:---:|:---:|
-|master|[![Build status](https://ci.appveyor.com/api/projects/status/sarjlbpi6dfgrd5w/branch/master?svg=true)](https://ci.appveyor.com/project/jfrog-ecosystem/artifactory-client-java/branch/master)
-|dev|[![Build status](https://ci.appveyor.com/api/projects/status/sarjlbpi6dfgrd5w/branch/dev?svg=true)](https://ci.appveyor.com/project/jfrog-ecosystem/artifactory-client-java/branch/dev)
+| Branch |Status|
+|:------:|:---:|
+|master|[![Test](https://github.com/jfrog/artifactory-client-java/actions/workflows/tests.yml/badge.svg?branch=master)](https://github.com/jfrog/artifactory-client-java/actions/workflows/tests.yml?query=branch%3Amaster)
+|dev|[![Test](https://github.com/jfrog/artifactory-client-java/actions/workflows/tests.yml/badge.svg?branch=dev)](https://github.com/jfrog/artifactory-client-java/actions/workflows/tests.yml?query=branch%3Adev)
 
 </div>
 

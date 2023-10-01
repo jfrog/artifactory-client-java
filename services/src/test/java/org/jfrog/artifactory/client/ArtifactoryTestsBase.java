@@ -1,7 +1,8 @@
 package org.jfrog.artifactory.client;
 
-import org.apache.http.client.HttpResponseException;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpEntity;
+import org.apache.http.client.HttpResponseException;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -13,6 +14,7 @@ import org.jfrog.artifactory.client.model.Repository;
 import org.jfrog.artifactory.client.model.repository.settings.impl.MavenRepositorySettingsImpl;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -20,10 +22,10 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.Properties;
+
 import static org.apache.commons.codec.binary.Base64.encodeBase64;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 import static org.apache.commons.lang3.StringUtils.remove;
-import static org.testng.Assert.fail;
 
 /**
  * @author jbaruch
@@ -58,12 +60,12 @@ public abstract class ArtifactoryTestsBase {
             props.load(inputStream);
         }
 
-        url = readParam(props, "url");
+        url = readParam(props, "url", "http://localhost:8081/artifactory");
         if (!url.endsWith("/")) {
             url += "/";
         }
-        username = readParam(props, "username");
-        password = readParam(props, "password");
+        username = readParam(props, "username", "admin");
+        password = readParam(props, "password", "password");
         filePath = "a/b";
         fileSize = 141185;
         fileMd5 = "8f17d4271b86478a2731deebdab8c846";
@@ -97,39 +99,12 @@ public abstract class ArtifactoryTestsBase {
         }
     }
 
-    public static String readParam(Properties props, String paramName) {
-        String paramValue = null;
-        if (props.size() > 0) {
-            paramValue = props.getProperty(CLIENTTESTS_ARTIFACTORY_PROPERTIES_PREFIX + paramName);
-        }
-        if (paramValue == null) {
-            paramValue = System.getProperty(CLIENTTESTS_ARTIFACTORY_PROPERTIES_PREFIX + paramName);
-        }
-        if (paramValue == null) {
-            paramValue = System.getenv(CLIENTTESTS_ARTIFACTORY_ENV_VAR_PREFIX + paramName.toUpperCase());
-        }
-        if (paramValue == null) {
-            failInit();
-        }
-        return paramValue;
-    }
-
-    private static void failInit() {
-        String message =
-                new StringBuilder("Failed to load test Artifactory instance credentials. ")
-                        .append("Looking for System properties '")
-                        .append(CLIENTTESTS_ARTIFACTORY_PROPERTIES_PREFIX)
-                        .append("url', ")
-                        .append(CLIENTTESTS_ARTIFACTORY_PROPERTIES_PREFIX)
-                        .append("username' and ")
-                        .append(CLIENTTESTS_ARTIFACTORY_PROPERTIES_PREFIX)
-                        .append("password' or a properties file with those properties in classpath ")
-                        .append("or Environment variables '")
-                        .append(CLIENTTESTS_ARTIFACTORY_ENV_VAR_PREFIX).append("URL', ")
-                        .append(CLIENTTESTS_ARTIFACTORY_ENV_VAR_PREFIX).append("USERNAME' and ")
-                        .append(CLIENTTESTS_ARTIFACTORY_ENV_VAR_PREFIX).append("PASSWORD'").toString();
-
-        fail(message);
+    public static String readParam(Properties props, String paramName, String defaultValue) {
+        return StringUtils.firstNonBlank(
+                props.getProperty(CLIENTTESTS_ARTIFACTORY_PROPERTIES_PREFIX + paramName),
+                System.getProperty(CLIENTTESTS_ARTIFACTORY_PROPERTIES_PREFIX + paramName),
+                System.getenv(CLIENTTESTS_ARTIFACTORY_ENV_VAR_PREFIX + paramName.toUpperCase()),
+                defaultValue);
     }
 
     @AfterClass
@@ -208,8 +183,8 @@ public abstract class ArtifactoryTestsBase {
         try {
             return artifactory.repository(repoName).delete();
         } catch (Exception e) {
-            if (e instanceof HttpResponseException && ((HttpResponseException)e).getStatusCode() == 404) {
-                  //if repo wasn't found - that's ok.
+            if (e instanceof HttpResponseException && ((HttpResponseException) e).getStatusCode() == 404) {
+                //if repo wasn't found - that's ok.
                 return e.getMessage();
             } else {
                 throw e;

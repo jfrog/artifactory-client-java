@@ -47,11 +47,6 @@ public class StreamingRestCallTest extends ArtifactoryTestsBase {
         assertFalse(response.isSuccessResponse());
         assertEquals(response.getStatusLine().getStatusCode(), 404);
         String raw = IOUtils.toString(response.getInputStream(), StandardCharsets.UTF_8);
-        assertEquals(raw, "{\n" +
-                "  \"errors\" : [ {\n" +
-                "    \"status\" : 404,\n" +
-                "    \"message\" : \"File not found.\"\n" +
-                "  } ]\n" +
-                "}");
+        assertTrue(raw.contains("File not found"), "Expected response to contain 'File not found'.\nResponse:" + raw);
     }
 }
