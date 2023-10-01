@@ -50,7 +50,3 @@ jobs:
 
       - name: Run tests
         run: ./gradlew${{ matrix.gradlewSuffix }} clean test
-        env:
-          CLIENTTESTS_ARTIFACTORY_URL: http://localhost:8081/artifactory
-          CLIENTTESTS_ARTIFACTORY_USERNAME: admin
-          CLIENTTESTS_ARTIFACTORY_PASSWORD: password
