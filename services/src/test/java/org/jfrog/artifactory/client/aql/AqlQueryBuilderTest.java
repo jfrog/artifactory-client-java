@@ -144,31 +144,51 @@ public class AqlQueryBuilderTest {
                 + "]})"));
     }
 
-
     @Test
     public void matchTest() {
         String result = new AqlQueryBuilder()
-            .match("repo", "myrepo*")
-            .build();
+                .match("repo", "myrepo*")
+                .build();
 
         assertThat(result, notNullValue());
         assertThat(result, is("items.find("
-            + "{\"repo\":"
-            + "{\"$match\":\"myrepo*\"}"
-            + "})"));
+                + "{\"repo\":"
+                + "{\"$match\":\"myrepo*\"}"
+                + "})"));
     }
 
     @Test
     public void notMatchTest() {
         String result = new AqlQueryBuilder()
-            .notMatch("repo", "myrepo*")
-            .build();
+                .notMatch("repo", "myrepo*")
+                .build();
 
         assertThat(result, notNullValue());
         assertThat(result, is("items.find("
-            + "{\"repo\":"
-            + "{\"$nmatch\":\"myrepo*\"}"
-            + "})"));
+                + "{\"repo\":"
+                + "{\"$nmatch\":\"myrepo*\"}"
+                + "})"));
+    }
+
+
+    @Test
+    public void limitTest() {
+        String result = new AqlQueryBuilder()
+                .limit(123)
+                .build();
+
+        assertThat(result, notNullValue());
+        assertThat(result, is("items.find().limit(123)"));
+    }
+
+    @Test
+    public void offsetTest() {
+        String result = new AqlQueryBuilder()
+                .offset(123)
+                .build();
+
+        assertThat(result, notNullValue());
+        assertThat(result, is("items.find().offset(123)"));
     }
 
     @Test
@@ -221,6 +241,8 @@ public class AqlQueryBuilderTest {
                 .item(aqlItem("property", "value"))
                 .include("name", "repo")
                 .asc("name", "repo")
+                .offset(1)
+                .limit(2)
                 .build();
 
         assertThat(result, notNullValue());
@@ -237,7 +259,9 @@ public class AqlQueryBuilderTest {
                 + "\"property\":\"value\""
                 + "})"
                 + ".include(\"name\",\"repo\")"
-                + ".sort({\"$asc\":[\"name\",\"repo\"]})"));
+                + ".sort({\"$asc\":[\"name\",\"repo\"]})"
+                + ".offset(1)"
+                + ".limit(2)"));
     }
 
     @Test
