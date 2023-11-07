@@ -19,38 +19,36 @@ class TerraformPackageTypeRepositoryTests extends BaseRepositoryTests {
 
     @Override
     RepositorySettings getRepositorySettings(RepositoryType repositoryType) {
+        def settings = new TerraformRepositorySettingsImpl()
 
-        if (repositoryType == RepositoryTypeImpl.REMOTE) {
-            def settings = new TerraformRepositorySettingsImpl()
-            settings.with {
-                repoLayout = defaultLayout
-                vcsType = VcsType.GIT
-                vcsGitProvider = VcsGitProvider.GITHUB
-                terraformRegistryUrl = "https://registry.terraform.io"
-                terraformProvidersUrl = "https://releases.hashicorp.com"
-                remoteRepoLayoutRef = defaultLayout
-            }
-            return settings
+        switch (repositoryType) {
+            case RepositoryTypeImpl.REMOTE:
+                settings.with {
+                    repoLayout = defaultLayout
+                    vcsType = VcsType.GIT
+                    vcsGitProvider = VcsGitProvider.GITHUB
+                    terraformRegistryUrl = "https://registry.terraform.io"
+                    terraformProvidersUrl = "https://releases.hashicorp.com"
+                    remoteRepoLayoutRef = defaultLayout
+                }
+                break
+            case RepositoryTypeImpl.VIRTUAL:
+                settings.with {
+                    repoLayout = moduleLayout
+                }
+                break
+            case RepositoryTypeImpl.FEDERATED:
+                settings.with {
+                    terraformType = TerraformRepositorySettings.TerraformType.module
+                    repoLayout = moduleLayout
+                }
+                break
+            default:
+                settings = null
         }
 
-        if (repositoryType == RepositoryTypeImpl.VIRTUAL) {
-            def settings = new TerraformRepositorySettingsImpl()
-            settings.with {
-                repoLayout = moduleLayout
-            }
-            return settings
-        }
+        return settings
 
-        if (repositoryType == RepositoryTypeImpl.FEDERATED) {
-            def settings = new TerraformRepositorySettingsImpl()
-            settings.with {
-                terraformType = TerraformRepositorySettings.TerraformType.module
-                repoLayout = moduleLayout
-            }
-            return settings
-        }
-
-        return null
     }
 
     @BeforeMethod
