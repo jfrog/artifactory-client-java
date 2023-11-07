@@ -147,8 +147,8 @@ public class AqlQueryBuilderTest {
     @Test
     public void limitTest() {
         String result = new AqlQueryBuilder()
-            .limit(123)
-            .build();
+                .limit(123)
+                .build();
 
         assertThat(result, notNullValue());
         assertThat(result, is("items.find().limit(123)"));
@@ -157,8 +157,8 @@ public class AqlQueryBuilderTest {
     @Test
     public void offsetTest() {
         String result = new AqlQueryBuilder()
-            .offset(123)
-            .build();
+                .offset(123)
+                .build();
 
         assertThat(result, notNullValue());
         assertThat(result, is("items.find().offset(123)"));

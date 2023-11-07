@@ -14,138 +14,138 @@ import static java.util.stream.Collectors.toMap;
 import static org.jfrog.artifactory.client.aql.AqlInclude.buildWithElements;
 
 public class AqlQueryBuilder {
-  private AqlRootElement root = new AqlRootElement();
-  private AqlItem sort;
-  private AqlInclude include;
-  private Integer limit;
-  private Integer offset;
+    private AqlRootElement root = new AqlRootElement();
+    private AqlItem sort;
+    private AqlInclude include;
+    private Integer limit;
+    private Integer offset;
 
-  public AqlQueryBuilder item(AqlItem item) {
-    root.putAll(item.value());
-    return this;
-  }
-
-  public AqlQueryBuilder elements(AqlItem... items) {
-    if (isNotEmpty(items)) {
-      root.putAll(Arrays.stream(items)
-          .map(item -> item.value().entrySet())
-          .flatMap(Collection::stream)
-          .collect(toMap(Map.Entry::getKey, Map.Entry::getValue)));
+    public AqlQueryBuilder item(AqlItem item) {
+        root.putAll(item.value());
+        return this;
     }
-    return this;
-  }
 
-  public AqlQueryBuilder array(String key, AqlItem... items) {
-    if (isNotEmpty(items)) {
-      root.put(key, items);
+    public AqlQueryBuilder elements(AqlItem... items) {
+        if (isNotEmpty(items)) {
+            root.putAll(Arrays.stream(items)
+                    .map(item -> item.value().entrySet())
+                    .flatMap(Collection::stream)
+                    .collect(toMap(Map.Entry::getKey, Map.Entry::getValue)));
+        }
+        return this;
     }
-    return this;
-  }
 
-  public AqlQueryBuilder and(AqlItem... items) {
-    if (isNotEmpty(items)) {
-      root.putAll(AqlItem.and((Object[])items).value());
+    public AqlQueryBuilder array(String key, AqlItem... items) {
+        if (isNotEmpty(items)) {
+            root.put(key, items);
+        }
+        return this;
     }
-    return this;
-  }
 
-  public AqlQueryBuilder and(Collection<AqlItem> items) {
-    return and(setToArray(items));
-  }
-
-  public AqlQueryBuilder or(AqlItem... items) {
-    if (isNotEmpty(items)) {
-      root.putAll(AqlItem.or((Object[])items).value());
+    public AqlQueryBuilder and(AqlItem... items) {
+        if (isNotEmpty(items)) {
+            root.putAll(AqlItem.and((Object[]) items).value());
+        }
+        return this;
     }
-    return this;
-  }
 
-  public AqlQueryBuilder or(Collection<AqlItem> items) {
-    return or(setToArray(items));
-  }
-
-  public AqlQueryBuilder include(String... elements) {
-    if (isNotEmpty(elements)) {
-      include = buildWithElements(elements);
+    public AqlQueryBuilder and(Collection<AqlItem> items) {
+        return and(setToArray(items));
     }
-    return this;
-  }
 
-  public AqlQueryBuilder asc(String... by) {
-    if (isNotEmpty(by)) {
-      this.sort = AqlItem.asc(by);
+    public AqlQueryBuilder or(AqlItem... items) {
+        if (isNotEmpty(items)) {
+            root.putAll(AqlItem.or((Object[]) items).value());
+        }
+        return this;
     }
-    return this;
-  }
 
-  public AqlQueryBuilder desc(String... by) {
-    if (isNotEmpty(by)) {
-      this.sort = AqlItem.desc(by);
+    public AqlQueryBuilder or(Collection<AqlItem> items) {
+        return or(setToArray(items));
     }
-    return this;
-  }
 
-  public AqlQueryBuilder limit(int limit) {
-    this.limit = limit;
-    return this;
-  }
-
-  public AqlQueryBuilder offset(int offset) {
-    this.offset = offset;
-    return this;
-  }
-
-  public String build() {
-    try {
-      ObjectMapper mapper = new ObjectMapper();
-      return "items.find(" + getRootAsString(mapper) + ")" + getIncludeAsString() + getSortAsString(
-          mapper) + getOffsetAsString(mapper) + getLimitAsString(mapper);
-    } catch (JsonProcessingException e) {
-      throw new AqlBuilderException("Error serializing object to json: ", e);
+    public AqlQueryBuilder include(String... elements) {
+        if (isNotEmpty(elements)) {
+            include = buildWithElements(elements);
+        }
+        return this;
     }
-  }
 
-  private String getSortAsString(ObjectMapper mapper) throws JsonProcessingException {
-    return hasSort() ? ".sort(" + mapper.writeValueAsString(sort) + ")" : "";
-  }
+    public AqlQueryBuilder asc(String... by) {
+        if (isNotEmpty(by)) {
+            this.sort = AqlItem.asc(by);
+        }
+        return this;
+    }
 
-  private String getIncludeAsString() {
-    return hasInclude() ? include.toString() : "";
-  }
+    public AqlQueryBuilder desc(String... by) {
+        if (isNotEmpty(by)) {
+            this.sort = AqlItem.desc(by);
+        }
+        return this;
+    }
 
-  private String getOffsetAsString(ObjectMapper mapper) throws JsonProcessingException {
-    return hasOffset() ? ".offset(" + mapper.writeValueAsString(offset) + ")" : "";
-  }
+    public AqlQueryBuilder limit(int limit) {
+        this.limit = limit;
+        return this;
+    }
 
-  private String getLimitAsString(ObjectMapper mapper) throws JsonProcessingException {
-    return hasLimit() ? ".limit(" + mapper.writeValueAsString(limit) + ")" : "";
-  }
+    public AqlQueryBuilder offset(int offset) {
+        this.offset = offset;
+        return this;
+    }
 
-  private String getRootAsString(ObjectMapper mapper) throws JsonProcessingException {
-    return hasRoot() ? mapper.writeValueAsString(root) : "";
-  }
+    public String build() {
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            return "items.find(" + getRootAsString(mapper) + ")" + getIncludeAsString() + getSortAsString(
+                    mapper) + getOffsetAsString(mapper) + getLimitAsString(mapper);
+        } catch (JsonProcessingException e) {
+            throw new AqlBuilderException("Error serializing object to json: ", e);
+        }
+    }
 
-  private boolean hasInclude() {
-    return include != null && include.isNotEmpty();
-  }
+    private String getSortAsString(ObjectMapper mapper) throws JsonProcessingException {
+        return hasSort() ? ".sort(" + mapper.writeValueAsString(sort) + ")" : "";
+    }
 
-  private boolean hasSort() {
-    return sort != null && sort.isNotEmpty();
-  }
+    private String getIncludeAsString() {
+        return hasInclude() ? include.toString() : "";
+    }
 
-  private boolean hasLimit() {
-    return limit != null;
-  }
+    private String getOffsetAsString(ObjectMapper mapper) throws JsonProcessingException {
+        return hasOffset() ? ".offset(" + mapper.writeValueAsString(offset) + ")" : "";
+    }
 
-  private boolean hasOffset() {
-    return offset != null;
-  }
+    private String getLimitAsString(ObjectMapper mapper) throws JsonProcessingException {
+        return hasLimit() ? ".limit(" + mapper.writeValueAsString(limit) + ")" : "";
+    }
 
-  private boolean hasRoot() {
-    return root != null && root.isNotEmpty();
-  }
+    private String getRootAsString(ObjectMapper mapper) throws JsonProcessingException {
+        return hasRoot() ? mapper.writeValueAsString(root) : "";
+    }
 
-  private AqlItem[] setToArray(Collection<AqlItem> items) {
-    return items.toArray(new AqlItem[0]);
-  }
+    private boolean hasInclude() {
+        return include != null && include.isNotEmpty();
+    }
+
+    private boolean hasSort() {
+        return sort != null && sort.isNotEmpty();
+    }
+
+    private boolean hasLimit() {
+        return limit != null;
+    }
+
+    private boolean hasOffset() {
+        return offset != null;
+    }
+
+    private boolean hasRoot() {
+        return root != null && root.isNotEmpty();
+    }
+
+    private AqlItem[] setToArray(Collection<AqlItem> items) {
+        return items.toArray(new AqlItem[0]);
+    }
 }
