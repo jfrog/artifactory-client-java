@@ -11,6 +11,8 @@ public class AqlItem {
     private static final String DESC = "$desc";
     private static final String OR = "$or";
     private static final String AND = "$and";
+    private static final String MATCH = "$match";
+    private static final String NOT_MATCH = "$nmatch";
 
     private Map<String, Object> item;
 
@@ -37,6 +39,14 @@ public class AqlItem {
 
     public static AqlItem desc(String... items) {
         return new AqlItem(DESC, items);
+    }
+
+    public static AqlItem match(String key, String pattern) {
+        return new AqlItem(key, new AqlItem(MATCH, pattern));
+    }
+
+    public static AqlItem notMatch(String key, String pattern) {
+        return new AqlItem(key, new AqlItem(NOT_MATCH, pattern));
     }
 
     @JsonIgnore

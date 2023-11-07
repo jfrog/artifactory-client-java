@@ -60,6 +60,20 @@ public class AqlQueryBuilder {
         return this;
     }
 
+    public AqlQueryBuilder match(String key, String pattern) {
+        if (key != null) {
+            root.putAll(AqlItem.match(key, pattern).value());
+        }
+        return this;
+    }
+
+    public AqlQueryBuilder notMatch(String key, String pattern) {
+        if (key != null) {
+            root.putAll(AqlItem.notMatch(key, pattern).value());
+        }
+        return this;
+    }
+
     public AqlQueryBuilder or(Collection<AqlItem> items) {
         return or(setToArray(items));
     }
