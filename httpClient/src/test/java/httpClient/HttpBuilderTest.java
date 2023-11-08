@@ -26,7 +26,8 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.List;
 
-import static org.fest.assertions.Assertions.assertThat;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.testng.AssertJUnit.assertNull;
 
 
@@ -253,7 +254,7 @@ public class HttpBuilderTest {
 
     private HttpHost getDefaultHost(CloseableHttpClient client) {
         DefaultRoutePlanner routePlanner = getRoutePlanner(client);
-        assertThat(routePlanner).isInstanceOf(DefaultHostSpecificProxyRoutePlanner.class);
+        assertThat(routePlanner, instanceOf(DefaultHostSpecificProxyRoutePlanner.class));
         return getDefaultHost((DefaultHostSpecificProxyRoutePlanner) routePlanner);
     }
 
