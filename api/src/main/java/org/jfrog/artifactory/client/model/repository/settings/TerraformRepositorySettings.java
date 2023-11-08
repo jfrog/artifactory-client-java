@@ -5,7 +5,7 @@ import org.jfrog.artifactory.client.model.repository.settings.vcs.VcsGitProvider
 import org.jfrog.artifactory.client.model.repository.settings.vcs.VcsType;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public interface TerraformRepositorySettings extends RepositorySettings{
+public interface TerraformRepositorySettings extends RepositorySettings {
 
     // Local and federated settings
     enum TerraformType {
@@ -27,5 +27,4 @@ public interface TerraformRepositorySettings extends RepositorySettings{
     String getTerraformProvidersUrl();
 
     String getRemoteRepoLayoutRef();
-
 }
