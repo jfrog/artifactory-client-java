@@ -9,6 +9,7 @@ import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.jfrog.artifactory.client.aql.AqlItem.aqlItem;
 import static org.jfrog.artifactory.client.aql.AqlItem.or;
+import static org.jfrog.artifactory.client.aql.AqlItem.match;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
@@ -144,13 +145,61 @@ public class AqlQueryBuilderTest {
     }
 
     @Test
+    public void matchTest() {
+        String result = new AqlQueryBuilder()
+                .match("repo", "myrepo*")
+                .build();
+
+        assertThat(result, notNullValue());
+        assertThat(result, is("items.find("
+                + "{\"repo\":"
+                + "{\"$match\":\"myrepo*\"}"
+                + "})"));
+    }
+
+    @Test
+    public void notMatchTest() {
+        String result = new AqlQueryBuilder()
+                .notMatch("repo", "myrepo*")
+                .build();
+
+        assertThat(result, notNullValue());
+        assertThat(result, is("items.find("
+                + "{\"repo\":"
+                + "{\"$nmatch\":\"myrepo*\"}"
+                + "})"));
+    }
+
+
+    @Test
+    public void limitTest() {
+        String result = new AqlQueryBuilder()
+                .limit(123)
+                .build();
+
+        assertThat(result, notNullValue());
+        assertThat(result, is("items.find().limit(123)"));
+    }
+
+    @Test
+    public void offsetTest() {
+        String result = new AqlQueryBuilder()
+                .offset(123)
+                .build();
+
+        assertThat(result, notNullValue());
+        assertThat(result, is("items.find().offset(123)"));
+    }
+
+    @Test
     public void addNestedFilters() {
         final String result = new AqlQueryBuilder()
                 .and(
                         or(
                                 aqlItem("repo", "myrepo1"),
                                 aqlItem("repo", "myrepo2"),
-                                aqlItem("repo", "myrepo3")
+                                aqlItem("repo", "myrepo3"),
+                                match("repo", "myotherrepo*")
                         ),
                         or(
                                 aqlItem("name", "maven-metadata1.xml"),
@@ -165,8 +214,10 @@ public class AqlQueryBuilderTest {
                 + "{\"$or\":["
                 + "{\"repo\":\"myrepo1\"},"
                 + "{\"repo\":\"myrepo2\"},"
-                + "{\"repo\":\"myrepo3\"}"
-                + "]},"
+                + "{\"repo\":\"myrepo3\"},"
+                + "{\"repo\":"
+                + "{\"$match\":\"myotherrepo*\"}"
+                + "}]},"
                 + "{\"$or\":["
                 + "{\"name\":\"maven-metadata1.xml\"},"
                 + "{\"name\":\"maven-metadata2.xml\"}"
@@ -190,6 +241,8 @@ public class AqlQueryBuilderTest {
                 .item(aqlItem("property", "value"))
                 .include("name", "repo")
                 .asc("name", "repo")
+                .offset(1)
+                .limit(2)
                 .build();
 
         assertThat(result, notNullValue());
@@ -206,7 +259,9 @@ public class AqlQueryBuilderTest {
                 + "\"property\":\"value\""
                 + "})"
                 + ".include(\"name\",\"repo\")"
-                + ".sort({\"$asc\":[\"name\",\"repo\"]})"));
+                + ".sort({\"$asc\":[\"name\",\"repo\"]})"
+                + ".offset(1)"
+                + ".limit(2)"));
     }
 
     @Test

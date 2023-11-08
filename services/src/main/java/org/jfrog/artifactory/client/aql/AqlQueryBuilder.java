@@ -17,6 +17,8 @@ public class AqlQueryBuilder {
     private AqlRootElement root = new AqlRootElement();
     private AqlItem sort;
     private AqlInclude include;
+    private Integer limit;
+    private Integer offset;
 
     public AqlQueryBuilder item(AqlItem item) {
         root.putAll(item.value());
@@ -26,9 +28,9 @@ public class AqlQueryBuilder {
     public AqlQueryBuilder elements(AqlItem... items) {
         if (isNotEmpty(items)) {
             root.putAll(Arrays.stream(items)
-                .map(item -> item.value().entrySet())
-                .flatMap(Collection::stream)
-                .collect(toMap(Map.Entry::getKey, Map.Entry::getValue)));
+                    .map(item -> item.value().entrySet())
+                    .flatMap(Collection::stream)
+                    .collect(toMap(Map.Entry::getKey, Map.Entry::getValue)));
         }
         return this;
     }
@@ -58,6 +60,20 @@ public class AqlQueryBuilder {
         return this;
     }
 
+    public AqlQueryBuilder match(String key, String pattern) {
+        if (key != null) {
+            root.putAll(AqlItem.match(key, pattern).value());
+        }
+        return this;
+    }
+
+    public AqlQueryBuilder notMatch(String key, String pattern) {
+        if (key != null) {
+            root.putAll(AqlItem.notMatch(key, pattern).value());
+        }
+        return this;
+    }
+
     public AqlQueryBuilder or(Collection<AqlItem> items) {
         return or(setToArray(items));
     }
@@ -83,10 +99,21 @@ public class AqlQueryBuilder {
         return this;
     }
 
+    public AqlQueryBuilder limit(int limit) {
+        this.limit = limit;
+        return this;
+    }
+
+    public AqlQueryBuilder offset(int offset) {
+        this.offset = offset;
+        return this;
+    }
+
     public String build() {
         try {
             ObjectMapper mapper = new ObjectMapper();
-            return "items.find(" + getRootAsString(mapper) + ")" + getIncludeAsString() + getSortAsString(mapper);
+            return "items.find(" + getRootAsString(mapper) + ")" + getIncludeAsString() + getSortAsString(
+                    mapper) + getOffsetAsString(mapper) + getLimitAsString(mapper);
         } catch (JsonProcessingException e) {
             throw new AqlBuilderException("Error serializing object to json: ", e);
         }
@@ -100,16 +127,32 @@ public class AqlQueryBuilder {
         return hasInclude() ? include.toString() : "";
     }
 
+    private String getOffsetAsString(ObjectMapper mapper) throws JsonProcessingException {
+        return hasOffset() ? ".offset(" + mapper.writeValueAsString(offset) + ")" : "";
+    }
+
+    private String getLimitAsString(ObjectMapper mapper) throws JsonProcessingException {
+        return hasLimit() ? ".limit(" + mapper.writeValueAsString(limit) + ")" : "";
+    }
+
     private String getRootAsString(ObjectMapper mapper) throws JsonProcessingException {
         return hasRoot() ? mapper.writeValueAsString(root) : "";
+    }
+
+    private boolean hasInclude() {
+        return include != null && include.isNotEmpty();
     }
 
     private boolean hasSort() {
         return sort != null && sort.isNotEmpty();
     }
 
-    private boolean hasInclude() {
-        return include != null && include.isNotEmpty();
+    private boolean hasLimit() {
+        return limit != null;
+    }
+
+    private boolean hasOffset() {
+        return offset != null;
     }
 
     private boolean hasRoot() {
