@@ -32,7 +32,8 @@ public enum PackageTypeImpl implements PackageType {
     puppet,
     helm,
     go,
-    cargo;
+    cargo,
+    terraform;
 
     @Override
     public boolean isCustom() {
