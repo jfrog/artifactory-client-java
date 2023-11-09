@@ -9,7 +9,7 @@ dependencies {
     implementation addSlf4J('jcl-over-slf4j')
     implementation 'commons-io:commons-io:2.8.0'
     testImplementation group: 'org.hamcrest', name: 'hamcrest-core', version: '2.2'
-    testImplementation group: 'org.testng', name: 'testng', version: '7.4.0'
+    testImplementation group: 'org.testng', name: 'testng', version: '7.5.1'
     /*
      * Don't depend upon a specific logging implementation as a compile or runtime dependency.
      * https://github.com/jfrog/artifactory-client-java/issues/43
