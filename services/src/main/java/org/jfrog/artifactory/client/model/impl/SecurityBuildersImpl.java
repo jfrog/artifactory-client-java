@@ -45,4 +45,13 @@ public class SecurityBuildersImpl implements SecurityBuilders {
     public PrincipalBuilder principalBuilder() {
         return new PrincipalBuilderImpl();
     }
+
+    @Override
+    public PermissionTargetV2Builder permissionTargetV2Builder() { return new PermissionTargetV2BuilderImpl(); }
+
+    @Override
+    public PermissionV2Builder permissionV2Builder() { return new PermissionV2BuilderImpl(); }
+
+    @Override
+    public ActionsBuilder actionsBuilder() { return new ActionsBuilderImpl(); }
 }
