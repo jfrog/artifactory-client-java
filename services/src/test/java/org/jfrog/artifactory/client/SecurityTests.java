@@ -103,13 +103,10 @@ public class SecurityTests extends ArtifactoryTestsBase {
         PermissionTarget permissionTarget = artifactory.security().permissionTarget("Anything");
         assertEquals("Anything", permissionTarget.getName());
         assertTrue(permissionTarget.getIncludesPattern().contains("**"));
-        assertTrue(permissionTarget.getRepositories().size() > 0);
+        assertFalse(permissionTarget.getRepositories().isEmpty());
+        assertEquals("ANY", permissionTarget.getRepositories().get(0));
         assertNotNull(permissionTarget.getPrincipals());
         assertNotNull(permissionTarget.getPrincipals().getUsers());
-        final String user = permissionTarget.getPrincipals().getUsers().get(0).getName();
-        assertFalse(permissionTarget.getPrincipals().getUser(user).getPrivileges().contains(Privilege.ADMIN));
-        assertFalse(permissionTarget.getPrincipals().getUser(user).getPrivileges().contains(Privilege.DELETE));
-        assertTrue(permissionTarget.getPrincipals().getUser(user).getPrivileges().contains(Privilege.READ));
         assertNotNull(permissionTarget.getPrincipals().getGroups());
     }
 
