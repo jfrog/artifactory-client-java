@@ -122,9 +122,9 @@ class BowerPackageTypeRepositoryTests extends BaseRepositoryTests {
             assertThat(vcsType, CoreMatchers.is(expectedSettings.getVcsType()))
 
             // virtual
-            assertFalse(externalDependenciesEnabled)
-            assertThat(externalDependenciesPatterns, CoreMatchers.nullValue())
-            assertThat(externalDependenciesRemoteRepo, CoreMatchers.nullValue())
+            assertThat(externalDependenciesEnabled, CoreMatchers.is(expectedSettings.getExternalDependenciesEnabled()))
+            assertThat(externalDependenciesPatterns, CoreMatchers.is(expectedSettings.getExternalDependenciesPatterns()))
+            assertThat(externalDependenciesRemoteRepo, CoreMatchers.is(expectedSettings.getExternalDependenciesRemoteRepo()))
         }
     }
 
