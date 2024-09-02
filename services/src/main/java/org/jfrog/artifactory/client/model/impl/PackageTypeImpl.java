@@ -33,7 +33,8 @@ public enum PackageTypeImpl implements PackageType {
     helm,
     go,
     cargo,
-    terraform;
+    terraform,
+    oci;
 
     @Override
     public boolean isCustom() {
