@@ -6,10 +6,6 @@ import org.jfrog.artifactory.client.model.repository.settings.OciRepositorySetti
 
 public class OciRepositorySettingsImpl extends DockerRepositorySettingsImpl implements OciRepositorySettings {
     public static String defaultLayout = "simple-default";
-    
-    public OciRepositorySettingsImpl() {
-        super();
-    }
 
     public PackageType getPackageType() {
         return PackageTypeImpl.oci;
@@ -17,18 +13,9 @@ public class OciRepositorySettingsImpl extends DockerRepositorySettingsImpl impl
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof OciRepositorySettingsImpl)) return false;
-        if (!super.equals(o)) return false;
-
-        OciRepositorySettingsImpl that = (OciRepositorySettingsImpl) o;
-
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = super.hashCode();
-        return result;
+        if (!(o instanceof OciRepositorySettingsImpl)) {
+            return false;
+        }
+        return super.equals(o);
     }
 }
