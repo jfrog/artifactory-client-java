@@ -31,6 +31,7 @@ public enum PackageTypeImpl implements PackageType {
     chef,
     puppet,
     helm,
+    helmoci,
     go,
     cargo,
     terraform,
