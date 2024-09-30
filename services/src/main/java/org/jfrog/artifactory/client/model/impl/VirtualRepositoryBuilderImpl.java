@@ -15,7 +15,7 @@ import static org.jfrog.artifactory.client.model.impl.PackageTypeImpl.*;
  */
 public class VirtualRepositoryBuilderImpl extends RepositoryBuilderBase<VirtualRepositoryBuilder, VirtualRepository> implements VirtualRepositoryBuilder {
     private static Set<PackageType> virtualRepositorySupportedTypes = new HashSet<PackageType>(Arrays.asList(
-            bower, cran, conda, docker, debian, gems, generic, gitlfs, gradle, ivy, maven, npm, nuget, p2, pypi, sbt, yum, rpm, composer, conan, chef, puppet, helm, go, terraform, oci
+            bower, cran, conda, docker, debian, gems, generic, gitlfs, gradle, ivy, maven, npm, nuget, p2, pypi, sbt, yum, rpm, composer, conan, chef, puppet, helm, helmoci, go, terraform, oci
     ));
 
     private Collection<String> repositories = Collections.emptyList();
