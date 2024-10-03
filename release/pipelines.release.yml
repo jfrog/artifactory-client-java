@@ -7,7 +7,7 @@ pipelines:
           auto:
             language: java
             versions:
-              - "8.0.0"
+              - "8"
       environmentVariables:
         readOnly:
           NEXT_VERSION: 0.0.0
