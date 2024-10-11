@@ -26,7 +26,7 @@ task createReleasePropertiesFile(type: Exec) {
 }
 
 def addGroovy(name) {
-    [group: 'org.codehaus.groovy', name: name, version: '2.4.21']
+    [group: 'org.apache.groovy', name: name, version: '4.0.23']
 }
 
 def addSlf4J(name) {
