@@ -11,6 +11,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.jfrog.artifactory.client.model.LocalRepository;
 import org.jfrog.artifactory.client.model.Repository;
+import org.jfrog.artifactory.client.model.VirtualRepository;
 import org.jfrog.artifactory.client.model.repository.settings.impl.MavenRepositorySettingsImpl;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -48,11 +49,13 @@ public abstract class ArtifactoryTestsBase {
     protected String fileMd5;
     protected String fileSha1;
     protected LocalRepository localRepository;
+    protected VirtualRepository virtualRepository;
     protected String federationUrl;
 
     @BeforeClass
     public void init() throws IOException {
         String localRepositoryKey = "java-client-" + getClass().getSimpleName();
+        String virtualRepositoryKey = "java-client-virtual-" + getClass().getSimpleName();
         Properties props = new Properties();
         // This file is not in GitHub. Create your own in src/test/resources.
         InputStream inputStream = this.getClass().getResourceAsStream("/artifactory-client.properties");
@@ -76,6 +79,7 @@ public abstract class ArtifactoryTestsBase {
                 .setPassword(password)
                 .build();
         deleteRepoIfExists(localRepositoryKey);
+        deleteRepoIfExists(virtualRepositoryKey);
         deleteRepoIfExists(getJCenterRepoName());
         localRepository = artifactory.repositories().builders().localRepositoryBuilder()
                 .key(localRepositoryKey)
@@ -84,8 +88,18 @@ public abstract class ArtifactoryTestsBase {
                 .propertySets(Arrays.asList("artifactory"))
                 .build();
 
+        virtualRepository = artifactory.repositories().builders().virtualRepositoryBuilder()
+                .key(virtualRepositoryKey)
+                .description("new virtual repository")
+                .repositorySettings(new MavenRepositorySettingsImpl())
+                .build();
+
         if (!artifactory.repository(localRepository.getKey()).exists()) {
             artifactory.repositories().create(1, localRepository);
+        }
+
+        if (!artifactory.repository(virtualRepository.getKey()).exists()) {
+            artifactory.repositories().create(1, virtualRepository);
         }
 
         String jcenterRepoName = getJCenterRepoName();

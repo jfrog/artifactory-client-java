@@ -62,4 +62,7 @@ public interface Searches {
     PropertyFilters itemsByProperty();
 
     List<AqlItem> artifactsByFileSpec(FileSpec fileSpec);
+
+    Searches virtualOrRemote();
+
 }
