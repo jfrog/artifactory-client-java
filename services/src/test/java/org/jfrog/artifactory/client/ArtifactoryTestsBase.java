@@ -21,7 +21,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Properties;
 
 import static org.apache.commons.codec.binary.Base64.encodeBase64;
@@ -88,10 +90,13 @@ public abstract class ArtifactoryTestsBase {
                 .propertySets(Arrays.asList("artifactory"))
                 .build();
 
+        Collection<String> repositories = new ArrayList<>();
+        repositories.add(localRepositoryKey);
         virtualRepository = artifactory.repositories().builders().virtualRepositoryBuilder()
                 .key(virtualRepositoryKey)
                 .description("new virtual repository")
                 .repositorySettings(new MavenRepositorySettingsImpl())
+                .repositories(repositories)
                 .build();
 
         if (!artifactory.repository(localRepository.getKey()).exists()) {
