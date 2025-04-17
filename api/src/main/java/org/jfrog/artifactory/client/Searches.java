@@ -63,6 +63,6 @@ public interface Searches {
 
     List<AqlItem> artifactsByFileSpec(FileSpec fileSpec);
 
-    Searches virtualOrRemote();
+    Searches specific();
 
 }

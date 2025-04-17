@@ -97,7 +97,7 @@ class SearchesImpl implements Searches {
     }
 
     @Override
-    Searches virtualOrRemote() {
+    Searches specific() {
         this.searchQuery << [specific: "true"]
         this
     }
