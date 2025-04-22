@@ -36,6 +36,7 @@ jobs:
         uses: jfrog/.github/actions/install-local-artifactory@main
         with:
           RTLIC: ${{ secrets.RTLIC }}
+          VERSION: 7.98.18
 
       - name: Install Java
         uses: actions/setup-java@v4
