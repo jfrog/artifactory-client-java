@@ -368,6 +368,25 @@ for (RepoPath searchItem : searchItems) {
 }
 ```
 
+##### Searching Files by GAVC and Virtual or Remote Repository
+
+```groovy
+List<RepoPath> results = artifactory.searches().artifactsByGavc()
+        .groupId("com.example")
+        .artifactId("com.example.test")
+        .repositories("maven-libs-release")
+        .specific()
+        .doSearch();
+
+for (RepoPath searchItem : searchItems) {
+    String repoKey = searchItem.getRepoKey();
+    String itemPath = searchItem.getItemPath();
+}
+```
+* From Artifactory version 7.37.9, the following
+&specific=true(default false)
+ attribute was added to support virtual and remote repositories. See [here](https://jfrog.com/help/r/jfrog-rest-apis/usage-for-remote-and-virtual-repositories).
+
 ##### Searching Latest Version by GAVC and Repository
 
 ```groovy

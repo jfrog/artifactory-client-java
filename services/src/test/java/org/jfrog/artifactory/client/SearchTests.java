@@ -187,6 +187,34 @@ public class SearchTests extends ArtifactoryTestsBase {
     }
 
     @Test
+    public void testSearchByGavcAndVirtualRepository() throws IOException {
+        List<RepoPath> results = artifactory.searches().artifactsByGavc()
+                .groupId("com.example")
+                .artifactId(artifactId)
+                .version("1.0.0")
+                .classifier("zip")
+                .repositories(virtualRepository.getKey())
+                .specific()
+                .doSearch();
+        assertEquals(results.size(), 1);
+        assertTrue(results.get(0).getItemPath().contains(artifactId + "-1.0.0-zip.jar"));
+    }
+
+    @Test
+    public void testSearchByGavcAndRemoteRepository() throws IOException {
+        List<RepoPath> results = artifactory.searches().artifactsByGavc()
+                .groupId("antlr")
+                .artifactId("antlr")
+                .version("2.7.1")
+                .classifier("jar")
+                .repositories(remoteRepository.getKey())
+                .specific()
+                .doSearch();
+        assertEquals(results.size(), 2);
+        assertTrue(results.get(0).getItemPath().contains("antlr-2.7.1.jar"));
+    }
+
+    @Test
     public void testArtifactsCreatedSinceSearch() throws IOException {
         long startTime = System.currentTimeMillis() - 86400000L;
         List<RepoPath> results = artifactory.searches().artifactsCreatedSince(startTime).doSearch();

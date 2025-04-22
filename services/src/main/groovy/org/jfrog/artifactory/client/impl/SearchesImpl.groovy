@@ -96,6 +96,12 @@ class SearchesImpl implements Searches {
         this
     }
 
+    @Override
+    Searches specific() {
+        this.searchQuery << [specific: "true"]
+        this
+    }
+
     List<RepoPath> doSearch() {
         if (!searchUrl) {
             throw new IllegalArgumentException("Search url wasn't set. Please call one of the 'artifacts...' methods before calling 'search()'")
@@ -122,9 +128,15 @@ class SearchesImpl implements Searches {
             String path = Util.getQueryPath("?", query)
             SearchResultImpl searchResults = artifactory.get("${getSearcherApi()}$url$path", SearchResultImpl, SearchResult)
             List<RepoPath> pathList = new ArrayList<>();
+            String fullPath;
             for (SearchResultReport searchResultReport : searchResults.getResults()) {
                 String uri = searchResultReport.getUri();
-                String fullPath = uri.split(baseApiPath + '/storage/')[1]
+                if (uri == null) {
+                    uri = searchResultReport.getDownloadUri()
+                    fullPath = uri.split('/artifactory/')[1]
+                } else {
+                    fullPath = uri.split(baseApiPath + '/storage/')[1]
+                }
                 String repo = fullPath.substring(0,fullPath.indexOf('/'))
                 pathList.add(new RepoPathImpl(repo, fullPath - (repo + '/')))
             }
