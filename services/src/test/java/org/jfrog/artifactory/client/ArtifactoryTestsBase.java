@@ -10,7 +10,9 @@ import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.jfrog.artifactory.client.model.LocalRepository;
+import org.jfrog.artifactory.client.model.RemoteRepository;
 import org.jfrog.artifactory.client.model.Repository;
+import org.jfrog.artifactory.client.model.VirtualRepository;
 import org.jfrog.artifactory.client.model.repository.settings.impl.MavenRepositorySettingsImpl;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -20,7 +22,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Properties;
 
 import static org.apache.commons.codec.binary.Base64.encodeBase64;
@@ -48,11 +52,15 @@ public abstract class ArtifactoryTestsBase {
     protected String fileMd5;
     protected String fileSha1;
     protected LocalRepository localRepository;
+    protected VirtualRepository virtualRepository;
+    protected RemoteRepository remoteRepository;
     protected String federationUrl;
 
     @BeforeClass
     public void init() throws IOException {
         String localRepositoryKey = "java-client-" + getClass().getSimpleName();
+        String virtualRepositoryKey = "java-client-virtual-" + getClass().getSimpleName();
+        String remoteRepositoryKey = "java-client-remote-" + getClass().getSimpleName();
         Properties props = new Properties();
         // This file is not in GitHub. Create your own in src/test/resources.
         InputStream inputStream = this.getClass().getResourceAsStream("/artifactory-client.properties");
@@ -76,6 +84,7 @@ public abstract class ArtifactoryTestsBase {
                 .setPassword(password)
                 .build();
         deleteRepoIfExists(localRepositoryKey);
+        deleteRepoIfExists(virtualRepositoryKey);
         deleteRepoIfExists(getJCenterRepoName());
         localRepository = artifactory.repositories().builders().localRepositoryBuilder()
                 .key(localRepositoryKey)
@@ -84,8 +93,32 @@ public abstract class ArtifactoryTestsBase {
                 .propertySets(Arrays.asList("artifactory"))
                 .build();
 
+        Collection<String> repositories = new ArrayList<>();
+        repositories.add(localRepositoryKey);
+        virtualRepository = artifactory.repositories().builders().virtualRepositoryBuilder()
+                .key(virtualRepositoryKey)
+                .description("new virtual repository")
+                .repositorySettings(new MavenRepositorySettingsImpl())
+                .repositories(repositories)
+                .build();
+
         if (!artifactory.repository(localRepository.getKey()).exists()) {
             artifactory.repositories().create(1, localRepository);
+        }
+
+        if (!artifactory.repository(virtualRepository.getKey()).exists()) {
+            artifactory.repositories().create(1, virtualRepository);
+        }
+
+        remoteRepository = artifactory.repositories().builders().remoteRepositoryBuilder()
+                .key(remoteRepositoryKey)
+                .url("https://repo1.maven.org/maven2/")
+                .description("new maven remote repository")
+                .repositorySettings(new MavenRepositorySettingsImpl())
+                .build();
+
+        if (!artifactory.repository(remoteRepository.getKey()).exists()) {
+            artifactory.repositories().create(1, remoteRepository);
         }
 
         String jcenterRepoName = getJCenterRepoName();
