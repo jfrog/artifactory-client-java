@@ -25,4 +25,10 @@ public interface SecurityBuilders {
     PrincipalsBuilder principalsBuilder();
 
     PrincipalBuilder principalBuilder();
+
+    PermissionTargetV2Builder permissionTargetV2Builder();
+
+    PermissionV2Builder permissionV2Builder();
+
+    ActionsBuilder actionsBuilder();
 }
