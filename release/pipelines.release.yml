@@ -87,7 +87,7 @@ pipelines:
 
             # Update next development version
             - git clean -fd
-            - git checkout dev
+            - git checkout dev -f
             - git merge origin/master
             - sed -i "s/\(currentVersion=\).*\$/\1${NEXT_DEVELOPMENT_VERSION}/" gradle.properties
             - git commit -am "[artifactory-release] Next development version [skipRun]"
