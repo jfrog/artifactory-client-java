@@ -1,12 +1,15 @@
 package org.jfrog.artifactory.client.impl
 
+import org.apache.commons.lang3.StringUtils
 import org.apache.http.entity.ContentType
 import org.jfrog.artifactory.client.Security
 import org.jfrog.artifactory.client.impl.util.Util
 import org.jfrog.artifactory.client.model.Group
 import org.jfrog.artifactory.client.model.PermissionTarget
+import org.jfrog.artifactory.client.model.PermissionTargetV2
 import org.jfrog.artifactory.client.model.User
 import org.jfrog.artifactory.client.model.builder.SecurityBuilders
+import org.jfrog.artifactory.client.model.impl.PermissionTargetV2Impl
 import org.jfrog.artifactory.client.model.impl.SecurityBuildersImpl
 import org.jfrog.artifactory.client.model.impl.UserBuilderImpl
 import org.jfrog.artifactory.client.model.impl.GroupImpl
@@ -61,6 +64,12 @@ class SecurityImpl implements Security {
     }
 
     @Override
+    PermissionTargetV2 permissionTargetV2(String name){
+        name = Util.encodeParams(name);
+        return artifactory.get("${getSecurityPermissionsV2Api()}/$name", PermissionTargetV2Impl, PermissionTargetV2)
+    }
+
+    @Override
     List<String> groupNames() {
         GroupImpl[] groups = artifactory.get("${getSecurityUserGroupsApi()}", GroupImpl[], null)
         def groupNames = groups.collect { it.name }
@@ -100,6 +109,25 @@ class SecurityImpl implements Security {
     }
 
     @Override
+    void createOrReplacePermissionTargetV2(PermissionTargetV2 permissionTarget) {
+        if(permissionTarget == null || StringUtils.isBlank(permissionTarget.getName())){
+            throw new IllegalArgumentException("Permission target name is required")
+        }
+        if (permissionTarget.getRepo() == null || permissionTarget.getRepo().getRepositories()==null ||  permissionTarget.getRepo().getRepositories().isEmpty()) {
+            throw new UnsupportedOperationException("At least 1 repository is required in permission target (could be 'ANY', 'ANY LOCAL', 'ANY REMOTE')")
+        }
+        if(permissionTarget.getBuild() != null && permissionTarget.getBuild().getRepositories() !=null){
+            List<String> buildRepositories = permissionTarget.getBuild().getRepositories();
+            if(buildRepositories.size() !=1 || !buildRepositories.contains("artifactory-build-info")){
+                throw new UnsupportedOperationException("Only 'artifactory-build-info' repository is supported for build permission target")
+            }
+        }
+        String name = Util.encodeParams(permissionTarget.getName());
+        artifactory.put("${getSecurityPermissionsV2Api()}/$name", ContentType.APPLICATION_JSON, Util.getStringFromObject(permissionTarget),
+                new HashMap<String, String>(), null, -1, String, null)
+    }
+
+    @Override
     String deleteUser(String name) {
         name = Util.encodeParams(name);
         artifactory.delete("${getSecurityUsersApi()}/$name")
@@ -118,8 +146,19 @@ class SecurityImpl implements Security {
     }
 
     @Override
+    String deletePermissionTargetV2(String name) {
+        name = Util.encodeParams(name);
+        artifactory.delete("${getSecurityPermissionsV2Api()}/$name")
+    }
+
+    @Override
     String getSecurityApi() {
         return baseApiPath + "/security/";
+    }
+
+    @Override
+    String getSecurityV2Api() {
+        return baseApiPath + "/v2/security/";
     }
 
     @Override
@@ -130,6 +169,11 @@ class SecurityImpl implements Security {
     @Override
     String getSecurityPermissionsApi() {
         return getSecurityApi() + "permissions";
+    }
+
+    @Override
+    String getSecurityPermissionsV2Api() {
+        return getSecurityV2Api() + "permissions";
     }
 
     @Override

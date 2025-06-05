@@ -224,6 +224,44 @@ public abstract class ArtifactoryTestsBase {
             }
         }
     }
+    protected void deletePermissionTargetV2IfExists(String name){
+        if (StringUtils.isBlank(name)) { return ; }
+        try {
+            artifactory.security().deletePermissionTargetV2(name);
+        } catch (Exception e) {
+            if (e instanceof HttpResponseException && ((HttpResponseException)e).getStatusCode() == 404) {
+                return;
+            } else {
+                throw e;
+            }
+        }
+    }
+
+    protected void deleteUserIfExists(String userName){
+        if (StringUtils.isBlank(userName)) { return ; }
+        try {
+            artifactory.security().deleteUser(userName);
+        } catch (Exception e) {
+            if (e instanceof HttpResponseException && ((HttpResponseException)e).getStatusCode() == 404) {
+                return;
+            } else {
+                throw e;
+            }
+        }
+    }
+
+    protected void deleteGroupIfExists(String groupName){
+        if (StringUtils.isBlank(groupName)) { return ; }
+        try {
+            artifactory.security().deleteGroup(groupName);
+        } catch (Exception e) {
+            if (e instanceof HttpResponseException && ((HttpResponseException)e).getStatusCode() == 404) {
+                return;
+            } else {
+                throw e;
+            }
+        }
+    }
 
     public static String calcSha1(InputStream content) {
         MessageDigest md = null;
