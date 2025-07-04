@@ -64,9 +64,9 @@ subprojects {
         }
         implementation 'commons-codec:commons-codec:1.13'
         implementation 'org.apache.commons:commons-lang3:3.12.0'
-        implementation 'com.fasterxml.jackson.core:jackson-core:2.14.1'
-        implementation 'com.fasterxml.jackson.core:jackson-databind:2.14.1'
-        implementation 'com.fasterxml.jackson.core:jackson-annotations:2.14.1'
+        implementation 'com.fasterxml.jackson.core:jackson-core:2.19.1'
+        implementation 'com.fasterxml.jackson.core:jackson-databind:2.19.1'
+        implementation 'com.fasterxml.jackson.core:jackson-annotations:2.19.1'
         api 'org.jfrog.filespecs:file-specs-java:1.1.1'
     }
 
