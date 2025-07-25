@@ -8,5 +8,5 @@ repositories {
 
 dependencies {
     testImplementation group: 'org.testng', name: 'testng', version: '7.5.1'
-    testImplementation group: 'com.github.tomakehurst', name: 'wiremock-jre8', version: '3.0.1'
+    testImplementation group: 'com.github.tomakehurst', name: 'wiremock-jre8', version: '2.35.0'
 }
