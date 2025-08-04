@@ -43,18 +43,5 @@ jobs:
           java-version: "8"
           distribution: "zulu"
 
-      - name: Wait for Artifactory
-        run: |
-          for i in {1..30}; do
-            if curl -sf http://localhost:8081/artifactory/api/system/ping; then
-              echo "Artifactory is up!"
-              exit 0
-            fi
-            echo "Waiting for Artifactory..."
-            sleep 10
-          done
-          echo "Artifactory did not start in time"
-          exit 1
-
       - name: Run tests
         run: ./gradlew${{ matrix.gradlewSuffix }} clean test
