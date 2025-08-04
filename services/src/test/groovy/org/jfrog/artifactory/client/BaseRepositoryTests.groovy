@@ -174,12 +174,12 @@ abstract class BaseRepositoryTests extends ArtifactoryTestsBase {
 
     @AfterMethod
     protected void tearDown() {
-        // Invoking sequence is important!
-        deleteRepoIfExists(genericRepo?.getKey())
-        deleteRepoIfExists(localRepo?.getKey())
-        deleteRepoIfExists(remoteRepo?.getKey())
+        // Invoking sequence is important! Delete in reverse dependency order
+        deleteRepoIfExists(virtualRepo?.getKey())      // Delete virtual repo first (depends on generic)
         deleteRepoIfExists(federatedRepo?.getKey())
-        deleteRepoIfExists(virtualRepo?.getKey())
+        deleteRepoIfExists(remoteRepo?.getKey())
+        deleteRepoIfExists(localRepo?.getKey())
+        deleteRepoIfExists(genericRepo?.getKey())      // Delete generic repo last (after dependents)
         repoUniqueId++
     }
 

@@ -8,6 +8,7 @@ dependencies {
     implementation addSlf4J('log4j-over-slf4j')
     implementation addSlf4J('jcl-over-slf4j')
     implementation 'commons-io:commons-io:2.17.0'
+    implementation 'org.slf4j:slf4j-simple:2.0.9'
     testImplementation group: 'org.hamcrest', name: 'hamcrest-core', version: '2.2'
     testImplementation group: 'org.testng', name: 'testng', version: '7.5.1'
     /*
