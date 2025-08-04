@@ -14,7 +14,7 @@ import org.testng.annotations.Test
 class GemsPackageTypeRepositoryTests extends BaseRepositoryTests {
 
     GemsPackageTypeRepositoryTests() {
-        fetchContentOnCreate = false
+        remoteRepoUrl = "https://rubygems.org"
     }
 
     @Override

@@ -102,8 +102,4 @@ public interface RemoteRepositoryBuilder extends NonVirtualRepositoryBuilder<Rem
     RemoteRepositoryBuilder clientTlsCertificate(String clientTlsCertificate);
 
     String getClientTlsCertificate();
-
-    RemoteRepositoryBuilder fetchContentOnCreate(boolean fetchContentOnCreate);
-
-    boolean isFetchContentOnCreate();
 }

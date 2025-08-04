@@ -47,7 +47,6 @@ abstract class BaseRepositoryTests extends ArtifactoryTestsBase {
     protected XraySettings xraySettings
     protected Map<String, Object> customProperties
     protected Boolean storeArtifactsLocallyInRemoteRepo
-    protected Boolean fetchContentOnCreate
     protected String remoteRepoUrl = "https://github.com"
 
     public static final REPO_NAME_PREFIX = "rt-client-java"
@@ -141,7 +140,6 @@ abstract class BaseRepositoryTests extends ArtifactoryTestsBase {
                     .shareConfiguration(rnd.nextBoolean())
                     .socketTimeoutMillis(rnd.nextInt())
                     .storeArtifactsLocally(ObjectUtils.defaultIfNull(storeArtifactsLocallyInRemoteRepo, rnd.nextBoolean()))
-                    .fetchContentOnCreate(ObjectUtils.defaultIfNull(fetchContentOnCreate, rnd.nextBoolean()))
                     .synchronizeProperties(rnd.nextBoolean())
                     .unusedArtifactsCleanupPeriodHours(Math.abs(rnd.nextInt()))
                     .url(remoteRepoUrl)

@@ -15,7 +15,6 @@ class TerraformPackageTypeRepositoryTests extends BaseRepositoryTests {
 
     TerraformPackageTypeRepositoryTests() {
         remoteRepoUrl = "https://github.com"
-        storeArtifactsLocallyInRemoteRepo = true
     }
 
     @Override
