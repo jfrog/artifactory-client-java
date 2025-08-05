@@ -133,4 +133,17 @@ subprojects {
         useInMemoryPgpKeys(signingKey, signingPassword)
         sign publishing.publications.main
     }
+
+    configurations {
+        all {
+            // Exclude multiple SLF4J implementations to prevent binding conflicts
+            exclude group: 'org.slf4j', module: 'slf4j-simple'
+            exclude group: 'org.slf4j', module: 'slf4j-log4j12'
+            exclude group: 'org.slf4j', module: 'slf4j-jdk14'
+            exclude group: 'org.slf4j', module: 'slf4j-reload4j'
+            // Exclude old logging frameworks
+            exclude group: 'log4j', module: 'log4j'
+            exclude group: 'commons-logging', module: 'commons-logging'
+        }
+    }
 }
