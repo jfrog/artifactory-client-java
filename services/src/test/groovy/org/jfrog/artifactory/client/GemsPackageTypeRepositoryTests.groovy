@@ -2,6 +2,7 @@ package org.jfrog.artifactory.client
 
 import org.hamcrest.CoreMatchers
 import org.jfrog.artifactory.client.model.RepositoryType
+import org.jfrog.artifactory.client.model.impl.RepositoryTypeImpl
 import org.jfrog.artifactory.client.model.repository.settings.RepositorySettings
 import org.jfrog.artifactory.client.model.repository.settings.impl.GemsRepositorySettingsImpl
 import org.testng.annotations.Test
@@ -22,8 +23,12 @@ class GemsPackageTypeRepositoryTests extends BaseRepositoryTests {
         def settings = new GemsRepositorySettingsImpl()
 
         settings.with {
-            // remote
-            listRemoteFolderItems = rnd.nextBoolean()
+            // remote - Use false for REMOTE repos to prevent rubygems.org indexing that causes locks
+            if (repositoryType == RepositoryTypeImpl.REMOTE) {
+                listRemoteFolderItems = false  // Prevent background indexing of rubygems.org
+            } else {
+                listRemoteFolderItems = rnd.nextBoolean()  // Maintain test coverage for other types
+            }
         }
 
         return settings
