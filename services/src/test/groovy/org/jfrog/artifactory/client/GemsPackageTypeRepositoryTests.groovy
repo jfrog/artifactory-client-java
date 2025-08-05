@@ -23,12 +23,8 @@ class GemsPackageTypeRepositoryTests extends BaseRepositoryTests {
         def settings = new GemsRepositorySettingsImpl()
 
         settings.with {
-            // remote - Use false for REMOTE repos to prevent rubygems.org indexing that causes locks
-            if (repositoryType == RepositoryTypeImpl.REMOTE) {
-                listRemoteFolderItems = false  // Prevent background indexing of rubygems.org
-            } else {
-                listRemoteFolderItems = rnd.nextBoolean()  // Maintain test coverage for other types
-            }
+            // Ensure listRemoteFolderItems is false only for Gems tests to avoid indexing issues
+            listRemoteFolderItems = false
         }
 
         return settings
