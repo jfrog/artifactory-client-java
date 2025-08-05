@@ -143,7 +143,6 @@ subprojects {
             exclude group: 'org.slf4j', module: 'slf4j-reload4j'
             // Exclude old logging frameworks
             exclude group: 'log4j', module: 'log4j'
-            exclude group: 'commons-logging', module: 'commons-logging'
         }
     }
 }
