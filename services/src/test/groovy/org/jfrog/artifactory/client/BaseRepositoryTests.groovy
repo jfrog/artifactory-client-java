@@ -57,6 +57,7 @@ abstract class BaseRepositoryTests extends ArtifactoryTestsBase {
     @BeforeMethod
     protected void setUp() {
         String id = Long.toString(repoUniqueId)
+        println "[SETUP] Starting test setup for repo id: $id at ${new Date()}"
         if (prepareGenericRepo) {
             RepositorySettings settings = getRepositorySettings(RepositoryTypeImpl.LOCAL)
 
@@ -175,11 +176,11 @@ abstract class BaseRepositoryTests extends ArtifactoryTestsBase {
     @AfterMethod
     protected void tearDown() {
         // Invoking sequence is important! Delete in reverse dependency order
-        deleteRepoIfExists(virtualRepo?.getKey())      // Delete virtual repo first (depends on generic)
-        deleteRepoIfExists(federatedRepo?.getKey())
-        deleteRepoIfExists(remoteRepo?.getKey())
-        deleteRepoIfExists(localRepo?.getKey())
-        deleteRepoIfExists(genericRepo?.getKey())      // Delete generic repo last (after dependents)
+        deleteRepoWithRetry(virtualRepo?.getKey())      // Delete virtual repo first (depends on generic)
+        deleteRepoWithRetry(federatedRepo?.getKey())
+        deleteRepoWithRetry(remoteRepo?.getKey())
+        deleteRepoWithRetry(localRepo?.getKey())
+        deleteRepoWithRetry(genericRepo?.getKey())      // Delete generic repo last (after dependents)
         repoUniqueId++
     }
 

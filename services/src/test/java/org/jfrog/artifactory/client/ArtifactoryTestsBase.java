@@ -208,6 +208,32 @@ public abstract class ArtifactoryTestsBase {
         }
     }
 
+    protected void deleteRepoWithRetry(String repoKey) {
+        for (int attempt = 1; attempt <= 3; attempt++) {
+            try {
+                deleteRepoIfExists(repoKey);
+                return;
+            } catch (RuntimeException e) {
+                Throwable cause = e.getCause();
+                if (cause instanceof HttpResponseException &&
+                        ((HttpResponseException) cause).getStatusCode() == 500 &&
+                        cause.getMessage() != null && cause.getMessage().contains("Lock on LockEntryId")) {
+
+                    if (attempt < 3) {
+                        try {
+                            Thread.sleep(5000);
+                        } catch (InterruptedException ie) {
+                            Thread.currentThread().interrupt();
+                            return;
+                        }
+                    }
+                } else {
+                    return; // Non-lock error, don't retry
+                }
+            }
+        }
+    }
+
     protected String deleteRepoIfExists(String repoName) {
         if (isEmpty(repoName)) {
             return null;
@@ -220,7 +246,8 @@ public abstract class ArtifactoryTestsBase {
                 //if repo wasn't found - that's ok.
                 return e.getMessage();
             } else {
-                throw e;
+                // Wrap checked exception in a RuntimeException to avoid signature changes
+                throw new RuntimeException(e);
             }
         }
     }

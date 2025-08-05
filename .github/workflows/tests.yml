@@ -30,9 +30,6 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.sha }}
 
-      - name: Set unique Artifactory home
-        run: echo "ARTIFACTORY_HOME=$(mktemp -d)" >> $GITHUB_ENV
-        
       - name: Setup Go with cache
         uses: jfrog/.github/actions/install-go-with-cache@main
 
