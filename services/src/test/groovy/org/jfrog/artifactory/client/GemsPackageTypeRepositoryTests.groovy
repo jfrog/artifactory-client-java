@@ -2,7 +2,6 @@ package org.jfrog.artifactory.client
 
 import org.hamcrest.CoreMatchers
 import org.jfrog.artifactory.client.model.RepositoryType
-import org.jfrog.artifactory.client.model.impl.RepositoryTypeImpl
 import org.jfrog.artifactory.client.model.repository.settings.RepositorySettings
 import org.jfrog.artifactory.client.model.repository.settings.impl.GemsRepositorySettingsImpl
 import org.testng.annotations.Test
