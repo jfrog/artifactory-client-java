@@ -22,10 +22,11 @@ class GemsPackageTypeRepositoryTests extends BaseRepositoryTests {
     RepositorySettings getRepositorySettings(RepositoryType repositoryType) {
         def settings = new GemsRepositorySettingsImpl()
 
-        // Only set listRemoteFolderItems for remote repositories such that no indexing happens
-        if (repositoryType == org.jfrog.artifactory.client.model.impl.RepositoryTypeImpl.REMOTE) {
-            settings.listRemoteFolderItems = false
+        settings.with {
+            // remote
+            listRemoteFolderItems = rnd.nextBoolean()
         }
+
         return settings
     }
 
