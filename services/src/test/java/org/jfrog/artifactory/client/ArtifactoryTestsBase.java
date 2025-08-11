@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Properties;
+import java.util.logging.Logger;
 
 import static org.apache.commons.codec.binary.Base64.encodeBase64;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
@@ -55,6 +56,7 @@ public abstract class ArtifactoryTestsBase {
     protected VirtualRepository virtualRepository;
     protected RemoteRepository remoteRepository;
     protected String federationUrl;
+    private static final Logger logger = Logger.getLogger(ArtifactoryTestsBase.class.getName());
 
     @BeforeClass
     public void init() throws IOException {
@@ -208,6 +210,40 @@ public abstract class ArtifactoryTestsBase {
         }
     }
 
+    protected void deleteRepoWithRetry(String repoKey) {
+        for (int attempt = 1; attempt <= 3; attempt++) {
+            try {
+                logger.info("Attempt " + attempt + " to delete repo: " + repoKey);
+                deleteRepoIfExists(repoKey);
+                logger.info("Successfully deleted repo: " + repoKey + " on attempt " + attempt);
+                return;
+            } catch (RuntimeException e) {
+                Throwable cause = e.getCause();
+                logger.warning("Attempt " + attempt + " failed to delete repo: " + repoKey + ". Reason: " + e.getMessage());
+                if (cause instanceof HttpResponseException &&
+                        ((HttpResponseException) cause).getStatusCode() == 500 &&
+                        cause.getMessage() != null && cause.getMessage().contains("Lock on LockEntryId")) {
+
+                    if (attempt < 3) {
+                        logger.info("Lock detected. Retrying after 5 seconds...");
+                        try {
+                            Thread.sleep(5000);
+                        } catch (InterruptedException ie) {
+                            Thread.currentThread().interrupt();
+                            logger.warning("Retry interrupted while waiting to retry repo deletion: " + repoKey);
+                            return;
+                        }
+                    } else {
+                        logger.severe("Failed to delete repo after 3 attempts due to lock: " + repoKey);
+                    }
+                } else {
+                    logger.severe("Non-lock error occurred. Not retrying. Repo: " + repoKey);
+                    return; // Non-lock error, don't retry
+                }
+            }
+        }
+    }
+
     protected String deleteRepoIfExists(String repoName) {
         if (isEmpty(repoName)) {
             return null;
@@ -220,7 +256,8 @@ public abstract class ArtifactoryTestsBase {
                 //if repo wasn't found - that's ok.
                 return e.getMessage();
             } else {
-                throw e;
+                // Wrap checked exception in a RuntimeException to avoid signature changes
+                throw new RuntimeException(e);
             }
         }
     }
