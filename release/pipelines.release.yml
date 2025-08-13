@@ -12,7 +12,7 @@ pipelines:
         readOnly:
           NEXT_VERSION: 0.0.0
           NEXT_DEVELOPMENT_VERSION: 0.0.x-SNAPSHOT
-          AUDIT_FAIL: false
+          AUDIT_FAIL: "false"
 
     steps:
       - name: Release
