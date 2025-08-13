@@ -58,16 +58,48 @@ subprojects {
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
 
+    // Force secure versions to fix vulnerabilities
+    configurations.all {
+        resolutionStrategy {
+            // Use latest confirmed available Jetty 9.4.x versions
+            force 'org.eclipse.jetty:jetty-server:9.4.56.v20240826'
+            force 'org.eclipse.jetty:jetty-servlets:9.4.56.v20240826'
+            force 'org.eclipse.jetty:jetty-http:9.4.56.v20240826'
+            force 'org.eclipse.jetty:jetty-util:9.4.56.v20240826'
+            force 'org.eclipse.jetty:jetty-io:9.4.56.v20240826'
+            force 'org.eclipse.jetty:jetty-client:9.4.56.v20240826'
+            force 'org.eclipse.jetty:jetty-security:9.4.56.v20240826'
+            force 'org.eclipse.jetty:jetty-servlet:9.4.56.v20240826'
+            force 'org.eclipse.jetty:jetty-webapp:9.4.56.v20240826'
+            force 'org.eclipse.jetty:jetty-proxy:9.4.56.v20240826'
+            force 'org.eclipse.jetty:jetty-continuation:9.4.56.v20240826'
+            force 'org.eclipse.jetty:jetty-util-ajax:9.4.56.v20240826'
+            force 'org.eclipse.jetty:jetty-xml:9.4.56.v20240826'
+            force 'org.eclipse.jetty.http2:http2-server:9.4.56.v20240826'
+            force 'org.eclipse.jetty.http2:http2-common:9.4.56.v20240826'
+            force 'org.eclipse.jetty.http2:http2-hpack:9.4.56.v20240826'
+            // Latest secure versions
+            force 'commons-io:commons-io:2.18.0'
+            force 'net.minidev:json-smart:2.5.2'
+            force 'com.jayway.jsonpath:json-path:2.9.0'
+            force 'com.google.guava:guava:33.4.0-jre'
+            force 'org.xmlunit:xmlunit-core:2.10.0'
+        }
+
+        // Exclude problematic dependencies
+        exclude group: 'commons-fileupload', module: 'commons-fileupload'
+    }
+
     dependencies {
         implementation('org.apache.httpcomponents:httpclient:4.5.13') {
             exclude group: 'commons-codec', module: 'commons-codec'
         }
         implementation 'commons-codec:commons-codec:1.13'
-        implementation 'org.apache.commons:commons-lang3:3.12.0'
+        implementation 'org.apache.commons:commons-lang3:3.18.0'
         implementation 'com.fasterxml.jackson.core:jackson-core:2.19.1'
         implementation 'com.fasterxml.jackson.core:jackson-databind:2.19.1'
         implementation 'com.fasterxml.jackson.core:jackson-annotations:2.19.1'
-        api 'org.jfrog.filespecs:file-specs-java:1.1.1'
+        api 'org.jfrog.filespecs:file-specs-java:1.1.2'
     }
 
     task sourcesJar(type: Jar, dependsOn: classes) {

@@ -7,7 +7,7 @@ dependencies {
     implementation addSlf4J('slf4j-api')
     implementation addSlf4J('log4j-over-slf4j')
     implementation addSlf4J('jcl-over-slf4j')
-    implementation 'commons-io:commons-io:2.17.0'
+    implementation 'commons-io:commons-io:2.18.0'
     testImplementation group: 'org.hamcrest', name: 'hamcrest-core', version: '2.2'
     testImplementation group: 'org.testng', name: 'testng', version: '7.5.1'
     /*
@@ -15,7 +15,7 @@ dependencies {
      * https://github.com/jfrog/artifactory-client-java/issues/43
      * https://github.com/jfrog/artifactory-client-java/issues/232
      */
-    testRuntimeOnly group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.9'
+    testRuntimeOnly group: 'ch.qos.logback', name: 'logback-classic', version: '1.3.15'
 }
 
 task createReleasePropertiesFile(type: Exec) {

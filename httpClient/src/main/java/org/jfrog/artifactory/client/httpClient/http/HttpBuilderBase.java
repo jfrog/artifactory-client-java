@@ -399,7 +399,7 @@ public abstract class HttpBuilderBase<T extends HttpBuilderBase<?>> {
                 sslContext = sslBuilder.build();
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new RuntimeException("Error building SSLContext: " + e.getMessage(), e);
         }
         return sslContext != null ? sslContext : SSLContexts.createDefault();
     }
