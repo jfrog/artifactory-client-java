@@ -55,7 +55,7 @@ pipelines:
             - git merge origin/dev
 
             # Run audit
-            - jf audit --fail=${AUDIT_FAIL:-false}
+            - jf audit
 
             # Update version
             - sed -i "s/\(currentVersion=\).*\$/\1${NEXT_VERSION}/" gradle.properties
