@@ -12,7 +12,7 @@ pipelines:
         readOnly:
           NEXT_VERSION: 0.0.0
           NEXT_DEVELOPMENT_VERSION: 0.0.x-SNAPSHOT
-          SKIP_AUDIT: false
+          AUDIT_FAIL: false
 
     steps:
       - name: Release
@@ -55,7 +55,7 @@ pipelines:
             - git merge origin/dev
 
             # Run audit
-            - if [ "$SKIP_AUDIT" != "true" ]; then jf audit; fi
+            - jf audit --fail=${AUDIT_FAIL:-false}
 
             # Update version
             - sed -i "s/\(currentVersion=\).*\$/\1${NEXT_VERSION}/" gradle.properties
