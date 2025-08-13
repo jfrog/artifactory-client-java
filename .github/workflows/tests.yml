@@ -29,7 +29,6 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: ${{ github.event.pull_request.head.sha }}
-
       - name: Setup Go with cache
         uses: jfrog/.github/actions/install-go-with-cache@main
 
@@ -45,7 +44,6 @@ jobs:
           distribution: "zulu"
 
       - name: Wait for Artifactory
-        shell: bash
         run: |
           for i in {1..30}; do
             if curl -sf http://localhost:8081/artifactory/api/system/ping; then
