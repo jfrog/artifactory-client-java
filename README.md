@@ -1,5 +1,4 @@
 <div align="center">
-
 # Artifactory Java Client
 
 [![Scanned by Frogbot](https://raw.github.com/jfrog/frogbot/master/images/frogbot-badge.svg)](https://github.com/jfrog/frogbot#readme)
