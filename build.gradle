@@ -64,7 +64,7 @@ subprojects {
             // Use latest confirmed available Jetty 9.4.x versions
             force 'org.eclipse.jetty:jetty-server:9.4.56.v20240826'
             force 'org.eclipse.jetty:jetty-servlets:9.4.56.v20240826'
-            force 'org.eclipse.jetty:jetty-http:9.4.56.v20240826'
+            force 'org.eclipse.jetty:jetty-http:12.0.12'
             force 'org.eclipse.jetty:jetty-util:9.4.56.v20240826'
             force 'org.eclipse.jetty:jetty-io:9.4.56.v20240826'
             force 'org.eclipse.jetty:jetty-client:9.4.56.v20240826'
