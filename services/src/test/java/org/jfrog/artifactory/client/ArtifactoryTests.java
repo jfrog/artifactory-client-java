@@ -2,10 +2,19 @@ package org.jfrog.artifactory.client;
 
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpDelete;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpHead;
+import org.apache.http.client.methods.HttpOptions;
+import org.apache.http.client.methods.HttpPatch;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
+import org.apache.http.client.methods.HttpRequestWrapper;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.protocol.HttpProcessor;
 import org.jfrog.artifactory.client.httpClient.http.ProxyConfig;
 import org.jfrog.artifactory.client.impl.ArtifactoryRequestImpl;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
@@ -18,6 +27,19 @@ import static org.testng.Assert.assertEquals;
  * @since 30/07/12
  */
 public class ArtifactoryTests {
+
+    @DataProvider(name = "httpMethods")
+    public Object[][] getHttpMethodData() {
+        return new Object[][]{
+                {ArtifactoryRequest.Method.GET, HttpGet.class},
+                {ArtifactoryRequest.Method.POST, HttpPost.class},
+                {ArtifactoryRequest.Method.PUT, HttpPut.class},
+                {ArtifactoryRequest.Method.DELETE, HttpDelete.class},
+                {ArtifactoryRequest.Method.PATCH, HttpPatch.class},
+                {ArtifactoryRequest.Method.OPTIONS, HttpOptions.class},
+                {ArtifactoryRequest.Method.HEAD, HttpHead.class},
+        };
+    }
 
     @Test
     public void urlsTest() throws IOException {
@@ -207,5 +229,23 @@ public class ArtifactoryTests {
         }
         assertEquals(requestInterceptions.intValue(), 0);
         assertEquals(responseInterceptions.intValue(), 0);
+    }
+
+    @Test(dataProvider = "httpMethods")
+    public void httpMethodsTest(ArtifactoryRequest.Method method, Class<?> expectedClass) {
+        ArtifactoryRequest artifactoryRequest = new ArtifactoryRequestImpl()
+                .method(method);
+
+        ArtifactoryClientBuilder builder = ArtifactoryClientBuilder.create();
+        builder.setUrl("http://local/");
+        builder.addInterceptorLast((httpRequest, httpContext) ->
+                assertEquals(((HttpRequestWrapper) httpRequest).getOriginal().getClass(), expectedClass)
+        );
+
+        try {
+            builder.build().restCall(artifactoryRequest);
+        } catch (IOException e) {
+            // We expect an IOException since http://local/ is not a valid URL, but the interceptor should have been called.
+        }
     }
 }
