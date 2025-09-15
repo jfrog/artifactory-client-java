@@ -196,6 +196,10 @@ public class ArtifactoryImpl implements Artifactory {
                 httpRequest = new HttpOptions();
                 break;
 
+            case HEAD:
+                httpRequest = new HttpHead();
+                break;
+
             default:
                 throw new IllegalArgumentException("Unsupported request method.");
         }
