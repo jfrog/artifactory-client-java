@@ -153,10 +153,25 @@ abstract class BaseRepositoryTests extends ArtifactoryTestsBase {
         }
 
         if (prepareVirtualRepo) {
-            RepositorySettings settings = getRepositorySettings(RepositoryTypeImpl.VIRTUAL)
-            artifactory.repositories().create(0, genericRepo)
+            RepositorySettings virtualSettings = getRepositorySettings(RepositoryTypeImpl.VIRTUAL)
             def repos = new ArrayList<String>()
-            repos.add(genericRepo.getKey())
+            
+            // Determine which repository to use for the virtual repo
+            // For package types that don't support local repos (like P2), use remote repo
+            // Otherwise, create a local repo with matching package type
+            if (prepareLocalRepo && localRepo != null) {
+                // Use the existing local repo if it's prepared
+                artifactory.repositories().create(0, localRepo)
+                repos.add(localRepo.getKey())
+            } else if (prepareRemoteRepo && remoteRepo != null) {
+                // Use remote repo for package types that don't support local repos (e.g., P2)
+                artifactory.repositories().create(0, remoteRepo)
+                repos.add(remoteRepo.getKey())
+            } else if (prepareGenericRepo && genericRepo != null) {
+                // Fallback to generic repo
+                artifactory.repositories().create(0, genericRepo)
+                repos.add(genericRepo.getKey())
+            }
 
             virtualRepo = artifactory.repositories().builders().virtualRepositoryBuilder()
                     .key("$REPO_NAME_PREFIX-virtual-$id")
@@ -166,9 +181,9 @@ abstract class BaseRepositoryTests extends ArtifactoryTestsBase {
                     .excludesPattern("org/${rnd.nextInt()}/**")
                     .includesPattern("org/${rnd.nextInt()}/**")
                     .repositories(repos)
-                    .repositorySettings(settings)
+                    .repositorySettings(virtualSettings)
                     .customProperties(customProperties)
-                    .defaultDeploymentRepo(repos.last())
+                    .defaultDeploymentRepo(repos.isEmpty() ? null : repos.last())
                     .build()
         }
     }
