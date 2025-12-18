@@ -155,22 +155,40 @@ abstract class BaseRepositoryTests extends ArtifactoryTestsBase {
         if (prepareVirtualRepo) {
             RepositorySettings virtualSettings = getRepositorySettings(RepositoryTypeImpl.VIRTUAL)
             def repos = new ArrayList<String>()
+            Repository repoForVirtual = null
             
             // Determine which repository to use for the virtual repo
             // For package types that don't support local repos (like P2), use remote repo
-            // Otherwise, create a local repo with matching package type
-            if (prepareLocalRepo && localRepo != null) {
-                // Use the existing local repo if it's prepared
-                artifactory.repositories().create(0, localRepo)
-                repos.add(localRepo.getKey())
+            // Otherwise, create a dedicated local repo with matching package type
+            if (prepareLocalRepo) {
+                // Create a dedicated local repo for virtual repo with matching package type
+                RepositorySettings localSettingsForVirtual = getRepositorySettings(RepositoryTypeImpl.LOCAL)
+                XraySettings virtualXraySettings = new XraySettingsImpl()
+                repoForVirtual = artifactory.repositories().builders().localRepositoryBuilder()
+                        .key("$REPO_NAME_PREFIX-for-virtual-$id")
+                        .description("for-virtual-$id")
+                        .notes("notes-${rnd.nextInt()}")
+                        .archiveBrowsingEnabled(rnd.nextBoolean())
+                        .blackedOut(rnd.nextBoolean())
+                        .excludesPattern("org/${rnd.nextInt()}/**")
+                        .includesPattern("org/${rnd.nextInt()}/**")
+                        .propertySets(Collections.emptyList())
+                        .repositorySettings(localSettingsForVirtual)
+                        .xraySettings(virtualXraySettings)
+                        .customProperties(customProperties)
+                        .build()
+                artifactory.repositories().create(0, repoForVirtual)
+                repos.add(repoForVirtual.getKey())
             } else if (prepareRemoteRepo && remoteRepo != null) {
                 // Use remote repo for package types that don't support local repos (e.g., P2)
-                artifactory.repositories().create(0, remoteRepo)
-                repos.add(remoteRepo.getKey())
+                repoForVirtual = remoteRepo
+                artifactory.repositories().create(0, repoForVirtual)
+                repos.add(repoForVirtual.getKey())
             } else if (prepareGenericRepo && genericRepo != null) {
                 // Fallback to generic repo
-                artifactory.repositories().create(0, genericRepo)
-                repos.add(genericRepo.getKey())
+                repoForVirtual = genericRepo
+                artifactory.repositories().create(0, repoForVirtual)
+                repos.add(repoForVirtual.getKey())
             }
 
             virtualRepo = artifactory.repositories().builders().virtualRepositoryBuilder()
@@ -185,6 +203,11 @@ abstract class BaseRepositoryTests extends ArtifactoryTestsBase {
                     .customProperties(customProperties)
                     .defaultDeploymentRepo(repos.isEmpty() ? null : repos.last())
                     .build()
+            
+            // Store reference to the repo created for virtual for cleanup
+            if (!prepareGenericRepo && repoForVirtual != null) {
+                genericRepo = repoForVirtual
+            }
         }
     }
 
