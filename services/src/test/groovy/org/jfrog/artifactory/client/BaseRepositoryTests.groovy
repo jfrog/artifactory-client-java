@@ -43,6 +43,7 @@ abstract class BaseRepositoryTests extends ArtifactoryTestsBase {
     protected Repository federatedRepo
     protected Repository remoteRepo
     protected Repository virtualRepo
+    protected Repository repoForVirtual  // Dedicated repo for virtual repo child
 
     protected XraySettings xraySettings
     protected Map<String, Object> customProperties
@@ -153,10 +154,74 @@ abstract class BaseRepositoryTests extends ArtifactoryTestsBase {
         }
 
         if (prepareVirtualRepo) {
-            RepositorySettings settings = getRepositorySettings(RepositoryTypeImpl.VIRTUAL)
-            artifactory.repositories().create(0, genericRepo)
+            RepositorySettings virtualSettings = getRepositorySettings(RepositoryTypeImpl.VIRTUAL)
             def repos = new ArrayList<String>()
-            repos.add(genericRepo.getKey())
+            
+            // Create a dedicated child repo for the virtual repo
+            // Use LOCAL settings if available, otherwise use VIRTUAL settings for package type compatibility
+            if (prepareLocalRepo) {
+                RepositorySettings localSettingsForVirtual = getRepositorySettings(RepositoryTypeImpl.LOCAL)
+                // If LOCAL settings are null, use VIRTUAL settings to ensure correct package type
+                if (localSettingsForVirtual == null) {
+                    localSettingsForVirtual = virtualSettings
+                }
+                XraySettings virtualXraySettings = new XraySettingsImpl()
+                repoForVirtual = artifactory.repositories().builders().localRepositoryBuilder()
+                        .key("$REPO_NAME_PREFIX-for-virtual-$id")
+                        .description("for-virtual-$id")
+                        .notes("notes-${rnd.nextInt()}")
+                        .archiveBrowsingEnabled(rnd.nextBoolean())
+                        .blackedOut(rnd.nextBoolean())
+                        .excludesPattern("org/${rnd.nextInt()}/**")
+                        .includesPattern("org/${rnd.nextInt()}/**")
+                        .propertySets(Collections.emptyList())
+                        .repositorySettings(localSettingsForVirtual)
+                        .xraySettings(virtualXraySettings)
+                        .customProperties(customProperties)
+                        .build()
+                artifactory.repositories().create(0, repoForVirtual)
+                repos.add(repoForVirtual.getKey())
+            } else if (prepareRemoteRepo) {
+                // For package types that don't support local repos (e.g., P2), create a SEPARATE remote repo
+                RepositorySettings remoteSettingsForVirtual = getRepositorySettings(RepositoryTypeImpl.REMOTE)
+                ContentSync contentSync = new ContentSyncImpl()
+                repoForVirtual = artifactory.repositories().builders().remoteRepositoryBuilder()
+                        .key("$REPO_NAME_PREFIX-remote-for-virtual-$id")
+                        .description("remote-for-virtual-$id")
+                        .notes("notes-${rnd.nextInt()}")
+                        .allowAnyHostAuth(rnd.nextBoolean())
+                        .archiveBrowsingEnabled(rnd.nextBoolean())
+                        .assumedOfflinePeriodSecs(rnd.nextLong())
+                        .enableCookieManagement(rnd.nextBoolean())
+                        .excludesPattern("org/${rnd.nextInt()}/**")
+                        .failedRetrievalCachePeriodSecs(rnd.nextInt())
+                        .hardFail(rnd.nextBoolean())
+                        .includesPattern("org/${rnd.nextInt()}/**")
+                        .missedRetrievalCachePeriodSecs(rnd.nextInt())
+                        .offline(rnd.nextBoolean())
+                        .password("password_${rnd.nextInt()}")
+                        .propertySets(Collections.emptyList())
+                        .retrievalCachePeriodSecs(rnd.nextInt())
+                        .shareConfiguration(rnd.nextBoolean())
+                        .socketTimeoutMillis(rnd.nextInt())
+                        .storeArtifactsLocally(ObjectUtils.defaultIfNull(storeArtifactsLocallyInRemoteRepo, rnd.nextBoolean()))
+                        .synchronizeProperties(rnd.nextBoolean())
+                        .unusedArtifactsCleanupPeriodHours(Math.abs(rnd.nextInt()))
+                        .url(remoteRepoUrl)
+                        .username("user_${rnd.nextInt()}")
+                        .repositorySettings(remoteSettingsForVirtual)
+                        .xraySettings(xraySettings)
+                        .contentSync(contentSync)
+                        .customProperties(customProperties)
+                        .build()
+                artifactory.repositories().create(0, repoForVirtual)
+                repos.add(repoForVirtual.getKey())
+            } else if (prepareGenericRepo && genericRepo != null) {
+                // Fallback to generic repo
+                repoForVirtual = genericRepo
+                artifactory.repositories().create(0, repoForVirtual)
+                repos.add(repoForVirtual.getKey())
+            }
 
             virtualRepo = artifactory.repositories().builders().virtualRepositoryBuilder()
                     .key("$REPO_NAME_PREFIX-virtual-$id")
@@ -166,9 +231,9 @@ abstract class BaseRepositoryTests extends ArtifactoryTestsBase {
                     .excludesPattern("org/${rnd.nextInt()}/**")
                     .includesPattern("org/${rnd.nextInt()}/**")
                     .repositories(repos)
-                    .repositorySettings(settings)
+                    .repositorySettings(virtualSettings)
                     .customProperties(customProperties)
-                    .defaultDeploymentRepo(repos.last())
+                    .defaultDeploymentRepo(repos.isEmpty() ? null : repos.last())
                     .build()
         }
     }
@@ -176,7 +241,8 @@ abstract class BaseRepositoryTests extends ArtifactoryTestsBase {
     @AfterMethod
     protected void tearDown() {
         // Invoking sequence is important! Delete in reverse dependency order
-        deleteRepoWithRetry(virtualRepo?.getKey())      // Delete virtual repo first (depends on generic)
+        deleteRepoWithRetry(virtualRepo?.getKey())      // Delete virtual repo first (depends on others)
+        deleteRepoWithRetry(repoForVirtual?.getKey())   // Delete the dedicated repo for virtual
         deleteRepoWithRetry(federatedRepo?.getKey())
         deleteRepoWithRetry(remoteRepo?.getKey())
         deleteRepoWithRetry(localRepo?.getKey())
