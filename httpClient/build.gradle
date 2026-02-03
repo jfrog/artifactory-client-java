@@ -1,4 +1,4 @@
-group 'org.jfrog.artifactory.client'
+group='org.jfrog.artifactory.client'
 
 apply plugin: 'java'
 
