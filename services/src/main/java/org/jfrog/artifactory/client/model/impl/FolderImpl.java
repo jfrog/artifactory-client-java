@@ -1,9 +1,9 @@
 package org.jfrog.artifactory.client.model.impl;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.jfrog.artifactory.client.model.Folder;
 import org.jfrog.artifactory.client.model.Item;
+import tools.jackson.databind.annotation.JsonDeserialize;
 
 import java.util.Date;
 import java.util.List;
@@ -38,6 +38,7 @@ public class FolderImpl extends ItemImpl implements Folder {
         return children;
     }
 
+    @com.fasterxml.jackson.databind.annotation.JsonDeserialize(contentAs = ItemImpl.class)
     @JsonDeserialize(contentAs = ItemImpl.class)
     private void setChildren(List<Item> children) {
         this.children = children;

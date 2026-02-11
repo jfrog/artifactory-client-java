@@ -1,8 +1,8 @@
 package org.jfrog.artifactory.client.model.impl;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.jfrog.artifactory.client.model.AllBuilds;
 import org.jfrog.artifactory.client.model.Build;
+import tools.jackson.databind.annotation.JsonDeserialize;
 
 import java.util.List;
 
@@ -27,6 +27,7 @@ public class AllBuildsImpl implements AllBuilds {
         return builds;
     }
 
+    @com.fasterxml.jackson.databind.annotation.JsonDeserialize(contentAs = BuildImpl.class)
     @JsonDeserialize(contentAs = BuildImpl.class)
     public void setBuilds(List<Build> builds) {
         this.builds = builds;

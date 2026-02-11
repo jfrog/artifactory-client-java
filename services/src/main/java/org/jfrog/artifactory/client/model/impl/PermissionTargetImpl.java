@@ -1,9 +1,9 @@
 package org.jfrog.artifactory.client.model.impl;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.jfrog.artifactory.client.model.PermissionTarget;
 import org.jfrog.artifactory.client.model.Principals;
+import tools.jackson.databind.annotation.JsonDeserialize;
 
 import java.util.List;
 
@@ -18,6 +18,7 @@ public class PermissionTargetImpl implements PermissionTarget {
     private String excludesPattern;
     private List<String> repositories;
     @JsonProperty("principals")
+    @com.fasterxml.jackson.databind.annotation.JsonDeserialize(as = PrincipalsImpl.class)
     @JsonDeserialize(as = PrincipalsImpl.class)
     private Principals principals;
 

@@ -4,12 +4,12 @@ import java.util.List;
 import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.jfrog.artifactory.client.model.ContentSync;
 import org.jfrog.artifactory.client.model.RemoteRepository;
 import org.jfrog.artifactory.client.model.RepositoryType;
 import org.jfrog.artifactory.client.model.repository.settings.RepositorySettings;
 import org.jfrog.artifactory.client.model.repository.settings.XraySettings;
+import tools.jackson.databind.annotation.JsonDeserialize;
 
 /**
  * @author jbaruch
@@ -38,6 +38,7 @@ public class RemoteRepositoryImpl extends NonVirtualRepositoryBase implements Re
     private boolean synchronizeProperties;
     private long assumedOfflinePeriodSecs;
     private boolean listRemoteFolderItems;
+    @com.fasterxml.jackson.databind.annotation.JsonDeserialize(as=ContentSyncImpl.class)
     @JsonDeserialize(as=ContentSyncImpl.class)
     @JsonProperty("contentSynchronisation")
     private ContentSync contentSync;

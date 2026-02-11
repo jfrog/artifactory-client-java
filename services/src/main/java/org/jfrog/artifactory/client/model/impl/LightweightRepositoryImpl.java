@@ -1,8 +1,8 @@
 package org.jfrog.artifactory.client.model.impl;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.jfrog.artifactory.client.model.LightweightRepository;
 import org.jfrog.artifactory.client.model.RepositoryType;
+import tools.jackson.databind.annotation.JsonDeserialize;
 
 /**
  * @author jbaruch
@@ -52,6 +52,7 @@ public class LightweightRepositoryImpl implements LightweightRepository {
         return type;
     }
 
+    @com.fasterxml.jackson.databind.annotation.JsonDeserialize(as = RepositoryTypeImpl.class)
     @JsonDeserialize(as = RepositoryTypeImpl.class)
     private void setType(RepositoryType type) {
         this.type = type;

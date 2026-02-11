@@ -1,19 +1,22 @@
 package org.jfrog.artifactory.client.model.impl;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import org.jfrog.artifactory.client.model.ContentSync;
+import tools.jackson.databind.annotation.JsonDeserialize;
 
 public class ContentSyncImpl implements ContentSync {
 
     private boolean enabled;
 
+    @com.fasterxml.jackson.databind.annotation.JsonDeserialize(as = EnabledHolderImpl.class)
     @JsonDeserialize(as = EnabledHolderImpl.class)
     private EnabledHolder statistics;
 
+    @com.fasterxml.jackson.databind.annotation.JsonDeserialize(as = EnabledHolderImpl.class)
     @JsonDeserialize(as = EnabledHolderImpl.class)
     private EnabledHolder properties;
 
+    @com.fasterxml.jackson.databind.annotation.JsonDeserialize(as = OriginAbsenceDetectionHolderImpl.class)
     @JsonDeserialize(as = OriginAbsenceDetectionHolderImpl.class)
     private OriginAbsenceDetectionHolder source;
 
