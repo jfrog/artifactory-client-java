@@ -30,8 +30,11 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.sha }}
 
-      - name: Setup Go with cache
-        uses: jfrog/.github/actions/install-go-with-cache@main
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: 1.22.x
+          cache: false
 
       - name: Install local Artifactory
         uses: jfrog/.github/actions/install-local-artifactory@main
