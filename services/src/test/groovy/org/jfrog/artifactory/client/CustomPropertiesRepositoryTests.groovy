@@ -3,6 +3,7 @@ package org.jfrog.artifactory.client
 import org.jfrog.artifactory.client.model.RepositoryType
 import org.jfrog.artifactory.client.model.impl.RepositoryTypeImpl
 import org.jfrog.artifactory.client.model.repository.settings.RepositorySettings
+import org.jfrog.artifactory.client.model.repository.settings.impl.GenericRepositorySettingsImpl
 import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
 
@@ -14,6 +15,9 @@ class CustomPropertiesRepositoryTests extends BaseRepositoryTests {
 
     @Override
     RepositorySettings getRepositorySettings(RepositoryType repositoryType) {
+        if (repositoryType == RepositoryTypeImpl.VIRTUAL) {
+            return new GenericRepositorySettingsImpl()
+        }
         return null
     }
 
