@@ -156,7 +156,11 @@ abstract class BaseRepositoryTests extends ArtifactoryTestsBase {
 
         if (prepareVirtualRepo) {
             RepositorySettings settings = getRepositorySettings(RepositoryTypeImpl.VIRTUAL)
-            RepositorySettings includedRepoSettings = settings ?: new GenericRepositorySettingsImpl()
+            RepositorySettings includedRepoSettings = getRepositorySettings(RepositoryTypeImpl.LOCAL)
+            
+            if (includedRepoSettings == null) {
+                includedRepoSettings = new GenericRepositorySettingsImpl()
+            }
             
             virtualRepoIncludedRepo = artifactory.repositories().builders().localRepositoryBuilder()
                     .key("$REPO_NAME_PREFIX-virtual-included-$id")
