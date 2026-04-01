@@ -23,6 +23,7 @@ class CustomPropertiesRepositoryTests extends BaseRepositoryTests {
 
     @BeforeMethod
     protected void setUp() {
+        
         customProperties = [
                 "enableComposerSupport": true
         ]
