@@ -154,9 +154,10 @@ abstract class BaseRepositoryTests extends ArtifactoryTestsBase {
 
         if (prepareVirtualRepo) {
             RepositorySettings settings = getRepositorySettings(RepositoryTypeImpl.VIRTUAL)
-            artifactory.repositories().create(0, genericRepo)
+            Repository repoToInclude = (settings?.packageType == 'generic' || settings == null) ? genericRepo : localRepo
+            artifactory.repositories().create(0, repoToInclude)
             def repos = new ArrayList<String>()
-            repos.add(genericRepo.getKey())
+            repos.add(repoToInclude.getKey())
 
             virtualRepo = artifactory.repositories().builders().virtualRepositoryBuilder()
                     .key("$REPO_NAME_PREFIX-virtual-$id")
