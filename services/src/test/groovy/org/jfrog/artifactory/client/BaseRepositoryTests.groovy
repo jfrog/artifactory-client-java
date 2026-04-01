@@ -154,7 +154,7 @@ abstract class BaseRepositoryTests extends ArtifactoryTestsBase {
 
         if (prepareVirtualRepo) {
             RepositorySettings settings = getRepositorySettings(RepositoryTypeImpl.VIRTUAL)
-            Repository repoToInclude = (settings?.packageType == 'generic' || settings == null) ? genericRepo : localRepo
+            Repository repoToInclude = (settings == null || settings.packageType?.toString() == 'generic') ? genericRepo : localRepo
             artifactory.repositories().create(0, repoToInclude)
             def repos = new ArrayList<String>()
             repos.add(repoToInclude.getKey())
