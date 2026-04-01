@@ -17,6 +17,7 @@ import org.jfrog.artifactory.client.model.impl.ContentSyncImpl
 import org.jfrog.artifactory.client.model.impl.RepositoryTypeImpl
 import org.jfrog.artifactory.client.model.repository.settings.RepositorySettings
 import org.jfrog.artifactory.client.model.repository.settings.XraySettings
+import org.jfrog.artifactory.client.model.repository.settings.impl.GenericRepositorySettingsImpl
 import org.jfrog.artifactory.client.model.xray.settings.impl.XraySettingsImpl
 import org.testng.annotations.AfterMethod
 import org.testng.annotations.BeforeMethod
@@ -246,7 +247,7 @@ abstract class BaseRepositoryTests extends ArtifactoryTestsBase {
         deleteRepoWithRetry(federatedRepo?.getKey())
         deleteRepoWithRetry(remoteRepo?.getKey())
         deleteRepoWithRetry(localRepo?.getKey())
-        deleteRepoWithRetry(genericRepo?.getKey())      // Delete generic repo last (after dependents)
+        deleteRepoWithRetry(genericRepo?.getKey())
         repoUniqueId++
     }
 

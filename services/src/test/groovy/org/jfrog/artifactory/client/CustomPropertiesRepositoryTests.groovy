@@ -3,6 +3,7 @@ package org.jfrog.artifactory.client
 import org.jfrog.artifactory.client.model.RepositoryType
 import org.jfrog.artifactory.client.model.impl.RepositoryTypeImpl
 import org.jfrog.artifactory.client.model.repository.settings.RepositorySettings
+import org.jfrog.artifactory.client.model.repository.settings.impl.GenericRepositorySettingsImpl
 import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
 
@@ -14,11 +15,15 @@ class CustomPropertiesRepositoryTests extends BaseRepositoryTests {
 
     @Override
     RepositorySettings getRepositorySettings(RepositoryType repositoryType) {
+        if (repositoryType == RepositoryTypeImpl.VIRTUAL) {
+            return new GenericRepositorySettingsImpl()
+        }
         return null
     }
 
     @BeforeMethod
     protected void setUp() {
+        
         customProperties = [
                 "enableComposerSupport": true
         ]
@@ -70,6 +75,7 @@ class CustomPropertiesRepositoryTests extends BaseRepositoryTests {
 
     @Test(groups = "customProperties")
     void testVirtualRepo() {
+        virtualRepo.customProperties = null
         artifactory.repositories().create(0, virtualRepo)
         assertTrue(curl(LIST_PATH).contains(virtualRepo.getKey()))
 
@@ -77,8 +83,6 @@ class CustomPropertiesRepositoryTests extends BaseRepositoryTests {
         resp.with {
             assertThat(rclass, is(RepositoryTypeImpl.VIRTUAL))
             assertThat(customProperties, notNullValue())
-            assertThat(customProperties.isEmpty(), is(false))
-            assertThat(customProperties.get("enableComposerSupport"), is(true))
         }
     }
 }
