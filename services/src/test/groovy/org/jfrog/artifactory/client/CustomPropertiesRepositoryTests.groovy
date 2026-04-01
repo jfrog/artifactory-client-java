@@ -15,6 +15,8 @@ class CustomPropertiesRepositoryTests extends BaseRepositoryTests {
     @Override
     RepositorySettings getRepositorySettings(RepositoryType repositoryType) {
         return null
+
+        
     }
 
 
