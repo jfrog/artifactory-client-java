@@ -63,13 +63,17 @@ jobs:
       - name: Cleanup test repositories
         run: |
           echo "Cleaning up any leftover test repositories..."
-          curl -u admin:password -X GET "http://localhost:8081/artifactory/api/repositories" | \
-            grep -o '"key":"rt-client-java-[^"]*"' | \
-            sed 's/"key":"//;s/"$//' | \
-            while read repo; do
+          REPOS=$(curl -s -u admin:password "http://localhost:8081/artifactory/api/repositories" | grep -o 'rt-client-java-[a-z0-9-]*' || true)
+          if [ -n "$REPOS" ]; then
+            echo "Found repositories to delete:"
+            echo "$REPOS"
+            for repo in $REPOS; do
               echo "Deleting repository: $repo"
-              curl -u admin:password -X DELETE "http://localhost:8081/artifactory/api/repositories/$repo" || true
+              curl -s -u admin:password -X DELETE "http://localhost:8081/artifactory/api/repositories/$repo" || true
             done
+          else
+            echo "No test repositories found to clean up"
+          fi
           echo "Cleanup complete"
 
       - name: Run tests
