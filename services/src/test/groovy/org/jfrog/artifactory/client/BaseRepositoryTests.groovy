@@ -17,6 +17,7 @@ import org.jfrog.artifactory.client.model.impl.ContentSyncImpl
 import org.jfrog.artifactory.client.model.impl.RepositoryTypeImpl
 import org.jfrog.artifactory.client.model.repository.settings.RepositorySettings
 import org.jfrog.artifactory.client.model.repository.settings.XraySettings
+import org.jfrog.artifactory.client.model.repository.settings.impl.GenericRepositorySettingsImpl
 import org.jfrog.artifactory.client.model.xray.settings.impl.XraySettingsImpl
 import org.testng.annotations.AfterMethod
 import org.testng.annotations.BeforeMethod
@@ -59,7 +60,7 @@ abstract class BaseRepositoryTests extends ArtifactoryTestsBase {
         String id = Long.toString(repoUniqueId)
         println "[SETUP] Starting test setup for repo id: $id at ${new Date()}"
         if (prepareGenericRepo) {
-            RepositorySettings settings = getRepositorySettings(RepositoryTypeImpl.LOCAL)
+            RepositorySettings settings = new GenericRepositorySettingsImpl()
 
             XraySettings genericXraySettings = new XraySettingsImpl()
             genericRepo = artifactory.repositories().builders().localRepositoryBuilder()
