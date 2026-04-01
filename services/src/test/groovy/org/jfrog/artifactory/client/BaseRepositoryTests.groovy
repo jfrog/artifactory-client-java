@@ -44,6 +44,7 @@ abstract class BaseRepositoryTests extends ArtifactoryTestsBase {
     protected Repository federatedRepo
     protected Repository remoteRepo
     protected Repository virtualRepo
+    protected Repository virtualRepoIncludedRepo
 
     protected XraySettings xraySettings
     protected Map<String, Object> customProperties
@@ -60,7 +61,7 @@ abstract class BaseRepositoryTests extends ArtifactoryTestsBase {
         String id = Long.toString(repoUniqueId)
         println "[SETUP] Starting test setup for repo id: $id at ${new Date()}"
         if (prepareGenericRepo) {
-            RepositorySettings settings = new GenericRepositorySettingsImpl()
+            RepositorySettings settings = getRepositorySettings(RepositoryTypeImpl.LOCAL)
 
             XraySettings genericXraySettings = new XraySettingsImpl()
             genericRepo = artifactory.repositories().builders().localRepositoryBuilder()
@@ -155,10 +156,25 @@ abstract class BaseRepositoryTests extends ArtifactoryTestsBase {
 
         if (prepareVirtualRepo) {
             RepositorySettings settings = getRepositorySettings(RepositoryTypeImpl.VIRTUAL)
-            Repository repoToInclude = (settings == null || settings.packageType?.toString() == 'generic') ? genericRepo : localRepo
-            artifactory.repositories().create(0, repoToInclude)
+            RepositorySettings includedRepoSettings = settings ?: new GenericRepositorySettingsImpl()
+            
+            virtualRepoIncludedRepo = artifactory.repositories().builders().localRepositoryBuilder()
+                    .key("$REPO_NAME_PREFIX-virtual-included-$id")
+                    .description("virtual-included-$id")
+                    .notes("notes-${rnd.nextInt()}")
+                    .archiveBrowsingEnabled(rnd.nextBoolean())
+                    .blackedOut(rnd.nextBoolean())
+                    .excludesPattern("org/${rnd.nextInt()}/**")
+                    .includesPattern("org/${rnd.nextInt()}/**")
+                    .propertySets(Collections.emptyList())
+                    .repositorySettings(includedRepoSettings)
+                    .xraySettings(new XraySettingsImpl())
+                    .customProperties(new HashMap<String, Object>())
+                    .build()
+            
+            artifactory.repositories().create(0, virtualRepoIncludedRepo)
             def repos = new ArrayList<String>()
-            repos.add(repoToInclude.getKey())
+            repos.add(virtualRepoIncludedRepo.getKey())
 
             virtualRepo = artifactory.repositories().builders().virtualRepositoryBuilder()
                     .key("$REPO_NAME_PREFIX-virtual-$id")
@@ -178,11 +194,12 @@ abstract class BaseRepositoryTests extends ArtifactoryTestsBase {
     @AfterMethod
     protected void tearDown() {
         // Invoking sequence is important! Delete in reverse dependency order
-        deleteRepoWithRetry(virtualRepo?.getKey())      // Delete virtual repo first (depends on generic)
+        deleteRepoWithRetry(virtualRepo?.getKey())      // Delete virtual repo first (depends on included repo)
+        deleteRepoWithRetry(virtualRepoIncludedRepo?.getKey())  // Delete the repo included in virtual repo
         deleteRepoWithRetry(federatedRepo?.getKey())
         deleteRepoWithRetry(remoteRepo?.getKey())
         deleteRepoWithRetry(localRepo?.getKey())
-        deleteRepoWithRetry(genericRepo?.getKey())      // Delete generic repo last (after dependents)
+        deleteRepoWithRetry(genericRepo?.getKey())
         repoUniqueId++
     }
 
