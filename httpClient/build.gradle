@@ -10,3 +10,18 @@ dependencies {
     testImplementation group: 'org.testng', name: 'testng', version: '7.5.1'
     testImplementation group: 'org.wiremock', name: 'wiremock', version: '3.12.1'
 }
+
+// wiremock 3.x requires Java 11+; override test classpath attributes so Gradle
+// resolves it correctly while keeping production code at Java 8
+configurations {
+    testCompileClasspath {
+        attributes {
+            attribute(Attribute.of("org.gradle.jvm.version", Integer), 11)
+        }
+    }
+    testRuntimeClasspath {
+        attributes {
+            attribute(Attribute.of("org.gradle.jvm.version", Integer), 11)
+        }
+    }
+}
