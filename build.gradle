@@ -2,23 +2,23 @@ buildscript {
     repositories {
         mavenCentral()
         maven {
-            url "https://releases.jfrog.io/artifactory/oss-releases"
+            url="https://releases.jfrog.io/artifactory/oss-releases"
         }
     }
     dependencies {
-        classpath(group: 'org.jfrog.buildinfo', name: 'build-info-extractor-gradle', version: '4+')
+        classpath('org.jfrog.buildinfo:build-info-extractor-gradle:6+')
     }
 }
 
 plugins {
-    id 'io.github.gradle-nexus.publish-plugin' version '1.0.0'
+    id 'io.github.gradle-nexus.publish-plugin' version '2.0.0'
 }
 
 allprojects {
     repositories {
         mavenCentral()
         maven {
-            url "https://releases.jfrog.io/artifactory/oss-releases"
+            url="https://releases.jfrog.io/artifactory/oss-releases"
         }
     }
 
@@ -57,9 +57,10 @@ nexusPublishing {
 subprojects {
     apply plugin: 'java-library'
     apply plugin: 'signing'
-
-    sourceCompatibility = 1.8
-    targetCompatibility = 1.8
+    java {
+        sourceCompatibility = 1.8
+        targetCompatibility = 1.8
+    }
 
     // Force secure versions to fix vulnerabilities
     configurations.all {
@@ -125,9 +126,9 @@ subprojects {
     test {
         useTestNG()
         testLogging {
-            exceptionFormat "full"
+            exceptionFormat="full"
             events "started", "passed", "skipped", "failed", "standardOut", "standardError"
-            minGranularity 0
+            minGranularity=0
         }
         ignoreFailures = System.getenv("IGNORE_FAILURES") ? System.getenv("IGNORE_FAILURES").toBoolean() : false
     }
@@ -169,7 +170,7 @@ subprojects {
     }
 
     signing {
-        required { !version.endsWith('-SNAPSHOT') }
+        required={ !version.endsWith('-SNAPSHOT') }
         def signingKey = findProperty("signingKey")
         def signingPassword = findProperty("signingPassword")
         useInMemoryPgpKeys(signingKey, signingPassword)

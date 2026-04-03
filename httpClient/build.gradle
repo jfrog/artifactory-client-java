@@ -1,4 +1,4 @@
-group 'org.jfrog.artifactory.client'
+group='org.jfrog.artifactory.client'
 
 apply plugin: 'java'
 
@@ -7,6 +7,6 @@ repositories {
 }
 
 dependencies {
-    testImplementation group: 'org.testng', name: 'testng', version: '7.5.1'
-    testImplementation group: 'com.github.tomakehurst', name: 'wiremock-jre8', version: '2.35.2'
+    testImplementation 'org.testng:testng:7.5.1'
+    testImplementation 'com.github.tomakehurst:wiremock-jre8:2.35.2'
 }

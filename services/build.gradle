@@ -8,14 +8,14 @@ dependencies {
     implementation addSlf4J('log4j-over-slf4j')
     implementation addSlf4J('jcl-over-slf4j')
     implementation 'commons-io:commons-io:2.18.0'
-    testImplementation group: 'org.hamcrest', name: 'hamcrest-core', version: '2.2'
-    testImplementation group: 'org.testng', name: 'testng', version: '7.5.1'
+    testImplementation 'org.hamcrest:hamcrest-core:2.2'
+    testImplementation 'org.testng:testng:7.5.1'
     /*
      * Don't depend upon a specific logging implementation as a compile or runtime dependency.
      * https://github.com/jfrog/artifactory-client-java/issues/43
      * https://github.com/jfrog/artifactory-client-java/issues/232
      */
-    testRuntimeOnly group: 'ch.qos.logback', name: 'logback-classic', version: '1.3.16'
+    testRuntimeOnly 'ch.qos.logback:logback-classic:1.3.16'
 }
 
 task createReleasePropertiesFile(type: Exec) {
@@ -26,11 +26,11 @@ task createReleasePropertiesFile(type: Exec) {
 }
 
 def addGroovy(name) {
-    [group: 'org.apache.groovy', name: name, version: '4.0.23']
+    "org.apache.groovy:${name}:4.0.23"
 }
 
 def addSlf4J(name) {
-    [group: 'org.slf4j', name: name, version: '1.7.32']
+    "org.slf4j:${name}:1.7.32"
 }
 
 configurations {
