@@ -15,7 +15,7 @@ dependencies {
      * https://github.com/jfrog/artifactory-client-java/issues/43
      * https://github.com/jfrog/artifactory-client-java/issues/232
      */
-    testRuntimeOnly group: 'ch.qos.logback', name: 'logback-classic', version: '1.3.16'
+    testRuntimeOnly group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.36'
 }
 
 task createReleasePropertiesFile(type: Exec) {
