@@ -64,17 +64,6 @@ subprojects {
     // Force secure versions to fix vulnerabilities
     configurations.all {
         resolutionStrategy {
-            // Force Jetty 12.x (used by wiremock 3.x) - fixes CVE-2026-1225
-            force 'org.eclipse.jetty:jetty-server:12.0.12'
-            force 'org.eclipse.jetty:jetty-http:12.0.12'
-            force 'org.eclipse.jetty:jetty-util:12.0.12'
-            force 'org.eclipse.jetty:jetty-io:12.0.12'
-            force 'org.eclipse.jetty:jetty-client:12.0.12'
-            force 'org.eclipse.jetty:jetty-util-ajax:12.0.12'
-            force 'org.eclipse.jetty:jetty-xml:12.0.12'
-            force 'org.eclipse.jetty.http2:http2-server:12.0.12'
-            force 'org.eclipse.jetty.http2:http2-common:12.0.12'
-            force 'org.eclipse.jetty.http2:http2-hpack:12.0.12'
             // Latest secure versions
             force 'commons-io:commons-io:2.18.0'
             force 'net.minidev:json-smart:2.5.2'
