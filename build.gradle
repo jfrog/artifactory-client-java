@@ -64,30 +64,6 @@ subprojects {
     // Force secure versions to fix vulnerabilities
     configurations.all {
         resolutionStrategy {
-            // Use latest confirmed available Jetty 9.4.x versions - consistent versions
-            force 'org.eclipse.jetty:jetty-server:9.4.58.v20250814'
-            force 'org.eclipse.jetty:jetty-servlets:9.4.58.v20250814'
-            force 'org.eclipse.jetty:jetty-http:9.4.58.v20250814'
-            force 'org.eclipse.jetty:jetty-util:9.4.58.v20250814'
-            force 'org.eclipse.jetty:jetty-io:9.4.58.v20250814'
-            force 'org.eclipse.jetty:jetty-client:9.4.58.v20250814'
-            force 'org.eclipse.jetty:jetty-security:9.4.58.v20250814'
-            force 'org.eclipse.jetty:jetty-servlet:9.4.58.v20250814'
-            force 'org.eclipse.jetty:jetty-webapp:9.4.58.v20250814'
-            force 'org.eclipse.jetty:jetty-proxy:9.4.58.v20250814'
-            force 'org.eclipse.jetty:jetty-continuation:9.4.58.v20250814'
-            force 'org.eclipse.jetty:jetty-util-ajax:9.4.58.v20250814'
-            force 'org.eclipse.jetty:jetty-xml:9.4.58.v20250814'
-            force 'org.eclipse.jetty.http2:http2-server:9.4.58.v20250814'
-            force 'org.eclipse.jetty.http2:http2-common:9.4.58.v20250814'
-            force 'org.eclipse.jetty.http2:http2-hpack:9.4.58.v20250814'
-            // Force ALPN modules that wiremock depends on
-            force 'org.eclipse.jetty:jetty-alpn-server:9.4.58.v20250814'
-            force 'org.eclipse.jetty:jetty-alpn-java-server:9.4.58.v20250814'
-            force 'org.eclipse.jetty:jetty-alpn-openjdk8-server:9.4.58.v20250814'
-            force 'org.eclipse.jetty:jetty-alpn-java-client:9.4.58.v20250814'
-            force 'org.eclipse.jetty:jetty-alpn-openjdk8-client:9.4.58.v20250814'
-            force 'org.eclipse.jetty:jetty-alpn-client:9.4.58.v20250814'
             // Latest secure versions
             force 'commons-io:commons-io:2.18.0'
             force 'net.minidev:json-smart:2.5.2'

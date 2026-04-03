@@ -8,5 +8,7 @@ repositories {
 
 dependencies {
     testImplementation group: 'org.testng', name: 'testng', version: '7.5.1'
-    testImplementation group: 'com.github.tomakehurst', name: 'wiremock-jre8', version: '2.35.2'
+    testImplementation group: 'com.github.tomakehurst', name: 'wiremock-jre8-standalone', version: '2.35.2'
+    testImplementation group: 'com.google.guava', name: 'guava', version: '33.4.0-jre'
+    testImplementation group: 'org.hamcrest', name: 'hamcrest-core', version: '2.2'
 }
