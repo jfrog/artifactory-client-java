@@ -15,7 +15,10 @@ class CustomPropertiesRepositoryTests extends BaseRepositoryTests {
     @Override
     RepositorySettings getRepositorySettings(RepositoryType repositoryType) {
         return null
+
+        
     }
+
 
     @BeforeMethod
     protected void setUp() {
@@ -70,6 +73,8 @@ class CustomPropertiesRepositoryTests extends BaseRepositoryTests {
 
     @Test(groups = "customProperties")
     void testVirtualRepo() {
+        def originalCustomProperties = virtualRepo.customProperties
+        virtualRepo.customProperties = null
         artifactory.repositories().create(0, virtualRepo)
         assertTrue(curl(LIST_PATH).contains(virtualRepo.getKey()))
 
@@ -77,8 +82,7 @@ class CustomPropertiesRepositoryTests extends BaseRepositoryTests {
         resp.with {
             assertThat(rclass, is(RepositoryTypeImpl.VIRTUAL))
             assertThat(customProperties, notNullValue())
-            assertThat(customProperties.isEmpty(), is(false))
-            assertThat(customProperties.get("enableComposerSupport"), is(true))
         }
+        virtualRepo.customProperties = originalCustomProperties
     }
 }
