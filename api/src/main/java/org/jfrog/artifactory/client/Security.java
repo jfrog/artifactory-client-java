@@ -3,6 +3,7 @@ package org.jfrog.artifactory.client;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.jfrog.artifactory.client.model.Group;
 import org.jfrog.artifactory.client.model.PermissionTarget;
+import org.jfrog.artifactory.client.model.PermissionTargetV2;
 import org.jfrog.artifactory.client.model.User;
 import org.jfrog.artifactory.client.model.builder.SecurityBuilders;
 
@@ -30,6 +31,8 @@ public interface Security {
 
     PermissionTarget permissionTarget(String name);
 
+    PermissionTargetV2 permissionTargetV2(String name);
+
     List<String> permissionTargets();
 
     void createOrUpdate(User user);
@@ -38,17 +41,25 @@ public interface Security {
 
     void createOrReplacePermissionTarget(PermissionTarget permissionTarget);
 
+    void createOrReplacePermissionTargetV2(PermissionTargetV2 permissionTarget);
+
     String deleteUser(String name);
 
     String deleteGroup(String name);
 
     String deletePermissionTarget(String name);
 
+    String deletePermissionTargetV2(String name);
+
     String getSecurityApi();
+
+    String getSecurityV2Api();
 
     String getSecurityUsersApi();
 
     String getSecurityPermissionsApi();
+
+    String getSecurityPermissionsV2Api();
 
     String getSecurityUserGroupsApi();
 }
