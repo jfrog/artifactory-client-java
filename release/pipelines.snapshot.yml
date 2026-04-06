@@ -39,6 +39,7 @@ pipelines:
             - jf gradlec --use-wrapper --deploy-ivy-desc=false --deploy-maven-desc --uses-plugin --repo-resolve ecosys-maven-remote --repo-deploy ecosys-oss-snapshot-local
 
             # Run audit
+            - export JFROG_CLI_LOG_LEVEL=DEBUG
             - jf audit
 
             # Delete former snapshots to make sure the release bundle will not contain the same artifacts
