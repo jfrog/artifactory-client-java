@@ -55,6 +55,7 @@ pipelines:
             - git merge origin/dev
 
             # Run audit
+            - export JFROG_CLI_LOG_LEVEL=DEBUG
             - jf audit --fail=${AUDIT_FAIL:-false}
 
             # Update version
