@@ -2,6 +2,7 @@ package org.jfrog.artifactory.client;
 
 import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpResponseException;
+import org.jfrog.artifactory.client.impl.ArtifactoryRequestImpl;
 import org.jfrog.artifactory.client.model.*;
 import org.jfrog.artifactory.client.model.impl.LocalRepoChecksumPolicyTypeImpl;
 import org.jfrog.artifactory.client.model.repository.settings.RepositorySettings;
@@ -328,5 +329,66 @@ public class RepositoryTests extends ArtifactoryTestsBase {
 
         VagrantRepositorySettingsImpl vagrantSettings = new VagrantRepositorySettingsImpl();
         assertNotEquals(puppetSettings.hashCode(), vagrantSettings.hashCode());
+    }
+
+    @Test(dependsOnMethods = "testCreate")
+    public void testProjectKeyAndEnvironments() throws IOException {
+        String projectKey = "testproj";
+        String repoKey = "testProjectKeyAndEnvironments";
+        
+        try {
+            // Create a project first using REST API
+            String createProjectJson = "{"
+                    + "\"project_key\":\"" + projectKey + "\","
+                    + "\"display_name\":\"Test Project\","
+                    + "\"description\":\"Test project for repository tests\","
+                    + "\"admin_privileges\":{\"manage_members\":true,\"manage_resources\":true,\"index_resources\":true}"
+                    + "}";
+            
+            artifactory.restCall(new ArtifactoryRequestImpl()
+                    .method(ArtifactoryRequest.Method.POST)
+                    .apiUrl("api/access/api/v1/projects")
+                    .requestBody(createProjectJson)
+                    .requestType(ArtifactoryRequest.ContentType.JSON)
+                    .responseType(ArtifactoryRequest.ContentType.JSON));
+
+            // Create a local repository with projectKey and environments
+            LocalRepository repoWithProjectKey = artifactory.repositories().builders().localRepositoryBuilder()
+                    .key(repoKey)
+                    .description("Test repository with projectKey and environments")
+                    .projectKey(projectKey)
+                    .environments(Arrays.asList("DEV"))
+                    .repositorySettings(new GenericRepositorySettingsImpl())
+                    .build();
+
+            // Create the repository
+            String result = artifactory.repositories().create(1, repoWithProjectKey);
+            assertTrue(result.startsWith("Successfully created repository"));
+
+            // Retrieve the repository and verify the fields
+            Repository repository = artifactory.repository(repoKey).get();
+            assertNotNull(repository);
+            assertTrue(LocalRepository.class.isAssignableFrom(repository.getClass()));
+            
+            LocalRepository localRepo = (LocalRepository) repository;
+            assertEquals(localRepo.getProjectKey(), projectKey);
+            assertNotNull(localRepo.getEnvironments());
+            assertEquals(localRepo.getEnvironments().size(), 1);
+            assertEquals(localRepo.getEnvironments().get(0), "DEV");
+            
+        } finally {
+            // Clean up repository
+            deleteRepoIfExists(repoKey);
+            
+            // Clean up project using REST API
+            try {
+                artifactory.restCall(new ArtifactoryRequestImpl()
+                        .method(ArtifactoryRequest.Method.DELETE)
+                        .apiUrl("api/access/api/v1/projects/" + projectKey)
+                        .responseType(ArtifactoryRequest.ContentType.TEXT));
+            } catch (Exception e) {
+                // Ignore if project doesn't exist
+            }
+        }
     }
 }

@@ -57,12 +57,13 @@ public class RemoteRepositoryImpl extends NonVirtualRepositoryBase implements Re
                          int retrievalCachePeriodSecs, boolean shareConfiguration, int socketTimeoutMillis, boolean cookieManagementEnabled, boolean allowAnyHostAuth, boolean storeArtifactsLocally, boolean synchronizeProperties,
                          boolean unusedArtifactsCleanupEnabled, int unusedArtifactsCleanupPeriodHours, String url, String username, String repoLayoutRef,
                          long assumedOfflinePeriodSecs, boolean archiveBrowsingEnabled, boolean listRemoteFolderItems,
-                         String clientTlsCertificate, Map<String, Object> customProperties, boolean bypassHeadRequests) {
+                         String clientTlsCertificate, Map<String, Object> customProperties, boolean bypassHeadRequests,
+                         String projectKey, List<String> environments) {
 
         super(key, settings, xraySettings, description, excludesPattern, includesPattern,
             notes, blackedOut,
             propertySets,
-            repoLayoutRef, archiveBrowsingEnabled, customProperties);
+            repoLayoutRef, archiveBrowsingEnabled, customProperties, projectKey, environments);
 
         this.contentSync = contentSync;
         this.failedRetrievalCachePeriodSecs = failedRetrievalCachePeriodSecs;
@@ -87,6 +88,25 @@ public class RemoteRepositoryImpl extends NonVirtualRepositoryBase implements Re
         this.listRemoteFolderItems = listRemoteFolderItems;
         this.clientTlsCertificate = clientTlsCertificate;
         this.bypassHeadRequests = bypassHeadRequests;
+    }
+
+    protected RemoteRepositoryImpl(String key, RepositorySettings settings, XraySettings xraySettings,
+                         ContentSync contentSync, String description,
+                         String excludesPattern, String includesPattern, String notes, boolean blackedOut,
+                         List<String> propertySets,
+                         int failedRetrievalCachePeriodSecs, boolean hardFail, String localAddress,
+                         int missedRetrievalCachePeriodSecs, boolean offline, String password, String proxy,
+                         int retrievalCachePeriodSecs, boolean shareConfiguration, int socketTimeoutMillis, boolean cookieManagementEnabled, boolean allowAnyHostAuth, boolean storeArtifactsLocally, boolean synchronizeProperties,
+                         boolean unusedArtifactsCleanupEnabled, int unusedArtifactsCleanupPeriodHours, String url, String username, String repoLayoutRef,
+                         long assumedOfflinePeriodSecs, boolean archiveBrowsingEnabled, boolean listRemoteFolderItems,
+                         String clientTlsCertificate, Map<String, Object> customProperties, boolean bypassHeadRequests) {
+
+        this(key, settings, xraySettings, contentSync, description, excludesPattern, includesPattern, notes, blackedOut,
+            propertySets, failedRetrievalCachePeriodSecs, hardFail, localAddress, missedRetrievalCachePeriodSecs, offline,
+            password, proxy, retrievalCachePeriodSecs, shareConfiguration, socketTimeoutMillis, cookieManagementEnabled,
+            allowAnyHostAuth, storeArtifactsLocally, synchronizeProperties, unusedArtifactsCleanupEnabled,
+            unusedArtifactsCleanupPeriodHours, url, username, repoLayoutRef, assumedOfflinePeriodSecs,
+            archiveBrowsingEnabled, listRemoteFolderItems, clientTlsCertificate, customProperties, bypassHeadRequests, null, null);
     }
 
     public String getUrl() {

@@ -27,12 +27,26 @@ public class FederatedRepositoryImpl extends NonVirtualRepositoryBase implements
                                       List<String> propertySets,
                                       String repoLayoutRef,
                                       boolean archiveBrowsingEnabled,
-                                      Map<String, Object> customProperties) {
+                                      Map<String, Object> customProperties,
+                                      String projectKey,
+                                      List<String> environments) {
 
         super(key, settings, xraySettings, description, excludesPattern, includesPattern, notes, blackedOut,
-            propertySets, repoLayoutRef, archiveBrowsingEnabled, customProperties);
+            propertySets, repoLayoutRef, archiveBrowsingEnabled, customProperties, projectKey, environments);
 
         this.members = members;
+    }
+
+    protected FederatedRepositoryImpl(String key, List<FederatedMember>  members, RepositorySettings settings, XraySettings xraySettings,
+                                      String description, String excludesPattern, String includesPattern, String notes,
+                                      boolean blackedOut,
+                                      List<String> propertySets,
+                                      String repoLayoutRef,
+                                      boolean archiveBrowsingEnabled,
+                                      Map<String, Object> customProperties) {
+
+        this(key, members, settings, xraySettings, description, excludesPattern, includesPattern, notes, blackedOut,
+            propertySets, repoLayoutRef, archiveBrowsingEnabled, customProperties, null, null);
     }
 
     public RepositoryTypeImpl getRclass() {

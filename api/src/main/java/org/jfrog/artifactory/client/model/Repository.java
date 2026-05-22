@@ -3,6 +3,7 @@ package org.jfrog.artifactory.client.model;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import java.util.List;
 import java.util.Map;
 import org.jfrog.artifactory.client.model.repository.settings.RepositorySettings;
 import org.jfrog.artifactory.client.model.repository.settings.XraySettings;
@@ -34,4 +35,8 @@ public interface Repository {
     XraySettings getXraySettings();
 
     Map<String, Object> getCustomProperties();
+
+    String getProjectKey();
+
+    List<String> getEnvironments();
 }

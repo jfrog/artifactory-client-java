@@ -30,7 +30,7 @@ public class LocalRepositoryBuilderImpl extends NonVirtualRepositoryBuilderBase<
 
         return new LocalRepositoryImpl(key, settings, xraySettings, description, excludesPattern,
                 includesPattern, notes, blackedOut, propertySets, repoLayoutRef,
-                archiveBrowsingEnabled, customProperties);
+                archiveBrowsingEnabled, customProperties, projectKey, environments);
     }
 
     public RepositoryType getRepositoryType() {

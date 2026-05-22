@@ -23,13 +23,23 @@ public class VirtualRepositoryImpl extends RepositoryBase implements VirtualRepo
     VirtualRepositoryImpl(String key, RepositorySettings settings,
         String description, String excludesPattern, String includesPattern, String notes,
         boolean artifactoryRequestsCanRetrieveRemoteArtifacts, Collection<String> repositories,
-        String repoLayoutRef, String deploymentRepo, Map<String, Object> customProperties) {
+        String repoLayoutRef, String deploymentRepo, Map<String, Object> customProperties,
+        String projectKey, java.util.List<String> environments) {
 
-        super(key, settings, description, excludesPattern, includesPattern, notes, repoLayoutRef, customProperties);
+        super(key, settings, null, description, excludesPattern, includesPattern, notes, repoLayoutRef, customProperties, projectKey, environments);
 
         this.artifactoryRequestsCanRetrieveRemoteArtifacts = artifactoryRequestsCanRetrieveRemoteArtifacts;
         this.repositories = repositories;
         this.deploymentRepo = deploymentRepo;
+    }
+
+    VirtualRepositoryImpl(String key, RepositorySettings settings,
+        String description, String excludesPattern, String includesPattern, String notes,
+        boolean artifactoryRequestsCanRetrieveRemoteArtifacts, Collection<String> repositories,
+        String repoLayoutRef, String deploymentRepo, Map<String, Object> customProperties) {
+
+        this(key, settings, description, excludesPattern, includesPattern, notes,
+            artifactoryRequestsCanRetrieveRemoteArtifacts, repositories, repoLayoutRef, deploymentRepo, customProperties, null, null);
     }
 
     public Collection<String> getRepositories() {
