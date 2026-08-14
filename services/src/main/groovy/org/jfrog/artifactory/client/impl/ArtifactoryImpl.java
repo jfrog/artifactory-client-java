@@ -21,8 +21,12 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author jbaruch
@@ -30,6 +34,21 @@ import java.util.Map;
  * @since 25/07/12
  */
 public class ArtifactoryImpl implements Artifactory {
+
+    /**
+     * HTTP status codes that indicate a successful response. Shared across all verb methods to
+     * ensure consistent error-detection behaviour — previously post() and patch() had no check
+     * at all, causing Jackson to receive HTML error pages and throw JsonParseException.
+     */
+    private static final Set<Integer> SUCCESS_CODES = Collections.unmodifiableSet(
+            new HashSet<>(Arrays.asList(
+                    HttpStatus.SC_OK,               // 200
+                    HttpStatus.SC_CREATED,          // 201
+                    HttpStatus.SC_ACCEPTED,         // 202
+                    HttpStatus.SC_NO_CONTENT,       // 204
+                    HttpStatus.SC_PARTIAL_CONTENT   // 206
+            ))
+    );
 
     private String username;
     private String url;
@@ -261,6 +280,19 @@ public class ArtifactoryImpl implements Artifactory {
         return new HttpResponseException(statusLine.getStatusCode(), artifactoryResponse);
     }
 
+    /**
+     * Throws {@link HttpResponseException} when the HTTP status code is not in
+     * {@link #SUCCESS_CODES}. Called by every verb method before attempting deserialisation,
+     * so that callers always receive a meaningful exception rather than a Jackson parse error
+     * caused by an HTML error page or a partial/garbage JSON body from an error response.
+     */
+    private void assertSuccess(HttpResponse response) throws IOException {
+        int status = response.getStatusLine().getStatusCode();
+        if (!SUCCESS_CODES.contains(status)) {
+            throw newHttpResponseException(response);
+        }
+    }
+
     protected Boolean head(String path) throws IOException {
         HttpHead httpHead = new HttpHead();
         httpHead.setURI(URI.create(url + path));
@@ -285,11 +317,7 @@ public class ArtifactoryImpl implements Artifactory {
         }
 
         HttpResponse httpResponse = execute(httpGet);
-        int status = httpResponse.getStatusLine().getStatusCode();
-        if (status != HttpStatus.SC_OK && status != HttpStatus.SC_NO_CONTENT &&
-                status != HttpStatus.SC_ACCEPTED && status != HttpStatus.SC_PARTIAL_CONTENT) {
-            throw newHttpResponseException(httpResponse);
-        }
+        assertSuccess(httpResponse);
 
         if (object == null) {
             return (T) httpResponse;
@@ -314,6 +342,7 @@ public class ArtifactoryImpl implements Artifactory {
             httpPost.setEntity(new StringEntity(content, contentType));
         }
         HttpResponse httpResponse = execute(httpPost);
+        assertSuccess(httpResponse);
         if (object == String.class) {
             return (T) Util.responseToString(httpResponse);
         }
@@ -336,6 +365,7 @@ public class ArtifactoryImpl implements Artifactory {
             httpPatch.setEntity(new StringEntity(content, contentType));
         }
         HttpResponse httpResponse = execute(httpPatch);
+        assertSuccess(httpResponse);
         if (object == String.class) {
             return (T) Util.responseToString(httpResponse);
         }
@@ -368,15 +398,11 @@ public class ArtifactoryImpl implements Artifactory {
             }
         }
         HttpResponse httpResponse = execute(httpPut);
-        int status = httpResponse.getStatusLine().getStatusCode();
-        if (status == HttpStatus.SC_OK || status == HttpStatus.SC_NO_CONTENT || status == HttpStatus.SC_ACCEPTED || status == HttpStatus.SC_CREATED) {
-            if (object == String.class) {
-                return (T) Util.responseToString(httpResponse);
-            }
-            return Util.responseToObject(httpResponse, object, interfaceObject);
+        assertSuccess(httpResponse);
+        if (object == String.class) {
+            return (T) Util.responseToString(httpResponse);
         }
-
-        throw newHttpResponseException(httpResponse);
+        return Util.responseToObject(httpResponse, object, interfaceObject);
     }
 
     public String delete(String path) throws IOException {
@@ -384,10 +410,7 @@ public class ArtifactoryImpl implements Artifactory {
 
         httpDelete.setURI(URI.create(url + path));
         HttpResponse httpResponse = execute(httpDelete);
-        int status = httpResponse.getStatusLine().getStatusCode();
-        if (status != HttpStatus.SC_OK && status != HttpStatus.SC_NO_CONTENT && status != HttpStatus.SC_ACCEPTED) {
-            throw newHttpResponseException(httpResponse);
-        }
+        assertSuccess(httpResponse);
         return Util.responseToString(httpResponse);
     }
 

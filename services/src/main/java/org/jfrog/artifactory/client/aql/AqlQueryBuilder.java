@@ -109,34 +109,40 @@ public class AqlQueryBuilder {
         return this;
     }
 
+    /**
+     * Plain mapper for AQL structures — no mix-ins or abstract-type resolvers are needed here
+     * because AQL only deals with plain Map/Integer/String values. Must not share
+     * {@code Util.CONFIGURED_MAPPER} which carries Repository mix-ins inappropriate for this use.
+     */
+    private static final ObjectMapper PLAIN_MAPPER = new ObjectMapper();
+
     public String build() {
         try {
-            ObjectMapper mapper = new ObjectMapper();
-            return "items.find(" + getRootAsString(mapper) + ")" + getIncludeAsString() + getSortAsString(
-                    mapper) + getOffsetAsString(mapper) + getLimitAsString(mapper);
+            return "items.find(" + getRootAsString() + ")" + getIncludeAsString()
+                    + getSortAsString() + getOffsetAsString() + getLimitAsString();
         } catch (JsonProcessingException e) {
             throw new AqlBuilderException("Error serializing object to json: ", e);
         }
     }
 
-    private String getSortAsString(ObjectMapper mapper) throws JsonProcessingException {
-        return hasSort() ? ".sort(" + mapper.writeValueAsString(sort) + ")" : "";
+    private String getSortAsString() throws JsonProcessingException {
+        return hasSort() ? ".sort(" + PLAIN_MAPPER.writeValueAsString(sort) + ")" : "";
     }
 
     private String getIncludeAsString() {
         return hasInclude() ? include.toString() : "";
     }
 
-    private String getOffsetAsString(ObjectMapper mapper) throws JsonProcessingException {
-        return hasOffset() ? ".offset(" + mapper.writeValueAsString(offset) + ")" : "";
+    private String getOffsetAsString() throws JsonProcessingException {
+        return hasOffset() ? ".offset(" + PLAIN_MAPPER.writeValueAsString(offset) + ")" : "";
     }
 
-    private String getLimitAsString(ObjectMapper mapper) throws JsonProcessingException {
-        return hasLimit() ? ".limit(" + mapper.writeValueAsString(limit) + ")" : "";
+    private String getLimitAsString() throws JsonProcessingException {
+        return hasLimit() ? ".limit(" + PLAIN_MAPPER.writeValueAsString(limit) + ")" : "";
     }
 
-    private String getRootAsString(ObjectMapper mapper) throws JsonProcessingException {
-        return hasRoot() ? mapper.writeValueAsString(root) : "";
+    private String getRootAsString() throws JsonProcessingException {
+        return hasRoot() ? PLAIN_MAPPER.writeValueAsString(root) : "";
     }
 
     private boolean hasInclude() {

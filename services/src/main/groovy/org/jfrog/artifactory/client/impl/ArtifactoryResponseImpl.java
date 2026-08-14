@@ -1,6 +1,5 @@
 package org.jfrog.artifactory.client.impl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.util.EntityUtils;
@@ -10,8 +9,6 @@ import org.jfrog.artifactory.client.impl.util.Util;
 import java.io.IOException;
 
 public class ArtifactoryResponseImpl extends AbstractArtifactoryResponseImpl implements ArtifactoryResponse {
-
-    private static final ObjectMapper objectMapper = new ObjectMapper();
 
     private String rawBody;
 
@@ -36,13 +33,24 @@ public class ArtifactoryResponseImpl extends AbstractArtifactoryResponseImpl imp
         return this.rawBody;
     }
 
+    /**
+     * Deserialise the response body to {@code toType} using the shared
+     * {@link Util#CONFIGURED_MAPPER}.
+     *
+     * <p>Previously this method called {@code Util.configureObjectMapper(objectMapper)} on
+     * every invocation, which mutated the static field's mapper state under concurrent use.
+     * Delegating to the already-configured singleton removes both the mutation hazard and the
+     * unnecessary per-call configuration overhead.
+     */
     @Override
     public <T> T parseBody(Class<T> toType) throws IOException {
-        Util.configureObjectMapper(objectMapper);
         try {
-            return objectMapper.readValue(rawBody, toType);
+            return Util.CONFIGURED_MAPPER.readValue(rawBody, toType);
         } catch (IOException e) {
-            throw new IOException("Failed casting response entity to " + toType.toString() + ". response status: " + getStatusLine().toString() + ". raw entity: " + this.rawBody, e);
+            throw new IOException(
+                    "Failed casting response entity to " + toType
+                    + ". response status: " + getStatusLine()
+                    + ". raw entity: " + this.rawBody, e);
         }
     }
 
