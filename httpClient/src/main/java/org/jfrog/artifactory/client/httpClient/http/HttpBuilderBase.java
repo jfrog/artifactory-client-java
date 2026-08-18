@@ -159,11 +159,21 @@ public abstract class HttpBuilderBase<T extends HttpBuilderBase<?>> {
         return self();
     }
 
+    /**
+     * Sets the connection timeout in milliseconds (Apache HttpClient 4.x {@link RequestConfig.Builder#setConnectTimeout(int)}).
+     *
+     * @param connectionTimeout timeout in milliseconds
+     */
     public T connectionTimeout(int connectionTimeout) {
         config.setConnectTimeout(connectionTimeout);
         return self();
     }
 
+    /**
+     * Sets the socket (read) timeout in milliseconds (Apache HttpClient 4.x {@link RequestConfig.Builder#setSocketTimeout(int)}).
+     *
+     * @param soTimeout timeout in milliseconds
+     */
     public T socketTimeout(int soTimeout) {
         config.setSocketTimeout(soTimeout);
         return self();

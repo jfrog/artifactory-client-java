@@ -34,7 +34,13 @@ public class ArtifactoryClientBuilder {
     private String url;
     private String username;
     private String password;
+    /**
+     * Connection timeout in milliseconds (Apache HttpClient 4.x {@code RequestConfig#setConnectTimeout}).
+     */
     private Integer connectionTimeout;
+    /**
+     * Socket timeout in milliseconds (Apache HttpClient 4.x {@code RequestConfig#setSocketTimeout}).
+     */
     private Integer socketTimeout;
     private ProxyConfig proxy;
     private String userAgent;
@@ -71,11 +77,21 @@ public class ArtifactoryClientBuilder {
         return this;
     }
 
+    /**
+     * Sets the HTTP connection timeout.
+     *
+     * @param connectionTimeout timeout in milliseconds (Apache HttpClient 4.x)
+     */
     public ArtifactoryClientBuilder setConnectionTimeout(Integer connectionTimeout) {
         this.connectionTimeout = connectionTimeout;
         return this;
     }
 
+    /**
+     * Sets the HTTP socket (read) timeout.
+     *
+     * @param socketTimeout timeout in milliseconds (Apache HttpClient 4.x)
+     */
     public ArtifactoryClientBuilder setSocketTimeout(Integer socketTimeout) {
         this.socketTimeout = socketTimeout;
         return this;
@@ -226,10 +242,16 @@ public class ArtifactoryClientBuilder {
         return password;
     }
 
+    /**
+     * @return connection timeout in milliseconds, or {@code null} if unset
+     */
     public Integer getConnectionTimeout() {
         return connectionTimeout;
     }
 
+    /**
+     * @return socket timeout in milliseconds, or {@code null} if unset
+     */
     public Integer getSocketTimeout() {
         return socketTimeout;
     }
