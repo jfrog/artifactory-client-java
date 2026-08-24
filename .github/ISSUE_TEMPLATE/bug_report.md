@@ -6,6 +6,11 @@ labels: bug
 assignees: ''
 
 ---
+> [!IMPORTANT]
+> If you are a JFrog customer with access to our **Salesforce Support Portal** or a **Support Contact**, please log bugs and feature requests in Salesforce for better visibility and prioritization. Please don't open the same here in Github again.
+>
+> We do monitor GitHub for the open-source community and contributions.
+
 
 **Describe the bug**
 A clear and concise description of what the bug is.
