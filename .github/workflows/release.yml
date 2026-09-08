@@ -48,71 +48,18 @@ jobs:
         # Deliberate behavior change from the original pipeline: the pipeline bootstrapped the CLI via
         # `curl -fL https://install-cli.jfrog.io | sh`; here we use the official setup action instead.
 
-      - name: Configure git
-        run: |
-          git config user.name "jfrog-ecosystem-integration"
-          git config user.email "jfrog-ecosystem-integration@jfrog.com"
-          git checkout master
-          git remote set-url origin https://${{ secrets.IL_AUTOMATION_TOKEN }}@github.com/jfrog/artifactory-client-java.git
-
-      - name: Check required versions
-        run: |
-          echo "Checking variables"
-          test -n "$NEXT_VERSION" -a "$NEXT_VERSION" != "0.0.0"
-          test -n "$NEXT_DEVELOPMENT_VERSION" -a "$NEXT_DEVELOPMENT_VERSION" != "0.0.x-SNAPSHOT"
-
-      - name: Configure JFrog CLI
-        run: |
-          jf c rm --quiet
-          jf c add internal --url=${{ secrets.ARTIFACTORY_URL }} --user=${{ secrets.ARTIFACTORY_USER }} --password=${{ secrets.ARTIFACTORY_APIKEY }}
-          jf gradlec --use-wrapper --deploy-ivy-desc=false --deploy-maven-desc --uses-plugin --repo-resolve ecosys-maven-remote --repo-deploy ecosys-oss-release-local
-
-      - name: Sync changes with dev
-        run: git merge origin/dev
-
-      - name: Run audit
-        # `|| true` ignores SAST scanner infrastructure failures, matching the original pipeline's comment
-        # that GLIBC_2.34 was not available on the pipeline node.
-        run: jf audit --fail=${AUDIT_FAIL:-false} || true
-
-      - name: Update version
-        run: sed -i "s/\(currentVersion=\).*\$/\1${NEXT_VERSION}/" gradle.properties
-
-      - name: Commit and tag release
-        run: |
-          git commit -am "[artifactory-release] Release version ${NEXT_VERSION} [skipRun]" --allow-empty
-          git tag ${NEXT_VERSION}
-          git push
-          git push --tags
-
-      - name: Build and publish to Artifactory
+      # Runs the full release: configures git and the JFrog CLI, syncs with dev, audits, bumps the
+      # version, tags and pushes the release commit, builds and publishes to Artifactory, distributes
+      # the release bundle, publishes to Maven Central, then bumps dev to the next development version.
+      # See .github/scripts/release.sh - the same script can be run locally by exporting the env vars below.
+      - name: Run release
         env:
+          IL_AUTOMATION_TOKEN: ${{ secrets.IL_AUTOMATION_TOKEN }}
+          ARTIFACTORY_URL: ${{ secrets.ARTIFACTORY_URL }}
+          ARTIFACTORY_USER: ${{ secrets.ARTIFACTORY_USER }}
+          ARTIFACTORY_APIKEY: ${{ secrets.ARTIFACTORY_APIKEY }}
+          MVN_CENTRAL_SIGNING_KEY: ${{ secrets.MVN_CENTRAL_SIGNING_KEY }}
           ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.MVN_CENTRAL_SIGNING_PASSWORD }}
-        run: |
-          export ORG_GRADLE_PROJECT_signingKey=$(echo "${{ secrets.MVN_CENTRAL_SIGNING_KEY }}" | base64 -d)
-          jf gradle clean aP -x test
-          jf rt bag && jf rt bce
-          jf rt bp
-
-      - name: Distribute release bundle
-        run: |
-          jf ds rbc ecosystem-artifactory-client-java $NEXT_VERSION --spec=./release/specs/prod-rbc-filespec.json --spec-vars="version=$NEXT_VERSION" --sign
-          jf ds rbd ecosystem-artifactory-client-java $NEXT_VERSION --site="releases.jfrog.io" --sync
-
-      - name: Publish to Maven Central
-        env:
           ORG_GRADLE_PROJECT_sonatypeUsername: ${{ secrets.MVN_CENTRAL_USER }}
           ORG_GRADLE_PROJECT_sonatypePassword: ${{ secrets.MVN_CENTRAL_PASSWORD }}
-          ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.MVN_CENTRAL_SIGNING_PASSWORD }}
-        run: |
-          export ORG_GRADLE_PROJECT_signingKey=$(echo "${{ secrets.MVN_CENTRAL_SIGNING_KEY }}" | base64 -d)
-          ./gradlew clean build publishToSonatype closeAndReleaseSonatypeStagingRepository -x test
-
-      - name: Update next development version
-        run: |
-          git clean -fd
-          git checkout dev -f
-          git merge origin/master
-          sed -i "s/\(currentVersion=\).*\$/\1${NEXT_DEVELOPMENT_VERSION}/" gradle.properties
-          git commit -am "[artifactory-release] Next development version [skipRun]"
-          git push
+        run: .github/scripts/release.sh
