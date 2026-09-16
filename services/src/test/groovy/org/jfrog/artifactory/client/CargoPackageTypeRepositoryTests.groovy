@@ -2,6 +2,7 @@ package org.jfrog.artifactory.client
 
 import org.hamcrest.CoreMatchers
 import org.jfrog.artifactory.client.model.RepositoryType
+import org.jfrog.artifactory.client.model.impl.RepositoryTypeImpl
 import org.jfrog.artifactory.client.model.repository.settings.RepositorySettings
 import org.jfrog.artifactory.client.model.repository.settings.impl.CargoRepositorySettingsImpl
 import org.testng.annotations.BeforeMethod
@@ -18,9 +19,10 @@ class CargoPackageTypeRepositoryTests extends BaseRepositoryTests {
         def settings = new CargoRepositorySettingsImpl()
 
         settings.with {
-            // remote
             cargoAnonymousAccess = rnd.nextBoolean()
-            cargoInternalIndex = rnd.nextBoolean()
+            // Legacy Git index (cargoInternalIndex=true) is no longer supported for federated repos
+            // in current Artifactory versions; always use sparse HTTP index (false) for federated.
+            cargoInternalIndex = (repositoryType == RepositoryTypeImpl.FEDERATED) ? false : rnd.nextBoolean()
             gitRegistryUrl = "https://index.crates.io/"
         }
 
