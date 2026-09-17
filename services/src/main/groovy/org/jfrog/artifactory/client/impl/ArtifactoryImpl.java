@@ -204,7 +204,7 @@ public class ArtifactoryImpl implements Artifactory {
                 throw new IllegalArgumentException("Unsupported request method.");
         }
 
-        httpRequest.setURI(URI.create(url + requestPath + queryPath));
+        httpRequest.setURI(buildUri(requestPath + queryPath));
 
         if (contentType != null) {
             httpRequest.setHeader("Content-type", contentType.getMimeType());
