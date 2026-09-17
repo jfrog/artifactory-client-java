@@ -231,6 +231,44 @@ public class ArtifactoryTests {
         assertEquals(responseInterceptions.intValue(), 0);
     }
 
+    /**
+     * Regression test for SSRF via @-prefixed path (JSEC-22146).
+     * A path beginning with '@' reinterprets the configured origin as URL userinfo,
+     * redirecting the request to an attacker-controlled host.
+     * buildUri() must reject any path that does not start with '/'.
+     */
+    @Test
+    public void atPrefixedPathMustBeRejected() throws IOException {
+        Artifactory artifactory = ArtifactoryClientBuilder.create()
+                .setUrl("http://localhost:18081")
+                .build();
+
+        String[] maliciousPaths = {
+                "@evil.example/stolen",
+                "@127.0.0.1:18082/stolen",
+                "evil.example/no-slash",
+                "",
+        };
+
+        for (String path : maliciousPaths) {
+            try {
+                artifactory.getInputStream(path);
+                throw new AssertionError("Expected IllegalArgumentException for path: " + path);
+            } catch (IllegalArgumentException e) {
+                // expected — path rejected before any network call
+            }
+        }
+
+        // Legitimate path must not be rejected (throws IOException because no server is running, not IllegalArgumentException)
+        try {
+            artifactory.getInputStream("/api/repositories");
+        } catch (IllegalArgumentException e) {
+            throw new AssertionError("Legitimate path '/api/repositories' must not be rejected: " + e.getMessage());
+        } catch (IOException ignored) {
+            // expected — no real server at localhost:18081
+        }
+    }
+
     @Test(dataProvider = "httpMethods")
     public void httpMethodsTest(ArtifactoryRequest.Method method, Class<?> expectedClass) {
         ArtifactoryRequest artifactoryRequest = new ArtifactoryRequestImpl()

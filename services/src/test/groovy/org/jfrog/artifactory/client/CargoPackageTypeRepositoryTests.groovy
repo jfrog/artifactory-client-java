@@ -18,10 +18,13 @@ class CargoPackageTypeRepositoryTests extends BaseRepositoryTests {
         def settings = new CargoRepositorySettingsImpl()
 
         settings.with {
-            // remote
             cargoAnonymousAccess = rnd.nextBoolean()
-            cargoInternalIndex = rnd.nextBoolean()
-            gitRegistryUrl = "https://index.crates.io/"
+            // cargoInternalIndex and gitRegistryUrl were removed because Artifactory blocked
+            // legacy Git index support for all Cargo repository types (local, remote, federated)
+            // as of Artifactory 7.46.3. Sending cargoInternalIndex=true or a gitRegistryUrl now
+            // returns HTTP 400: "the legacy Git index is no longer supported. Use the default
+            // sparse HTTP index instead." All Cargo repositories must use the sparse HTTP index.
+            // See: https://jfrog.com/help/r/jfrog-artifactory-documentation/cargo-repositories
         }
 
         return settings
@@ -44,9 +47,6 @@ class CargoPackageTypeRepositoryTests extends BaseRepositoryTests {
         resp.getRepositorySettings().with {
             assertThat(packageType, CoreMatchers.is(expectedSettings.getPackageType()))
             assertThat(repoLayout, CoreMatchers.is(expectedSettings.getRepoLayout()))
-
-            // remote
-            assertThat(cargoInternalIndex, CoreMatchers.is(expectedSettings.cargoInternalIndex))
             assertThat(cargoAnonymousAccess, CoreMatchers.is(expectedSettings.cargoAnonymousAccess))
         }
     }
@@ -62,9 +62,6 @@ class CargoPackageTypeRepositoryTests extends BaseRepositoryTests {
         resp.getRepositorySettings().with {
             assertThat(packageType, CoreMatchers.is(expectedSettings.getPackageType()))
             assertThat(repoLayout, CoreMatchers.is(expectedSettings.getRepoLayout()))
-
-            // remote
-            assertThat(cargoInternalIndex, CoreMatchers.is(expectedSettings.cargoInternalIndex))
             assertThat(cargoAnonymousAccess, CoreMatchers.is(expectedSettings.cargoAnonymousAccess))
         }
     }
@@ -80,9 +77,6 @@ class CargoPackageTypeRepositoryTests extends BaseRepositoryTests {
         resp.getRepositorySettings().with {
             assertThat(packageType, CoreMatchers.is(expectedSettings.getPackageType()))
             assertThat(repoLayout, CoreMatchers.is(expectedSettings.getRepoLayout()))
-
-            // remote
-            assertThat(cargoInternalIndex, CoreMatchers.is(expectedSettings.cargoInternalIndex))
             assertThat(cargoAnonymousAccess, CoreMatchers.is(expectedSettings.cargoAnonymousAccess))
         }
     }

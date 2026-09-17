@@ -204,7 +204,7 @@ public class ArtifactoryImpl implements Artifactory {
                 throw new IllegalArgumentException("Unsupported request method.");
         }
 
-        httpRequest.setURI(URI.create(url + requestPath + queryPath));
+        httpRequest.setURI(buildUri(requestPath + queryPath));
 
         if (contentType != null) {
             httpRequest.setHeader("Content-type", contentType.getMimeType());
@@ -263,7 +263,7 @@ public class ArtifactoryImpl implements Artifactory {
 
     protected Boolean head(String path) throws IOException {
         HttpHead httpHead = new HttpHead();
-        httpHead.setURI(URI.create(url + path));
+        httpHead.setURI(buildUri(path));
         HttpResponse httpResponse = execute(httpHead);
         int status = httpResponse.getStatusLine().getStatusCode();
         /** Any status code >= 100 and < 400 According to the {@link groovyx.net.http.Status} class*/
@@ -276,7 +276,7 @@ public class ArtifactoryImpl implements Artifactory {
 
     public <T> T get(String path, Class<? extends T> object, Class<T> interfaceObject, Map<String, String> headers) throws IOException {
         HttpGet httpGet = new HttpGet();
-        httpGet.setURI(URI.create(url + path));
+        httpGet.setURI(buildUri(path));
 
         if (headers != null && !headers.isEmpty()) {
             for (String key : headers.keySet()) {
@@ -302,7 +302,7 @@ public class ArtifactoryImpl implements Artifactory {
 
     public <T> T post(String path, org.apache.http.entity.ContentType contentType, String content, Map<String, String> headers, Class<? extends T> object, Class<T> interfaceObject) throws IOException {
         HttpPost httpPost = new HttpPost();
-        httpPost.setURI(URI.create(url + path));
+        httpPost.setURI(buildUri(path));
 
         httpPost.setHeader("Content-type", contentType.getMimeType());
         if (headers != null && !headers.isEmpty()) {
@@ -324,7 +324,7 @@ public class ArtifactoryImpl implements Artifactory {
     public <T> T patch(String path, org.apache.http.entity.ContentType contentType, String content, Map<String, String>
             headers, Class<? extends T> object, Class<T> interfaceObject) throws IOException {
         HttpPatch httpPatch = new HttpPatch();
-        httpPatch.setURI(URI.create(url + path));
+        httpPatch.setURI(buildUri(path));
 
         httpPatch.setHeader("Content-type", contentType.getMimeType());
         if (headers != null && !headers.isEmpty()) {
@@ -345,7 +345,7 @@ public class ArtifactoryImpl implements Artifactory {
 
     public <T> T put(String path, org.apache.http.entity.ContentType contentType, String content, Map<String, String> headers, InputStream inputStream, long length, Class<? extends T> object, Class<T> interfaceObject) throws IOException {
         HttpPut httpPut = new HttpPut();
-        httpPut.setURI(URI.create(url + path));
+        httpPut.setURI(buildUri(path));
 
         if (contentType != null) {
             httpPut.setHeader("Content-type", contentType.getMimeType());
@@ -382,13 +382,22 @@ public class ArtifactoryImpl implements Artifactory {
     public String delete(String path) throws IOException {
         HttpDelete httpDelete = new HttpDelete();
 
-        httpDelete.setURI(URI.create(url + path));
+        httpDelete.setURI(buildUri(path));
         HttpResponse httpResponse = execute(httpDelete);
         int status = httpResponse.getStatusLine().getStatusCode();
         if (status != HttpStatus.SC_OK && status != HttpStatus.SC_NO_CONTENT && status != HttpStatus.SC_ACCEPTED) {
             throw newHttpResponseException(httpResponse);
         }
         return Util.responseToString(httpResponse);
+    }
+
+    private URI buildUri(String path) {
+        if (path == null || !path.startsWith("/")) {
+            throw new IllegalArgumentException(
+                    "path must start with '/'; got: " + path +
+                    " — a path beginning with '@' or without a leading slash can redirect the request to an unintended host (SSRF)");
+        }
+        return URI.create(url + path);
     }
 
     @Override
