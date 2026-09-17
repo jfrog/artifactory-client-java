@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 🎫 JFrog Customer Support (Salesforce Portal)
+    url: https://jfrog.lightning.force.com/
+    about: If you have access to our Salesforce Support Portal or a support contact, please log bugs and feature requests there for proper visibility and prioritization. Don't open the same request in both places.

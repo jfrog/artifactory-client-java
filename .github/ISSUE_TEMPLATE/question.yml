@@ -1,0 +1,21 @@
+name: ❓ Question
+description: Ask a question
+labels: ["question"]
+body:
+  - type: checkboxes
+    id: support-channel
+    attributes:
+      label: Before you continue
+      options:
+        - label: >
+            I understand that if I am a JFrog customer with access to the Salesforce Support Portal
+            or a support contact, I should log this there instead for faster visibility and
+            prioritization. (This repository's GitHub issues are actively monitored for the
+            open-source community and contributions.)
+          required: true
+  - type: textarea
+    id: question
+    attributes:
+      label: Your question
+    validations:
+      required: true
