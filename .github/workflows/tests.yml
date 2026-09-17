@@ -37,6 +37,7 @@ jobs:
           cache: false
 
       - name: Install local Artifactory
+        if: runner.os != 'macOS'
         uses: jfrog/.github/actions/install-local-artifactory@main
         with:
           RTLIC: ${{ secrets.RTLIC }}
@@ -48,6 +49,8 @@ jobs:
           distribution: "zulu"
 
       - name: Wait for Artifactory
+        if: runner.os != 'macOS'
+        shell: bash
         run: |
           for i in {1..30}; do
             if curl -sf http://localhost:8081/artifactory/api/system/ping; then
@@ -61,6 +64,8 @@ jobs:
           exit 1
 
       - name: Cleanup test repositories
+        if: runner.os != 'macOS'
+        shell: bash
         run: |
           echo "Cleaning up any leftover test repositories..."
           REPOS=$(curl -s -u admin:password "http://localhost:8081/artifactory/api/repositories" | grep -o 'rt-client-java-[a-z0-9-]*' || true)
@@ -77,4 +82,5 @@ jobs:
           echo "Cleanup complete"
 
       - name: Run tests
+        if: runner.os != 'macOS'
         run: ./gradlew${{ matrix.gradlewSuffix }} clean test
