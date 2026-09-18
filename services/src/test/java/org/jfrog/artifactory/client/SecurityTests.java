@@ -191,6 +191,160 @@ public class SecurityTests extends ArtifactoryTestsBase {
     }
 
     @Test
+    public void testCreatePermissionTargetV2(){
+        final String USER_TEST_1="user_test_1_"+System.currentTimeMillis();
+        final String USER_TEST_2="user_test_2_"+System.currentTimeMillis();
+        final String GROUP_TEST_1="group_test_1_"+System.currentTimeMillis();
+        final String GROUP_TEST_2="group_test_2_"+System.currentTimeMillis();
+        final String PERMISSION_TARGET_NAME="permission_target_v2_"+System.currentTimeMillis();
+        try{
+            //Eventual clean up of previous test run
+            deletePermissionTargetV2IfExists(PERMISSION_TARGET_NAME);
+            deleteUserIfExists(USER_TEST_1);
+            deleteUserIfExists(USER_TEST_2);
+            deleteGroupIfExists(GROUP_TEST_1);
+            deleteGroupIfExists(GROUP_TEST_2);
+            //Test environment setUp
+            User user1 = artifactory.security().builders().userBuilder().name(USER_TEST_1).email("user1@test.com")
+                    .admin(false).profileUpdatable(true).password("YouShallNotPass123!").build();
+            User user2 = artifactory.security().builders().userBuilder().name(USER_TEST_2).email("user2@test.com")
+                    .admin(false).profileUpdatable(true).password("YouShallNotPass123!").build();
+            Group group1 = artifactory.security().builders().groupBuilder().name(GROUP_TEST_1).autoJoin(true)
+                    .description("test-group").build();
+            Group group2 = artifactory.security().builders().groupBuilder().name(GROUP_TEST_2).autoJoin(true)
+                    .description("test-group").build();
+            artifactory.security().createOrUpdate(user1);
+            artifactory.security().createOrUpdate(user2);
+            artifactory.security().createOrUpdateGroup(group1);
+            artifactory.security().createOrUpdateGroup(group2);
+
+            Actions repositoryActions = artifactory.security().builders().actionsBuilder()
+                    .addUser(user1.getName(), PrivilegeV2.READ, PrivilegeV2.ANNOTATE)
+                    .addGroup(group1.getName(), PrivilegeV2.DELETE, PrivilegeV2.MANAGE)
+                    .build();
+            Actions buildActions = artifactory.security().builders().actionsBuilder()
+                    .addUser(user2.getName(), PrivilegeV2.DISTRIBUTE, PrivilegeV2.WRITE, PrivilegeV2.READ)
+                    .addGroup(group2.getName(), PrivilegeV2.MANAGE, PrivilegeV2.WRITE)
+                    .build();
+            Actions releaseBundleActions = artifactory.security().builders().actionsBuilder()
+                    .addUser(user1.getName(), PrivilegeV2.READ)
+                    .addUser(user2.getName(), PrivilegeV2.WRITE, PrivilegeV2.READ, PrivilegeV2.DELETE)
+                    .build();
+
+            PermissionV2 repositoryPermission = artifactory.security().builders().permissionV2Builder()
+                    .includePatterns("aaa*/**", "bbb*/**")
+                    .excludePatterns("ccc*/**", "ddd*/**")
+                    .repositories("ANY LOCAL")
+                    .actions(repositoryActions)
+                    .build();
+            PermissionV2 buildPermission = artifactory.security().builders().permissionV2Builder()
+                    .includePatterns("eee*/**", "fff*/**")
+                    .excludePatterns("ggg*/**", "hhh*/**")
+                    .repositories("artifactory-build-info")
+                    .actions(buildActions)
+                    .build();
+            PermissionV2 releaseBundlePermission = artifactory.security().builders().permissionV2Builder()
+                    .includePatterns("iii*/**", "jjj*/**")
+                    .excludePatterns("kkk*/**","lll*/**")
+                    .repositories("ANY")
+                    .actions(releaseBundleActions)
+                    .build();
+
+            PermissionTargetV2 permissionTargetV2 = artifactory.security().builders().permissionTargetV2Builder()
+                    .name(PERMISSION_TARGET_NAME)
+                    .repo(repositoryPermission)
+                    .build(buildPermission)
+                    .releaseBundle(releaseBundlePermission)
+                    .build();
+            artifactory.security().createOrReplacePermissionTargetV2(permissionTargetV2);
+
+            //Now fetch the just created permission target
+            PermissionTargetV2 storedPermissionTarget = artifactory.security().permissionTargetV2(PERMISSION_TARGET_NAME);
+            assertNotNull(storedPermissionTarget,"Got null object as PermissionTargetV2 after create");
+            assertTrue(permissionTargetV2.equals(storedPermissionTarget), "Prepared permission target and created one are not equals");
+        }
+        finally {
+            //Remove test items
+            deletePermissionTargetV2IfExists(PERMISSION_TARGET_NAME);
+            deleteUserIfExists(USER_TEST_1);
+            deleteUserIfExists(USER_TEST_2);
+            deleteGroupIfExists(GROUP_TEST_1);
+            deleteGroupIfExists(GROUP_TEST_2);
+        }
+    }
+
+    @Test(expectedExceptions = {UnsupportedOperationException.class}, expectedExceptionsMessageRegExp = "Only 'artifactory-build-info' repository .*")
+    public void testCreatePermissionV2WithBuildError(){
+        final String GROUP_TEST="group_test_"+System.currentTimeMillis();
+        final String PERMISSION_TARGET_NAME="permission_target_v2_"+System.currentTimeMillis();
+        try{
+            // remove eventual previous test run leftovers
+            deletePermissionTargetV2IfExists(PERMISSION_TARGET_NAME);
+            deleteGroupIfExists(GROUP_TEST);
+
+            // create test environment
+            Group group= artifactory.security().builders().groupBuilder().name(GROUP_TEST).autoJoin(true)
+                    .description("test-group").build();
+            artifactory.security().createOrUpdateGroup(group);
+
+            Actions buildActions = artifactory.security().builders().actionsBuilder()
+                    .addGroup(group.getName(), PrivilegeV2.MANAGE, PrivilegeV2.WRITE)
+                    .build();
+            PermissionV2 buildPermission = artifactory.security().builders().permissionV2Builder()
+                    .includePatterns("aaa*/**", "bbb*/**")
+                    .excludePatterns("ccc*/**", "ddd*/**")
+                    .repositories("should-throw-error")
+                    .actions(buildActions)
+                    .build();
+            PermissionV2 repositoryPermission = artifactory.security().builders().permissionV2Builder()
+                    .repositories("ANY")
+                    .build();
+            PermissionTargetV2 permissionTargetV2 = artifactory.security().builders().permissionTargetV2Builder()
+                    .name(PERMISSION_TARGET_NAME)
+                    .repo(repositoryPermission)
+                    .build(buildPermission)
+                    .build();
+            artifactory.security().createOrReplacePermissionTargetV2(permissionTargetV2);
+            fail("Should have thrown exception");
+        }
+        finally {
+            //clean up test items
+            deletePermissionTargetV2IfExists(PERMISSION_TARGET_NAME);
+            deleteGroupIfExists(GROUP_TEST);
+        }
+    }
+
+    @Test(expectedExceptions = {UnsupportedOperationException.class}, expectedExceptionsMessageRegExp = "At least 1 repository is required .*")
+    public void testCreatePermissionV2MissingRepoPermissionError(){
+        final String GROUP_TEST="group_test_"+System.currentTimeMillis();
+        final String PERMISSION_TARGET_NAME="permission_target_v2_"+System.currentTimeMillis();
+        try{
+            // remove eventual previous test run leftovers
+            deletePermissionTargetV2IfExists(PERMISSION_TARGET_NAME);
+            deleteGroupIfExists(GROUP_TEST);
+
+            // create test environment
+            Group group= artifactory.security().builders().groupBuilder().name(GROUP_TEST).autoJoin(true)
+                    .description("test-group").build();
+            artifactory.security().createOrUpdateGroup(group);
+
+            PermissionV2 repositoryPermission = artifactory.security().builders().permissionV2Builder()
+                    .build();
+            PermissionTargetV2 permissionTargetV2 = artifactory.security().builders().permissionTargetV2Builder()
+                    .name(PERMISSION_TARGET_NAME)
+                    .repo(repositoryPermission)
+                    .build();
+            artifactory.security().createOrReplacePermissionTargetV2(permissionTargetV2);
+            fail("Should have thrown exception");
+        }
+        finally {
+            //clean up test items
+            deletePermissionTargetV2IfExists(PERMISSION_TARGET_NAME);
+            deleteGroupIfExists(GROUP_TEST);
+        }
+    }
+
+    @Test
     public void testCreateGroup() {
         GroupBuilder groupBuilder = artifactory.security().builders().groupBuilder();
         Group group = groupBuilder.name(GROUP_NAME).autoJoin(true).description("new test group").build();
