@@ -265,7 +265,7 @@ public class RemoteRepositoryBuilderImpl extends NonVirtualRepositoryBuilderBase
                 password, proxy, retrievalCachePeriodSecs, shareConfiguration, socketTimeoutMillis,
                 enableCookieManagement, allowAnyHostAuth, storeArtifactsLocally, synchronizeProperties,
                 unusedArtifactsCleanupEnabled, unusedArtifactsCleanupPeriodHours, url, username, repoLayoutRef,
-                assumedOfflinePeriodSecs, archiveBrowsingEnabled, listRemoteFolderItems, clientTlsCertificate, customProperties, bypassHeadRequests);
+                assumedOfflinePeriodSecs, archiveBrowsingEnabled, listRemoteFolderItems, clientTlsCertificate, customProperties, bypassHeadRequests, projectKey, environments);
     }
 
     @Override

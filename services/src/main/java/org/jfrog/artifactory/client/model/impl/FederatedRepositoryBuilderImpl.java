@@ -29,9 +29,9 @@ public class FederatedRepositoryBuilderImpl extends NonVirtualRepositoryBuilderB
         validate();
         setRepoLayoutFromSettings();
 
-        return new FederatedRepositoryImpl(key, members,settings, xraySettings, description, excludesPattern,
+        return new FederatedRepositoryImpl(key, members, settings, xraySettings, description, excludesPattern,
                 includesPattern, notes, blackedOut, propertySets, repoLayoutRef,
-                archiveBrowsingEnabled, customProperties);
+                archiveBrowsingEnabled, customProperties, projectKey, environments);
     }
 
     public RepositoryType getRepositoryType() {

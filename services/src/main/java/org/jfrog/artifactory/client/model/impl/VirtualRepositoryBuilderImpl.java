@@ -59,7 +59,7 @@ public class VirtualRepositoryBuilderImpl extends RepositoryBuilderBase<VirtualR
 
         return new VirtualRepositoryImpl(key, settings, description, excludesPattern,
                 includesPattern, notes, artifactoryRequestsCanRetrieveRemoteArtifacts,
-                repositories, repoLayoutRef, defaultDeploymentRepo, customProperties);
+                repositories, repoLayoutRef, defaultDeploymentRepo, customProperties, projectKey, environments);
     }
 
     public RepositoryType getRepositoryType() {

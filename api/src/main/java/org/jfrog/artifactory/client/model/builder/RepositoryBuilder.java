@@ -1,5 +1,6 @@
 package org.jfrog.artifactory.client.model.builder;
 
+import java.util.List;
 import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.jfrog.artifactory.client.model.Repository;
@@ -50,4 +51,12 @@ public interface RepositoryBuilder<B extends RepositoryBuilder, R extends Reposi
     XraySettings getXraySettings();
 
     B customProperties(Map<String, Object> customProperties);
+
+    B projectKey(String projectKey);
+
+    String getProjectKey();
+
+    B environments(List<String> environments);
+
+    List<String> getEnvironments();
 }

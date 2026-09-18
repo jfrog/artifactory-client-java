@@ -8,6 +8,7 @@ import org.jfrog.artifactory.client.model.builder.RepositoryBuilder;
 import org.jfrog.artifactory.client.model.repository.settings.RepositorySettings;
 import org.jfrog.artifactory.client.model.repository.settings.XraySettings;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -25,6 +26,8 @@ public abstract class RepositoryBuilderBase<B extends RepositoryBuilder, R exten
     protected RepositorySettings settings;
     protected XraySettings xraySettings;
     protected Map<String, Object> customProperties;
+    protected String projectKey;
+    protected List<String> environments;
 
     public final Set<PackageType> supportedTypes;
 
@@ -98,6 +101,24 @@ public abstract class RepositoryBuilderBase<B extends RepositoryBuilder, R exten
     public B customProperties(Map<String, Object> customProperties) {
         this.customProperties = customProperties;
         return (B) this;
+    }
+
+    public B projectKey(String projectKey) {
+        this.projectKey = projectKey;
+        return (B) this;
+    }
+
+    public String getProjectKey() {
+        return projectKey;
+    }
+
+    public B environments(List<String> environments) {
+        this.environments = environments;
+        return (B) this;
+    }
+
+    public List<String> getEnvironments() {
+        return environments;
     }
 
     public abstract RepositoryType getRepositoryType();

@@ -23,10 +23,24 @@ public class LocalRepositoryImpl extends NonVirtualRepositoryBase implements Loc
         List<String> propertySets,
         String repoLayoutRef,
         boolean archiveBrowsingEnabled,
-        Map<String, Object> customProperties) {
+        Map<String, Object> customProperties,
+        String projectKey,
+        List<String> environments) {
 
         super(key, settings, xraySettings, description, excludesPattern, includesPattern, notes, blackedOut,
-            propertySets, repoLayoutRef, archiveBrowsingEnabled, customProperties);
+            propertySets, repoLayoutRef, archiveBrowsingEnabled, customProperties, projectKey, environments);
+    }
+
+    protected LocalRepositoryImpl(String key, RepositorySettings settings, XraySettings xraySettings,
+        String description, String excludesPattern, String includesPattern, String notes,
+        boolean blackedOut,
+        List<String> propertySets,
+        String repoLayoutRef,
+        boolean archiveBrowsingEnabled,
+        Map<String, Object> customProperties) {
+
+        this(key, settings, xraySettings, description, excludesPattern, includesPattern, notes, blackedOut,
+            propertySets, repoLayoutRef, archiveBrowsingEnabled, customProperties, null, null);
     }
 
     public RepositoryTypeImpl getRclass() {

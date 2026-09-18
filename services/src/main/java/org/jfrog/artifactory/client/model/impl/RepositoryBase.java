@@ -3,6 +3,7 @@ package org.jfrog.artifactory.client.model.impl;
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import java.util.List;
 import java.util.Map;
 import org.jfrog.artifactory.client.model.Repository;
 import org.jfrog.artifactory.client.model.repository.settings.RepositorySettings;
@@ -27,13 +28,16 @@ public abstract class RepositoryBase implements Repository {
     protected XraySettings xraySettings;
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     protected Map<String, Object> customProperties;
+    private String projectKey;
+    private List<String> environments;
 
     protected RepositoryBase() {
     }
 
     protected RepositoryBase(String key, RepositorySettings settings, XraySettings xraySettings,
         String description, String excludesPattern, String includesPattern,
-        String notes, String repoLayoutRef, Map<String, Object> customProperties) {
+        String notes, String repoLayoutRef, Map<String, Object> customProperties,
+        String projectKey, List<String> environments) {
 
         this.key = key;
         this.settings = settings;
@@ -44,13 +48,23 @@ public abstract class RepositoryBase implements Repository {
         this.notes = notes;
         this.repoLayoutRef = repoLayoutRef;
         this.customProperties = customProperties;
+        this.projectKey = projectKey;
+        this.environments = environments;
+    }
+
+    protected RepositoryBase(String key, RepositorySettings settings, XraySettings xraySettings,
+        String description, String excludesPattern, String includesPattern,
+        String notes, String repoLayoutRef, Map<String, Object> customProperties) {
+
+        this(key, settings, xraySettings, description, excludesPattern, includesPattern, notes, repoLayoutRef,
+            customProperties, null, null);
     }
 
     protected RepositoryBase(String key, RepositorySettings settings,
         String description, String excludesPattern, String includesPattern,
         String notes, String repoLayoutRef, Map<String, Object> customProperties) {
 
-       this(key,settings, null, description, excludesPattern, includesPattern,  notes, repoLayoutRef,
+       this(key, settings, null, description, excludesPattern, includesPattern, notes, repoLayoutRef,
            customProperties);
     }
 
@@ -94,6 +108,22 @@ public abstract class RepositoryBase implements Repository {
         this.excludesPattern = excludesPattern;
     }
 
+    public String getProjectKey() {
+        return projectKey;
+    }
+
+    private void setProjectKey(String projectKey) {
+        this.projectKey = projectKey;
+    }
+
+    public List<String> getEnvironments() {
+        return environments;
+    }
+
+    private void setEnvironments(List<String> environments) {
+        this.environments = environments;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -111,6 +141,8 @@ public abstract class RepositoryBase implements Repository {
         if (getRclass() != that.getRclass()) return false;
         if (settings != null ? !settings.equals(that.settings) : that.settings != null) return false;
         if (xraySettings != null ? !xraySettings.equals(that.xraySettings) : that.xraySettings != null) return false;
+        if (projectKey != null ? !projectKey.equals(that.projectKey) : that.projectKey != null) return false;
+        if (environments != null ? !environments.equals(that.environments) : that.environments != null) return false;
 
         return true;
     }
@@ -125,6 +157,8 @@ public abstract class RepositoryBase implements Repository {
         result = 31 * result + (excludesPattern != null ? excludesPattern.hashCode() : 0);
         result = 31 * result + (settings != null ? settings.hashCode() : 0);
         result = 31 * result + (xraySettings != null ? xraySettings.hashCode() : 0);
+        result = 31 * result + (projectKey != null ? projectKey.hashCode() : 0);
+        result = 31 * result + (environments != null ? environments.hashCode() : 0);
         return result;
     }
 
@@ -137,6 +171,8 @@ public abstract class RepositoryBase implements Repository {
                 ", notes='" + notes + '\'' +
                 ", includesPattern='" + includesPattern + '\'' +
                 ", excludesPattern='" + excludesPattern + '\'' +
+                ", projectKey='" + projectKey + '\'' +
+                ", environments=" + environments +
                 '}';
     }
 
