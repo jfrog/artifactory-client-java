@@ -1,0 +1,58 @@
+name: Snapshot
+
+# Publishes a snapshot build of artifactory-java-client to Artifactory and JFrog Distribution on every push to dev.
+# Ported from the JFrog Pipelines `create_artifactory_java_client_snapshot` pipeline
+# (release/pipelines.snapshot.yml), now EOL. The pipeline's GitRepo resource (javaClientSnapshotGit,
+# see release/pipelines.resources.yml) tracked the `dev` branch, so that's what triggers this workflow.
+on:
+  push:
+    branches:
+      - dev
+  workflow_dispatch: {}
+
+env:
+  CI: true
+  JFROG_BUILD_STATUS: PASS
+  JFROG_CLI_BUILD_NAME: ecosystem-artifactory-client-java-dev
+  JFROG_CLI_BUILD_NUMBER: ${{ github.run_number }}
+  JFROG_CLI_BUILD_PROJECT: ecosys
+  GRADLE_OPTS: -Dorg.gradle.daemon=false
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: dev
+
+      - name: Install Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: "8"
+          distribution: "zulu"
+
+      - name: Cache Gradle files
+        uses: actions/cache@v4
+        with:
+          path: .gradle
+          key: ${{ runner.os }}-gradle-${{ github.run_id }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Setup JFrog CLI
+        uses: jfrog/setup-jfrog-cli@v4
+        # Deliberate behavior change from the original pipeline: the pipeline bootstrapped the CLI via
+        # `curl -fL https://install-cli.jfrog.io | sh`; here we use the official setup action instead.
+
+      # Configures the JFrog CLI, audits, deletes stale snapshot artifacts, builds and publishes to
+      # Artifactory, then distributes the release bundle.
+      # See .github/scripts/snapshot.sh - the same script can be run locally by exporting the env vars below.
+      - name: Run snapshot
+        env:
+          ARTIFACTORY_URL: ${{ secrets.ARTIFACTORY_URL }}
+          ARTIFACTORY_USER: ${{ secrets.ARTIFACTORY_USER }}
+          ARTIFACTORY_APIKEY: ${{ secrets.ARTIFACTORY_APIKEY }}
+          RUN_NUMBER: ${{ github.run_number }}
+        run: .github/scripts/snapshot.sh
