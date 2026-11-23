@@ -57,7 +57,7 @@ class PluginHandleImpl implements PluginHandle {
             }
         }
         int asyncValue = async ? 1 : 0;
-        queryPath.append("async&=").append(asyncValue);
+        queryPath.append("&async=").append(asyncValue);
         artifactory.post("${plugins.getPluginsApi()}/execute/$name" + queryPath.toString(), org.apache.http.entity.ContentType.TEXT_PLAIN, null, new HashMap<String, String>(), String, null )
     }
 
