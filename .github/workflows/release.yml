@@ -1,0 +1,65 @@
+name: Release
+
+# Manual release of artifactory-java-client to Artifactory (releases repo), JFrog Distribution and Maven Central.
+# Ported from the JFrog Pipelines `release_java_client` pipeline (release/pipelines.release.yml), now EOL.
+on:
+  workflow_dispatch:
+    inputs:
+      next_version:
+        description: "Version to release (e.g. 2.21.0)"
+        required: true
+      next_development_version:
+        description: "Next development version to bump to after release (e.g. 2.22.x-SNAPSHOT)"
+        required: true
+      audit_fail:
+        description: "Fail the build if `jf audit` finds violations"
+        required: false
+        default: "false"
+
+env:
+  CI: true
+  JFROG_BUILD_STATUS: PASS
+  JFROG_CLI_BUILD_NAME: ecosystem-artifactory-client-java-release
+  JFROG_CLI_BUILD_NUMBER: ${{ github.run_number }}
+  JFROG_CLI_BUILD_PROJECT: ecosys
+  GRADLE_OPTS: -Dorg.gradle.daemon=false
+  NEXT_VERSION: ${{ github.event.inputs.next_version }}
+  NEXT_DEVELOPMENT_VERSION: ${{ github.event.inputs.next_development_version }}
+  AUDIT_FAIL: ${{ github.event.inputs.audit_fail }}
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: master
+          fetch-depth: 0
+
+      - name: Install Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: "8"
+          distribution: "zulu"
+
+      - name: Setup JFrog CLI
+        uses: jfrog/setup-jfrog-cli@v4
+        # Deliberate behavior change from the original pipeline: the pipeline bootstrapped the CLI via
+        # `curl -fL https://install-cli.jfrog.io | sh`; here we use the official setup action instead.
+
+      # Runs the full release: configures git and the JFrog CLI, syncs with dev, audits, bumps the
+      # version, tags and pushes the release commit, builds and publishes to Artifactory, distributes
+      # the release bundle, publishes to Maven Central, then bumps dev to the next development version.
+      # See .github/scripts/release.sh - the same script can be run locally by exporting the env vars below.
+      - name: Run release
+        env:
+          IL_AUTOMATION_TOKEN: ${{ secrets.IL_AUTOMATION_TOKEN }}
+          ARTIFACTORY_URL: ${{ secrets.ARTIFACTORY_URL }}
+          ARTIFACTORY_USER: ${{ secrets.ARTIFACTORY_USER }}
+          ARTIFACTORY_APIKEY: ${{ secrets.ARTIFACTORY_APIKEY }}
+          MVN_CENTRAL_SIGNING_KEY: ${{ secrets.MVN_CENTRAL_SIGNING_KEY }}
+          ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.MVN_CENTRAL_SIGNING_PASSWORD }}
+          ORG_GRADLE_PROJECT_sonatypeUsername: ${{ secrets.MVN_CENTRAL_USER }}
+          ORG_GRADLE_PROJECT_sonatypePassword: ${{ secrets.MVN_CENTRAL_PASSWORD }}
+        run: .github/scripts/release.sh
